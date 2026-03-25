@@ -1,1 +1,6 @@
 /demo_agent
+__pycache__
+outputs/graphs/
+test_graph_drawer_graphviz.py
+tools/graph_drawer_graphviz.py
+lib/
