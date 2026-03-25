@@ -7,6 +7,8 @@ from .agents.react_agent import build_react_executor, run_react
 from .config import load_config
 from .event import normalize_alert
 from .io import load_json, save_text, save_json
+from .artifacts import build_topology
+from .graph_drawer_pyvis import draw_graph_pyvis
 from .llm import make_llm
 from .tools import build_topology_json, family_intel, save_report_md, vt_enrich_ip, web_search
 from .vt_client import VirusTotalClient
@@ -15,18 +17,33 @@ from .vt_client import VirusTotalClient
 ROOT = Path(__file__).resolve().parents[1]
 def _run_one(alert: Dict[str, Any], out_dir: Path, *, executor) -> Dict[str, Any]:
     event = normalize_alert(alert)
+    topology = build_topology(event)
     out_dir.mkdir(parents=True, exist_ok=True)
     save_json(out_dir / "input_alert.json", alert)
     save_json(out_dir / "event.json", event)
+    save_json(out_dir / "topology.json", topology)
+    topology_html_path = draw_graph_pyvis(topology, str(out_dir / "topology.html"))
 
     if executor == "plan":
         result = run_plan_and_solve(make_llm(load_config()), event=event, out_dir=str(out_dir))
         save_text(out_dir / "agent_output.txt", "plan-and-solve finished")
-        return {"ok": True, "out_dir": str(out_dir), "result": result}
+        return {
+            "ok": True,
+            "out_dir": str(out_dir),
+            "topology_json_path": str((out_dir / "topology.json").resolve()),
+            "topology_html_path": topology_html_path,
+            "result": result,
+        }
     else:
         result = run_react(executor, event=event, out_dir=str(out_dir))
         save_text(out_dir / "agent_output.txt", str(result.get("result", {}).get("output", "")))
-        return {"ok": True, "out_dir": str(out_dir), "result": result}
+        return {
+            "ok": True,
+            "out_dir": str(out_dir),
+            "topology_json_path": str((out_dir / "topology.json").resolve()),
+            "topology_html_path": topology_html_path,
+            "result": result,
+        }
 
 
 def run(alert_path: Path, out_dir: Path, *, mode: str = "react") -> Dict[str, Any]:

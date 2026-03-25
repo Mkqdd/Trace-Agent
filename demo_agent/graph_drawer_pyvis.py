@@ -6,8 +6,7 @@ from pathlib import Path
 from pyvis.network import Network
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "graphs"
+DEFAULT_OUTPUT_DIR = Path(__file__).resolve().parent / "out_langchain"
 
 
 def _validate_graph_data(graph_data: dict) -> tuple[list[dict], list[dict]]:
@@ -38,10 +37,10 @@ def _validate_graph_data(graph_data: dict) -> tuple[list[dict], list[dict]]:
         if not isinstance(edge, dict):
             raise ValueError(f"edges[{index}] must be a dict")
 
-        src = edge.get("src")
-        dst = edge.get("dst")
+        src = edge.get("src") or edge.get("source")
+        dst = edge.get("dst") or edge.get("target")
         if not src or not dst:
-            raise ValueError(f"edges[{index}] must include 'src' and 'dst'")
+            raise ValueError(f"edges[{index}] must include 'src'/'source' and 'dst'/'target'")
         if src not in node_ids:
             raise ValueError(f"edges[{index}] references missing src node: {src}")
         if dst not in node_ids:
@@ -54,7 +53,7 @@ def _build_output_path(output_path: str | None) -> Path:
     if output_path:
         path = Path(output_path)
         if not path.is_absolute():
-            path = PROJECT_ROOT / path
+            path = Path.cwd() / path
     else:
         DEFAULT_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -70,8 +69,12 @@ def _build_output_path(output_path: str | None) -> Path:
 def _node_color(node_type: str) -> str:
     mapping = {
         "host": "lightblue",
+        "internal_host": "lightblue",
         "ja3": "orange",
+        "fingerprint_ja3": "orange",
         "ip": "lightgreen",
+        "external_ip": "lightgreen",
+        "malware_family": "lightcoral",
     }
     return mapping.get(node_type, "gray")
 
@@ -81,8 +84,12 @@ def _node_label(node: dict) -> str:
     value = str(node.get("label") or node["id"]).strip()
     title_map = {
         "host": "HOST",
+        "internal_host": "HOST",
         "ja3": "JA3",
+        "fingerprint_ja3": "JA3",
         "ip": "IP",
+        "external_ip": "IP",
+        "malware_family": "FAMILY",
     }
     prefix = title_map.get(node_type, node_type.upper() or "NODE")
     return f"{prefix}\n{value}"
@@ -93,8 +100,12 @@ def _node_title(node: dict) -> str:
     value = str(node.get("label") or node["id"]).strip()
     title_map = {
         "host": "Victim Host",
+        "internal_host": "Victim Host",
         "ja3": "JA3 Fingerprint",
+        "fingerprint_ja3": "JA3 Fingerprint",
         "ip": "External IP",
+        "external_ip": "External IP",
+        "malware_family": "Malware Family",
     }
     prefix = title_map.get(node_type, "Node")
     return f"{prefix}\n{value}"
@@ -105,8 +116,8 @@ def _node_levels(nodes: list[dict], edges: list[dict]) -> dict[str, int]:
     outgoing: dict[str, list[str]] = {node["id"]: [] for node in nodes}
 
     for edge in edges:
-        src = edge["src"]
-        dst = edge["dst"]
+        src = edge.get("src") or edge.get("source")
+        dst = edge.get("dst") or edge.get("target")
         outgoing[src].append(dst)
         incoming_count[dst] += 1
 
@@ -201,10 +212,12 @@ def draw_graph_pyvis(graph_data: dict, output_path: str | None = None) -> str:
         )
 
     for edge in edges:
-        edge_type = str(edge.get("type", ""))
+        edge_type = str(edge.get("label") or edge.get("type", ""))
+        src = edge.get("src") or edge.get("source")
+        dst = edge.get("dst") or edge.get("target")
         net.add_edge(
-            edge["src"],
-            edge["dst"],
+            src,
+            dst,
             label=edge_type,
             title=edge_type,
             color="gray",
