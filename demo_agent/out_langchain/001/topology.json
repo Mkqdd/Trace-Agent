@@ -31,7 +31,7 @@
       "type": "fingerprint_ip",
       "label": "IP 194.226.121.108",
       "attrs": {
-        "confidence": 50
+        "confidence": 48
       },
       "style": {
         "group": "fingerprint"
@@ -77,7 +77,7 @@
       "type": "attribution",
       "label": "关联家族/标签",
       "attrs": {
-        "confidence": 50
+        "confidence": 48
       }
     }
   ]

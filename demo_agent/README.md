@@ -49,10 +49,17 @@ python -m demo_agent.langchain_agent --alert demo_alert.json
 
 - 如果输入是 **单个 JSON 对象**：直接在该目录生成 `input_alert.json / event.json / report.md / agent_output.txt`
 - 如果输入是 **JSON 数组**：会在 `out_langchain/000/`、`out_langchain/001/`... 下分别生成上述文件（每条告警一套产物）
+- 建议后续统一复用这一个输出目录，不再额外创建平行的实验输出目录
 
 可选：使用 Plan-and-Solve 模式（更少循环、更强收敛）：
 
 ```bash
 python -m demo_agent.langchain_agent --alert demo_alert.json --mode plan
+```
+
+如果你想在不依赖外部 LLM 报告生成的情况下，直接查看 `analysis.json -> report.md` 的结构化渲染效果，可以临时使用：
+
+```bash
+env REPORT_RENDERER=local python -m demo_agent.langchain_agent --alert demo_alert.json --mode plan
 ```
 

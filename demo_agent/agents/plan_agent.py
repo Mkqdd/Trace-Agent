@@ -1,10 +1,11 @@
 import json
+import os
 from typing import Any, Dict, Optional
 
 from langchain_core.prompts import ChatPromptTemplate
 
 from ..analysis import build_analysis
-from ..renderers.artifacts import build_topology_from_analysis
+from ..renderers.report_markdown import render_report_from_analysis
 from ..tooling import family_intel, save_report_md, vt_enrich_ip, web_search
 
 
@@ -45,42 +46,43 @@ def run_plan_and_solve(llm: Any, *, event: Dict[str, Any], out_dir: str) -> Dict
             family_intel.invoke({"family": family.strip(), "context": str(fp_value), "max_results": 5})
         )
 
-    # 3) Derive analysis and build topology after enrichment
+    # 3) Derive analysis after enrichment
     analysis = build_analysis(event=event, mode="plan", obs_fp=obs_fp, obs_family=obs_family)
-    topo = build_topology_from_analysis(analysis)
 
-    # 4) Report generation once
-    prompt = ChatPromptTemplate.from_messages(
-        [
-            (
-                "system",
-                "你是网络安全分析师。请仅基于提供的 JSON 数据生成中文 Markdown 报告（结构自由，不要固定模板）。"
-                "必须包含：研判结论、事件摘要、证据与情报（引用提供的搜索/VT结果）、处置建议。"
-                "如果 simulated=true，请标注“模拟数据”。不要编造不存在的 IOC。"
-                "证据与情报部分必须用中文表述：如果搜索结果的标题/摘要是英文，请将其含义翻译或转述为中文；"
-                "URL 保持原样可点击；如需保留英文原文标题，可放在中文后面的括号中。",
-            ),
-            ("user", "event:\n{event_json}\n\nfingerprint_enrich:\n{obs_fp}\n\nfamily_intel:\n{obs_family}\n\ntopology:\n{topo_json}\n\nout_dir:\n{out_dir}"),
-        ]
-    )
-    msg = prompt.format_messages(
-        event_json=json.dumps(event, ensure_ascii=False, indent=2),
-        obs_fp=json.dumps(obs_fp, ensure_ascii=False, indent=2),
-        obs_family=json.dumps(obs_family, ensure_ascii=False, indent=2) if obs_family is not None else "null",
-        topo_json=json.dumps(topo, ensure_ascii=False, indent=2),
-        out_dir=out_dir,
-    )
-    report_md = (llm.invoke(msg).content or "").strip()  # type: ignore[attr-defined]
+    # 4) Report generation from analysis
+    use_local_renderer = str(os.getenv("REPORT_RENDERER") or "").strip().lower() == "local"
+    report_md = ""
+    if use_local_renderer:
+        report_md = render_report_from_analysis(analysis)
+    else:
+        prompt = ChatPromptTemplate.from_messages(
+            [
+                (
+                    "system",
+                    "你是网络安全分析师。请仅基于提供的 analysis JSON 生成中文 Markdown 报告。"
+                    "analysis JSON 已经包含事件事实、结构化证据、研判结论、不确定性和处置建议。"
+                    "必须围绕这些结构来写，不能编造 analysis JSON 中不存在的 IOC、结论或证据。"
+                    "报告必须包含：研判结论、事件摘要、证据与情报、不确定性、处置建议。"
+                    "证据部分优先引用 evidence/findings 中已有内容；如果标题或摘要是英文，请转述为中文，URL 保持原样。",
+                ),
+                ("user", "analysis:\n{analysis_json}\n\nout_dir:\n{out_dir}"),
+            ]
+        )
+        msg = prompt.format_messages(
+            analysis_json=json.dumps(analysis, ensure_ascii=False, indent=2),
+            out_dir=out_dir,
+        )
+        try:
+            report_md = (llm.invoke(msg).content or "").strip()  # type: ignore[attr-defined]
+        except Exception:
+            report_md = render_report_from_analysis(analysis)
 
     # 5) Save report once
     saved = json.loads(save_report_md.invoke({"out_dir": out_dir, "content": report_md}))
-    final_analysis = build_analysis(
-        event=event,
-        mode="plan",
-        obs_fp=obs_fp,
-        obs_family=obs_family,
-        report_markdown=report_md,
-        report_path=saved.get("path"),
-    )
+    final_analysis = dict(analysis)
+    final_analysis["report"] = {
+        "path": saved.get("path"),
+        "content": report_md,
+    }
     return {"ok": True, "saved": saved, "obs_fp": obs_fp, "obs_family": obs_family, "analysis": final_analysis}
 
