@@ -19,43 +19,52 @@
 - 来源：alert
 - 说明：在 2026-03-20 10:00:00 观察到 194.226.121.108 -> 44.33.22.11 的 HTTP 流量，命中 IP 指纹 194.226.121.108。
 - 置信度：95
+- 证据权重：96（高）；依据：原始告警事实
 - 原始引用：`event.raw_alert`
 
-### e02 告警附带家族提示
-- 来源：maltrail-static
-- 说明：原始告警将该事件关联到家族/标签 discordgrabber。
-- 置信度：70
-- 原始引用：`event.enrichment`
+### e02 MalwareBazaar | DiscordGrabber - abuse.ch
+- 来源：bazaar.abuse.ch
+- 域名：`bazaar.abuse.ch`
+- 查询：`discordgrabber 194.226.121.108 malware family C2`
+- 说明：Malware samples associated with tag DiscordGrabber MalwareBazaar Database Samples on MalwareBazaar are usually associated with certain tags. Every sample can associated with one or more tags. Using tags, it is easy to navigate through the huge amount of malware samples in the MalwareBazaar corpus. The page below gives you an overview on malware samples that are tagged with DiscordGrabber ...
+- 链接：https://bazaar.abuse.ch/browse/tag/DiscordGrabber/
+- 置信度：65
+- 证据权重：78（中）；依据：权威外部来源 bazaar.abuse.ch
+- 原始引用：`observations.family_intel.raw.results[4]`
 
 ### e03 VirusTotal IP 富化
 - 来源：VirusTotal
 - 查询：`194.226.121.108`
 - 说明：VirusTotal 返回 IP 194.226.121.108 的信誉/归属信息。VT 分析统计为 {'malicious': 12, 'suspicious': 1, 'undetected': 33, 'harmless': 48, 'timeout': 0}。
 - 置信度：48
+- 证据权重：75（中）；依据：结构化信誉情报
 - 原始引用：`observations.fingerprint_enrichment`
 
-### e04 ThreatFox | Browse IOCs
-- 来源：html_fallback
-- 查询：`discordgrabber 194.226.121.108 malware family C2`
-- 说明：Using the form below, you can search for malware samples by a hash (MD5, SHA256, SHA1), imphash, tlsh hash, ClamAV signature, tag or malware family. Browse Database
-- 链接：//duckduckgo.com/l/?uddg=https%3A%2F%2Fthreatfox.abuse.ch%2Fbrowse&amp;rut=bf66d1fd60b5fb2c020014790b472b3d6cff6358253dadb3d8fb0821fc169745
-- 置信度：65
-- 原始引用：`observations.family_intel.raw.results[0]`
+### e04 告警附带家族提示
+- 来源：maltrail-static
+- 说明：原始告警将该事件关联到家族/标签 discordgrabber。
+- 置信度：70
+- 证据权重：74（中）；依据：本地静态情报命中
+- 原始引用：`event.enrichment`
 
 ### e05 Here Comes TroubleGrabber: Stealing Credentials Through Discord
-- 来源：html_fallback
+- 来源：netskope.com
+- 域名：`netskope.com`
 - 查询：`discordgrabber 194.226.121.108 malware family C2`
 - 说明：The malware uses Discord and Github to deliver the next stage payloads and uses Discord webhooks as a C2 to send the victims credentials. Such attacks require security solutions with application-layer detections, multiple threat detection solutions, DLP, and machine learning techniques that understand the language and nature of the cloud and web.
-- 链接：//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.netskope.com%2Fblog%2Fhere%2Dcomes%2Dtroublegrabber%2Dstealing%2Dcredentials%2Dthrough%2Ddiscord&amp;rut=ddd6799fde4b9f17f3260f32fd66e4db41aa469b91cda5a125f3b6e70e4ee461
+- 链接：https://www.netskope.com/blog/here-comes-troublegrabber-stealing-credentials-through-discord
 - 置信度：65
+- 证据权重：74（中）；依据：权威外部来源 netskope.com
 - 原始引用：`observations.family_intel.raw.results[1]`
 
-### e06 Possibility of discord token grabber program on PC - Resolved Malware ...
-- 来源：html_fallback
+### e06 New TroubleGrabber malware targets Discord users
+- 来源：securityaffairs.com
+- 域名：`securityaffairs.com`
 - 查询：`discordgrabber 194.226.121.108 malware family C2`
-- 说明：A few hours ago, without warning, a bot had created its own session on my discord account (while I was still logged in) and sent a spam link to several people in my dms. I am thinking that it may have been down to my session token being grabbed off of a bot I had previously authorised and later h...
-- 链接：//duckduckgo.com/l/?uddg=https%3A%2F%2Fforums.malwarebytes.com%2Ftopic%2F318319%2Dpossibility%2Dof%2Ddiscord%2Dtoken%2Dgrabber%2Dprogram%2Don%2Dpc%2F&amp;rut=6a72385883e20f8e1d12ce7e15bf5a04e2a7de9e201b743123d1f7fede4a1540
+- 说明：The malware the same functionalities used by other malware that target Discord gamers, like AnarchyGrabber, but it appears to be the work of different threat actors. TroubleGrabber was developed by an individual named "Itroublve" and is currently used by multiple threat actors.
+- 链接：https://securityaffairs.com/110887/malware/troublegrabber-discord-malware.html
 - 置信度：65
+- 证据权重：73（中）；依据：权威外部来源 securityaffairs.com
 - 原始引用：`observations.family_intel.raw.results[2]`
 
 ## 不确定性

@@ -1,6 +1,51 @@
-from typing import Any, Dict, List, Optional
+import re
+from html import unescape
+from typing import Any, Dict, List, Optional, Tuple
+from urllib.parse import parse_qs, unquote, urlparse
 
 from .renderers.artifacts import severity_from_confidence
+
+
+_GENERIC_WEB_SOURCES = {"html_fallback", "ddgs", "serpapi", "web_search"}
+_HIGH_AUTHORITY_DOMAINS = {
+    "virustotal.com": 92,
+    "sslbl.abuse.ch": 90,
+    "threatfox.abuse.ch": 88,
+    "bazaar.abuse.ch": 88,
+    "abuse.ch": 86,
+    "microsoft.com": 84,
+    "malpedia.caad.fkie.fraunhofer.de": 84,
+    "spamhaus.org": 82,
+    "netskope.com": 80,
+    "securityaffairs.com": 78,
+    "csirt.cy": 76,
+}
+_LOW_AUTHORITY_DOMAINS = {
+    "trustmyip.com": 35,
+    "ja3.me": 35,
+    "github.com": 25,
+    "forums.malwarebytes.com": 25,
+}
+_LOW_SIGNAL_TITLE_PARTS = (
+    "lookup tool",
+    "browse iocs",
+    "free ja3 database",
+    "github topics",
+    "resolved malware",
+)
+_LOW_SIGNAL_SNIPPET_PARTS = (
+    "using the form below, you can search",
+    "freely available database of ja3 data",
+    "github topics",
+)
+_LOW_SIGNAL_DOMAIN_PARTS = ("forum", "forums.", "github.com", "trustmyip.com", "ja3.me")
+_SEARCH_KIND_STRENGTH = {
+    "event": 100,
+    "hint": 78,
+    "enrichment": 82,
+    "family_intel": 66,
+    "search_result": 58,
+}
 
 
 def _first_non_empty(*values: Any) -> Optional[str]:
@@ -34,10 +79,148 @@ def _coerce_int(*values: Any, default: int) -> int:
     return default
 
 
+def _clean_text(value: Any) -> str:
+    text = unescape(str(value or ""))
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+
+def _normalize_url(url: Any) -> Optional[str]:
+    text = _clean_text(url)
+    if not text:
+        return None
+    if text.startswith("//"):
+        text = f"https:{text}"
+    parsed = urlparse(text)
+    if "duckduckgo.com" in (parsed.netloc or ""):
+        uddg = parse_qs(parsed.query).get("uddg")
+        if uddg:
+            target = _clean_text(unquote(uddg[0]))
+            if target.startswith("//"):
+                target = f"https:{target}"
+            return target
+    return text
+
+
+def _extract_domain(url: Any) -> str:
+    normalized = _normalize_url(url)
+    if not normalized:
+        return ""
+    netloc = urlparse(normalized).netloc.lower().strip()
+    if netloc.startswith("www."):
+        netloc = netloc[4:]
+    return netloc
+
+
+def _domain_matches(domain: str, needle: str) -> bool:
+    return domain == needle or domain.endswith(f".{needle}")
+
+
+def _source_name(source: Any, url: Any) -> str:
+    raw_source = _clean_text(source)
+    domain = _extract_domain(url)
+    if domain and raw_source.lower() in _GENERIC_WEB_SOURCES:
+        return domain
+    return raw_source or domain or "unknown"
+
+
+def _source_authority(source: str, url: Any, kind: str) -> Tuple[int, str]:
+    domain = _extract_domain(url)
+    normalized = source.lower()
+    if normalized == "alert":
+        return 95, "原始告警事实"
+    if normalized in {"virustotal", "vt"} or _domain_matches(domain, "virustotal.com"):
+        return 92, "结构化信誉情报"
+    if normalized == "maltrail-static":
+        return 76, "本地静态情报命中"
+    for known_domain, score in _HIGH_AUTHORITY_DOMAINS.items():
+        if _domain_matches(domain, known_domain):
+            return score, f"权威外部来源 {domain}"
+    for known_domain, score in _LOW_AUTHORITY_DOMAINS.items():
+        if _domain_matches(domain, known_domain):
+            return score, f"低权重泛化来源 {domain}"
+    if domain:
+        return 60, f"一般网页来源 {domain}"
+    if kind in {"event", "hint"}:
+        return 72, "结构化本地信息"
+    return 55, "未识别来源"
+
+
+def _mentions_context(title: str, claim: str, family: str, fp_value: str) -> bool:
+    haystack = f"{title} {claim}".lower()
+    family_hit = bool(family and family != "Unknown" and family.lower() in haystack)
+    fingerprint_hit = bool(fp_value and fp_value.lower() in haystack)
+    return family_hit or fingerprint_hit
+
+
+def _looks_low_signal(title: str, claim: str, url: Any) -> bool:
+    lowered = f"{title} {claim}".lower()
+    domain = _extract_domain(url)
+    if any(part in lowered for part in _LOW_SIGNAL_TITLE_PARTS):
+        return True
+    if any(part in lowered for part in _LOW_SIGNAL_SNIPPET_PARTS):
+        return True
+    if any(part in domain for part in _LOW_SIGNAL_DOMAIN_PARTS):
+        return True
+    return False
+
+
+def _should_keep_evidence(item: Dict[str, Any], family: str, fp_value: str) -> bool:
+    kind = str(item.get("kind") or "")
+    if kind in {"event", "hint", "enrichment"}:
+        return True
+
+    title = _clean_text(item.get("title"))
+    claim = _clean_text(item.get("claim"))
+    url = item.get("url")
+    source = _source_name(item.get("source"), url)
+    authority, _ = _source_authority(source, url, kind)
+    if not title and not claim:
+        return False
+
+    context_hit = _mentions_context(title, claim, family, fp_value)
+    if _looks_low_signal(title, claim, url) and not context_hit:
+        return False
+
+    if kind in {"family_intel", "search_result"} and authority < 70 and not context_hit:
+        return False
+
+    return True
+
+
+def _weight_label(weight: int) -> str:
+    if weight >= 85:
+        return "高"
+    if weight >= 65:
+        return "中"
+    return "低"
+
+
+def _score_evidence(item: Dict[str, Any]) -> Tuple[int, str]:
+    kind = str(item.get("kind") or "")
+    source = _source_name(item.get("source"), item.get("url"))
+    authority, authority_reason = _source_authority(source, item.get("url"), kind)
+    confidence = _coerce_int(item.get("confidence"), default=50)
+    kind_strength = _SEARCH_KIND_STRENGTH.get(kind, 55)
+    score = int(round(authority * 0.45 + confidence * 0.35 + kind_strength * 0.20))
+    if item.get("url"):
+        score += 2
+    score = max(20, min(99, score))
+    return score, authority_reason
+
+
 def _append_evidence(evidence: List[Dict[str, Any]], item: Dict[str, Any]) -> None:
-    url = str(item.get("url") or "").strip()
-    claim = str(item.get("claim") or "").strip()
-    source = str(item.get("source") or "").strip()
+    prepared = dict(item)
+    prepared["title"] = _clean_text(prepared.get("title"))
+    prepared["claim"] = _clean_text(prepared.get("claim"))
+    prepared["query"] = _clean_text(prepared.get("query")) or None
+    prepared["url"] = _normalize_url(prepared.get("url"))
+    prepared["domain"] = _extract_domain(prepared.get("url")) or None
+    prepared["source"] = _source_name(prepared.get("source"), prepared.get("url"))
+
+    url = str(prepared.get("url") or "").strip()
+    claim = str(prepared.get("claim") or "").strip()
+    source = str(prepared.get("source") or "").strip()
     if url:
         for existing in evidence:
             if str(existing.get("url") or "").strip() == url:
@@ -49,8 +232,38 @@ def _append_evidence(evidence: List[Dict[str, Any]], item: Dict[str, Any]) -> No
                 and str(existing.get("claim") or "").strip() == claim
             ):
                 return
-    item["id"] = f"e{len(evidence) + 1:02d}"
-    evidence.append(item)
+    evidence.append(prepared)
+
+
+def _finalize_evidence(
+    evidence: List[Dict[str, Any]],
+    *,
+    family: str,
+    fp_value: str,
+) -> List[Dict[str, Any]]:
+    kept: List[Dict[str, Any]] = []
+    for item in evidence:
+        if not _should_keep_evidence(item, family=family, fp_value=fp_value):
+            continue
+        weight, reason = _score_evidence(item)
+        finalized = dict(item)
+        finalized["weight"] = weight
+        finalized["weight_level"] = _weight_label(weight)
+        finalized["weight_reason"] = reason
+        kept.append(finalized)
+
+    kept.sort(
+        key=lambda item: (
+            -_coerce_int(item.get("weight"), default=0),
+            -_coerce_int(item.get("confidence"), default=0),
+            str(item.get("title") or ""),
+        )
+    )
+
+    for index, item in enumerate(kept, start=1):
+        item["id"] = f"e{index:02d}"
+
+    return kept
 
 
 def _estimate_confidence(
@@ -90,6 +303,7 @@ def _build_evidence(
 ) -> List[Dict[str, Any]]:
     evidence: List[Dict[str, Any]] = []
     fp = event.get("trigger_fingerprint") or {}
+    fp_value = _clean_text(fp.get("value"))
     enrichment = event.get("enrichment") or {}
     src = event.get("src") or {}
     dst = event.get("dst") or {}
@@ -153,15 +367,15 @@ def _build_evidence(
                 },
             )
         elif obs_fp.get("ok") is True:
-            for index, result in enumerate((obs_fp.get("results") or [])[:3]):
+            for index, result in enumerate((obs_fp.get("results") or [])[:5]):
                 title = str(result.get("title") or "").strip() or f"搜索证据 {index + 1}"
                 snippet = str(result.get("snippet") or "").strip()
                 _append_evidence(
                     evidence,
-                    {
-                        "kind": "search_result",
-                        "source": result.get("source") or obs_fp.get("mode") or "web_search",
-                        "type": "fingerprint_search",
+                {
+                    "kind": "search_result",
+                    "source": result.get("source") or obs_fp.get("mode") or "web_search",
+                    "type": "fingerprint_search",
                         "query": obs_fp.get("query"),
                         "url": result.get("url"),
                         "title": title,
@@ -174,7 +388,7 @@ def _build_evidence(
     family_raw = (obs_family or {}).get("raw") if isinstance(obs_family, dict) else None
     family_results = (family_raw or {}).get("results") if isinstance(family_raw, dict) else []
     if isinstance(family_results, list):
-        for index, result in enumerate(family_results[:3]):
+        for index, result in enumerate(family_results[:5]):
             title = str(result.get("title") or "").strip() or f"{family} 家族情报 {index + 1}"
             snippet = str(result.get("snippet") or "").strip()
             _append_evidence(
@@ -192,7 +406,7 @@ def _build_evidence(
                 },
             )
 
-    return evidence
+    return _finalize_evidence(evidence, family=family, fp_value=fp_value)
 
 
 def _build_findings(

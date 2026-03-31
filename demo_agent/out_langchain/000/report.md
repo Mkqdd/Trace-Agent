@@ -20,61 +20,65 @@
 - 来源：alert
 - 说明：在 2026-03-20 10:00:00 观察到 11.22.33.44 -> 44.33.22.11 的 TLS 流量，命中 JA3 指纹 4d7a28d6f2263ed61de88ca66eb011e3。
 - 置信度：95
+- 证据权重：96（高）；依据：原始告警事实
 - 原始引用：`event.raw_alert`
 
-### e02 告警附带家族提示
+### e02 Tofsee (Malware Family) - Fraunhofer
+- 来源：malpedia.caad.fkie.fraunhofer.de
+- 域名：`malpedia.caad.fkie.fraunhofer.de`
+- 查询：`Tofsee 4d7a28d6f2263ed61de88ca66eb011e3 malware family C2`
+- 说明：According to PCrisk, Tofsee (also known as Gheg) is a malicious Trojan-type program that is capable of performing DDoS attacks, mining cryptocurrency, sending emails, stealing various account credentials, updating itself, and more. Cyber criminals mainly use this program as an email-oriented tool (they target users' email accounts), however, having Tofsee installed can also lead to many other ...
+- 链接：https://malpedia.caad.fkie.fraunhofer.de/details/win.tofsee
+- 置信度：65
+- 证据权重：76（中）；依据：权威外部来源 malpedia.caad.fkie.fraunhofer.de
+- 原始引用：`observations.family_intel.raw.results[1]`
+
+### e03 Win32/Tofsee threat description - Microsoft Security Intelligence
+- 来源：microsoft.com
+- 域名：`microsoft.com`
+- 查询：`Tofsee 4d7a28d6f2263ed61de88ca66eb011e3 malware family C2`
+- 说明：Microsoft security software detects and removes this family of threats. These backdoor trojans can use your PC to send spam emails, conduct DDoS attacks and mine for Bitcoins. They can also monitor what you do on your PC and send the information to a malicious hacker. Find out ways that malware can get on your PC.
+- 链接：https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Win32/Tofsee
+- 置信度：65
+- 证据权重：76（中）；依据：权威外部来源 microsoft.com
+- 原始引用：`observations.family_intel.raw.results[0]`
+
+### e04 Malware | Neutralizing Tofsee Spambot #2 | InMemoryConfig store vaccine
+- 来源：spamhaus.org
+- 域名：`spamhaus.org`
+- 查询：`Tofsee 4d7a28d6f2263ed61de88ca66eb011e3 malware family C2`
+- 说明：A recap If you're wondering what malware vaccines are and how they can be utilized, or you'd like to read about the first vaccine our researchers have shared relating to Tofsee and its binary file, read this blog post. Alternatively, keep reading to learn about a second vaccine our team has produced, focused on polluting Tofsee's internal configuration store.
+- 链接：https://www.spamhaus.org/resource-hub/malware/neutralizing-tofsee-spambot-part-2-inmemoryconfig-store-vaccine/
+- 置信度：65
+- 证据权重：75（中）；依据：权威外部来源 spamhaus.org
+- 原始引用：`observations.family_intel.raw.results[3]`
+
+### e05 SSLBL | JA3 Fingerprint 4d7a28d6f2263ed61de88ca66eb011e3
+- 来源：sslbl.abuse.ch
+- 域名：`sslbl.abuse.ch`
+- 查询：`JA3 4d7a28d6f2263ed61de88ca66eb011e3 Tofsee`
+- 说明：The JA3 SSL client fingerprint 4d7a28d6f2263ed61de88ca66eb011e3 has been identified to be associated with a Tofsee
+- 链接：https://sslbl.abuse.ch/ja3-fingerprints/4d7a28d6f2263ed61de88ca66eb011e3/
+- 置信度：60
+- 证据权重：75（中）；依据：权威外部来源 sslbl.abuse.ch
+- 原始引用：`observations.fingerprint_enrichment.results[0]`
+
+### e06 告警附带家族提示
 - 来源：abuse.ch
 - 说明：原始告警将该事件关联到家族/标签 Tofsee。
 - 置信度：70
+- 证据权重：72（中）；依据：结构化本地信息
 - 原始引用：`event.enrichment`
 
-### e03 SSLBL | JA3 Fingerprint 4d7a28d6f2263ed61de88ca66eb011e3
-- 来源：html_fallback
-- 查询：`JA3 4d7a28d6f2263ed61de88ca66eb011e3 Tofsee`
-- 说明：The JA3 SSL client fingerprint 4d7a28d6f2263ed61de88ca66eb011e3 has been identified to be associated with a Tofsee
-- 链接：//duckduckgo.com/l/?uddg=https%3A%2F%2Fsslbl.abuse.ch%2Fja3%2Dfingerprints%2F4d7a28d6f2263ed61de88ca66eb011e3%2F&amp;rut=e12da2595d56c2742df2e0170603f27a6c4e7fe9d79df426d66e9852cfcc91c2
-- 置信度：60
-- 原始引用：`observations.fingerprint_enrichment.results[0]`
-
-### e04 ja3.me | Free JA3 database
-- 来源：html_fallback
-- 查询：`JA3 4d7a28d6f2263ed61de88ca66eb011e3 Tofsee`
-- 说明：Freely available database of JA3 data, including hashes, user agents, and TLS cipher data.
-- 链接：//duckduckgo.com/l/?uddg=https%3A%2F%2Fja3.me%2F&amp;rut=91df37573eb2b4f4972c35d688168e3ae15c9710cdd096879ac5490e222eafe1
-- 置信度：60
-- 原始引用：`observations.fingerprint_enrichment.results[1]`
-
-### e05 JA3 Fingerprint Lookup - Free TLS &amp; SSL Fingerprinting Tool | TrustMyIP
-- 来源：html_fallback
-- 查询：`JA3 4d7a28d6f2263ed61de88ca66eb011e3 Tofsee`
-- 说明：Free JA3 fingerprint lookup tool to check your TLS Client Hello fingerprint. Detect your browser JA3 hash, cipher suites, &amp; SSL extensions instantly.
-- 链接：//duckduckgo.com/l/?uddg=https%3A%2F%2Ftrustmyip.com%2Fja3%2Dfingerprint&amp;rut=d444da673370fd46ffc0f05aa895b67b6add6fd79e4d122777ed8a0bde166ba0
-- 置信度：60
-- 原始引用：`observations.fingerprint_enrichment.results[2]`
-
-### e06 Tofsee (Malware Family) - Fraunhofer
-- 来源：html_fallback
-- 查询：`Tofsee 4d7a28d6f2263ed61de88ca66eb011e3 malware family C2`
-- 说明：According to PCrisk, Tofsee (also known as Gheg) is a malicious Trojan-type program that is capable of performing DDoS attacks, mining cryptocurrency, sending emails, stealing various account credentials, updating itself, and more. Cyber criminals mainly use this program as an email-oriented tool (they target users&#x27; email accounts), however, having Tofsee installed can also lead to many other ...
-- 链接：//duckduckgo.com/l/?uddg=https%3A%2F%2Fmalpedia.caad.fkie.fraunhofer.de%2Fdetails%2Fwin.tofsee&amp;rut=174365d0497de30732a43065efa4d3ca8374c704b8cf3ac498d4f8fc19f9e478
-- 置信度：65
-- 原始引用：`observations.family_intel.raw.results[0]`
-
-### e07 Win32/Tofsee threat description - Microsoft Security Intelligence
-- 来源：html_fallback
-- 查询：`Tofsee 4d7a28d6f2263ed61de88ca66eb011e3 malware family C2`
-- 说明：Microsoft security software detects and removes this family of threats. These backdoor trojans can use your PC to send spam emails, conduct DDoS attacks and mine for Bitcoins. They can also monitor what you do on your PC and send the information to a malicious hacker. Find out ways that malware can get on your PC.
-- 链接：//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.microsoft.com%2Fen%2Dus%2Fwdsi%2Fthreats%2Fmalware%2Dencyclopedia%2Ddescription%3FName%3DWin32%2FTofsee&amp;rut=67efe557d2768d320e803aa431e1ac68bea5ff472aa933094ef67753e55e37e9
-- 置信度：65
-- 原始引用：`observations.family_intel.raw.results[1]`
-
-### e08 Detecting Tofsee Malware Communication without False Positives
-- 来源：html_fallback
+### e07 Detecting Tofsee Malware Communication without False Positives
+- 来源：hnull.org
+- 域名：`hnull.org`
 - 查询：`Tofsee 4d7a28d6f2263ed61de88ca66eb011e3 malware family C2`
 - 说明：Detecting Tofsee Malware Communication without False Positives The Tofsee malware family attempts to evade detection by using a custom encryption protocol. Nonetheless, that protocol can be identified efficiently. This post describes the detector that I developed and implemented in mercury.
-- 链接：//duckduckgo.com/l/?uddg=https%3A%2F%2Fhnull.org%2F2025%2F09%2F28%2Fdetecting%2Dtofsee%2Dmalware%2Dcommunication%2Dwithout%2Dfalse%2Dpositives%2F&amp;rut=cd73b4ada232fed59350f5a63ad0f9a6ab76365fc3feb2b1ef409bde740d2a6a
+- 链接：https://hnull.org/2025/09/28/detecting-tofsee-malware-communication-without-false-positives/
 - 置信度：65
-- 原始引用：`observations.family_intel.raw.results[2]`
+- 证据权重：65（中）；依据：一般网页来源 hnull.org
+- 原始引用：`observations.family_intel.raw.results[4]`
 
 ## 不确定性
 - 当前未记录明显的不确定性。

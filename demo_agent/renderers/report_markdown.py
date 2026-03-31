@@ -42,12 +42,19 @@ def render_report_from_analysis(analysis: Dict[str, Any]) -> str:
         for item in evidence:
             lines.append(f"### {item.get('id')} {item.get('title')}")
             lines.append(f"- 来源：{item.get('source')}")
+            if item.get("domain"):
+                lines.append(f"- 域名：`{item.get('domain')}`")
             if item.get("query"):
                 lines.append(f"- 查询：`{item.get('query')}`")
             lines.append(f"- 说明：{item.get('claim')}")
             if item.get("url"):
                 lines.append(f"- 链接：{item.get('url')}")
             lines.append(f"- 置信度：{item.get('confidence')}")
+            if item.get("weight") is not None:
+                lines.append(
+                    f"- 证据权重：{item.get('weight')}（{item.get('weight_level')}）"
+                    f"；依据：{item.get('weight_reason')}"
+                )
             lines.append(f"- 原始引用：{_json_path(str(item.get('raw_ref') or ''))}")
             lines.append("")
     else:
