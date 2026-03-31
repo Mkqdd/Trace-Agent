@@ -38,9 +38,9 @@
       }
     },
     {
-      "id": "family:Unknown",
+      "id": "family:discordgrabber",
       "type": "malware_family",
-      "label": "Unknown",
+      "label": "discordgrabber",
       "attrs": {},
       "style": {
         "group": "actor_or_family"
@@ -67,13 +67,13 @@
       "type": "observed_fingerprint",
       "label": "命中 IP",
       "attrs": {
-        "match": false
+        "match": true
       }
     },
     {
       "id": "e_attr",
       "source": "ip:194.226.121.108",
-      "target": "family:Unknown",
+      "target": "family:discordgrabber",
       "type": "attribution",
       "label": "关联家族/标签",
       "attrs": {

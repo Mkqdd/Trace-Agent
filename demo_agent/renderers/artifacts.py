@@ -8,15 +8,32 @@ def severity_from_confidence(conf: int) -> str:
     return "低危"
 
 
+def _family_from_enrichment(enrichment: Dict[str, Any]) -> str:
+    labels = enrichment.get("labels") or []
+    if isinstance(labels, list):
+        for value in labels:
+            if isinstance(value, str):
+                text = value.strip()
+                if text:
+                    return text
+
+    info = enrichment.get("info")
+    if isinstance(info, str) and info.strip():
+        return info.strip()
+
+    return "Unknown"
+
+
 def build_topology(event: Dict[str, Any]) -> Dict[str, Any]:
     fp_type = event["trigger_fingerprint"]["type"]
     fp_value = event["trigger_fingerprint"]["value"]
-    conf = int(event.get("enrichment", {}).get("confidence", 50))
+    enrichment = dict(event.get("enrichment") or {})
+    conf = int(enrichment.get("confidence", 50))
     sev = severity_from_confidence(conf)
 
     internal = event["src"]["ip"]
     external = event["dst"]["ip"]
-    family = (event.get("enrichment", {}).get("labels") or ["Unknown"])[0]
+    family = _family_from_enrichment(enrichment)
 
     nodes = [
         {
@@ -30,7 +47,7 @@ def build_topology(event: Dict[str, Any]) -> Dict[str, Any]:
             "id": f"ip:{external}",
             "type": "external_ip",
             "label": external,
-            "attrs": event.get("enrichment", {}).get("dst_ip", {}),
+            "attrs": enrichment.get("dst_ip", {}),
             "style": {"group": "external"},
         },
         {
@@ -58,7 +75,7 @@ def build_topology(event: Dict[str, Any]) -> Dict[str, Any]:
             "target": f"{fp_type.lower()}:{fp_value}",
             "type": "observed_fingerprint",
             "label": f"命中 {fp_type}",
-            "attrs": {"match": bool(event.get("local_hit"))},
+            "attrs": {"match": bool((event.get("trigger_fingerprint") or {}).get("matched"))},
         },
         {
             "id": "e_attr",
@@ -77,3 +94,30 @@ def build_topology(event: Dict[str, Any]) -> Dict[str, Any]:
         "nodes": nodes,
         "edges": edges,
     }
+
+
+def build_topology_from_analysis(analysis: Dict[str, Any]) -> Dict[str, Any]:
+    event = dict(analysis.get("event") or {})
+    enrichment = dict(event.get("enrichment") or {})
+    derived = dict(analysis.get("derived") or {})
+
+    labels = derived.get("labels")
+    if isinstance(labels, list) and labels:
+        enrichment["labels"] = labels
+
+    if derived.get("family") and not enrichment.get("info"):
+        enrichment["info"] = derived.get("family")
+
+    if derived.get("confidence") is not None:
+        enrichment["confidence"] = derived.get("confidence")
+
+    destination_enrichment = derived.get("destination_enrichment")
+    if isinstance(destination_enrichment, dict) and destination_enrichment:
+        enrichment["dst_ip"] = destination_enrichment
+
+    event["enrichment"] = enrichment
+    trigger = dict(event.get("trigger_fingerprint") or {})
+    trigger.setdefault("matched", True)
+    event["trigger_fingerprint"] = trigger
+
+    return build_topology(event)

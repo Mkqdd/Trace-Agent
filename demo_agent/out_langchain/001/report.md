@@ -1,42 +1,43 @@
 # 网络安全报告
 
 ## 研判结论
-
-本次事件涉及一个疑似用于窃取Discord凭证和其他敏感信息的恶意软件家族。该事件被标记为低危，但需要进一步监控和调查以确认其影响范围和潜在威胁。
+本次事件涉及一个名为 `discordgrabber` 的恶意软件家族，该家族通过 Discord 渠道进行攻击活动。恶意软件利用 Discord 和 GitHub 分发下一阶段的载荷，并使用 Discord 网钩作为命令和控制服务器来发送受害者的凭证信息。
 
 ## 事件摘要
+时间：2026年3月20日10:00:00  
+协议：HTTP  
+源IP地址：194.226.121.108  
+目的IP地址：44.33.22.11  
 
-在2026年3月20日10:00时，检测到IP地址为194.226.121.108的主机通过HTTP协议向IP地址为44.33.22.11的外部IP发送数据包。触发了恶意软件指纹匹配，标记为`discordgrabber`。该事件被识别为与已知恶意软件家族相关联，但没有进一步的详细信息。
+事件触发了关于 `discordgrabber` 恶意软件家族的指纹匹配。
 
 ## 证据与情报
 
-以下是一些关于`discordgrabber`恶意软件家族的相关情报：
+### 来源与情报分析
+1. **Here Comes TroubleGrabber: Stealing Credentials Through Discord**
+   - 文章描述了 `TroubleGrabber` 恶意软件通过 Discord 和 GitHub 分发下一阶段的载荷，并使用 Discord 网钩作为命令和控制服务器来发送受害者的凭证信息。
+   - [原文链接](//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.netskope.com%2Fblog%2Fhere%2Dcomes%2Dtroublegrabber%2Dstealing%2Dcredentials%2Dthrough%2Ddiscord&amp;rut=ddd6799fde4b9f17f3260f32fd66e4db41aa469b91cda5a125f3b6e70e4ee461)
 
-- **ThreatFox | 浏览IOCs**
-  - URL: [https://threatfox.abuse.ch/browse](https://threatfox.abuse.ch/browse)
-  - 描述：使用此表单可以按哈希值（MD5、SHA256、SHA1）、imphash、tlsh哈希、ClamAV签名、标签或恶意软件家族搜索恶意软件样本。
-  
-- **MalwareBazaar | DiscordGrabber - abuse.ch**
-  - URL: [https://bazaar.abuse.ch/browse/tag/DiscordGrabber/](https://bazaar.abuse.ch/browse/tag/DiscordGrabber/)
-  - 描述：与标签`DiscordGrabber`相关的恶意软件样本。这些样本通常与特定的标签关联，便于导航和查询。
+2. **ThreatFox | Browse IOCs**
+   - 提供了一个可以搜索恶意样本的数据库，可以通过哈希值（MD5、SHA256、SHA1）、imphash、tlsh 哈希、ClamAV 签名、标签或恶意软件家族进行搜索。
+   - [原文链接](//duckduckgo.com/l/?uddg=https%3A%2F%2Fthreatfox.abuse.ch%2Fbrowse&amp;rut=bf66d1fd60b5fb2c020014790b472b3d6cff6358253dadb3d8fb0821fc169745)
 
-- **discord-malware · GitHub Topics · GitHub**
-  - URL: [https://github.com/topics/discord-malware](https://github.com/topics/discord-malware)
-  - 描述：一种强大的远程管理工具，利用Discord作为C2通道。
+3. **New TroubleGrabber Discord malware steals passwords, system info**
+   - 描述了 `TroubleGrabber` 恶意软件如何利用 Discord 网钩与 C2 服务器通信，并窃取受害者的密码和系统信息。
+   - [原文链接](//duckduckgo.com/l/?uddg=https%3A%2F%2Fcsirt.cy%2Fen%2Fnotifications%2Fnew%2Dtroublegrabber%2Ddiscord%2Dmalware%2Dsteals%2Dpasswords%2Dsystem%2Dinfo&amp;rut=68e1bd9ee4b7593a3a2634a1827b3118f360738a6294f518e077d212c0a06476)
 
-- **Here Comes TroubleGrabber: Stealing Credentials Through Discord**
-  - URL: [https://www.netskope.com/blog/here-comes-troublegrabber-stealing-credentials-through-discord](https://www.netskope.com/blog/here-comes-troublegrabber-stealing-credentials-through-discord)
-  - 描述：该恶意软件利用Discord和GitHub交付下一阶段的载荷，并使用Discord Webhook作为C2服务器来发送受害者的凭据。这种攻击需要具备应用层检测能力的安全解决方案，以及多种威胁检测方案、DLP和机器学习技术，以理解云和网络的语言及性质。
+4. **discord-malware · GitHub Topics · GitHub**
+   - 提到了一个强大的远程管理工具，它使用 Discord 作为 C2 服务器。
+   - [原文链接](//duckduckgo.com/l/?uddg=https%3A%2F%2Fgithub.com%2Ftopics%2Fdiscord%2Dmalware&amp;rut=e2a612b8b79a121e2fe4155f4a2f50071f53bcbd6fa0ccd28502da8db5d3a617)
 
-- **New TroubleGrabber Discord malware steals passwords, system info**
-  - URL: [https://csirt.cy/en/notifications/new-troublegrabber-discord-malware-steals-passwords-system-info](https://csirt.cy/en/notifications/new-troublegrabber-discord-malware-steals-passwords-system-info)
-  - 描述：该恶意软件还利用Discord Webhook与其命令控制(C2)服务器通信，并发送受害者被盗的信息。TroubleGrabber窃取包括浏览器令牌、Discord Webhook令牌、浏览器密码和系统信息在内的广泛重要信息。
+5. **New TroubleGrabber malware targets Discord users**
+   - 描述了 `TroubleGrabber` 恶意软件如何针对 Discord 用户进行攻击，并指出其与 `AnarchyGrabber` 具有类似的特性，但由不同的威胁行为者开发。
+   - [原文链接](//duckduckgo.com/l/?uddg=https%3A%2F%2Fsecurityaffairs.com%2F110887%2Fmalware%2Ftroublegrabber%2Ddiscord%2Dmalware.html&amp;rut=e70381579afdda969897a7fba60ea5591d4cb8ac586db701b83852146decc364)
 
 ## 处置建议
+1. **加强监控**：加强对使用 Discord 和 GitHub 平台的流量监控，特别是检测到类似 `discordgrabber` 的恶意软件活动时。
+2. **更新防护措施**：确保所有安全解决方案具有应用层检测能力，包括多种威胁检测方法、数据泄露防护（DLP）和机器学习技术，以理解云和网络的语言和性质。
+3. **用户教育**：提高用户的网络安全意识，避免访问可疑链接或下载不明来源的附件，防止恶意软件感染。
+4. **定期检查**：定期对系统进行安全审计，及时发现并清除潜在的恶意软件。
 
-1. **监控和分析**：持续监控与194.226.121.108相关的活动，并对任何异常行为进行详细分析。
-2. **更新防护措施**：确保所有防护措施（如防火墙规则、入侵检测系统等）都已更新并能有效应对此类恶意软件。
-3. **用户教育**：加强用户对Discord和其他社交媒体平台上的钓鱼攻击的意识，提醒他们不要轻易分享敏感信息。
-4. **定期扫描**：定期使用防病毒工具扫描系统，确保没有新的恶意软件感染。
-
-以上措施有助于降低风险并保护系统的完整性。
+以上为本次事件的详细报告及建议措施。

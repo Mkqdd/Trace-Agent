@@ -3,7 +3,9 @@ from typing import Any, Dict, Optional
 
 from langchain_core.prompts import ChatPromptTemplate
 
-from ..tooling import build_topology_json, family_intel, save_report_md, vt_enrich_ip, web_search
+from ..analysis import build_analysis
+from ..renderers.artifacts import build_topology_from_analysis
+from ..tooling import family_intel, save_report_md, vt_enrich_ip, web_search
 
 
 def run_plan_and_solve(llm: Any, *, event: Dict[str, Any], out_dir: str) -> Dict[str, Any]:
@@ -43,8 +45,9 @@ def run_plan_and_solve(llm: Any, *, event: Dict[str, Any], out_dir: str) -> Dict
             family_intel.invoke({"family": family.strip(), "context": str(fp_value), "max_results": 5})
         )
 
-    # 3) Topology once (text only)
-    topo = json.loads(build_topology_json.invoke(json.dumps(event, ensure_ascii=False)))
+    # 3) Derive analysis and build topology after enrichment
+    analysis = build_analysis(event=event, mode="plan", obs_fp=obs_fp, obs_family=obs_family)
+    topo = build_topology_from_analysis(analysis)
 
     # 4) Report generation once
     prompt = ChatPromptTemplate.from_messages(
@@ -71,5 +74,13 @@ def run_plan_and_solve(llm: Any, *, event: Dict[str, Any], out_dir: str) -> Dict
 
     # 5) Save report once
     saved = json.loads(save_report_md.invoke({"out_dir": out_dir, "content": report_md}))
-    return {"ok": True, "saved": saved, "obs_fp": obs_fp, "obs_family": obs_family, "topology": topo}
+    final_analysis = build_analysis(
+        event=event,
+        mode="plan",
+        obs_fp=obs_fp,
+        obs_family=obs_family,
+        report_markdown=report_md,
+        report_path=saved.get("path"),
+    )
+    return {"ok": True, "saved": saved, "obs_fp": obs_fp, "obs_family": obs_family, "analysis": final_analysis}
 

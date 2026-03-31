@@ -3,6 +3,7 @@
 基于 **告警 JSON（默认 `demo_alert.json`，已是“命中后告警”）**，由 LangChain ReAct Agent 调用工具生成输出：
 
 - `event.json`：归一化后的事件 JSON（保留 `raw_alert`）
+- `analysis.json`：agent 富化后的统一分析结果
 - `report.md`：最终报告（由大模型基于 JSON 自由组织结构）
 - `agent_output.txt`：agent 最终输出（便于调试）
 

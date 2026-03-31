@@ -2,12 +2,13 @@ import json
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
+from .analysis import build_analysis
 from .agents.plan_agent import run_plan_and_solve
 from .agents.react_agent import build_react_executor, run_react
 from .config import load_config
 from .event import normalize_alert
 from .storage.io import load_json, save_text, save_json
-from .renderers.artifacts import build_topology
+from .renderers.artifacts import build_topology_from_analysis
 from .renderers.graph_drawer_pyvis import draw_graph_pyvis
 from .clients.llm import make_llm
 from .tooling import build_topology_json, family_intel, save_report_md, vt_enrich_ip, web_search
@@ -16,33 +17,42 @@ from .tooling import build_topology_json, family_intel, save_report_md, vt_enric
 ROOT = Path(__file__).resolve().parents[1]
 def _run_one(alert: Dict[str, Any], out_dir: Path, *, executor) -> Dict[str, Any]:
     event = normalize_alert(alert)
-    topology = build_topology(event)
     out_dir.mkdir(parents=True, exist_ok=True)
     save_json(out_dir / "input_alert.json", alert)
     save_json(out_dir / "event.json", event)
-    save_json(out_dir / "topology.json", topology)
-    topology_html_path = draw_graph_pyvis(topology, str(out_dir / "topology.html"))
 
     if executor == "plan":
         result = run_plan_and_solve(make_llm(load_config()), event=event, out_dir=str(out_dir))
+        analysis = result.get("analysis") or build_analysis(event=event, mode="plan")
         save_text(out_dir / "agent_output.txt", "plan-and-solve finished")
-        return {
-            "ok": True,
-            "out_dir": str(out_dir),
-            "topology_json_path": str((out_dir / "topology.json").resolve()),
-            "topology_html_path": topology_html_path,
-            "result": result,
-        }
     else:
         result = run_react(executor, event=event, out_dir=str(out_dir))
-        save_text(out_dir / "agent_output.txt", str(result.get("result", {}).get("output", "")))
-        return {
-            "ok": True,
-            "out_dir": str(out_dir),
-            "topology_json_path": str((out_dir / "topology.json").resolve()),
-            "topology_html_path": topology_html_path,
-            "result": result,
-        }
+        report_md = str(result.get("result", {}).get("output", "")).strip()
+        report_path: Optional[str] = None
+        if report_md:
+            report_path = str((out_dir / "report.md").resolve())
+            save_text(Path(report_path), report_md)
+        analysis = build_analysis(
+            event=event,
+            mode="react",
+            report_markdown=report_md,
+            report_path=report_path,
+        )
+        save_text(out_dir / "agent_output.txt", report_md)
+
+    topology = build_topology_from_analysis(analysis)
+    save_json(out_dir / "analysis.json", analysis)
+    save_json(out_dir / "topology.json", topology)
+    topology_html_path = draw_graph_pyvis(topology, str(out_dir / "topology.html"))
+
+    return {
+        "ok": True,
+        "out_dir": str(out_dir),
+        "analysis_json_path": str((out_dir / "analysis.json").resolve()),
+        "topology_json_path": str((out_dir / "topology.json").resolve()),
+        "topology_html_path": topology_html_path,
+        "result": result,
+    }
 
 
 def run(alert_path: Path, out_dir: Path, *, mode: str = "react") -> Dict[str, Any]:

@@ -38,9 +38,9 @@
       }
     },
     {
-      "id": "family:Unknown",
+      "id": "family:Tofsee",
       "type": "malware_family",
-      "label": "Unknown",
+      "label": "Tofsee",
       "attrs": {},
       "style": {
         "group": "actor_or_family"
@@ -67,13 +67,13 @@
       "type": "observed_fingerprint",
       "label": "命中 JA3",
       "attrs": {
-        "match": false
+        "match": true
       }
     },
     {
       "id": "e_attr",
       "source": "ja3:4d7a28d6f2263ed61de88ca66eb011e3",
-      "target": "family:Unknown",
+      "target": "family:Tofsee",
       "type": "attribution",
       "label": "关联家族/标签",
       "attrs": {
