@@ -6,12 +6,11 @@ from .agents.plan_agent import run_plan_and_solve
 from .agents.react_agent import build_react_executor, run_react
 from .config import load_config
 from .event import normalize_alert
-from .io import load_json, save_text, save_json
-from .artifacts import build_topology
-from .graph_drawer_pyvis import draw_graph_pyvis
-from .llm import make_llm
-from .tools import build_topology_json, family_intel, save_report_md, vt_enrich_ip, web_search
-from .vt_client import VirusTotalClient
+from .storage.io import load_json, save_text, save_json
+from .renderers.artifacts import build_topology
+from .renderers.graph_drawer_pyvis import draw_graph_pyvis
+from .clients.llm import make_llm
+from .tooling import build_topology_json, family_intel, save_report_md, vt_enrich_ip, web_search
 
 
 ROOT = Path(__file__).resolve().parents[1]

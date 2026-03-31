@@ -1,4 +1,4 @@
-from demo_agent.graph_drawer_pyvis import draw_graph_pyvis
+from demo_agent.renderers.graph_drawer_pyvis import draw_graph_pyvis
 
 
 def main() -> None:

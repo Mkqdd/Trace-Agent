@@ -1,6 +1,17 @@
 import os
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional
+
+try:
+    from dotenv import load_dotenv
+except Exception:  # pragma: no cover - keep env loading optional at runtime
+    def load_dotenv(*args, **kwargs):  # type: ignore[no-redef]
+        return False
+
+
+ROOT = Path(__file__).resolve().parent
+load_dotenv(ROOT / ".env", override=False)
 
 
 @dataclass(frozen=True)

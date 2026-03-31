@@ -18,19 +18,25 @@ pip install -r demo_agent/requirements.txt
 
 ### 运行
 
+推荐在 `demo_agent/` 下创建 `.env`，集中管理模型、VT 以及后续数据库配置：
+
+```bash
+cp demo_agent/.env.example demo_agent/.env
+# 然后按需填写 demo_agent/.env
+```
+
+当前 agent 会自动加载 `demo_agent/.env`。你也可以继续使用 shell `export`，两者兼容。
+
 配置 DeepShield（OpenAI 兼容接口，见文档 `https://model.deepshields.com/apipage`）：
 
 ```bash
-export LLM_API_KEY="YOUR_API_KEY"
-export LLM_BASE_URL="https://api.deepshields.com/v1"
-export LLM_MODEL="chat"   # 或 reasoner
+LLM_API_KEY="YOUR_API_KEY"
+LLM_BASE_URL="https://api.deepshields.com/v1"
+LLM_MODEL="chat"   # 或 reasoner
+VT_API_KEY="YOUR_VT_KEY"  # 可选
 ```
 
-可选配置 VirusTotal：
-
-```bash
-export VT_API_KEY="YOUR_VT_KEY"
-```
+`demo_agent/.env.example` 里也预留了数据库相关字段，后续如果要接入数据库或 case 存储，可以继续沿用同一套配置方式。
 
 运行（默认读取仓库根目录的 `demo_alert.json`）：
 
