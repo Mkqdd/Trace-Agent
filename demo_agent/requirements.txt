@@ -3,3 +3,4 @@ openai>=1.40
 langchain>=0.2.16
 langchain-openai>=0.1.22
 python-dotenv>=1.0
+pymysql>=1.1

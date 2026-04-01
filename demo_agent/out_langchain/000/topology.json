@@ -2,7 +2,7 @@
   "version": "1.0",
   "title": "恶意指纹自动化溯源图谱",
   "meta": {
-    "severity": "中危"
+    "severity": "高危"
   },
   "nodes": [
     {
@@ -14,7 +14,7 @@
       },
       "style": {
         "group": "internal",
-        "severity": "中危"
+        "severity": "高危"
       }
     },
     {
@@ -31,7 +31,7 @@
       "type": "fingerprint_ja3",
       "label": "JA3 4d7a28d6f2263ed61de88ca66eb011e3",
       "attrs": {
-        "confidence": 70
+        "confidence": 95
       },
       "style": {
         "group": "fingerprint"
@@ -77,7 +77,7 @@
       "type": "attribution",
       "label": "关联家族/标签",
       "attrs": {
-        "confidence": 70
+        "confidence": 95
       }
     }
   ]

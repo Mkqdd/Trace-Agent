@@ -11,7 +11,7 @@ from .storage.io import load_json, save_text, save_json
 from .renderers.artifacts import build_topology_from_analysis
 from .renderers.graph_drawer_pyvis import draw_graph_pyvis
 from .clients.llm import make_llm
-from .tooling import build_topology_json, family_intel, save_report_md, vt_enrich_ip, web_search
+from .tooling import build_topology_json, family_intel, local_intel_lookup, save_report_md, vt_enrich_ip, web_search
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,7 +22,8 @@ def _run_one(alert: Dict[str, Any], out_dir: Path, *, executor) -> Dict[str, Any
     save_json(out_dir / "event.json", event)
 
     if executor == "plan":
-        result = run_plan_and_solve(make_llm(load_config()), event=event, out_dir=str(out_dir))
+        cfg = load_config()
+        result = run_plan_and_solve(make_llm(cfg), cfg, event=event, out_dir=str(out_dir))
         analysis = result.get("analysis") or build_analysis(event=event, mode="plan")
         save_text(out_dir / "agent_output.txt", "plan-and-solve finished")
     else:
@@ -60,7 +61,7 @@ def run(alert_path: Path, out_dir: Path, *, mode: str = "react") -> Dict[str, An
 
     cfg = load_config()
     llm = make_llm(cfg)
-    tools = [vt_enrich_ip, web_search, family_intel, build_topology_json, save_report_md]
+    tools = [local_intel_lookup, vt_enrich_ip, web_search, family_intel, build_topology_json, save_report_md]
     executor = build_react_executor(llm, tools, verbose=True) if mode == "react" else "plan"
 
     out_dir.mkdir(parents=True, exist_ok=True)

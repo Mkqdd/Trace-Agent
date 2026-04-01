@@ -24,5 +24,57 @@
     "info": "discordgrabber",
     "reference": "maltrail-static",
     "update_time": "None"
+  },
+  {
+    "timestamp": "2026-03-29 09:15:00",
+    "src_ip": "10.20.5.23",
+    "dst_ip": "198.51.100.24",
+    "protocol": "TLS",
+    "trigger_fingerprint": {
+      "type": "JA4",
+      "value": "t12i190700_d83cc789557e_16bbda4055b2"
+    },
+    "info": "Cobalt Strike v4.9.1 beacon",
+    "reference": "JA4DB",
+    "update_time": "2026-03-28 23:16:27"
+  },
+  {
+    "timestamp": "2026-03-29 10:40:00",
+    "src_ip": "10.20.8.41",
+    "dst_ip": "203.0.113.77",
+    "protocol": "TLS",
+    "trigger_fingerprint": {
+      "type": "JA4",
+      "value": "t13d201100_2b729b4bf6f3_9e7b989ebec8"
+    },
+    "info": "IcedID",
+    "reference": "JA4DB",
+    "update_time": "2026-03-28 23:16:27"
+  },
+  {
+    "timestamp": "2026-03-29 13:20:00",
+    "src_ip": "10.10.14.9",
+    "dst_ip": "198.51.100.88",
+    "protocol": "TLS",
+    "trigger_fingerprint": {
+      "type": "SSL_SHA1",
+      "value": "0a95355a64c3fe3f52695f97595037481ca11c4d"
+    },
+    "info": "Vidar",
+    "reference": "SSLBL",
+    "update_time": "2026-03-27 07:35:42"
+  },
+  {
+    "timestamp": "2026-03-29 15:05:00",
+    "src_ip": "10.10.14.33",
+    "dst_ip": "203.0.113.19",
+    "protocol": "TLS",
+    "trigger_fingerprint": {
+      "type": "SSL_SHA1",
+      "value": "01fca6410fefef1530ac71c5e34d6985a6e23643"
+    },
+    "info": "QuasarRAT",
+    "reference": "SSLBL",
+    "update_time": "2026-03-26 07:46:12"
   }
 ]

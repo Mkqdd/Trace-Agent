@@ -8,6 +8,7 @@ from langchain_core.tools import tool
 
 from ..renderers.artifacts import build_topology
 from ..storage.io import save_text
+from ..clients.local_intel import LocalIntelClient
 from ..clients.vt_client import VirusTotalClient
 
 
@@ -17,6 +18,7 @@ def _strip_quotes(s: str) -> str:
 
 _CACHE_VT_IP: Dict[str, Dict[str, Any]] = {}
 _CACHE_WEB: Dict[str, Dict[str, Any]] = {}
+_CACHE_LOCAL_INTEL: Dict[str, Dict[str, Any]] = {}
 
 
 def _vt_stats_to_confidence(stats: Dict[str, int]) -> int:
@@ -59,6 +61,24 @@ def vt_enrich_ip(ip: str) -> str:
         "confidence": _vt_stats_to_confidence(e.stats),
     }
     _CACHE_VT_IP[ip] = obs
+    return json.dumps(obs, ensure_ascii=False)
+
+
+@tool
+def local_intel_lookup(indicator_type: str, indicator_value: str) -> str:
+    """Lookup a fingerprint/IOC in the local MySQL threat_intel.intel table."""
+    key = f"{_strip_quotes(indicator_type).upper()}::{_strip_quotes(indicator_value)}"
+    if key in _CACHE_LOCAL_INTEL:
+        cached = dict(_CACHE_LOCAL_INTEL[key])
+        cached["cache_hit"] = True
+        return json.dumps(cached, ensure_ascii=False)
+
+    client = LocalIntelClient()
+    obs = client.lookup(
+        indicator_type=_strip_quotes(indicator_type),
+        indicator_value=_strip_quotes(indicator_value),
+    )
+    _CACHE_LOCAL_INTEL[key] = obs
     return json.dumps(obs, ensure_ascii=False)
 
 

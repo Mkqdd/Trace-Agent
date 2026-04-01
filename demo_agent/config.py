@@ -2,6 +2,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
+from urllib.parse import urlparse
 
 try:
     from dotenv import load_dotenv
@@ -26,6 +27,40 @@ class AgentConfig:
     llm_model: str
     llm_temperature: float = 0.7
     vt_api_key: Optional[str] = None
+    db_host: str = "127.0.0.1"
+    db_port: int = 3306
+    db_name: str = "threat_intel"
+    db_user: str = "root"
+    db_password: str = ""
+    db_charset: str = "utf8mb4"
+
+
+@dataclass(frozen=True)
+class DatabaseConfig:
+    host: str = "127.0.0.1"
+    port: int = 3306
+    name: str = "threat_intel"
+    user: str = "root"
+    password: str = ""
+    charset: str = "utf8mb4"
+
+
+def load_database_config() -> DatabaseConfig:
+    db_url = os.getenv("DB_URL") or ""
+    parsed = urlparse(db_url) if db_url else None
+    url_host = parsed.hostname if parsed else None
+    url_port = parsed.port if parsed and parsed.port is not None else None
+    url_user = parsed.username if parsed else None
+    url_password = parsed.password if parsed else None
+    url_name = parsed.path.lstrip("/") if parsed and parsed.path else None
+    return DatabaseConfig(
+        host=os.getenv("DB_HOST") or url_host or "127.0.0.1",
+        port=int(os.getenv("DB_PORT") or url_port or 3306),
+        name=os.getenv("DB_NAME") or url_name or "threat_intel",
+        user=os.getenv("DB_USER") or url_user or "root",
+        password=os.getenv("DB_PASSWORD") or url_password or "",
+        charset=os.getenv("DB_CHARSET") or "utf8mb4",
+    )
 
 
 def load_config() -> AgentConfig:
@@ -37,6 +72,7 @@ def load_config() -> AgentConfig:
     model = os.getenv("LLM_MODEL") or "chat"  # DeepShield: chat|reasoner
     temperature = float(os.getenv("LLM_TEMPERATURE") or "0.7")
     vt_api_key = os.getenv("VT_API_KEY") or os.getenv("VIRUSTOTAL_API_KEY")
+    db_cfg = load_database_config()
 
     return AgentConfig(
         llm_api_key=api_key,
@@ -44,5 +80,11 @@ def load_config() -> AgentConfig:
         llm_model=model,
         llm_temperature=temperature,
         vt_api_key=vt_api_key,
+        db_host=db_cfg.host,
+        db_port=db_cfg.port,
+        db_name=db_cfg.name,
+        db_user=db_cfg.user,
+        db_password=db_cfg.password,
+        db_charset=db_cfg.charset,
     )
 

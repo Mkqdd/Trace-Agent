@@ -2,7 +2,7 @@
   "version": "1.0",
   "title": "恶意指纹自动化溯源图谱",
   "meta": {
-    "severity": "中危"
+    "severity": "低危"
   },
   "nodes": [
     {
@@ -14,7 +14,7 @@
       },
       "style": {
         "group": "internal",
-        "severity": "中危"
+        "severity": "低危"
       }
     },
     {
@@ -31,16 +31,16 @@
       "type": "fingerprint_ip",
       "label": "IP 194.226.121.108",
       "attrs": {
-        "confidence": 65
+        "confidence": 45
       },
       "style": {
         "group": "fingerprint"
       }
     },
     {
-      "id": "family:discordgrabber",
+      "id": "family:Unknown",
       "type": "malware_family",
-      "label": "discordgrabber",
+      "label": "Unknown",
       "attrs": {},
       "style": {
         "group": "actor_or_family"
@@ -56,7 +56,7 @@
       "label": "HTTP None → None",
       "attrs": {
         "protocol": "HTTP",
-        "time": "2026-03-20 10:00:00",
+        "time": "2026-03-31 10:30:00",
         "simulated": false
       }
     },
@@ -73,11 +73,11 @@
     {
       "id": "e_attr",
       "source": "ip:194.226.121.108",
-      "target": "family:discordgrabber",
+      "target": "family:Unknown",
       "type": "attribution",
       "label": "关联家族/标签",
       "attrs": {
-        "confidence": 65
+        "confidence": 45
       }
     }
   ]
