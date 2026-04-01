@@ -1,0 +1,414 @@
+{
+  "mode": "plan",
+  "event": {
+    "event_time": "2026-03-31 10:30:00",
+    "simulated": false,
+    "src": {
+      "ip": "194.226.121.108",
+      "port": null
+    },
+    "dst": {
+      "ip": "44.33.22.11",
+      "port": null
+    },
+    "protocol": "HTTP",
+    "trigger_fingerprint": {
+      "type": "IP",
+      "value": "194.226.121.108",
+      "matched": true
+    },
+    "enrichment": {},
+    "raw_alert": {
+      "timestamp": "2026-03-31 10:30:00",
+      "src_ip": "194.226.121.108",
+      "dst_ip": "44.33.22.11",
+      "protocol": "HTTP",
+      "trigger_fingerprint": {
+        "type": "IP",
+        "value": "194.226.121.108"
+      }
+    }
+  },
+  "facts": {
+    "event_time": "2026-03-31 10:30:00",
+    "src": {
+      "ip": "194.226.121.108",
+      "port": null
+    },
+    "dst": {
+      "ip": "44.33.22.11",
+      "port": null
+    },
+    "protocol": "HTTP",
+    "fingerprint": {
+      "type": "IP",
+      "value": "194.226.121.108",
+      "matched": true
+    }
+  },
+  "entities": {
+    "src_ip": "194.226.121.108",
+    "dst_ip": "44.33.22.11",
+    "protocol": "HTTP",
+    "fingerprint": {
+      "type": "IP",
+      "value": "194.226.121.108",
+      "matched": true
+    },
+    "family_hint": null,
+    "reference": null,
+    "update_time": null
+  },
+  "local_intel": {
+    "enabled": true,
+    "matched": false,
+    "query": {
+      "indicator_type": "IP",
+      "indicator_value": "194.226.121.108",
+      "candidates": [
+        "ip"
+      ]
+    },
+    "match_count": 0,
+    "matches": []
+  },
+  "external_intel": {
+    "fingerprint_enrichment": {
+      "enabled": true,
+      "ip": "194.226.121.108",
+      "country": "RU",
+      "asn": 41745,
+      "as_owner": "Baykov Ilya Sergeevich",
+      "reputation": 0,
+      "last_analysis_stats": {
+        "malicious": 12,
+        "suspicious": 1,
+        "undetected": 33,
+        "harmless": 48,
+        "timeout": 0
+      },
+      "confidence": 48
+    },
+    "context_search": {
+      "ok": true,
+      "query": "194.226.121.108 malware C2 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch IP 194.226.121.108",
+      "results": [
+        {
+          "title": "ThreatFox | Kaiji",
+          "url": "https://threatfox.abuse.ch/browse/malware/elf.kaiji/",
+          "snippet": "The page below gives you an overview on indicators of compromise associated with elf.kaiji . You can also get this data through the ThreatFox API. Database ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "C2 ip inside a phishing email : r/cybersecurity",
+          "url": "https://www.reddit.com/r/cybersecurity/comments/1qw11gs/c2_ip_inside_a_phishing_email/",
+          "snippet": "I've been speculating that this email, more precisely the cookie on the web page, contained an address to a C2 server, which the malware on the ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "C2 Server List",
+          "url": "https://www.fortinet.com/blog/threat-research/c2-server-list",
+          "snippet": "C2 Server List. By FortiGuard Labs | July 18, 2022. 103.207.85.8:995 ... The Growing Threat of Malware Concealed Behind... English. English Français Deutsch",
+          "source": "serpapi"
+        },
+        {
+          "title": "TryHackMe Advent of Cyber 2025 (Day 22) : C2 Detection",
+          "url": "https://medium.com/@cyb3rleo/tryhackme-advent-of-cyber-2025-day-22-c2-detection-command-carol-2ac15262f26a",
+          "snippet": "Malware/C2 creates unique TLS handshake patterns; Stands out from legitimate browser traffic. Conclusion: Known malicious C2 server. Example 2 ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "ThreatFox | Orcus RAT",
+          "url": "https://threatfox.abuse.ch/browse/malware/win.orcus_rat/",
+          "snippet": "The page below gives you an overview on indicators of compromise associated with win.orcus_rat. You can also get this data through the ThreatFox API.",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi"
+    },
+    "family_intel": null,
+    "supplemental": null
+  },
+  "observations": {
+    "local_intel": {
+      "enabled": true,
+      "matched": false,
+      "query": {
+        "indicator_type": "IP",
+        "indicator_value": "194.226.121.108",
+        "candidates": [
+          "ip"
+        ]
+      },
+      "match_count": 0,
+      "matches": []
+    },
+    "fingerprint_enrichment": {
+      "enabled": true,
+      "ip": "194.226.121.108",
+      "country": "RU",
+      "asn": 41745,
+      "as_owner": "Baykov Ilya Sergeevich",
+      "reputation": 0,
+      "last_analysis_stats": {
+        "malicious": 12,
+        "suspicious": 1,
+        "undetected": 33,
+        "harmless": 48,
+        "timeout": 0
+      },
+      "confidence": 48
+    },
+    "context_search": {
+      "ok": true,
+      "query": "194.226.121.108 malware C2 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch IP 194.226.121.108",
+      "results": [
+        {
+          "title": "ThreatFox | Kaiji",
+          "url": "https://threatfox.abuse.ch/browse/malware/elf.kaiji/",
+          "snippet": "The page below gives you an overview on indicators of compromise associated with elf.kaiji . You can also get this data through the ThreatFox API. Database ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "C2 ip inside a phishing email : r/cybersecurity",
+          "url": "https://www.reddit.com/r/cybersecurity/comments/1qw11gs/c2_ip_inside_a_phishing_email/",
+          "snippet": "I've been speculating that this email, more precisely the cookie on the web page, contained an address to a C2 server, which the malware on the ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "C2 Server List",
+          "url": "https://www.fortinet.com/blog/threat-research/c2-server-list",
+          "snippet": "C2 Server List. By FortiGuard Labs | July 18, 2022. 103.207.85.8:995 ... The Growing Threat of Malware Concealed Behind... English. English Français Deutsch",
+          "source": "serpapi"
+        },
+        {
+          "title": "TryHackMe Advent of Cyber 2025 (Day 22) : C2 Detection",
+          "url": "https://medium.com/@cyb3rleo/tryhackme-advent-of-cyber-2025-day-22-c2-detection-command-carol-2ac15262f26a",
+          "snippet": "Malware/C2 creates unique TLS handshake patterns; Stands out from legitimate browser traffic. Conclusion: Known malicious C2 server. Example 2 ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "ThreatFox | Orcus RAT",
+          "url": "https://threatfox.abuse.ch/browse/malware/win.orcus_rat/",
+          "snippet": "The page below gives you an overview on indicators of compromise associated with win.orcus_rat. You can also get this data through the ThreatFox API.",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi"
+    },
+    "family_intel": null,
+    "supplemental": null
+  },
+  "corroboration": {
+    "local_family": null,
+    "external_family_candidates": [],
+    "supported_by_external": false,
+    "conflict": false,
+    "confidence_driver": "insufficient",
+    "summary": "目前缺少足够的本地命中与外部佐证来稳定归因。",
+    "selected_family": "Unknown"
+  },
+  "gaps": [
+    {
+      "id": "g01",
+      "type": "missing_local_match",
+      "priority": "medium",
+      "question": "本地情报库没有直接命中该指标，是否还能找到稳定的家族或来源线索？",
+      "status": "open"
+    },
+    {
+      "id": "g04",
+      "type": "vt_only_context",
+      "priority": "medium",
+      "question": "当前只有信誉类上下文，缺少家族或行为层面的归因信息。",
+      "status": "open"
+    }
+  ],
+  "gap_fill_needed": true,
+  "supplemental": {},
+  "evidence": [
+    {
+      "kind": "event",
+      "source": "alert",
+      "type": "matched_alert",
+      "query": null,
+      "url": null,
+      "title": "命中后告警事件",
+      "claim": "在 2026-03-31 10:30:00 观察到 194.226.121.108 -> 44.33.22.11 的 HTTP 流量，命中 IP 指纹 194.226.121.108。",
+      "confidence": 95,
+      "raw_ref": "event.raw_alert",
+      "domain": null,
+      "weight": 96,
+      "weight_level": "高",
+      "weight_reason": "原始告警事实",
+      "id": "e01"
+    },
+    {
+      "kind": "search_result",
+      "source": "threatfox.abuse.ch",
+      "type": "context_search",
+      "query": "194.226.121.108 malware C2 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch IP 194.226.121.108",
+      "url": "https://threatfox.abuse.ch/browse/malware/elf.kaiji/",
+      "title": "ThreatFox | Kaiji",
+      "claim": "The page below gives you an overview on indicators of compromise associated with elf.kaiji . You can also get this data through the ThreatFox API. Database ...",
+      "confidence": 62,
+      "raw_ref": "external_intel.context_search.results[0]",
+      "domain": "threatfox.abuse.ch",
+      "weight": 75,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 threatfox.abuse.ch",
+      "id": "e02"
+    },
+    {
+      "kind": "search_result",
+      "source": "threatfox.abuse.ch",
+      "type": "context_search",
+      "query": "194.226.121.108 malware C2 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch IP 194.226.121.108",
+      "url": "https://threatfox.abuse.ch/browse/malware/win.orcus_rat/",
+      "title": "ThreatFox | Orcus RAT",
+      "claim": "The page below gives you an overview on indicators of compromise associated with win.orcus_rat. You can also get this data through the ThreatFox API.",
+      "confidence": 62,
+      "raw_ref": "external_intel.context_search.results[4]",
+      "domain": "threatfox.abuse.ch",
+      "weight": 75,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 threatfox.abuse.ch",
+      "id": "e03"
+    },
+    {
+      "kind": "enrichment",
+      "source": "VirusTotal",
+      "type": "vt_ip",
+      "query": "194.226.121.108",
+      "url": null,
+      "title": "VirusTotal IP 富化",
+      "claim": "VirusTotal 返回 IP 194.226.121.108 的信誉/归属信息。 VT 分析统计为 {'malicious': 12, 'suspicious': 1, 'undetected': 33, 'harmless': 48, 'timeout': 0}。",
+      "confidence": 48,
+      "raw_ref": "external_intel.fingerprint_enrichment",
+      "domain": null,
+      "weight": 75,
+      "weight_level": "中",
+      "weight_reason": "结构化信誉情报",
+      "id": "e04"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f01",
+      "title": "命中后恶意流量告警",
+      "statement": "源 194.226.121.108 与目的 44.33.22.11 的 HTTP 流量命中 IP 指纹 194.226.121.108。",
+      "confidence": 95,
+      "severity": "低危",
+      "based_on": [
+        "e01"
+      ]
+    }
+  ],
+  "uncertainties": [
+    {
+      "id": "u05",
+      "statement": "当前无法稳定归因到明确的恶意软件家族。",
+      "reason": "本地命中和外部佐证都不足以形成稳定家族判断。"
+    },
+    {
+      "id": "u07",
+      "statement": "本地情报库没有直接命中该指标，是否还能找到稳定的家族或来源线索？",
+      "reason": "gap=missing_local_match priority=medium"
+    },
+    {
+      "id": "u08",
+      "statement": "当前只有信誉类上下文，缺少家族或行为层面的归因信息。",
+      "reason": "gap=vt_only_context priority=medium"
+    }
+  ],
+  "recommended_actions": [
+    {
+      "id": "a01",
+      "priority": "high",
+      "action": "排查并视情况隔离源主机 194.226.121.108。",
+      "rationale": "源主机产生了命中后恶意流量，需要确认是否存在持续外联或二次投递行为。"
+    },
+    {
+      "id": "a02",
+      "priority": "high",
+      "action": "在边界侧监控或阻断与 44.33.22.11 相关的后续通信。",
+      "rationale": "当前告警中的网络目的地址是最直接的外联对象，应优先纳入监测范围。"
+    },
+    {
+      "id": "a03",
+      "priority": "medium",
+      "action": "基于 IP 指纹 194.226.121.108 在历史流量中做横向检索。",
+      "rationale": "可以快速判断是否存在相同指纹的历史通信或更多受影响资产。"
+    }
+  ],
+  "assessment": {
+    "family": "Unknown",
+    "verdict": "suspicious_match",
+    "confidence": 45,
+    "severity": "低危",
+    "rationale": "目前缺少足够的本地命中与外部佐证来稳定归因。"
+  },
+  "derived": {
+    "family": "Unknown",
+    "labels": [],
+    "confidence": 45,
+    "severity": "低危",
+    "destination_enrichment": {}
+  },
+  "gap_plan": {
+    "items": [
+      {
+        "gap_type": "missing_local_match",
+        "goal": "find_secondary_attribution",
+        "actions": [
+          {
+            "tool": "advanced_web_search",
+            "query": "194.226.121.108 malware family attribution",
+            "constraint": null,
+            "url_slot": null,
+            "url": null,
+            "notes": null,
+            "kwargs": {}
+          },
+          {
+            "tool": "pivot_related_indicators",
+            "query": "194.226.121.108",
+            "constraint": null,
+            "url_slot": null,
+            "url": null,
+            "notes": null,
+            "kwargs": {}
+          }
+        ]
+      },
+      {
+        "gap_type": "vt_only_context",
+        "goal": "family_attribution",
+        "actions": [
+          {
+            "tool": "advanced_web_search",
+            "query": "194.226.121.108 malware family attribution",
+            "constraint": null,
+            "url_slot": null,
+            "url": null,
+            "notes": null,
+            "kwargs": {}
+          },
+          {
+            "tool": "advanced_web_search",
+            "query": "194.226.121.108 stealer trojan RAT family",
+            "constraint": null,
+            "url_slot": null,
+            "url": null,
+            "notes": null,
+            "kwargs": {}
+          }
+        ]
+      }
+    ]
+  },
+  "report": {
+    "path": "/home/estar0x/project/maltrail_test/Trace-Agent/outputs/functional_tests/20260401_194557/gap_probe_plan/000/report.md",
+    "content": "# 网络安全事件分析报告\n\n## 事件概述\n- 事件时间：2026-03-31 10:30:00\n- 通信关系：`194.226.121.108` -> `44.33.22.11`\n- 协议：HTTP\n- 命中指标：IP `194.226.121.108`\n- 当前研判：可疑恶意流量\n- 置信度：45\n- 严重度：低危\n\n## 研判结论\n在 2026-03-31 10:30:00，检测到 194.226.121.108 与 44.33.22.11 之间存在 HTTP 流量，该流量命中 IP 指标 `194.226.121.108`。\n\n当前已确认该事件具备可疑恶意流量特征，但自动化情报尚不足以稳定归因到明确家族。\n\n## 关键证据与情报\n### VirusTotal IP 富化\n来源：VirusTotal\n说明：VirusTotal 提供了指标 `194.226.121.108` 的信誉与基础归属信息，可作为该事件风险判断的辅助依据。\n证据等级：中\n参考：[https://www.virustotal.com/gui/ip-address/194.226.121.108](https://www.virustotal.com/gui/ip-address/194.226.121.108)\n\n### ThreatFox | Kaiji\n来源：threatfox.abuse.ch\n说明：该来源页面《ThreatFox | Kaiji》提到了与 `Unknown` 或指标 `194.226.121.108` 相关的信息：The page below gives you an overview on indicators of compromise associated with elf.kaiji . You...\n证据等级：中\n参考：[https://threatfox.abuse.ch/browse/malware/elf.kaiji/](https://threatfox.abuse.ch/browse/malware/elf.kaiji/)\n\n### ThreatFox | Orcus RAT\n来源：threatfox.abuse.ch\n说明：该来源页面《ThreatFox | Orcus RAT》提到了与 `Unknown` 或指标 `194.226.121.108` 相关的信息：The page below gives you an overview on indicators of compromise associated with win.orcus_rat. Y...\n证据等级：中\n参考：[https://threatfox.abuse.ch/browse/malware/win.orcus_rat/](https://threatfox.abuse.ch/browse/malware/win.orcus_rat/)\n\n## 相关情报参考\n- [ThreatFox | Kaiji](https://threatfox.abuse.ch/browse/malware/elf.kaiji/)：该来源页面《ThreatFox | Kaiji》提到了与 `Unknown` 或指标 `194.226.121.108` 相关的信息：The page below gives you an overview on indicators of compromise associated with elf.kaiji . You...\n- [ThreatFox | Orcus RAT](https://threatfox.abuse.ch/browse/malware/win.orcus_rat/)：该来源页面《ThreatFox | Orcus RAT》提到了与 `Unknown` 或指标 `194.226.121.108` 相关的信息：The page below gives you an overview on indicators of compromise associated with win.orcus_rat. Y...\n\n## 说明\n- 当前自动化情报不足以稳定归因到明确恶意软件家族。\n\n## 处置建议\n- [HIGH] 排查并视情况隔离源主机 194.226.121.108。 理由：源主机产生了命中后恶意流量，需要确认是否存在持续外联或二次投递行为。\n- [HIGH] 在边界侧监控或阻断与 44.33.22.11 相关的后续通信。 理由：当前告警中的网络目的地址是最直接的外联对象，应优先纳入监测范围。\n- [MEDIUM] 基于 IP 指纹 194.226.121.108 在历史流量中做横向检索。 理由：可以快速判断是否存在相同指纹的历史通信或更多受影响资产。\n\n## 参考链接\n- [VirusTotal IP 富化](https://www.virustotal.com/gui/ip-address/194.226.121.108)\n  摘要：VirusTotal 提供了指标 `194.226.121.108` 的信誉与基础归属信息，可作为该事件风险判断的辅助依据。\n- [ThreatFox | Kaiji](https://threatfox.abuse.ch/browse/malware/elf.kaiji/)\n  摘要：该来源页面《ThreatFox | Kaiji》提到了与 `Unknown` 或指标 `194.226.121.108` 相关的信息：The page below gives you an overview on indicators of compromise associated with elf.kaiji . You...\n- [ThreatFox | Orcus RAT](https://threatfox.abuse.ch/browse/malware/win.orcus_rat/)\n  摘要：该来源页面《ThreatFox | Orcus RAT》提到了与 `Unknown` 或指标 `194.226.121.108` 相关的信息：The page below gives you an overview on indicators of compromise associated with win.orcus_rat. Y...\n"
+  }
+}

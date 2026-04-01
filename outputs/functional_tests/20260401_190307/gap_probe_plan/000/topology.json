@@ -1,0 +1,84 @@
+{
+  "version": "1.0",
+  "title": "恶意指纹自动化溯源图谱",
+  "meta": {
+    "severity": "低危"
+  },
+  "nodes": [
+    {
+      "id": "host:194.226.121.108",
+      "type": "internal_host",
+      "label": "194.226.121.108",
+      "attrs": {
+        "simulated": false
+      },
+      "style": {
+        "group": "internal",
+        "severity": "低危"
+      }
+    },
+    {
+      "id": "ip:44.33.22.11",
+      "type": "external_ip",
+      "label": "44.33.22.11",
+      "attrs": {},
+      "style": {
+        "group": "external"
+      }
+    },
+    {
+      "id": "ip:194.226.121.108",
+      "type": "fingerprint_ip",
+      "label": "IP 194.226.121.108",
+      "attrs": {
+        "confidence": 30
+      },
+      "style": {
+        "group": "fingerprint"
+      }
+    },
+    {
+      "id": "family:Unknown",
+      "type": "malware_family",
+      "label": "Unknown",
+      "attrs": {},
+      "style": {
+        "group": "actor_or_family"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_flow",
+      "source": "host:194.226.121.108",
+      "target": "ip:44.33.22.11",
+      "type": "network_flow",
+      "label": "HTTP None → None",
+      "attrs": {
+        "protocol": "HTTP",
+        "time": "2026-03-31 10:30:00",
+        "simulated": false
+      }
+    },
+    {
+      "id": "e_fp",
+      "source": "host:194.226.121.108",
+      "target": "ip:194.226.121.108",
+      "type": "observed_fingerprint",
+      "label": "命中 IP",
+      "attrs": {
+        "match": true
+      }
+    },
+    {
+      "id": "e_attr",
+      "source": "ip:194.226.121.108",
+      "target": "family:Unknown",
+      "type": "attribution",
+      "label": "关联家族/标签",
+      "attrs": {
+        "confidence": 30
+      }
+    }
+  ]
+}

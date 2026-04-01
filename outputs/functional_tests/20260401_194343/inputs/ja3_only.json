@@ -1,0 +1,15 @@
+[
+  {
+    "timestamp": "2026-03-20 10:00:00",
+    "src_ip": "11.22.33.44",
+    "dst_ip": "44.33.22.11",
+    "protocol": "TLS",
+    "trigger_fingerprint": {
+      "type": "JA3",
+      "value": "4d7a28d6f2263ed61de88ca66eb011e3"
+    },
+    "info": "Tofsee",
+    "reference": "abuse.ch",
+    "update_time": "2017-07-14 18:08:15"
+  }
+]

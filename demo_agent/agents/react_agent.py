@@ -6,6 +6,8 @@ from langchain.agents import AgentExecutor, create_react_agent
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import BaseTool
 
+from ..schemas import SupplementalResult, model_dump, validate_model
+
 
 def build_react_executor(llm: Any, tools: List[BaseTool], *, verbose: bool = True) -> AgentExecutor:
     prompt = ChatPromptTemplate.from_messages(
@@ -23,15 +25,13 @@ def build_react_executor(llm: Any, tools: List[BaseTool], *, verbose: bool = Tru
         ]
     )
     agent = create_react_agent(llm, tools, prompt)
-    # If the agent hits iteration/time limits, "generate" asks the LLM
-    # to produce a final answer instead of returning the generic stop message.
     return AgentExecutor(
         agent=agent,
         tools=tools,
         verbose=verbose,
         handle_parsing_errors=True,
         max_iterations=6,
-        early_stopping_method="generate",
+        max_execution_time=45.0,
     )
 
 
@@ -46,16 +46,17 @@ def build_gap_fill_executor(llm: Any, tools: List[BaseTool], *, verbose: bool = 
             (
                 "system",
                 "你是受限补查 Agent。你的任务不是重做完整研判，而是仅围绕 analysis JSON 中的 gaps 做一次定向补查。"
-                "你可以调用有限工具补充证据，但只能围绕 gaps 指定的问题行动。"
+                "你可以调用有限工具补充证据，但只能围绕 gap_plan JSON 中指定的问题和动作行动。"
                 "最终必须输出 JSON，不能输出 Markdown。"
                 "JSON 结构固定为："
                 '{"supplemental_evidence":[{"kind":"","source":"","type":"","query":"","url":"","title":"","claim":"","confidence":50,"raw_ref":"react_gap_fill"}],'
                 '"gap_updates":[{"gap_id":"","status":"resolved|partially_resolved|unresolved","note":""}],'
                 '"candidate_family":"","supplemental_summary":""}'
-                "如果没有查到有效新增证据，也要返回空 supplemental_evidence 和 gap_updates。"
+                "如果没有查到有效新增证据，也必须返回合法 JSON，并将 gap_updates 的状态写为 unresolved 或 partially_resolved。"
+                "绝不编造家族、IOC、TTP 或攻击意图。"
                 "\n可用工具名：{tool_names}\n\n{tools}\n\n{agent_scratchpad}",
             ),
-            ("user", "analysis:\n{analysis_json}\n\nout_dir:\n{out_dir}"),
+            ("user", "analysis:\n{analysis_json}\n\ngap_plan:\n{gap_plan_json}\n\nout_dir:\n{out_dir}"),
         ]
     )
     agent = create_react_agent(llm, tools, prompt)
@@ -65,7 +66,7 @@ def build_gap_fill_executor(llm: Any, tools: List[BaseTool], *, verbose: bool = 
         verbose=verbose,
         handle_parsing_errors=True,
         max_iterations=4,
-        early_stopping_method="generate",
+        max_execution_time=30.0,
     )
 
 
@@ -92,18 +93,24 @@ def _extract_json_object(text: str) -> Dict[str, Any]:
     return {}
 
 
-def run_gap_fill_react(executor: AgentExecutor, *, analysis: Dict[str, Any], out_dir: str) -> Dict[str, Any]:
-    result = executor.invoke({"analysis_json": json.dumps(analysis, ensure_ascii=False), "out_dir": out_dir})
+def run_gap_fill_react(executor: AgentExecutor, *, analysis: Dict[str, Any], gap_plan: Dict[str, Any], out_dir: str) -> Dict[str, Any]:
+    result = executor.invoke(
+        {
+            "analysis_json": json.dumps(analysis, ensure_ascii=False),
+            "gap_plan_json": json.dumps(gap_plan, ensure_ascii=False),
+            "out_dir": out_dir,
+        }
+    )
     output = str(result.get("output") or "").strip()
     parsed = _extract_json_object(output)
+    validated = validate_model(
+        SupplementalResult,
+        parsed,
+        default=SupplementalResult(supplemental_evidence=[], gap_updates=[], supplemental_summary=output),
+    )
     return {
         "ok": True,
         "result": result,
-        "parsed": {
-            "supplemental_evidence": list(parsed.get("supplemental_evidence") or []),
-            "gap_updates": list(parsed.get("gap_updates") or []),
-            "candidate_family": parsed.get("candidate_family"),
-            "supplemental_summary": parsed.get("supplemental_summary") or output,
-        },
+        "parsed": model_dump(validated),
     }
 

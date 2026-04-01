@@ -1,0 +1,549 @@
+{
+  "mode": "plan",
+  "event": {
+    "event_time": "2026-03-29 09:15:00",
+    "simulated": false,
+    "src": {
+      "ip": "10.20.5.23",
+      "port": null
+    },
+    "dst": {
+      "ip": "198.51.100.24",
+      "port": null
+    },
+    "protocol": "TLS",
+    "trigger_fingerprint": {
+      "type": "JA4",
+      "value": "t12i190700_d83cc789557e_16bbda4055b2",
+      "matched": true
+    },
+    "enrichment": {
+      "info": "Cobalt Strike v4.9.1 beacon",
+      "reference": "JA4DB",
+      "update_time": "2026-03-28 23:16:27"
+    },
+    "raw_alert": {
+      "timestamp": "2026-03-29 09:15:00",
+      "src_ip": "10.20.5.23",
+      "dst_ip": "198.51.100.24",
+      "protocol": "TLS",
+      "trigger_fingerprint": {
+        "type": "JA4",
+        "value": "t12i190700_d83cc789557e_16bbda4055b2"
+      },
+      "info": "Cobalt Strike v4.9.1 beacon",
+      "reference": "JA4DB",
+      "update_time": "2026-03-28 23:16:27"
+    }
+  },
+  "facts": {
+    "event_time": "2026-03-29 09:15:00",
+    "src": {
+      "ip": "10.20.5.23",
+      "port": null
+    },
+    "dst": {
+      "ip": "198.51.100.24",
+      "port": null
+    },
+    "protocol": "TLS",
+    "fingerprint": {
+      "type": "JA4",
+      "value": "t12i190700_d83cc789557e_16bbda4055b2",
+      "matched": true
+    }
+  },
+  "entities": {
+    "src_ip": "10.20.5.23",
+    "dst_ip": "198.51.100.24",
+    "protocol": "TLS",
+    "fingerprint": {
+      "type": "JA4",
+      "value": "t12i190700_d83cc789557e_16bbda4055b2",
+      "matched": true
+    },
+    "family_hint": "Cobalt Strike v4.9.1 beacon",
+    "reference": "JA4DB",
+    "update_time": "2026-03-28 23:16:27"
+  },
+  "local_intel": {
+    "enabled": true,
+    "matched": true,
+    "query": {
+      "indicator_type": "JA4",
+      "indicator_value": "t12i190700_d83cc789557e_16bbda4055b2",
+      "candidates": [
+        "ja4"
+      ]
+    },
+    "match_count": 1,
+    "matches": [
+      {
+        "indicator_type": "ja4",
+        "indicator_value": "t12i190700_d83cc789557e_16bbda4055b2",
+        "malware_family": "Cobalt Strike v4.9.1 beacon",
+        "severity": null,
+        "confidence": null,
+        "source": "JA4DB",
+        "last_updated": "2026-03-28T23:16:27"
+      }
+    ],
+    "indicator_type": "ja4",
+    "indicator_value": "t12i190700_d83cc789557e_16bbda4055b2",
+    "malware_family": "Cobalt Strike v4.9.1 beacon",
+    "severity": null,
+    "confidence": null,
+    "source": "JA4DB",
+    "last_updated": "2026-03-28T23:16:27",
+    "best_match": {
+      "indicator_type": "ja4",
+      "indicator_value": "t12i190700_d83cc789557e_16bbda4055b2",
+      "malware_family": "Cobalt Strike v4.9.1 beacon",
+      "severity": null,
+      "confidence": null,
+      "source": "JA4DB",
+      "last_updated": "2026-03-28T23:16:27"
+    }
+  },
+  "external_intel": {
+    "fingerprint_enrichment": {
+      "ok": true,
+      "query": "JA4 t12i190700_d83cc789557e_16bbda4055b2 Cobalt Strike v4.9.1 beacon | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t12i190700_d83cc789557e_16bbda4055b2",
+      "results": [
+        {
+          "title": "Cobalt Strike v4.9.1 beacon • Application",
+          "url": "https://ja4db.com/application/Cobalt%20Strike%20v4.9.1%20beacon",
+          "snippet": "Cobalt Strike v4.9.1 beacon. JA4. t12i190700_d83cc789557e_16bbda4055b2 · t12i210700_76e208dd3e22_16bbda4055b2. JA4S. t120300_c030_52d195ce1d92.",
+          "source": "serpapi"
+        },
+        {
+          "title": "ja4/ja4plus-mapping.csv at main · FoxIO-LLC/ja4",
+          "url": "https://github.com/FoxIO-LLC/ja4/blob/main/ja4plus-mapping.csv",
+          "snippet": "Cobalt Strike v4.9.1 beacon, Windows 10, t12d190800_d83cc789557e_16bbda4055b2, t120300_c030_52d195ce1d92, Cobalt Strike v4.9.1 over wininet. 43. Cobalt Strike ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "t12i210700_76e208dd3e22_16b...",
+          "url": "https://ja4db.com/fingerprint/ja4/t12i210700_76e208dd3e22_16bbda4055b2",
+          "snippet": "Applications. Cobalt Strike v4.9.1 beacon. Libraries ; JA4_a. t12i210700 · JA4_b ; Protocol. TLS. TLS Version ; Extension Count. 7. ALPN Value.",
+          "source": "serpapi"
+        },
+        {
+          "title": "t120300_c030_52d195ce1d92 • JA4S",
+          "url": "https://ja4db.com/fingerprint/ja4s/t120300_c030_52d195ce1d92",
+          "snippet": "JA4+ Database is a community-maintained repository of JA4+ fingerprints sourced from networks across the Internet.",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi"
+    },
+    "context_search": {
+      "ok": true,
+      "query": "JA4 t12i190700_d83cc789557e_16bbda4055b2 malware family Cobalt Strike v4.9.1 beacon | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t12i190700_d83cc789557e_16bbda4055b2",
+      "results": [
+        {
+          "title": "Cobalt Strike v4.9.1 beacon • Application",
+          "url": "https://ja4db.com/application/Cobalt%20Strike%20v4.9.1%20beacon",
+          "snippet": "Cobalt Strike v4.9.1 beacon. JA4. t12i190700_d83cc789557e_16bbda4055b2 · t12i210700_76e208dd3e22_16bbda4055b2. JA4S. t120300_c030_52d195ce1d92.",
+          "source": "serpapi"
+        },
+        {
+          "title": "t12i210700_76e208dd3e22_16b...",
+          "url": "https://ja4db.com/fingerprint/ja4/t12i210700_76e208dd3e22_16bbda4055b2",
+          "snippet": "JA4+ Database is a community-maintained repository of JA4+ fingerprints sourced from networks across the Internet.",
+          "source": "serpapi"
+        },
+        {
+          "title": "Cobalt Strike Ransomware: What Is It & How to Remove It",
+          "url": "https://www.avg.com/en/signal/cobalt-strike-ransomware",
+          "snippet": "The hacker initiates a Cobalt Strike download by tricking the target into clicking a phishing link, or via a range of other hacking techniques.",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi"
+    },
+    "family_intel": {
+      "ok": true,
+      "family": "Cobalt Strike v4.9.1 beacon",
+      "query": "Cobalt Strike v4.9.1 beacon t12i190700_d83cc789557e_16bbda4055b2 malware family C2",
+      "highlights": [
+        "- Cobalt Strike v4.9.1 beacon • Application（https://ja4db.com/application/Cobalt%20Strike%20v4.9.1%20beacon）",
+        "- Out of Band Update: Cobalt Strike 4.9.1（https://www.cobaltstrike.com/blog/out-of-band-update-cobalt-strike-491）",
+        "- Cobalt Strike (Malware Family)（https://malpedia.caad.fkie.fraunhofer.de/details/win.cobalt_strike）"
+      ],
+      "raw": {
+        "ok": true,
+        "query": "site:malpedia.caad.fkie.fraunhofer.de OR site:microsoft.com OR site:abuse.ch OR site:checkpoint.com OR site:trendmicro.com OR site:proofpoint.com Cobalt Strike v4.9.1 beacon t12i190700_d83cc789557e_16bbda4055b2 malware family C2 | Cobalt Strike v4.9.1 beacon t12i190700_d83cc789557e_16bbda4055b2 malware family C2",
+        "results": [
+          {
+            "title": "Cobalt Strike v4.9.1 beacon • Application",
+            "url": "https://ja4db.com/application/Cobalt%20Strike%20v4.9.1%20beacon",
+            "snippet": "JA4+ Database is a community-maintained repository of JA4+ fingerprints sourced from networks across the Internet.",
+            "source": "serpapi"
+          },
+          {
+            "title": "Out of Band Update: Cobalt Strike 4.9.1",
+            "url": "https://www.cobaltstrike.com/blog/out-of-band-update-cobalt-strike-491",
+            "snippet": "Cobalt Strike 4.9.1 is live. This update contains fixes for issues in the 4.9 release for which there was no straightforward workaround.",
+            "source": "serpapi"
+          },
+          {
+            "title": "Cobalt Strike (Malware Family)",
+            "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.cobalt_strike",
+            "snippet": "Cobalt Strike is a paid penetration testing product that allows an attacker to deploy an agent named 'Beacon' on the victim machine.",
+            "source": "serpapi"
+          }
+        ],
+        "mode": "serpapi"
+      }
+    },
+    "supplemental": null
+  },
+  "observations": {
+    "local_intel": {
+      "enabled": true,
+      "matched": true,
+      "query": {
+        "indicator_type": "JA4",
+        "indicator_value": "t12i190700_d83cc789557e_16bbda4055b2",
+        "candidates": [
+          "ja4"
+        ]
+      },
+      "match_count": 1,
+      "matches": [
+        {
+          "indicator_type": "ja4",
+          "indicator_value": "t12i190700_d83cc789557e_16bbda4055b2",
+          "malware_family": "Cobalt Strike v4.9.1 beacon",
+          "severity": null,
+          "confidence": null,
+          "source": "JA4DB",
+          "last_updated": "2026-03-28T23:16:27"
+        }
+      ],
+      "indicator_type": "ja4",
+      "indicator_value": "t12i190700_d83cc789557e_16bbda4055b2",
+      "malware_family": "Cobalt Strike v4.9.1 beacon",
+      "severity": null,
+      "confidence": null,
+      "source": "JA4DB",
+      "last_updated": "2026-03-28T23:16:27",
+      "best_match": {
+        "indicator_type": "ja4",
+        "indicator_value": "t12i190700_d83cc789557e_16bbda4055b2",
+        "malware_family": "Cobalt Strike v4.9.1 beacon",
+        "severity": null,
+        "confidence": null,
+        "source": "JA4DB",
+        "last_updated": "2026-03-28T23:16:27"
+      }
+    },
+    "fingerprint_enrichment": {
+      "ok": true,
+      "query": "JA4 t12i190700_d83cc789557e_16bbda4055b2 Cobalt Strike v4.9.1 beacon | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t12i190700_d83cc789557e_16bbda4055b2",
+      "results": [
+        {
+          "title": "Cobalt Strike v4.9.1 beacon • Application",
+          "url": "https://ja4db.com/application/Cobalt%20Strike%20v4.9.1%20beacon",
+          "snippet": "Cobalt Strike v4.9.1 beacon. JA4. t12i190700_d83cc789557e_16bbda4055b2 · t12i210700_76e208dd3e22_16bbda4055b2. JA4S. t120300_c030_52d195ce1d92.",
+          "source": "serpapi"
+        },
+        {
+          "title": "ja4/ja4plus-mapping.csv at main · FoxIO-LLC/ja4",
+          "url": "https://github.com/FoxIO-LLC/ja4/blob/main/ja4plus-mapping.csv",
+          "snippet": "Cobalt Strike v4.9.1 beacon, Windows 10, t12d190800_d83cc789557e_16bbda4055b2, t120300_c030_52d195ce1d92, Cobalt Strike v4.9.1 over wininet. 43. Cobalt Strike ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "t12i210700_76e208dd3e22_16b...",
+          "url": "https://ja4db.com/fingerprint/ja4/t12i210700_76e208dd3e22_16bbda4055b2",
+          "snippet": "Applications. Cobalt Strike v4.9.1 beacon. Libraries ; JA4_a. t12i210700 · JA4_b ; Protocol. TLS. TLS Version ; Extension Count. 7. ALPN Value.",
+          "source": "serpapi"
+        },
+        {
+          "title": "t120300_c030_52d195ce1d92 • JA4S",
+          "url": "https://ja4db.com/fingerprint/ja4s/t120300_c030_52d195ce1d92",
+          "snippet": "JA4+ Database is a community-maintained repository of JA4+ fingerprints sourced from networks across the Internet.",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi"
+    },
+    "context_search": {
+      "ok": true,
+      "query": "JA4 t12i190700_d83cc789557e_16bbda4055b2 malware family Cobalt Strike v4.9.1 beacon | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t12i190700_d83cc789557e_16bbda4055b2",
+      "results": [
+        {
+          "title": "Cobalt Strike v4.9.1 beacon • Application",
+          "url": "https://ja4db.com/application/Cobalt%20Strike%20v4.9.1%20beacon",
+          "snippet": "Cobalt Strike v4.9.1 beacon. JA4. t12i190700_d83cc789557e_16bbda4055b2 · t12i210700_76e208dd3e22_16bbda4055b2. JA4S. t120300_c030_52d195ce1d92.",
+          "source": "serpapi"
+        },
+        {
+          "title": "t12i210700_76e208dd3e22_16b...",
+          "url": "https://ja4db.com/fingerprint/ja4/t12i210700_76e208dd3e22_16bbda4055b2",
+          "snippet": "JA4+ Database is a community-maintained repository of JA4+ fingerprints sourced from networks across the Internet.",
+          "source": "serpapi"
+        },
+        {
+          "title": "Cobalt Strike Ransomware: What Is It & How to Remove It",
+          "url": "https://www.avg.com/en/signal/cobalt-strike-ransomware",
+          "snippet": "The hacker initiates a Cobalt Strike download by tricking the target into clicking a phishing link, or via a range of other hacking techniques.",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi"
+    },
+    "family_intel": {
+      "ok": true,
+      "family": "Cobalt Strike v4.9.1 beacon",
+      "query": "Cobalt Strike v4.9.1 beacon t12i190700_d83cc789557e_16bbda4055b2 malware family C2",
+      "highlights": [
+        "- Cobalt Strike v4.9.1 beacon • Application（https://ja4db.com/application/Cobalt%20Strike%20v4.9.1%20beacon）",
+        "- Out of Band Update: Cobalt Strike 4.9.1（https://www.cobaltstrike.com/blog/out-of-band-update-cobalt-strike-491）",
+        "- Cobalt Strike (Malware Family)（https://malpedia.caad.fkie.fraunhofer.de/details/win.cobalt_strike）"
+      ],
+      "raw": {
+        "ok": true,
+        "query": "site:malpedia.caad.fkie.fraunhofer.de OR site:microsoft.com OR site:abuse.ch OR site:checkpoint.com OR site:trendmicro.com OR site:proofpoint.com Cobalt Strike v4.9.1 beacon t12i190700_d83cc789557e_16bbda4055b2 malware family C2 | Cobalt Strike v4.9.1 beacon t12i190700_d83cc789557e_16bbda4055b2 malware family C2",
+        "results": [
+          {
+            "title": "Cobalt Strike v4.9.1 beacon • Application",
+            "url": "https://ja4db.com/application/Cobalt%20Strike%20v4.9.1%20beacon",
+            "snippet": "JA4+ Database is a community-maintained repository of JA4+ fingerprints sourced from networks across the Internet.",
+            "source": "serpapi"
+          },
+          {
+            "title": "Out of Band Update: Cobalt Strike 4.9.1",
+            "url": "https://www.cobaltstrike.com/blog/out-of-band-update-cobalt-strike-491",
+            "snippet": "Cobalt Strike 4.9.1 is live. This update contains fixes for issues in the 4.9 release for which there was no straightforward workaround.",
+            "source": "serpapi"
+          },
+          {
+            "title": "Cobalt Strike (Malware Family)",
+            "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.cobalt_strike",
+            "snippet": "Cobalt Strike is a paid penetration testing product that allows an attacker to deploy an agent named 'Beacon' on the victim machine.",
+            "source": "serpapi"
+          }
+        ],
+        "mode": "serpapi"
+      }
+    },
+    "supplemental": null
+  },
+  "corroboration": {
+    "local_family": "Cobalt Strike v4.9.1 beacon",
+    "external_family_candidates": [
+      "Cobalt Strike v4.9.1 beacon"
+    ],
+    "supported_by_external": true,
+    "conflict": false,
+    "confidence_driver": "local_and_external",
+    "summary": "本地情报命中的家族 Cobalt Strike v4.9.1 beacon 获得外部情报佐证。",
+    "selected_family": "Cobalt Strike v4.9.1 beacon"
+  },
+  "gaps": [],
+  "gap_fill_needed": false,
+  "supplemental": {},
+  "evidence": [
+    {
+      "kind": "event",
+      "source": "alert",
+      "type": "matched_alert",
+      "query": null,
+      "url": null,
+      "title": "命中后告警事件",
+      "claim": "在 2026-03-29 09:15:00 观察到 10.20.5.23 -> 198.51.100.24 的 TLS 流量，命中 JA4 指纹 t12i190700_d83cc789557e_16bbda4055b2。",
+      "confidence": 95,
+      "raw_ref": "event.raw_alert",
+      "domain": null,
+      "weight": 96,
+      "weight_level": "高",
+      "weight_reason": "原始告警事实",
+      "id": "e01"
+    },
+    {
+      "kind": "local_intel",
+      "source": "JA4DB",
+      "type": "local_indicator_match",
+      "query": "t12i190700_d83cc789557e_16bbda4055b2",
+      "url": null,
+      "title": "本地指纹情报命中",
+      "claim": "本地情报库将 ja4 t12i190700_d83cc789557e_16bbda4055b2 关联到家族/标签 Cobalt Strike v4.9.1 beacon，来源 JA4DB。",
+      "confidence": 85,
+      "raw_ref": "local_intel.best_match",
+      "domain": null,
+      "weight": 88,
+      "weight_level": "高",
+      "weight_reason": "本地结构化指纹情报",
+      "id": "e02"
+    },
+    {
+      "kind": "family_intel",
+      "source": "malpedia.caad.fkie.fraunhofer.de",
+      "type": "family_search",
+      "query": "Cobalt Strike v4.9.1 beacon t12i190700_d83cc789557e_16bbda4055b2 malware family C2",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.cobalt_strike",
+      "title": "Cobalt Strike (Malware Family)",
+      "claim": "Cobalt Strike is a paid penetration testing product that allows an attacker to deploy an agent named 'Beacon' on the victim machine.",
+      "confidence": 65,
+      "raw_ref": "external_intel.family_intel.raw.results[2]",
+      "domain": "malpedia.caad.fkie.fraunhofer.de",
+      "weight": 76,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 malpedia.caad.fkie.fraunhofer.de",
+      "id": "e03"
+    },
+    {
+      "kind": "hint",
+      "source": "JA4DB",
+      "type": "family_hint",
+      "query": null,
+      "url": null,
+      "title": "告警附带家族提示",
+      "claim": "原始告警将该事件关联到家族/标签 Cobalt Strike v4.9.1 beacon。",
+      "confidence": 70,
+      "raw_ref": "event.enrichment",
+      "domain": null,
+      "weight": 72,
+      "weight_level": "中",
+      "weight_reason": "结构化本地信息",
+      "id": "e04"
+    },
+    {
+      "kind": "search_result",
+      "source": "ja4db.com",
+      "type": "fingerprint_search",
+      "query": "JA4 t12i190700_d83cc789557e_16bbda4055b2 Cobalt Strike v4.9.1 beacon | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t12i190700_d83cc789557e_16bbda4055b2",
+      "url": "https://ja4db.com/application/Cobalt%20Strike%20v4.9.1%20beacon",
+      "title": "Cobalt Strike v4.9.1 beacon • Application",
+      "claim": "Cobalt Strike v4.9.1 beacon. JA4. t12i190700_d83cc789557e_16bbda4055b2 · t12i210700_76e208dd3e22_16bbda4055b2. JA4S. t120300_c030_52d195ce1d92.",
+      "confidence": 60,
+      "raw_ref": "external_intel.fingerprint_enrichment.results[0]",
+      "domain": "ja4db.com",
+      "weight": 62,
+      "weight_level": "低",
+      "weight_reason": "一般网页来源 ja4db.com",
+      "id": "e05"
+    },
+    {
+      "kind": "search_result",
+      "source": "ja4db.com",
+      "type": "fingerprint_search",
+      "query": "JA4 t12i190700_d83cc789557e_16bbda4055b2 Cobalt Strike v4.9.1 beacon | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t12i190700_d83cc789557e_16bbda4055b2",
+      "url": "https://ja4db.com/fingerprint/ja4/t12i210700_76e208dd3e22_16bbda4055b2",
+      "title": "t12i210700_76e208dd3e22_16b...",
+      "claim": "Applications. Cobalt Strike v4.9.1 beacon. Libraries ; JA4_a. t12i210700 · JA4_b ; Protocol. TLS. TLS Version ; Extension Count. 7. ALPN Value.",
+      "confidence": 60,
+      "raw_ref": "external_intel.fingerprint_enrichment.results[2]",
+      "domain": "ja4db.com",
+      "weight": 62,
+      "weight_level": "低",
+      "weight_reason": "一般网页来源 ja4db.com",
+      "id": "e06"
+    },
+    {
+      "kind": "search_result",
+      "source": "github.com",
+      "type": "fingerprint_search",
+      "query": "JA4 t12i190700_d83cc789557e_16bbda4055b2 Cobalt Strike v4.9.1 beacon | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t12i190700_d83cc789557e_16bbda4055b2",
+      "url": "https://github.com/FoxIO-LLC/ja4/blob/main/ja4plus-mapping.csv",
+      "title": "ja4/ja4plus-mapping.csv at main · FoxIO-LLC/ja4",
+      "claim": "Cobalt Strike v4.9.1 beacon, Windows 10, t12d190800_d83cc789557e_16bbda4055b2, t120300_c030_52d195ce1d92, Cobalt Strike v4.9.1 over wininet. 43. Cobalt Strike ...",
+      "confidence": 60,
+      "raw_ref": "external_intel.fingerprint_enrichment.results[1]",
+      "domain": "github.com",
+      "weight": 46,
+      "weight_level": "低",
+      "weight_reason": "低权重泛化来源 github.com",
+      "id": "e07"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f01",
+      "title": "命中后恶意流量告警",
+      "statement": "源 10.20.5.23 与目的 198.51.100.24 的 TLS 流量命中 JA4 指纹 t12i190700_d83cc789557e_16bbda4055b2。",
+      "confidence": 95,
+      "severity": "高危",
+      "based_on": [
+        "e01"
+      ]
+    },
+    {
+      "id": "f02",
+      "title": "本地情报命中",
+      "statement": "本地指纹情报库对该指标存在直接命中记录，可作为家族归因的强参考。",
+      "confidence": 90,
+      "severity": "高危",
+      "based_on": [
+        "e02"
+      ]
+    },
+    {
+      "id": "f03",
+      "title": "当前家族判断",
+      "statement": "综合本地命中与外部佐证后，该事件当前更可能与 Cobalt Strike v4.9.1 beacon 相关。",
+      "confidence": 95,
+      "severity": "高危",
+      "based_on": [
+        "e03",
+        "e04",
+        "e05",
+        "e06",
+        "e07"
+      ]
+    }
+  ],
+  "uncertainties": [],
+  "recommended_actions": [
+    {
+      "id": "a01",
+      "priority": "high",
+      "action": "排查并视情况隔离源主机 10.20.5.23。",
+      "rationale": "源主机产生了命中后恶意流量，需要确认是否存在持续外联或二次投递行为。"
+    },
+    {
+      "id": "a02",
+      "priority": "high",
+      "action": "在边界侧监控或阻断与 198.51.100.24 相关的后续通信。",
+      "rationale": "当前告警中的网络目的地址是最直接的外联对象，应优先纳入监测范围。"
+    },
+    {
+      "id": "a03",
+      "priority": "medium",
+      "action": "基于 JA4 指纹 t12i190700_d83cc789557e_16bbda4055b2 在历史流量中做横向检索。",
+      "rationale": "可以快速判断是否存在相同指纹的历史通信或更多受影响资产。"
+    },
+    {
+      "id": "a04",
+      "priority": "medium",
+      "action": "结合 Cobalt Strike v4.9.1 beacon 相关 TTP 做主机侧排查与 IOC 扩线。",
+      "rationale": "已有家族线索时，可以更有针对性地检查样本行为、持久化方式和额外外联特征。"
+    }
+  ],
+  "assessment": {
+    "family": "Cobalt Strike v4.9.1 beacon",
+    "verdict": "suspected_malware_activity",
+    "confidence": 95,
+    "severity": "高危",
+    "rationale": "本地情报命中的家族 Cobalt Strike v4.9.1 beacon 获得外部情报佐证。"
+  },
+  "derived": {
+    "family": "Cobalt Strike v4.9.1 beacon",
+    "labels": [
+      "Cobalt Strike v4.9.1 beacon"
+    ],
+    "confidence": 95,
+    "severity": "高危",
+    "destination_enrichment": {}
+  },
+  "gap_plan": {
+    "items": []
+  },
+  "report": {
+    "path": "/home/estar0x/project/maltrail_test/Trace-Agent/outputs/functional_tests/20260401_194557/batch_plan_full/002/report.md",
+    "content": "# 网络安全事件分析报告\n\n## 事件概述\n- 事件时间：2026-03-29 09:15:00\n- 通信关系：`10.20.5.23` -> `198.51.100.24`\n- 协议：TLS\n- 命中指标：JA4 `t12i190700_d83cc789557e_16bbda4055b2`\n- 当前研判：Cobalt Strike v4.9.1 beacon\n- 置信度：95\n- 严重度：高危\n\n## 研判结论\n在 2026-03-29 09:15:00，检测到 10.20.5.23 与 198.51.100.24 之间存在 TLS 流量，该流量命中 JA4 指标 `t12i190700_d83cc789557e_16bbda4055b2`。\n\n结合本地指纹情报与外部公开情报，当前将该事件关联到 `Cobalt Strike v4.9.1 beacon` 的把握为较高。\n\n## 关键证据与情报\n### 本地指纹情报命中\n来源：JA4DB\n说明：本地情报库将 ja4 t12i190700_d83cc789557e_16bbda4055b2 关联到家族/标签 Cobalt Strike v4.9.1 beacon，来源 JA4DB。\n证据等级：高\n\n### Cobalt Strike (Malware Family)\n来源：malpedia.caad.fkie.fraunhofer.de\n说明：Malpedia 将 `Cobalt Strike v4.9.1 beacon` 描述为已知恶意软件家族，并提供了相应家族背景信息。\n证据等级：中\n参考：[https://malpedia.caad.fkie.fraunhofer.de/details/win.cobalt_strike](https://malpedia.caad.fkie.fraunhofer.de/details/win.cobalt_strike)\n\n### Cobalt Strike v4.9.1 beacon • Application\n来源：ja4db.com\n说明：JA4DB 页面将该 JA4 指纹与 `Cobalt Strike v4.9.1 beacon` 关联，可作为本地命中的外部补充佐证。\n证据等级：低\n参考：[https://ja4db.com/application/Cobalt%20Strike%20v4.9.1%20beacon](https://ja4db.com/application/Cobalt%20Strike%20v4.9.1%20beacon)\n\n### t12i210700_76e208dd3e22_16b...\n来源：ja4db.com\n说明：JA4DB 页面将该 JA4 指纹与 `Cobalt Strike v4.9.1 beacon` 关联，可作为本地命中的外部补充佐证。\n证据等级：低\n参考：[https://ja4db.com/fingerprint/ja4/t12i210700_76e208dd3e22_16bbda4055b2](https://ja4db.com/fingerprint/ja4/t12i210700_76e208dd3e22_16bbda4055b2)\n\n### ja4/ja4plus-mapping.csv at main · FoxIO-LLC/ja4\n来源：github.com\n说明：GitHub 页面包含与 `Cobalt Strike v4.9.1 beacon` 或该指纹相关的映射/项目资料，可作为辅助参考。\n证据等级：低\n参考：[https://github.com/FoxIO-LLC/ja4/blob/main/ja4plus-mapping.csv](https://github.com/FoxIO-LLC/ja4/blob/main/ja4plus-mapping.csv)\n\n## 本地指纹情报\n本地情报库命中 `ja4` 指标 `t12i190700_d83cc789557e_16bbda4055b2`，关联家族为 `Cobalt Strike v4.9.1 beacon`，来源 `JA4DB`。\n该记录最近更新时间为 2026-03-28T23:16:27。\n\n## 相关情报参考\n- [Cobalt Strike (Malware Family)](https://malpedia.caad.fkie.fraunhofer.de/details/win.cobalt_strike)：Malpedia 将 `Cobalt Strike v4.9.1 beacon` 描述为已知恶意软件家族，并提供了相应家族背景信息。\n- [Cobalt Strike v4.9.1 beacon • Application](https://ja4db.com/application/Cobalt%20Strike%20v4.9.1%20beacon)：JA4DB 页面将该 JA4 指纹与 `Cobalt Strike v4.9.1 beacon` 关联，可作为本地命中的外部补充佐证。\n- [t12i210700_76e208dd3e22_16b...](https://ja4db.com/fingerprint/ja4/t12i210700_76e208dd3e22_16bbda4055b2)：JA4DB 页面将该 JA4 指纹与 `Cobalt Strike v4.9.1 beacon` 关联，可作为本地命中的外部补充佐证。\n\n## 处置建议\n- [HIGH] 排查并视情况隔离源主机 10.20.5.23。 理由：源主机产生了命中后恶意流量，需要确认是否存在持续外联或二次投递行为。\n- [HIGH] 在边界侧监控或阻断与 198.51.100.24 相关的后续通信。 理由：当前告警中的网络目的地址是最直接的外联对象，应优先纳入监测范围。\n- [MEDIUM] 基于 JA4 指纹 t12i190700_d83cc789557e_16bbda4055b2 在历史流量中做横向检索。 理由：可以快速判断是否存在相同指纹的历史通信或更多受影响资产。\n- [MEDIUM] 结合 Cobalt Strike v4.9.1 beacon 相关 TTP 做主机侧排查与 IOC 扩线。 理由：已有家族线索时，可以更有针对性地检查样本行为、持久化方式和额外外联特征。\n\n## 参考链接\n- 本地指纹情报命中\n  摘要：本地情报库将 ja4 t12i190700_d83cc789557e_16bbda4055b2 关联到家族/标签 Cobalt Strike v4.9.1 beacon，来源 JA4DB。\n- [Cobalt Strike (Malware Family)](https://malpedia.caad.fkie.fraunhofer.de/details/win.cobalt_strike)\n  摘要：Malpedia 将 `Cobalt Strike v4.9.1 beacon` 描述为已知恶意软件家族，并提供了相应家族背景信息。\n- [Cobalt Strike v4.9.1 beacon • Application](https://ja4db.com/application/Cobalt%20Strike%20v4.9.1%20beacon)\n  摘要：JA4DB 页面将该 JA4 指纹与 `Cobalt Strike v4.9.1 beacon` 关联，可作为本地命中的外部补充佐证。\n- [t12i210700_76e208dd3e22_16b...](https://ja4db.com/fingerprint/ja4/t12i210700_76e208dd3e22_16bbda4055b2)\n  摘要：JA4DB 页面将该 JA4 指纹与 `Cobalt Strike v4.9.1 beacon` 关联，可作为本地命中的外部补充佐证。\n- [ja4/ja4plus-mapping.csv at main · FoxIO-LLC/ja4](https://github.com/FoxIO-LLC/ja4/blob/main/ja4plus-mapping.csv)\n  摘要：GitHub 页面包含与 `Cobalt Strike v4.9.1 beacon` 或该指纹相关的映射/项目资料，可作为辅助参考。\n- 告警附带家族提示\n  摘要：原始告警将该事件关联到家族/标签 Cobalt Strike v4.9.1 beacon。\n"
+  }
+}

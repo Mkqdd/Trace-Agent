@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-03-20 10:00:00",
+  "src_ip": "194.226.121.108",
+  "dst_ip": "44.33.22.11",
+  "protocol": "HTTP",
+  "trigger_fingerprint": {
+    "type": "IP",
+    "value": "194.226.121.108"
+  },
+  "info": "discordgrabber",
+  "reference": "maltrail-static",
+  "update_time": "None"
+}

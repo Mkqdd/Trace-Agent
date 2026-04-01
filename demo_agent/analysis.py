@@ -510,6 +510,20 @@ def _build_gaps(
                 }
             )
 
+        has_family_background = bool(
+            isinstance(obs_family, dict) and obs_family.get("ok") is True and (obs_family.get("raw") or {}).get("results")
+        )
+        if not has_family_background:
+            gaps.append(
+                {
+                    "id": "g07",
+                    "type": "behavior_context_missing",
+                    "priority": "medium",
+                    "question": f"已识别到家族 {family}，但缺少更具体的行为、TTP 或攻击意图描述。",
+                    "status": "open",
+                }
+            )
+
     if not isinstance(obs_context, dict) or not (obs_context.get("ok") is True and (obs_context.get("results") or [])):
         gaps.append(
             {
@@ -525,7 +539,13 @@ def _build_gaps(
 
 
 def _needs_gap_fill(gaps: List[Dict[str, Any]]) -> bool:
-    high_priority_types = {"no_secondary_confirmation", "conflicting_attribution", "vt_only_context", "single_source_attribution"}
+    high_priority_types = {
+        "no_secondary_confirmation",
+        "conflicting_attribution",
+        "vt_only_context",
+        "single_source_attribution",
+        "behavior_context_missing",
+    }
     return any(str(item.get("type") or "") in high_priority_types for item in gaps)
 
 
@@ -1031,6 +1051,7 @@ def build_analysis(
         "corroboration": corroboration,
         "gaps": gaps,
         "gap_fill_needed": _needs_gap_fill(gaps),
+        "supplemental": supplemental or {},
         "evidence": evidence,
         "findings": findings,
         "uncertainties": uncertainties,

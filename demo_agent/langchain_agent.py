@@ -10,11 +10,35 @@ from .event import normalize_alert
 from .storage.io import load_json, save_text, save_json
 from .renderers.artifacts import build_topology_from_analysis
 from .renderers.graph_drawer_pyvis import draw_graph_pyvis
+from .renderers.report_markdown import render_report_from_analysis
 from .clients.llm import make_llm
-from .tooling import build_topology_json, family_intel, local_intel_lookup, save_report_md, vt_enrich_ip, web_search
+from .tooling import (
+    advanced_web_search,
+    build_topology_json,
+    extract_entities_from_page,
+    family_intel,
+    fetch_page_content,
+    local_intel_lookup,
+    malware_profile_lookup,
+    pivot_related_indicators,
+    save_report_md,
+    vt_enrich_ioc,
+    vt_enrich_ip,
+    web_search,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def _needs_react_report_fallback(report_md: str) -> bool:
+    text = str(report_md or "").strip()
+    if not text:
+        return True
+    lowered = text.lower()
+    return "agent stopped due to iteration limit or time limit" in lowered
+
+
 def _run_one(alert: Dict[str, Any], out_dir: Path, *, executor) -> Dict[str, Any]:
     event = normalize_alert(alert)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -29,16 +53,17 @@ def _run_one(alert: Dict[str, Any], out_dir: Path, *, executor) -> Dict[str, Any
     else:
         result = run_react(executor, event=event, out_dir=str(out_dir))
         report_md = str(result.get("result", {}).get("output", "")).strip()
-        report_path: Optional[str] = None
-        if report_md:
-            report_path = str((out_dir / "report.md").resolve())
-            save_text(Path(report_path), report_md)
         analysis = build_analysis(
             event=event,
             mode="react",
-            report_markdown=report_md,
-            report_path=report_path,
+            report_markdown=None if _needs_react_report_fallback(report_md) else report_md,
+            report_path=None,
         )
+        if _needs_react_report_fallback(report_md):
+            report_md = render_report_from_analysis(analysis)
+        report_path = str((out_dir / "report.md").resolve())
+        save_text(Path(report_path), report_md)
+        analysis["report"] = {"path": report_path, "content": report_md}
         save_text(out_dir / "agent_output.txt", report_md)
 
     topology = build_topology_from_analysis(analysis)
@@ -61,8 +86,21 @@ def run(alert_path: Path, out_dir: Path, *, mode: str = "react") -> Dict[str, An
 
     cfg = load_config()
     llm = make_llm(cfg)
-    tools = [local_intel_lookup, vt_enrich_ip, web_search, family_intel, build_topology_json, save_report_md]
-    executor = build_react_executor(llm, tools, verbose=True) if mode == "react" else "plan"
+    tools = [
+        local_intel_lookup,
+        vt_enrich_ioc,
+        vt_enrich_ip,
+        web_search,
+        family_intel,
+        advanced_web_search,
+        fetch_page_content,
+        extract_entities_from_page,
+        pivot_related_indicators,
+        malware_profile_lookup,
+        build_topology_json,
+        save_report_md,
+    ]
+    executor = build_react_executor(llm, tools, verbose=False) if mode == "react" else "plan"
 
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -92,7 +130,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="LangChain ReAct Threat-Agent demo (DeepShield + VT + topology + report).")
     parser.add_argument("--alert", default=str(ROOT / "demo_alert.json"), help="path to alert JSON")
     parser.add_argument("--out", default=str(ROOT / "demo_agent" / "out_langchain"), help="output directory")
-    parser.add_argument("--mode", default="react", choices=["react", "plan"], help="agent mode: react or plan-and-solve")
+    parser.add_argument("--mode", default="plan", choices=["react", "plan"], help="agent mode: react or plan-and-solve")
     args = parser.parse_args()
 
     res = run(alert_path=Path(args.alert).resolve(), out_dir=Path(args.out).resolve(), mode=args.mode)
