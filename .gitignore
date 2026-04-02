@@ -11,3 +11,4 @@ demo_agent/.env.*
 demo_agent/out_langchain/
 runs/
 *.pyc
+.DS_Store
