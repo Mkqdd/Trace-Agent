@@ -1,13 +1,14 @@
 __pycache__/
-outputs/graphs/
+outputs/
+demo_agent/out_*/
 test_graph_drawer_graphviz.py
 tools/graph_drawer_graphviz.py
 lib/
 .codex
 .venv/
+.pytest_cache/
 demo_agent/.env
 demo_agent/.env.*
 !demo_agent/.env.example
-demo_agent/out_langchain/
 runs/
 *.pyc

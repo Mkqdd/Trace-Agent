@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Any, Dict, List
 
 from langchain_core.tools import tool
@@ -18,17 +19,35 @@ from .common import (
 )
 
 
+def _infer_indicator_type(value: str) -> str:
+    value = strip_quotes(value)
+    if is_ip(value):
+        return "IP"
+    if value.startswith(("http://", "https://")):
+        return "URL"
+    if re.fullmatch(r"[a-fA-F0-9]{32}", value):
+        return "MD5"
+    if re.fullmatch(r"[a-fA-F0-9]{40}", value):
+        return "SSL_SHA1"
+    if re.fullmatch(r"[a-fA-F0-9]{64}", value):
+        return "SHA256"
+    if "." in value and " " not in value and "/" not in value:
+        return "DOMAIN"
+    return ""
+
+
 @tool
-def local_intel_lookup(indicator_type: str, indicator_value: str) -> str:
-    """Lookup a fingerprint/IOC in the local MySQL threat_intel.intel table."""
-    key = f"{strip_quotes(indicator_type).upper()}::{strip_quotes(indicator_value)}"
+def local_intel_lookup(indicator_value: str, indicator_type: str = "") -> str:
+    """Lookup a fingerprint/IOC in the local MySQL threat_intel.intel table. indicator_type is optional."""
+    inferred_type = strip_quotes(indicator_type).upper() or _infer_indicator_type(indicator_value)
+    key = f"{inferred_type}::{strip_quotes(indicator_value)}"
     if key in _CACHE_LOCAL_INTEL:
         cached = dict(_CACHE_LOCAL_INTEL[key])
         cached["cache_hit"] = True
         return dumps_json(cached)
 
     client = LocalIntelClient()
-    obs = client.lookup(indicator_type=strip_quotes(indicator_type), indicator_value=strip_quotes(indicator_value))
+    obs = client.lookup(indicator_type=inferred_type, indicator_value=strip_quotes(indicator_value))
     _CACHE_LOCAL_INTEL[key] = obs
     return dumps_json(obs)
 
@@ -65,9 +84,9 @@ def vt_enrich_ip(ip: str) -> str:
 
 
 @tool
-def vt_enrich_ioc(indicator_type: str, indicator_value: str) -> str:
-    """Use VirusTotal to enrich an IOC. Currently supports IP and returns structured JSON."""
-    indicator_type = strip_quotes(indicator_type).upper()
+def vt_enrich_ioc(indicator_value: str, indicator_type: str = "") -> str:
+    """Use VirusTotal to enrich an IOC. indicator_type is optional and will be inferred when possible."""
+    indicator_type = strip_quotes(indicator_type).upper() or _infer_indicator_type(indicator_value)
     indicator_value = strip_quotes(indicator_value)
     if indicator_type == "IP":
         return vt_enrich_ip.invoke(indicator_value)

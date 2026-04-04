@@ -6,7 +6,7 @@ from pathlib import Path
 from pyvis.network import Network
 
 
-DEFAULT_OUTPUT_DIR = Path(__file__).resolve().parent.parent / "out_langchain"
+DEFAULT_OUTPUT_DIR = Path(__file__).resolve().parents[2] / "outputs" / "graphs"
 
 
 def _validate_graph_data(graph_data: dict) -> tuple[list[dict], list[dict]]:

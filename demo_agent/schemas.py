@@ -10,9 +10,13 @@ class GapPlanAction(BaseModel):
 
     tool: str
     query: Optional[str] = None
+    goal: Optional[str] = None
+    focus: Optional[str] = None
     constraint: Optional[str] = None
     url_slot: Optional[str] = None
+    content_slot: Optional[str] = None
     url: Optional[str] = None
+    max_results: Optional[int] = None
     notes: Optional[str] = None
     kwargs: Dict[str, Any] = Field(default_factory=dict)
 

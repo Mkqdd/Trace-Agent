@@ -15,6 +15,7 @@ from .clients.llm import make_llm
 from .tooling import (
     advanced_web_search,
     build_topology_json,
+    extract_claim_candidates_from_page,
     extract_entities_from_page,
     family_intel,
     fetch_page_content,
@@ -22,6 +23,7 @@ from .tooling import (
     malware_profile_lookup,
     pivot_related_indicators,
     save_report_md,
+    technical_source_search,
     vt_enrich_ioc,
     vt_enrich_ip,
     web_search,
@@ -93,7 +95,9 @@ def run(alert_path: Path, out_dir: Path, *, mode: str = "react") -> Dict[str, An
         web_search,
         family_intel,
         advanced_web_search,
+        technical_source_search,
         fetch_page_content,
+        extract_claim_candidates_from_page,
         extract_entities_from_page,
         pivot_related_indicators,
         malware_profile_lookup,
@@ -129,7 +133,7 @@ def main() -> None:
 
     parser = argparse.ArgumentParser(description="LangChain ReAct Threat-Agent demo (DeepShield + VT + topology + report).")
     parser.add_argument("--alert", default=str(ROOT / "demo_alert.json"), help="path to alert JSON")
-    parser.add_argument("--out", default=str(ROOT / "demo_agent" / "out_langchain"), help="output directory")
+    parser.add_argument("--out", default=str(ROOT / "outputs" / "agent_runs" / "default"), help="output directory")
     parser.add_argument("--mode", default="plan", choices=["react", "plan"], help="agent mode: react or plan-and-solve")
     args = parser.parse_args()
 
