@@ -73,10 +73,53 @@ def _family_name(analysis: Dict[str, Any]) -> str:
     return _text(assessment.get("family")) or "该家族"
 
 
+def _source_label(value: Any) -> str:
+    source = _text(value)
+    if not source:
+        return "相关来源"
+    lowered = source.lower()
+    mapping = {
+        "threatfox.abuse.ch": "ThreatFox",
+        "urlhaus.abuse.ch": "URLhaus",
+        "sslbl": "SSLBL",
+        "ja4db": "JA4DB",
+        "virustotal": "VirusTotal",
+        "family_intel": "家族背景情报",
+        "alert_enrichment": "告警附带标签",
+    }
+    return mapping.get(lowered, source)
+
+
+def _dedupe_ranked_items(items: List[Dict[str, Any]], *, per_domain_limit: int = 1) -> List[Dict[str, Any]]:
+    deduped: List[Dict[str, Any]] = []
+    seen_keys = set()
+    domain_counts: Dict[str, int] = {}
+    for item in items:
+        title = _text(item.get("title"))
+        url = _text(item.get("url"))
+        source = _text(item.get("source"))
+        domain = _text(item.get("domain"))
+        key = (title, url, source)
+        if key in seen_keys:
+            continue
+        if domain and domain_counts.get(domain, 0) >= per_domain_limit:
+            continue
+        seen_keys.add(key)
+        if domain:
+            domain_counts[domain] = domain_counts.get(domain, 0) + 1
+        deduped.append(item)
+    return deduped
+
+
 def _localized_claim(item: Dict[str, Any], analysis: Dict[str, Any]) -> str:
     claim = _text(item.get("claim"))
     if not claim:
         return claim
+    item_type = _text(item.get("type")).lower()
+    if item_type == "entity_pivot":
+        return claim
+    if item_type in {"page_ttp", "page_family_or_indicator", "page_claim"} and _looks_mostly_ascii(claim):
+        return "补查页面正文中提取到了与恶意行为、基础设施或二跳实体相关的线索，建议结合原始页面进一步复核。"
     if not _looks_mostly_ascii(claim):
         return claim
 
@@ -149,6 +192,7 @@ def _conclusion_lines(analysis: Dict[str, Any]) -> List[str]:
     assessment = analysis.get("assessment") or {}
     corroboration = analysis.get("corroboration") or {}
     local_intel = analysis.get("local_intel") or {}
+    supplemental = analysis.get("supplemental") or {}
     confidence = _coerce_int(assessment.get("confidence"), 0)
     family = _text(assessment.get("family")) or "Unknown"
     fp = event.get("trigger_fingerprint") or {}
@@ -177,6 +221,8 @@ def _conclusion_lines(analysis: Dict[str, Any]) -> List[str]:
             )
     else:
         lines.append("当前已确认该事件具备可疑恶意流量特征，但自动化情报尚不足以稳定归因到明确家族。")
+        if list(supplemental.get("supplemental_evidence") or []):
+            lines.append("补查阶段已获取额外页面证据和二跳线索，可作为人工复核和后续扩线的补充依据。")
 
     return lines
 
@@ -186,12 +232,18 @@ def _key_evidence(analysis: Dict[str, Any], limit: int = 5) -> List[Dict[str, An
     priority = {
         "local_intel": 0,
         "enrichment": 1,
-        "family_intel": 2,
-        "search_result": 3,
-        "supplemental": 4,
+        "supplemental": 2,
+        "family_intel": 3,
+        "search_result": 4,
         "hint": 5,
     }
-    filtered = [item for item in evidence if item.get("kind") != "event"]
+    filtered = [
+        item
+        for item in evidence
+        if item.get("kind") not in {"event", "supplemental"}
+        and bool(item.get("is_reportable"))
+        and _text(item.get("evidence_tier")) != "noisy"
+    ]
     filtered.sort(
         key=lambda item: (
             priority.get(_text(item.get("kind")), 9),
@@ -199,7 +251,26 @@ def _key_evidence(analysis: Dict[str, Any], limit: int = 5) -> List[Dict[str, An
             -_coerce_int(item.get("confidence"), 0),
         )
     )
-    return filtered[:limit]
+    return _dedupe_ranked_items(filtered, per_domain_limit=1)[:limit]
+
+
+def _supplemental_report_items(analysis: Dict[str, Any], limit: int = 3) -> List[Dict[str, Any]]:
+    evidence: List[Dict[str, Any]] = list(analysis.get("evidence") or [])
+    items = [
+        item
+        for item in evidence
+        if _text(item.get("kind")) == "supplemental"
+        and bool(item.get("is_reportable"))
+        and _text(item.get("evidence_tier")) != "noisy"
+    ]
+    items.sort(
+        key=lambda item: (
+            -_coerce_int(item.get("weight"), 0),
+            -_coerce_int(item.get("confidence"), 0),
+            _text(item.get("title")),
+        )
+    )
+    return _dedupe_ranked_items(items, per_domain_limit=1)[:limit]
 
 
 def _background_evidence(analysis: Dict[str, Any], limit: int = 3) -> List[Dict[str, Any]]:
@@ -207,14 +278,16 @@ def _background_evidence(analysis: Dict[str, Any], limit: int = 3) -> List[Dict[
     background: List[Dict[str, Any]] = []
     for item in evidence:
         kind = _text(item.get("kind"))
-        if kind not in {"family_intel", "search_result", "supplemental"}:
+        if kind not in {"family_intel", "search_result"}:
+            continue
+        if _text(item.get("evidence_tier")) == "noisy":
             continue
         claim = _text(item.get("claim"))
         title = _text(item.get("title"))
         if claim or title:
             background.append(item)
     background.sort(key=lambda item: (-_coerce_int(item.get("weight"), 0), title if (title := _text(item.get("title"))) else ""))
-    return background[:limit]
+    return _dedupe_ranked_items(background, per_domain_limit=1)[:limit]
 
 
 def _reference_items(analysis: Dict[str, Any], limit: int = 6) -> List[Dict[str, Any]]:
@@ -233,10 +306,38 @@ def _reference_items(analysis: Dict[str, Any], limit: int = 6) -> List[Dict[str,
     return refs
 
 
+def _attribution_summary(analysis: Dict[str, Any]) -> str:
+    assessment = analysis.get("assessment") or {}
+    corroboration = analysis.get("corroboration") or {}
+    family = _text(assessment.get("family"))
+    confidence = _coerce_int(assessment.get("confidence"), 0)
+    primary = corroboration.get("primary_source") or {}
+    primary_label = _source_label(primary.get("source"))
+    supporting = list(corroboration.get("supporting_sources") or [])
+    conflicts = list(corroboration.get("conflicting_sources") or [])
+    if family and family != "Unknown":
+        base = f"当前归因结果为 `{family}`，置信度为 {confidence}。"
+        if primary_label:
+            base += f" 主依据来自 `{primary_label}`。"
+        if supporting:
+            labels = "、".join(_source_label(item.get("source")) for item in supporting[:3] if _source_label(item.get("source")))
+            if labels:
+                base += f" 另有 `{labels}` 提供补充支持。"
+        if conflicts:
+            conflict_labels = "、".join(_source_label(item.get("source")) for item in conflicts[:2] if _source_label(item.get("source")))
+            if conflict_labels:
+                base += f" 但 `{conflict_labels}` 提供了不同家族线索，建议结合人工复核审慎使用。"
+        elif corroboration.get("summary"):
+            base += f" {corroboration.get('summary')}"
+        return base
+    return "当前尚未获得足够证据完成稳定家族归因，现阶段更适合将其视为待进一步复核的可疑恶意流量。"
+
+
 def render_report_from_analysis(analysis: Dict[str, Any]) -> str:
     event = analysis.get("event") or {}
     assessment = analysis.get("assessment") or {}
     local_intel = analysis.get("local_intel") or {}
+    supplemental = analysis.get("supplemental") or {}
     actions: List[Dict[str, Any]] = list(analysis.get("recommended_actions") or [])
     family = _text(assessment.get("family")) or "Unknown"
     confidence = _coerce_int(assessment.get("confidence"), 0)
@@ -260,6 +361,10 @@ def render_report_from_analysis(analysis: Dict[str, Any]) -> str:
         lines.append(line)
         lines.append("")
 
+    lines.append("## 归因依据")
+    lines.append(_attribution_summary(analysis))
+    lines.append("")
+
     lines.append("## 关键证据与情报")
     key_items = _key_evidence(analysis)
     if key_items:
@@ -282,6 +387,35 @@ def render_report_from_analysis(analysis: Dict[str, Any]) -> str:
     else:
         lines.append("当前未提取到可直接展示的结构化证据。")
         lines.append("")
+
+    supplemental_items = _supplemental_report_items(analysis)
+    supplemental_summary = _text(supplemental.get("supplemental_summary"))
+    if supplemental_items:
+        lines.append("## 深度关联发现（补查结果）")
+        if supplemental_summary:
+            lines.append(supplemental_summary)
+            lines.append("")
+        seen_supplemental = set()
+        for item in supplemental_items:
+            title = _text(item.get("title")) or "补查发现"
+            source = _text(item.get("source"))
+            claim = _localized_claim(item, analysis)
+            url = _synthesized_url(item, analysis)
+            level = _text(item.get("weight_level"))
+            dedupe_key = (title, url or "", claim)
+            if dedupe_key in seen_supplemental:
+                continue
+            seen_supplemental.add(dedupe_key)
+            lines.append(f"### {title}")
+            if source:
+                lines.append(f"来源：{source}")
+            if claim:
+                lines.append(f"说明：{claim}")
+            if level:
+                lines.append(f"证据等级：{level}")
+            if url:
+                lines.append(f"参考：{_format_reference(url, url)}")
+            lines.append("")
 
     if local_intel.get("matched"):
         lines.append("## 本地指纹情报")

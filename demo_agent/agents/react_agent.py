@@ -59,10 +59,11 @@ def build_gap_fill_executor(llm: Any, tools: List[BaseTool], *, verbose: bool = 
                 '"candidate_family":"","supplemental_summary":""}}'
                 "如果没有查到有效新增证据，也必须返回合法 JSON，并将 gap_updates 的状态写为 unresolved 或 partially_resolved。"
                 "绝不编造家族、IOC、TTP 或攻击意图。"
-                "补查时优先选择高价值技术来源，如 any.run、abuse.ch、Malpedia、Microsoft、Trend Micro、Proofpoint、Check Point、VirusTotal。"
+                "补查时优先选择高价值技术来源，如 ThreatFox、URLhaus、any.run、Malpedia、Microsoft、Trend Micro、Proofpoint、Check Point、VirusTotal。"
                 "你不必机械执行 gap_plan 中的全部 actions，而应优先选择最有可能补上关键缺口的一条动作链。"
                 "如果多个 gap 指向同一目标（例如都是家族归因），优先用一次最强的技术来源搜索和页面阅读来同时回答它们。"
                 "只要 gap_plan 里存在 actions，直接给 Final Answer 而不先调用至少一个工具是无效的。"
+                "如果 ThreatFox 或 URLhaus 返回了结构化结果，优先把这些结构化结论整理为 supplemental_evidence，不要再重复搜索同一指标。"
                 "如果你读取了页面正文，优先继续调用 extract_claim_candidates_from_page 和 extract_entities_from_page，"
                 "从正文中提取可以直接写入证据的具体句子、TTP 线索和二跳 IOC。"
                 "只有当页面或工具结果明确给出家族关联、行为描述或关联 IOC 时，才写入 supplemental_evidence。"

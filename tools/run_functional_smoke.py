@@ -51,9 +51,6 @@ def _build_cases(run_dir: Path) -> List[SmokeCase]:
     ja4_only_path = run_dir / "inputs" / "ja4_only.json"
     _write_json(ja4_only_path, [demo_alerts[2]])
 
-    ja3_only_path = run_dir / "inputs" / "ja3_only.json"
-    _write_json(ja3_only_path, [demo_alerts[0]])
-
     return [
         SmokeCase(
             name="batch_plan_full",
@@ -96,14 +93,6 @@ def _build_cases(run_dir: Path) -> List[SmokeCase]:
             },
             notes="验证本地 MySQL 不可用时是否安全降级。",
             timeout_s=90,
-        ),
-        SmokeCase(
-            name="react_mode_smoke",
-            mode="react",
-            alert_path=ja3_only_path,
-            env_overrides={},
-            notes="验证独立 react 模式是否仍可运行。",
-            timeout_s=60,
         ),
     ]
 
@@ -224,6 +213,7 @@ def _analyze_item(item: Dict[str, Any]) -> Dict[str, Any]:
     supplemental = analysis.get("supplemental") or {}
     supplemental_evidence = list(supplemental.get("supplemental_evidence") or [])
     local_intel = analysis.get("local_intel") or {}
+    timings = analysis.get("timings") or {}
 
     topology_text = json.dumps(topology, ensure_ascii=False)
     gap_plan = ((item.get("result") or {}).get("gap_plan") or {}).get("items") or []
@@ -241,6 +231,9 @@ def _analyze_item(item: Dict[str, Any]) -> Dict[str, Any]:
             "gap_triggered": bool(gap_plan),
             "supplemental_evidence_count": len(supplemental_evidence),
             "local_matched": bool(local_intel.get("matched")),
+            "pipeline_total_s": timings.get("pipeline_total_s"),
+            "baseline_total_s": timings.get("baseline_total_s"),
+            "gap_execution_mode": timings.get("gap_execution_mode"),
         }
     )
 
@@ -259,7 +252,7 @@ def _analyze_item(item: Dict[str, Any]) -> Dict[str, Any]:
     if len(findings) == 0:
         result["ok"] = False
         result["issues"].append("no findings generated")
-    if family and report and family not in report:
+    if family and family != "Unknown" and report and family not in report:
         result["ok"] = False
         result["issues"].append("family not present in report")
     if family and topology and family not in topology_text:

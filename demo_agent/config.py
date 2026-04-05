@@ -27,6 +27,9 @@ class AgentConfig:
     llm_model: str
     llm_temperature: float = 0.7
     vt_api_key: Optional[str] = None
+    abusech_auth_key: Optional[str] = None
+    threatfox_auth_key: Optional[str] = None
+    urlhaus_auth_key: Optional[str] = None
     db_host: str = "127.0.0.1"
     db_port: int = 3306
     db_name: str = "threat_intel"
@@ -72,6 +75,9 @@ def load_config() -> AgentConfig:
     model = os.getenv("LLM_MODEL") or "chat"  # DeepShield: chat|reasoner
     temperature = float(os.getenv("LLM_TEMPERATURE") or "0.7")
     vt_api_key = os.getenv("VT_API_KEY") or os.getenv("VIRUSTOTAL_API_KEY")
+    abusech_auth_key = os.getenv("ABUSECH_AUTH_KEY") or os.getenv("ABUSE_CH_AUTH_KEY")
+    threatfox_auth_key = os.getenv("THREATFOX_AUTH_KEY") or abusech_auth_key
+    urlhaus_auth_key = os.getenv("URLHAUS_AUTH_KEY") or abusech_auth_key
     db_cfg = load_database_config()
 
     return AgentConfig(
@@ -80,6 +86,9 @@ def load_config() -> AgentConfig:
         llm_model=model,
         llm_temperature=temperature,
         vt_api_key=vt_api_key,
+        abusech_auth_key=abusech_auth_key,
+        threatfox_auth_key=threatfox_auth_key,
+        urlhaus_auth_key=urlhaus_auth_key,
         db_host=db_cfg.host,
         db_port=db_cfg.port,
         db_name=db_cfg.name,

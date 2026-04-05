@@ -4,7 +4,16 @@ from langchain_core.tools import tool
 
 from ..renderers.artifacts import build_topology
 from ..storage.io import save_text
-from .baseline import abuse_ch_lookup, family_intel_lookup, local_intel_lookup, standard_web_search, vt_enrich_ioc, vt_enrich_ip
+from .baseline import (
+    abuse_ch_lookup,
+    family_intel_lookup,
+    local_intel_lookup,
+    standard_web_search,
+    threatfox_ioc_lookup,
+    urlhaus_ioc_lookup,
+    vt_enrich_ioc,
+    vt_enrich_ip,
+)
 from .exploration import (
     advanced_web_search,
     extract_claim_candidates_from_page,
@@ -55,6 +64,8 @@ __all__ = [
     "save_report_md",
     "standard_web_search",
     "technical_source_search",
+    "threatfox_ioc_lookup",
+    "urlhaus_ioc_lookup",
     "vt_enrich_ioc",
     "vt_enrich_ip",
     "web_search",

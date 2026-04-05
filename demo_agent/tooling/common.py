@@ -78,14 +78,27 @@ def merge_search_observations(*observations: Optional[Dict[str, Any]]) -> Dict[s
             if key in seen:
                 continue
             seen.add(key)
-            merged_results.append(
-                {
-                    "title": title,
-                    "url": url,
-                    "snippet": snippet,
-                    "source": source,
-                }
-            )
+            merged_item = {
+                "title": title,
+                "url": url,
+                "snippet": snippet,
+                "source": source,
+            }
+            for extra_key in (
+                "family",
+                "confidence",
+                "tags",
+                "host",
+                "ioc",
+                "indicator_type",
+                "malware_label",
+                "reference",
+                "malpedia_url",
+                "signature",
+            ):
+                if item.get(extra_key) not in (None, "", [], {}):
+                    merged_item[extra_key] = item.get(extra_key)
+            merged_results.append(merged_item)
 
     merged: Dict[str, Any] = {
         "ok": ok or bool(merged_results),

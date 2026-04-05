@@ -11,12 +11,18 @@ _HIGH_AUTHORITY_DOMAINS = {
     "virustotal.com": 92,
     "sslbl.abuse.ch": 90,
     "threatfox.abuse.ch": 88,
+    "urlhaus.abuse.ch": 88,
     "bazaar.abuse.ch": 88,
     "abuse.ch": 86,
     "microsoft.com": 84,
     "malpedia.caad.fkie.fraunhofer.de": 84,
     "spamhaus.org": 82,
     "netskope.com": 80,
+    "any.run": 80,
+    "huntress.com": 80,
+    "checkpoint.com": 80,
+    "malwarebytes.com": 78,
+    "cyber.nj.gov": 76,
     "securityaffairs.com": 78,
     "csirt.cy": 76,
 }
@@ -48,6 +54,18 @@ _SEARCH_KIND_STRENGTH = {
     "family_intel": 66,
     "search_result": 58,
 }
+_NOISY_DOMAINS = {"reddit.com", "github.com", "forums.malwarebytes.com", "youtube.com", "linkedin.com"}
+_SOURCE_KIND_PRECEDENCE = {
+    "local_intel": 100,
+    "structured_external_family": 88,
+    "family_background": 74,
+    "supplemental_family": 72,
+    "alert_hint": 62,
+    "web_background": 56,
+    "reputation_signal": 50,
+    "infra_signal": 42,
+}
+_LOCAL_PRIMARY_CONFIDENCE = 75
 
 
 def _first_non_empty(*values: Any) -> Optional[str]:
@@ -150,6 +168,53 @@ def _source_authority(source: str, url: Any, kind: str) -> Tuple[int, str]:
     return 55, "未识别来源"
 
 
+def _evidence_tier(source: str, url: Any, kind: str) -> str:
+    domain = _extract_domain(url)
+    if kind in {"event", "local_intel", "enrichment"}:
+        return "strong"
+    if any(_domain_matches(domain, noisy) for noisy in _NOISY_DOMAINS):
+        return "noisy"
+    authority, _ = _source_authority(source, url, kind)
+    if authority >= 85:
+        return "strong"
+    if authority >= 72:
+        return "supporting"
+    if authority >= 55:
+        return "background"
+    return "noisy"
+
+
+def _page_type(title: str, claim: str, url: Any) -> str:
+    title_l = _clean_text(title).lower()
+    claim_l = _clean_text(claim).lower()
+    url_l = str(_normalize_url(url) or "").lower()
+    domain = _extract_domain(url)
+
+    if any(_domain_matches(domain, noisy) for noisy in _NOISY_DOMAINS):
+        return "forum"
+    if url_l.endswith(".csv") or "blacklist" in url_l or "c2-server-list" in url_l:
+        return "list"
+    if any(token in url_l for token in ("/report/", "/analysis/")):
+        return "sandbox"
+    if any(token in url_l for token in ("/details/", "malware-encyclopedia-description", "/threat-library/", "/cyber-hub/")):
+        return "profile"
+    if any(token in title_l for token in ("threat description", "malware family", "analysis", "removal")):
+        return "profile"
+    if any(token in claim_l for token in ("ttp", "persistence", "inject", "credential", "stealer", "backdoor")):
+        return "detail"
+    return "article"
+
+
+def _is_reportable(*, kind: str, evidence_tier: str, page_type: str, confidence: int) -> bool:
+    if kind in {"event", "local_intel", "enrichment", "hint"}:
+        return True
+    if evidence_tier == "noisy" or page_type == "forum":
+        return False
+    if kind == "supplemental":
+        return confidence >= 60
+    return evidence_tier in {"strong", "supporting", "background"}
+
+
 def _mentions_context(title: str, claim: str, family: str, fp_value: str) -> bool:
     haystack = f"{title} {claim}".lower()
     family_hit = bool(family and family != "Unknown" and family.lower() in haystack)
@@ -209,7 +274,11 @@ def _append_evidence(evidence: List[Dict[str, Any]], item: Dict[str, Any]) -> No
     claim = str(prepared.get("claim") or "").strip()
     source = str(prepared.get("source") or "").strip()
     for existing in evidence:
-        if url and str(existing.get("url") or "").strip() == url:
+        existing_url = str(existing.get("url") or "").strip()
+        same_kind = str(existing.get("kind") or "").strip() == str(prepared.get("kind") or "").strip()
+        same_type = str(existing.get("type") or "").strip() == str(prepared.get("type") or "").strip()
+        same_claim = str(existing.get("claim") or "").strip() == claim
+        if url and existing_url == url and same_kind and same_type and same_claim:
             return
         if not url and claim and source:
             if str(existing.get("source") or "").strip() == source and str(existing.get("claim") or "").strip() == claim:
@@ -250,6 +319,14 @@ def _finalize_evidence(evidence: List[Dict[str, Any]], *, family: str, fp_value:
         finalized["weight"] = weight
         finalized["weight_level"] = _weight_label(weight)
         finalized["weight_reason"] = reason
+        finalized["evidence_tier"] = _evidence_tier(finalized["source"], finalized.get("url"), str(finalized.get("kind") or ""))
+        finalized["page_type"] = _page_type(finalized.get("title"), finalized.get("claim"), finalized.get("url"))
+        finalized["is_reportable"] = _is_reportable(
+            kind=str(finalized.get("kind") or ""),
+            evidence_tier=finalized["evidence_tier"],
+            page_type=finalized["page_type"],
+            confidence=_coerce_int(finalized.get("confidence"), default=50),
+        )
         kept.append(finalized)
 
     kept.sort(
@@ -269,37 +346,359 @@ def _local_family(local_intel: Optional[Dict[str, Any]]) -> Optional[str]:
     return _first_non_empty((best or {}).get("malware_family"))
 
 
-def _extract_external_family_candidates(
+def _families_from_results(obs: Optional[Dict[str, Any]]) -> List[str]:
+    candidates: List[str] = []
+    if not isinstance(obs, dict):
+        return candidates
+    for result in list(obs.get("results") or []):
+        if not isinstance(result, dict):
+            continue
+        for value in (
+            result.get("family"),
+            result.get("malware_printable"),
+            result.get("malware_label"),
+            result.get("malware"),
+            result.get("label"),
+        ):
+            text = _first_non_empty(value)
+            if text and text not in candidates:
+                    candidates.append(text)
+    return candidates
+
+
+def _signal_source_kind(*, source: Any, url: Any, kind: str) -> str:
+    normalized_source = _source_name(source, url).lower()
+    domain = _extract_domain(url)
+    if kind == "local_intel":
+        return "local_intel"
+    if normalized_source in {"virustotal", "vt"} or _domain_matches(domain, "virustotal.com"):
+        return "reputation_signal"
+    if _domain_matches(domain, "urlhaus.abuse.ch"):
+        return "infra_signal"
+    if _domain_matches(domain, "threatfox.abuse.ch") or _domain_matches(domain, "sslbl.abuse.ch") or _domain_matches(domain, "bazaar.abuse.ch"):
+        return "structured_external_family"
+    if kind == "hint":
+        return "alert_hint"
+    if kind == "family_intel":
+        return "family_background"
+    if kind == "supplemental":
+        return "supplemental_family"
+    return "web_background"
+
+
+def _signal_precedence(source_kind: str) -> int:
+    return _SOURCE_KIND_PRECEDENCE.get(source_kind, 50)
+
+
+def _family_value_from_result(result: Dict[str, Any], *, source_kind: str) -> Optional[str]:
+    values = [result.get("family"), result.get("malware_printable")]
+    if source_kind != "infra_signal":
+        values.extend(
+            [
+                result.get("malware_label"),
+                result.get("malware"),
+                result.get("label"),
+                result.get("signature"),
+            ]
+        )
+    return _first_non_empty(*values)
+
+
+def _signal_sort_key(signal: Dict[str, Any]) -> Tuple[int, int, int, str]:
+    return (
+        _signal_precedence(str(signal.get("source_kind") or "")),
+        _coerce_int(signal.get("confidence"), default=50),
+        1 if str(signal.get("source_kind") or "") == "local_intel" else 0,
+        _clean_text(signal.get("source")),
+    )
+
+
+def _compact_signal(signal: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+    if not isinstance(signal, dict):
+        return None
+    return {
+        "family": signal.get("family"),
+        "source": signal.get("source"),
+        "source_kind": signal.get("source_kind"),
+        "confidence": _coerce_int(signal.get("confidence"), default=50),
+        "precedence": _signal_precedence(str(signal.get("source_kind") or "")),
+        "url": signal.get("url"),
+    }
+
+
+def _best_signal(signals: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+    if not signals:
+        return None
+    return max(signals, key=_signal_sort_key)
+
+
+def _build_family_signals(
     *,
     event: Dict[str, Any],
+    local_intel: Optional[Dict[str, Any]],
+    obs_fp: Optional[Dict[str, Any]],
+    obs_context: Optional[Dict[str, Any]],
     obs_family: Optional[Dict[str, Any]],
     supplemental: Optional[Dict[str, Any]],
-) -> List[str]:
-    candidates: List[str] = []
-    for value in (
-        (event.get("enrichment") or {}).get("info"),
-        (obs_family or {}).get("family") if isinstance(obs_family, dict) else None,
-        (supplemental or {}).get("candidate_family") if isinstance(supplemental, dict) else None,
-    ):
-        text = _first_non_empty(value)
-        if text and text not in candidates:
-            candidates.append(text)
-    return candidates
+) -> List[Dict[str, Any]]:
+    signals: List[Dict[str, Any]] = []
+    seen = set()
+
+    def add_signal(
+        *,
+        family: Optional[str],
+        source: Any,
+        url: Any,
+        kind: str,
+        confidence: int,
+        note: str = "",
+    ) -> None:
+        text = _first_non_empty(family)
+        if not text:
+            return
+        signal_source = _source_name(source, url)
+        source_kind = _signal_source_kind(source=source, url=url, kind=kind)
+        key = (text, signal_source, source_kind, _normalize_url(url))
+        if key in seen:
+            return
+        seen.add(key)
+        signals.append(
+            {
+                "family": text,
+                "source": signal_source,
+                "url": _normalize_url(url),
+                "kind": kind,
+                "source_kind": source_kind,
+                "confidence": confidence,
+                "note": note,
+            }
+        )
+
+    best_local = _best_local_match(local_intel)
+    if isinstance(best_local, dict):
+        add_signal(
+            family=best_local.get("malware_family"),
+            source=best_local.get("source") or "local_db",
+            url=None,
+            kind="local_intel",
+            confidence=_coerce_int(best_local.get("confidence"), default=85),
+            note="local_best_match",
+        )
+
+    enrichment = event.get("enrichment") or {}
+    add_signal(
+        family=enrichment.get("info"),
+        source=enrichment.get("reference") or "alert_enrichment",
+        url=None,
+        kind="hint",
+        confidence=_coerce_int(enrichment.get("confidence"), default=70),
+        note="alert_hint",
+    )
+
+    if isinstance(obs_family, dict):
+        add_signal(
+            family=obs_family.get("family"),
+            source="family_intel",
+            url=None,
+            kind="family_intel",
+            confidence=68,
+            note="family_background_seed",
+        )
+
+    for obs in (obs_fp, obs_context):
+        if not isinstance(obs, dict):
+            continue
+        for result in list(obs.get("results") or []):
+            if not isinstance(result, dict):
+                continue
+            source_kind = _signal_source_kind(source=result.get("source"), url=result.get("url"), kind="search_result")
+            family = _family_value_from_result(result, source_kind=source_kind)
+            if not family:
+                continue
+            add_signal(
+                family=family,
+                source=result.get("source") or obs.get("mode") or "web_search",
+                url=result.get("url"),
+                kind="search_result",
+                confidence=_coerce_int(result.get("confidence"), default=65),
+                note=obs.get("query") or "",
+            )
+
+    if isinstance(supplemental, dict):
+        first_item = next((item for item in list(supplemental.get("supplemental_evidence") or []) if isinstance(item, dict)), None)
+        add_signal(
+            family=supplemental.get("candidate_family"),
+            source=(first_item or {}).get("source") or "react_gap_fill",
+            url=(first_item or {}).get("url"),
+            kind="supplemental",
+            confidence=72,
+            note="supplemental_candidate_family",
+        )
+
+    return signals
+
+
+def _aggregate_family_signals(signals: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    aggregated: Dict[str, Dict[str, Any]] = {}
+    for signal in signals:
+        family = str(signal.get("family") or "").strip()
+        if not family:
+            continue
+        entry = aggregated.setdefault(
+            family,
+            {
+                "family": family,
+                "signals": [],
+                "max_confidence": 0,
+                "max_precedence": 0,
+                "local_confidence": 0,
+                "structured_support_count": 0,
+                "support_count": 0,
+                "has_local": False,
+            },
+        )
+        entry["signals"].append(signal)
+        entry["max_confidence"] = max(entry["max_confidence"], _coerce_int(signal.get("confidence"), default=50))
+        entry["max_precedence"] = max(entry["max_precedence"], _signal_precedence(str(signal.get("source_kind") or "")))
+        entry["support_count"] = len(entry["signals"])
+        if str(signal.get("source_kind") or "") == "local_intel":
+            entry["has_local"] = True
+            entry["local_confidence"] = max(entry["local_confidence"], _coerce_int(signal.get("confidence"), default=50))
+        if str(signal.get("source_kind") or "") == "structured_external_family":
+            entry["structured_support_count"] += 1
+
+    ranked = list(aggregated.values())
+    ranked.sort(
+        key=lambda entry: (
+            1 if entry.get("has_local") else 0,
+            entry.get("max_precedence", 0),
+            entry.get("structured_support_count", 0),
+            entry.get("support_count", 0),
+            entry.get("max_confidence", 0),
+        ),
+        reverse=True,
+    )
+    return ranked
+
+
+def _choose_family_from_matrix(aggregated: List[Dict[str, Any]]) -> Tuple[str, Optional[Dict[str, Any]]]:
+    if not aggregated:
+        return "Unknown", None
+
+    local_entry = next((entry for entry in aggregated if entry.get("has_local")), None)
+    best_external = next((entry for entry in aggregated if not entry.get("has_local")), None)
+
+    if local_entry and int(local_entry.get("local_confidence") or 0) >= _LOCAL_PRIMARY_CONFIDENCE:
+        return str(local_entry.get("family") or "Unknown"), local_entry
+
+    if local_entry and best_external:
+        external_precedence = int(best_external.get("max_precedence") or 0)
+        external_confidence = int(best_external.get("max_confidence") or 0)
+        local_confidence = int(local_entry.get("local_confidence") or 0)
+        if external_precedence >= 85 and external_confidence >= max(70, local_confidence + 8):
+            return str(best_external.get("family") or "Unknown"), best_external
+        return str(local_entry.get("family") or "Unknown"), local_entry
+
+    best_entry = aggregated[0]
+    return str(best_entry.get("family") or "Unknown"), best_entry
+
+
+def _build_attribution_context(
+    *,
+    event: Dict[str, Any],
+    local_intel: Optional[Dict[str, Any]],
+    obs_fp: Optional[Dict[str, Any]],
+    obs_context: Optional[Dict[str, Any]],
+    obs_family: Optional[Dict[str, Any]],
+    supplemental: Optional[Dict[str, Any]],
+) -> Dict[str, Any]:
+    signals = _build_family_signals(
+        event=event,
+        local_intel=local_intel,
+        obs_fp=obs_fp,
+        obs_context=obs_context,
+        obs_family=obs_family,
+        supplemental=supplemental,
+    )
+    aggregated = _aggregate_family_signals(signals)
+    selected_family, selected_entry = _choose_family_from_matrix(aggregated)
+    primary_signal = _best_signal(list(selected_entry.get("signals") or [])) if isinstance(selected_entry, dict) else None
+
+    supporting_sources: List[Dict[str, Any]] = []
+    if isinstance(selected_entry, dict):
+        for signal in list(selected_entry.get("signals") or []):
+            if primary_signal and signal is primary_signal:
+                continue
+            compact = _compact_signal(signal)
+            if compact:
+                supporting_sources.append(compact)
+
+    conflicting_entries: List[Dict[str, Any]] = []
+    if selected_family != "Unknown":
+        for entry in aggregated:
+            if str(entry.get("family") or "") == selected_family:
+                continue
+            if bool(entry.get("has_local")) or int(entry.get("max_precedence") or 0) >= 70:
+                conflicting_entries.append(entry)
+
+    conflicting_sources: List[Dict[str, Any]] = []
+    for entry in conflicting_entries:
+        best = _best_signal(list(entry.get("signals") or []))
+        compact = _compact_signal(best)
+        if compact:
+            conflicting_sources.append(compact)
+
+    local_family = _local_family(local_intel)
+    external_candidates: List[str] = []
+    for entry in aggregated:
+        family = str(entry.get("family") or "").strip()
+        if not family or family == local_family:
+            continue
+        if family not in external_candidates:
+            external_candidates.append(family)
+
+    return {
+        "local_family": local_family,
+        "signals": signals,
+        "family_candidates": [
+            {
+                "family": entry.get("family"),
+                "max_precedence": entry.get("max_precedence"),
+                "max_confidence": entry.get("max_confidence"),
+                "support_count": entry.get("support_count"),
+                "has_local": bool(entry.get("has_local")),
+            }
+            for entry in aggregated
+        ],
+        "selected_family": selected_family,
+        "primary_source": _compact_signal(primary_signal),
+        "supporting_sources": supporting_sources,
+        "conflicting_sources": conflicting_sources,
+        "conflicting_candidates": [entry.get("family") for entry in conflicting_entries if entry.get("family")],
+        "external_family_candidates": external_candidates,
+    }
 
 
 def _select_family(
     *,
     event: Dict[str, Any],
     local_intel: Optional[Dict[str, Any]],
+    obs_fp: Optional[Dict[str, Any]],
+    obs_context: Optional[Dict[str, Any]],
     obs_family: Optional[Dict[str, Any]],
     supplemental: Optional[Dict[str, Any]],
 ) -> str:
-    local_family = _local_family(local_intel)
-    external_candidates = _extract_external_family_candidates(event=event, obs_family=obs_family, supplemental=supplemental)
-    if local_family:
-        return local_family
-    if external_candidates:
-        return external_candidates[0]
+    context = _build_attribution_context(
+        event=event,
+        local_intel=local_intel,
+        obs_fp=obs_fp,
+        obs_context=obs_context,
+        obs_family=obs_family,
+        supplemental=supplemental,
+    )
+    selected = _first_non_empty(context.get("selected_family"))
+    if selected:
+        return selected
     labels = (event.get("enrichment") or {}).get("labels")
     return _first_label(labels) or "Unknown"
 
@@ -352,30 +751,53 @@ def _build_corroboration(
     *,
     event: Dict[str, Any],
     local_intel: Optional[Dict[str, Any]],
+    obs_fp: Optional[Dict[str, Any]],
+    obs_context: Optional[Dict[str, Any]],
     obs_family: Optional[Dict[str, Any]],
     supplemental: Optional[Dict[str, Any]],
     family: str,
 ) -> Dict[str, Any]:
-    local_family = _local_family(local_intel)
-    external_candidates = _extract_external_family_candidates(event=event, obs_family=obs_family, supplemental=supplemental)
-    supporting = bool(local_family and local_family in external_candidates)
-    conflict = bool(local_family and external_candidates and any(item != local_family for item in external_candidates))
+    attribution = _build_attribution_context(
+        event=event,
+        local_intel=local_intel,
+        obs_fp=obs_fp,
+        obs_context=obs_context,
+        obs_family=obs_family,
+        supplemental=supplemental,
+    )
+    local_family = _first_non_empty(attribution.get("local_family"))
+    external_candidates = list(attribution.get("external_family_candidates") or [])
+    primary_source = attribution.get("primary_source")
+    supporting_sources = list(attribution.get("supporting_sources") or [])
+    conflicting_sources = list(attribution.get("conflicting_sources") or [])
+    supporting = bool(supporting_sources)
+    conflict = bool(conflicting_sources)
 
-    if local_family and supporting:
+    supplemental_count = len(list((supplemental or {}).get("supplemental_evidence") or [])) if isinstance(supplemental, dict) else 0
+
+    primary_kind = str((primary_source or {}).get("source_kind") or "")
+    primary_source_name = str((primary_source or {}).get("source") or "").strip()
+    if local_family and primary_kind == "local_intel" and supporting and not conflict:
         driver = "local_and_external"
-        summary = f"本地情报命中的家族 {local_family} 获得外部情报佐证。"
-    elif local_family and not external_candidates:
-        driver = "local_only"
-        summary = f"当前家族判断主要依赖本地指纹情报 {local_family}。"
-    elif local_family and conflict:
+        summary = f"当前主结论以本地指纹情报 `{local_family}` 为主，并获得外部结构化情报的补充支持。"
+    elif local_family and primary_kind == "local_intel" and conflict:
         driver = "local_with_conflict"
-        summary = f"本地情报指向 {local_family}，但外部情报出现不同家族线索。"
-    elif external_candidates:
+        summary = f"当前主结论仍以本地指纹情报 `{local_family}` 为主，但外部情报出现了不同家族线索。"
+    elif primary_kind == "structured_external_family" and family != "Unknown":
+        driver = "external_structured"
+        summary = f"当前家族判断主要依赖结构化外部情报 `{primary_source_name or '外部来源'}`，并由其他来源提供补充。"
+    elif primary_kind == "alert_hint" and family != "Unknown":
+        driver = "hint_only"
+        summary = f"当前家族判断主要依赖告警附带标签 `{family}`，缺少更高权威来源的稳定交叉验证。"
+    elif family != "Unknown":
         driver = "external_only"
-        summary = f"当前家族判断主要依赖外部情报线索 {external_candidates[0]}。"
+        summary = f"当前家族判断主要依赖外部情报线索 `{family}`。"
     else:
         driver = "insufficient"
         summary = "目前缺少足够的本地命中与外部佐证来稳定归因。"
+
+    if supplemental_count > 0:
+        summary = f"{summary} 补查阶段额外获得了 {supplemental_count} 条补充证据。"
 
     return {
         "local_family": local_family,
@@ -385,6 +807,13 @@ def _build_corroboration(
         "confidence_driver": driver,
         "summary": summary,
         "selected_family": family,
+        "supplemental_evidence_count": supplemental_count,
+        "primary_source": primary_source,
+        "supporting_sources": supporting_sources,
+        "conflicting_sources": conflicting_sources,
+        "conflicting_candidates": list(attribution.get("conflicting_candidates") or []),
+        "family_candidates": list(attribution.get("family_candidates") or []),
+        "review_priority": "high" if conflict else "normal",
     }
 
 
@@ -420,6 +849,11 @@ def _estimate_confidence(
         score += 6
     if corroboration.get("supported_by_external"):
         score += 10
+    if str(((corroboration.get("primary_source") or {}).get("source_kind") or "")) == "structured_external_family":
+        score += 6
+    if str(((corroboration.get("primary_source") or {}).get("source_kind") or "")) == "alert_hint":
+        score -= 6
+    score += min(6, len(list(corroboration.get("supporting_sources") or [])) * 2)
     if corroboration.get("conflict"):
         score -= 12
     if corroboration.get("confidence_driver") == "local_only":
@@ -538,15 +972,30 @@ def _build_gaps(
     return gaps
 
 
-def _needs_gap_fill(gaps: List[Dict[str, Any]]) -> bool:
-    high_priority_types = {
-        "no_secondary_confirmation",
-        "conflicting_attribution",
-        "vt_only_context",
-        "single_source_attribution",
-        "behavior_context_missing",
-    }
-    return any(str(item.get("type") or "") in high_priority_types for item in gaps)
+def _needs_gap_fill(
+    gaps: List[Dict[str, Any]],
+    *,
+    corroboration: Optional[Dict[str, Any]] = None,
+    family: str = "Unknown",
+    confidence: int = 0,
+) -> bool:
+    gap_types = {str(item.get("type") or "") for item in gaps}
+    if not gap_types:
+        return False
+
+    if gap_types.intersection({"no_secondary_confirmation", "conflicting_attribution", "vt_only_context"}):
+        return True
+
+    primary_kind = str(((corroboration or {}).get("primary_source") or {}).get("source_kind") or "")
+    strong_primary = primary_kind in {"local_intel", "structured_external_family", "supplemental_family"}
+
+    if "single_source_attribution" in gap_types and family != "Unknown" and strong_primary and confidence < 75:
+        return True
+
+    if "behavior_context_missing" in gap_types and family != "Unknown" and strong_primary and 60 <= confidence < 75:
+        return True
+
+    return False
 
 
 def _build_evidence(
@@ -652,7 +1101,7 @@ def _build_evidence(
                         "url": result.get("url"),
                         "title": result.get("title") or f"指纹外部搜索 {index + 1}",
                         "claim": result.get("snippet") or result.get("title"),
-                        "confidence": 60,
+                        "confidence": _coerce_int(result.get("confidence"), default=60),
                         "raw_ref": f"external_intel.fingerprint_enrichment.results[{index}]",
                     },
                 )
@@ -669,7 +1118,7 @@ def _build_evidence(
                     "url": result.get("url"),
                     "title": result.get("title") or f"上下文搜索 {index + 1}",
                     "claim": result.get("snippet") or result.get("title"),
-                    "confidence": 62,
+                    "confidence": _coerce_int(result.get("confidence"), default=62),
                     "raw_ref": f"external_intel.context_search.results[{index}]",
                 },
             )
@@ -729,6 +1178,7 @@ def _build_findings(
     dst = event.get("dst") or {}
     event_evidence_id = evidence[0]["id"] if evidence else None
     local_evidence_ids = [item["id"] for item in evidence if item.get("kind") == "local_intel"]
+    supplemental_evidence_ids = [item["id"] for item in evidence if item.get("kind") == "supplemental"]
     family_evidence_ids = [
         item["id"]
         for item in evidence
@@ -770,6 +1220,18 @@ def _build_findings(
                 "confidence": confidence,
                 "severity": severity,
                 "based_on": family_evidence_ids or local_evidence_ids,
+            }
+        )
+
+    if supplemental_evidence_ids:
+        findings.append(
+            {
+                "id": "f05",
+                "title": "补查获得增量线索",
+                "statement": "补查阶段从外部技术页面中提取到了额外的页面证据、行为描述或二跳实体线索，可用于后续复核与扩线。",
+                "confidence": max(55, confidence - 5),
+                "severity": severity,
+                "based_on": supplemental_evidence_ids,
             }
         )
 
@@ -866,7 +1328,7 @@ def _build_uncertainties(
     return uncertainties
 
 
-def _build_actions(*, event: Dict[str, Any], family: str) -> List[Dict[str, Any]]:
+def _build_actions(*, event: Dict[str, Any], family: str, corroboration: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
     fp = event.get("trigger_fingerprint") or {}
     src = event.get("src") or {}
     dst = event.get("dst") or {}
@@ -899,11 +1361,30 @@ def _build_actions(*, event: Dict[str, Any], family: str) -> List[Dict[str, Any]
                 "rationale": "已有家族线索时，可以更有针对性地检查样本行为、持久化方式和额外外联特征。",
             }
         )
+    if bool((corroboration or {}).get("conflict")):
+        actions.append(
+            {
+                "id": "a05",
+                "priority": "high",
+                "action": "对存在冲突的家族归因进行人工复核，并结合主机侧证据确认最终结论。",
+                "rationale": "当前本地情报与外部情报出现了不同家族线索，自动化结论应以人工复核收口。",
+            }
+        )
     return actions
 
 
-def _build_assessment(*, family: str, confidence: int, severity: str, corroboration: Dict[str, Any]) -> Dict[str, Any]:
+def _build_assessment(
+    *,
+    family: str,
+    confidence: int,
+    severity: str,
+    corroboration: Dict[str, Any],
+    supplemental: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
     rationale_parts = [corroboration.get("summary") or "当前缺少完整的交叉验证信息。"]
+    supplemental_summary = _first_non_empty((supplemental or {}).get("supplemental_summary")) if isinstance(supplemental, dict) else None
+    if supplemental_summary:
+        rationale_parts.append(supplemental_summary)
     if corroboration.get("conflict"):
         rationale_parts.append("存在归因冲突，因此当前结论应视为暂定判断。")
     verdict = "suspicious_match" if family == "Unknown" else "suspected_malware_activity"
@@ -913,6 +1394,7 @@ def _build_assessment(*, family: str, confidence: int, severity: str, corroborat
         "confidence": confidence,
         "severity": severity,
         "rationale": " ".join(part for part in rationale_parts if part),
+        "requires_manual_review": bool(corroboration.get("conflict")),
     }
 
 
@@ -945,10 +1427,19 @@ def build_analysis(
 ) -> Dict[str, Any]:
     enrichment = dict(event.get("enrichment") or {})
     local_summary = _build_local_intel_summary(local_intel)
-    family = _select_family(event=event, local_intel=local_summary, obs_family=obs_family, supplemental=supplemental)
+    family = _select_family(
+        event=event,
+        local_intel=local_summary,
+        obs_fp=obs_fp,
+        obs_context=obs_context,
+        obs_family=obs_family,
+        supplemental=supplemental,
+    )
     corroboration = _build_corroboration(
         event=event,
         local_intel=local_summary,
+        obs_fp=obs_fp,
+        obs_context=obs_context,
         obs_family=obs_family,
         supplemental=supplemental,
         family=family,
@@ -1015,8 +1506,14 @@ def build_analysis(
         gaps=gaps,
         family=family,
     )
-    recommended_actions = _build_actions(event=event, family=family)
-    assessment = _build_assessment(family=family, confidence=confidence, severity=severity, corroboration=corroboration)
+    recommended_actions = _build_actions(event=event, family=family, corroboration=corroboration)
+    assessment = _build_assessment(
+        family=family,
+        confidence=confidence,
+        severity=severity,
+        corroboration=corroboration,
+        supplemental=supplemental,
+    )
 
     destination_enrichment: Dict[str, Any] = {}
     if isinstance(enrichment.get("dst_ip"), dict):
@@ -1050,7 +1547,12 @@ def build_analysis(
         },
         "corroboration": corroboration,
         "gaps": gaps,
-        "gap_fill_needed": _needs_gap_fill(gaps),
+        "gap_fill_needed": _needs_gap_fill(
+            gaps,
+            corroboration=corroboration,
+            family=family,
+            confidence=confidence,
+        ),
         "supplemental": supplemental or {},
         "evidence": evidence,
         "findings": findings,

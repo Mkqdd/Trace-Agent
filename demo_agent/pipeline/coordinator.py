@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import threading
+import time
 from typing import Any, Dict, Optional
 from urllib.parse import urlparse
 
@@ -23,6 +24,8 @@ from ..tooling import (
     pivot_related_indicators,
     save_report_md,
     technical_source_search,
+    threatfox_ioc_lookup,
+    urlhaus_ioc_lookup,
 )
 from .gap_planner import plan_gap_actions
 
@@ -101,6 +104,13 @@ def _prefer_deterministic_gap_fill(analysis: Dict[str, Any]) -> bool:
         "no_secondary_confirmation",
         "behavior_context_missing",
     }
+    unknown_family_infra_types = {
+        "missing_local_match",
+        "vt_only_context",
+        "destination_context_missing",
+    }
+    if family in {"", "Unknown"} and gap_types and gap_types.issubset(unknown_family_infra_types):
+        return True
     return bool(family and family != "Unknown" and gap_types and gap_types.issubset(deterministic_types))
 
 
@@ -128,6 +138,30 @@ def _result_rank(result: Dict[str, Any]) -> tuple[int, str]:
     return (-priority, title)
 
 
+def _supplemental_from_structured_abuse_result(result: Dict[str, Any], query: str = "") -> Optional[Dict[str, Any]]:
+    title = str(result.get("title") or "").strip()
+    claim = str(result.get("snippet") or "").strip()
+    url = str(result.get("url") or "").strip()
+    if not (title or claim):
+        return None
+    result_type = "structured_abuse"
+    if "ThreatFox" in title:
+        result_type = "threatfox_structured"
+    elif "URLhaus" in title:
+        result_type = "urlhaus_structured"
+    return {
+        "kind": "supplemental",
+        "source": urlparse(url).netloc or result.get("source") or "abuse.ch",
+        "type": result_type,
+        "query": query or None,
+        "url": url or None,
+        "title": title or "abuse.ch 结构化情报",
+        "claim": claim,
+        "confidence": int(result.get("confidence") or 70),
+        "raw_ref": "deterministic_gap_fill.structured_abuse",
+    }
+
+
 def _deterministic_gap_fill(analysis: Dict[str, Any], gap_plan: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     items = list((gap_plan or {}).get("items") or [])
     if not items:
@@ -143,10 +177,32 @@ def _deterministic_gap_fill(analysis: Dict[str, Any], gap_plan: Dict[str, Any]) 
     page_obs: Dict[str, Any] = {}
     claim_obs: Dict[str, Any] = {}
     entity_obs: Dict[str, Any] = {}
+    structured_evidence: list[Dict[str, Any]] = []
+    structured_family_candidates: list[str] = []
 
     for item in items:
         for action in list(item.get("actions") or []):
             tool_name = str(action.get("tool") or "")
+            if tool_name in {"threatfox_ioc_lookup", "urlhaus_ioc_lookup"}:
+                action_kwargs = action.get("kwargs") if isinstance(action.get("kwargs"), dict) else {}
+                payload = {
+                    "indicator_value": action.get("query") or focus,
+                    "indicator_type": str(action_kwargs.get("indicator_type") or fingerprint.get("type") or ""),
+                }
+                tool_ref = {
+                    "threatfox_ioc_lookup": threatfox_ioc_lookup,
+                    "urlhaus_ioc_lookup": urlhaus_ioc_lookup,
+                }[tool_name]
+                structured_obs = _load_tool_json(tool_ref, payload)
+                for result in list(structured_obs.get("results") or [])[:3]:
+                    item_evidence = _supplemental_from_structured_abuse_result(result, query=str(payload.get("indicator_value") or ""))
+                    if item_evidence is not None:
+                        structured_evidence.append(item_evidence)
+                    family = str(result.get("family") or "").strip()
+                    if family and family not in structured_family_candidates:
+                        structured_family_candidates.append(family)
+                continue
+
             if tool_name in {"technical_source_search", "advanced_web_search", "malware_profile_lookup", "pivot_related_indicators"}:
                 payload: Dict[str, Any] = {}
                 if action.get("query"):
@@ -171,6 +227,30 @@ def _deterministic_gap_fill(analysis: Dict[str, Any], gap_plan: Dict[str, Any]) 
                     break
         if top_result:
             break
+
+    if structured_evidence:
+        candidate_family = None
+        family = str(assessment.get("family") or "").strip()
+        if family and family != "Unknown":
+            candidate_family = family
+        elif structured_family_candidates:
+            candidate_family = structured_family_candidates[0]
+
+        gap_updates = []
+        for gap in list(analysis.get("gaps") or []):
+            gap_updates.append(
+                {
+                    "gap_id": gap.get("id") or "",
+                    "status": "partially_resolved",
+                    "note": "通过 ThreatFox / URLhaus 的结构化情报补回了补充证据。",
+                }
+            )
+        return {
+            "supplemental_evidence": structured_evidence[:5],
+            "gap_updates": gap_updates,
+            "candidate_family": candidate_family,
+            "supplemental_summary": "补查阶段命中了 abuse.ch 的结构化情报，可作为归因和基础设施分析的补充依据。",
+        }
 
     if not top_result:
         external_intel = analysis.get("external_intel") or {}
@@ -277,23 +357,33 @@ def _deterministic_gap_fill(analysis: Dict[str, Any], gap_plan: Dict[str, Any]) 
         "supplemental_evidence": supplemental_evidence,
         "gap_updates": gap_updates,
         "candidate_family": candidate_family,
-        "supplemental_summary": "React 未产出有效补充证据，已使用确定性补查链回收高价值页面证据。",
+        "supplemental_summary": "补查阶段回收了额外的技术页面证据，可作为人工复核和后续扩线的补充依据。",
     }
 
 
 def run_pipeline(llm: Any, cfg: AgentConfig, *, event: Dict[str, Any], out_dir: str) -> Dict[str, Any]:
+    pipeline_started = time.perf_counter()
     fp = event.get("trigger_fingerprint") or {}
     fp_type = str(fp.get("type") or "").upper()
 
     investigator = get_investigator(fp_type)
+    baseline_started = time.perf_counter()
     baseline = investigator(event)
+    baseline_duration_s = round(time.perf_counter() - baseline_started, 4)
     local_obs = baseline.get("local_obs")
     obs_fp = baseline.get("obs_fp")
     obs_context = baseline.get("obs_context")
     obs_family = baseline.get("obs_family")
+    baseline_timings = dict(baseline.get("timings") or {})
     supplemental: Optional[Dict[str, Any]] = None
     gap_plan = GapPlan(items=[])
+    gap_execution_mode = "not_needed"
+    stage_timings: Dict[str, Any] = {
+        "baseline_total_s": baseline_duration_s,
+        "baseline": baseline_timings,
+    }
 
+    analysis_started = time.perf_counter()
     analysis = build_analysis(
         event=event,
         mode="plan",
@@ -302,16 +392,25 @@ def run_pipeline(llm: Any, cfg: AgentConfig, *, event: Dict[str, Any], out_dir: 
         obs_context=obs_context,
         obs_family=obs_family,
     )
+    stage_timings["draft_analysis_s"] = round(time.perf_counter() - analysis_started, 4)
 
     if analysis.get("gap_fill_needed"):
+        gap_planner_started = time.perf_counter()
         gap_plan = _plan_gap_actions_with_timeout(llm, analysis, timeout_s=15.0)
+        stage_timings["gap_planner_s"] = round(time.perf_counter() - gap_planner_started, 4)
         if gap_plan.items:
             if _prefer_deterministic_gap_fill(analysis):
+                gap_execution_mode = "deterministic_only"
+                gap_fill_started = time.perf_counter()
                 supplemental = _deterministic_gap_fill(analysis, model_dump(gap_plan))
+                stage_timings["gap_fill_s"] = round(time.perf_counter() - gap_fill_started, 4)
             else:
+                gap_execution_mode = "react_then_fallback"
                 exploration_tools = [
                     advanced_web_search,
                     technical_source_search,
+                    threatfox_ioc_lookup,
+                    urlhaus_ioc_lookup,
                     fetch_page_content,
                     extract_claim_candidates_from_page,
                     extract_entities_from_page,
@@ -319,13 +418,15 @@ def run_pipeline(llm: Any, cfg: AgentConfig, *, event: Dict[str, Any], out_dir: 
                     malware_profile_lookup,
                 ]
                 gap_executor = build_gap_fill_executor(llm, exploration_tools, verbose=False)
+                react_gap_started = time.perf_counter()
                 gap_result = _run_gap_fill_with_timeout(
                     gap_executor,
                     analysis=analysis,
                     gap_plan=model_dump(gap_plan),
                     out_dir=out_dir,
-                    timeout_s=35.0,
+                    timeout_s=20.0,
                 )
+                stage_timings["gap_fill_react_s"] = round(time.perf_counter() - react_gap_started, 4)
                 try:
                     if gap_result is not None:
                         supplemental = gap_result.get("parsed") or {}
@@ -334,8 +435,11 @@ def run_pipeline(llm: Any, cfg: AgentConfig, *, event: Dict[str, Any], out_dir: 
                 except Exception:
                     supplemental = None
                 if not _supplemental_has_evidence(supplemental):
+                    deterministic_started = time.perf_counter()
                     supplemental = _deterministic_gap_fill(analysis, model_dump(gap_plan)) or supplemental
+                    stage_timings["gap_fill_deterministic_fallback_s"] = round(time.perf_counter() - deterministic_started, 4)
             if supplemental:
+                final_analysis_started = time.perf_counter()
                 analysis = build_analysis(
                     event=event,
                     mode="plan",
@@ -345,9 +449,15 @@ def run_pipeline(llm: Any, cfg: AgentConfig, *, event: Dict[str, Any], out_dir: 
                     obs_family=obs_family,
                     supplemental=supplemental,
                 )
+                stage_timings["final_analysis_s"] = round(time.perf_counter() - final_analysis_started, 4)
+        else:
+            gap_execution_mode = "planner_returned_empty"
+    else:
+        stage_timings["gap_planner_s"] = 0.0
 
     use_local_renderer = str(os.getenv("REPORT_RENDERER") or "").strip().lower() == "local"
     report_md = ""
+    report_started = time.perf_counter()
     if use_local_renderer:
         report_md = render_report_from_analysis(analysis)
     else:
@@ -371,10 +481,14 @@ def run_pipeline(llm: Any, cfg: AgentConfig, *, event: Dict[str, Any], out_dir: 
             report_md = (llm.invoke(msg).content or "").strip()  # type: ignore[attr-defined]
         except Exception:
             report_md = render_report_from_analysis(analysis)
+    stage_timings["report_render_s"] = round(time.perf_counter() - report_started, 4)
 
     saved = json.loads(save_report_md.invoke({"out_dir": out_dir, "content": report_md}))
     final_analysis = dict(analysis)
     final_analysis["gap_plan"] = model_dump(gap_plan)
+    stage_timings["gap_execution_mode"] = gap_execution_mode
+    stage_timings["pipeline_total_s"] = round(time.perf_counter() - pipeline_started, 4)
+    final_analysis["timings"] = stage_timings
     final_analysis["report"] = {
         "path": saved.get("path"),
         "content": report_md,

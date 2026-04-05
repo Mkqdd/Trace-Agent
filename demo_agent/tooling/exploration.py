@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 import re
 from typing import Any, Dict, List
 
@@ -96,6 +97,28 @@ _CLAIM_KEYWORDS = (
 )
 
 
+def _parallel_search_web(search_specs: List[Dict[str, Any]], *, timeout_s: float = 18.0) -> List[Dict[str, Any]]:
+    if not search_specs:
+        return []
+    results: List[Dict[str, Any]] = []
+    with ThreadPoolExecutor(max_workers=min(len(search_specs), 4)) as executor:
+        futures = [
+            executor.submit(
+                search_web,
+                spec.get("query", ""),
+                int(spec.get("max_results") or 5),
+                constraint=str(spec.get("constraint") or ""),
+            )
+            for spec in search_specs
+        ]
+        for future in futures:
+            try:
+                results.append(future.result(timeout=timeout_s))
+            except Exception as exc:
+                results.append({"ok": False, "error": str(exc), "results": []})
+    return results
+
+
 def _split_sentences(content: str) -> List[str]:
     text = str(content or "").replace("\r", "\n")
     chunks = re.split(r"(?<=[。！？.!?])\s+|\n+", text)
@@ -126,23 +149,24 @@ def technical_source_search(query: str, goal: str = "family_attribution", max_re
     goal = strip_quotes(goal).lower() or "family_attribution"
     presets = _TECHNICAL_SEARCH_PRESETS.get(goal) or _TECHNICAL_SEARCH_PRESETS["family_attribution"]
 
-    searches: List[Dict[str, Any]] = []
     per_query_results = max(3, min(int(max_results or 6), 8))
+    search_specs: List[Dict[str, Any]] = []
     for query_template, constraint in presets:
-        searches.append(
-            search_web(
-                query=query_template.format(seed=seed),
-                constraint=constraint,
-                max_results=per_query_results,
-            )
+        search_specs.append(
+            {
+                "query": query_template.format(seed=seed),
+                "constraint": constraint,
+                "max_results": per_query_results,
+            }
         )
     fallback_query = {
         "family_attribution": f"{seed} malware family",
         "behavior_context": f"{seed} malware TTP behavior",
         "infra_context": f"{seed} malware infrastructure IOC",
     }.get(goal, f"{seed} malware family")
-    searches.append(search_web(query=fallback_query, max_results=per_query_results))
+    search_specs.append({"query": fallback_query, "max_results": per_query_results})
 
+    searches = _parallel_search_web(search_specs)
     merged = merge_search_observations(*searches)
     return dumps_json(
         {
@@ -202,14 +226,16 @@ def extract_claim_candidates_from_page(content: str, focus: str = "") -> str:
 def pivot_related_indicators(query: str, max_results: int = 5) -> str:
     """Search for secondary infrastructure or related indicators around an IOC/family."""
     seed = strip_quotes(query)
-    searches = [
-        search_web(query=f"{seed} related indicators C2 infrastructure", max_results=max_results),
-        search_web(
-            query=f"{seed} IOC malware infrastructure",
-            constraint="site:abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:any.run",
-            max_results=max_results,
-        ),
-    ]
+    searches = _parallel_search_web(
+        [
+            {"query": f"{seed} related indicators C2 infrastructure", "max_results": max_results},
+            {
+                "query": f"{seed} IOC malware infrastructure",
+                "constraint": "site:abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:any.run",
+                "max_results": max_results,
+            },
+        ]
+    )
     merged = merge_search_observations(*searches)
     return dumps_json(merged)
 
@@ -218,13 +244,15 @@ def pivot_related_indicators(query: str, max_results: int = 5) -> str:
 def malware_profile_lookup(query: str, max_results: int = 5) -> str:
     """Fetch high-quality family profile references for deep investigation."""
     family = strip_quotes(query)
-    searches: List[Dict[str, Any]] = [
-        search_web(
-            query=f"{family} malware family profile",
-            constraint="site:malpedia.caad.fkie.fraunhofer.de OR site:microsoft.com OR site:mitre.org OR site:trendmicro.com OR site:proofpoint.com OR site:checkpoint.com",
-            max_results=max_results,
-        ),
-        search_web(query=f"{family} malware TTP", max_results=max_results),
-    ]
+    searches = _parallel_search_web(
+        [
+            {
+                "query": f"{family} malware family profile",
+                "constraint": "site:malpedia.caad.fkie.fraunhofer.de OR site:microsoft.com OR site:mitre.org OR site:trendmicro.com OR site:proofpoint.com OR site:checkpoint.com",
+                "max_results": max_results,
+            },
+            {"query": f"{family} malware TTP", "max_results": max_results},
+        ]
+    )
     merged = merge_search_observations(*searches)
     return dumps_json({"ok": merged.get("ok", False), "family": family, "query": family, "results": merged.get("results", []), "mode": merged.get("mode")})

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import time
 from concurrent.futures import Future
 from typing import Any, Dict, Optional
 
@@ -47,6 +48,15 @@ def safe_future_result(future: Future[Any], default: Optional[Dict[str, Any]] = 
         return future.result()
     except Exception:
         return default
+
+
+def timed_call(func: Any, *args: Any, **kwargs: Any) -> Dict[str, Any]:
+    started = time.perf_counter()
+    try:
+        value = func(*args, **kwargs)
+        return {"ok": True, "value": value, "duration_s": round(time.perf_counter() - started, 4)}
+    except Exception as exc:
+        return {"ok": False, "value": None, "duration_s": round(time.perf_counter() - started, 4), "error": str(exc)}
 
 
 def fingerprint_query(fp_type: str, fp_value: str, family_seed: str) -> str:

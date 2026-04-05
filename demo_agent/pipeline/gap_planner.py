@@ -34,10 +34,35 @@ def _read_page_actions(*, focus: str, goal: str, notes_prefix: str = "") -> List
     ]
 
 
+def _abuse_lookup_actions(*, indicator_type: str, indicator_value: str) -> List[GapPlanAction]:
+    normalized_type = str(indicator_type or "").upper()
+    if normalized_type not in {"IP", "DOMAIN", "URL", "MD5", "SHA256"}:
+        return []
+    actions = [
+        GapPlanAction(
+            tool="threatfox_ioc_lookup",
+            query=indicator_value,
+            kwargs={"indicator_type": normalized_type},
+            notes="先查 ThreatFox 的结构化 IOC / hash 情报，优先拿家族映射和关联样本线索",
+        )
+    ]
+    if normalized_type in {"IP", "DOMAIN", "URL", "SHA256"}:
+        actions.append(
+            GapPlanAction(
+                tool="urlhaus_ioc_lookup",
+                query=indicator_value,
+                kwargs={"indicator_type": normalized_type},
+                notes="再查 URLhaus 的结构化主机 / URL / 载荷情报，补恶意投递和基础设施上下文",
+            )
+        )
+    return actions
+
+
 def _fallback_actions(analysis: Dict[str, Any]) -> GapPlan:
     event = analysis.get("event") or {}
     assessment = analysis.get("assessment") or {}
     fp = event.get("trigger_fingerprint") or {}
+    fp_type = str(fp.get("type") or "").upper()
     facts = analysis.get("facts") or {}
     dst = facts.get("dst") or {}
     fp_value = str(fp.get("value") or "")
@@ -58,6 +83,7 @@ def _fallback_actions(analysis: Dict[str, Any]) -> GapPlan:
                     gap_type=gap_type,
                     goal="family_attribution",
                     actions=[
+                        *_abuse_lookup_actions(indicator_type=fp_type, indicator_value=fp_value),
                         GapPlanAction(
                             tool="technical_source_search",
                             query=fp_value,
@@ -75,6 +101,7 @@ def _fallback_actions(analysis: Dict[str, Any]) -> GapPlan:
                     gap_type=gap_type,
                     goal="find_secondary_attribution",
                     actions=[
+                        *_abuse_lookup_actions(indicator_type=fp_type, indicator_value=fp_value),
                         GapPlanAction(
                             tool="technical_source_search",
                             query=fp_value,
@@ -124,6 +151,7 @@ def _fallback_actions(analysis: Dict[str, Any]) -> GapPlan:
                     gap_type=gap_type,
                     goal="destination_context",
                     actions=[
+                        *_abuse_lookup_actions(indicator_type="IP", indicator_value=dst_ip or fp_value),
                         GapPlanAction(
                             tool="technical_source_search",
                             query=dst_ip or fp_value,
@@ -158,6 +186,7 @@ def _fallback_actions(analysis: Dict[str, Any]) -> GapPlan:
                     gap_type=gap_type,
                     goal="resolve_conflict",
                     actions=[
+                        *_abuse_lookup_actions(indicator_type=fp_type, indicator_value=fp_value),
                         GapPlanAction(
                             tool="technical_source_search",
                             query=fp_value,
@@ -194,8 +223,9 @@ def plan_gap_actions(llm: Any, analysis: Dict[str, Any]) -> GapPlan:
                 "你是 Gap Planner。你的任务不是做全局调查规划，而是仅根据 analysis JSON 中的 gaps 生成局部补查计划。"
                 "输出必须是结构化 GapPlan。"
                 "只允许使用这些工具名：advanced_web_search, technical_source_search, fetch_page_content, extract_claim_candidates_from_page, "
-                "extract_entities_from_page, pivot_related_indicators, malware_profile_lookup。"
+                "extract_entities_from_page, pivot_related_indicators, malware_profile_lookup, threatfox_ioc_lookup, urlhaus_ioc_lookup。"
                 "优先使用高价值技术来源，尤其是 any.run、abuse.ch、Malpedia、Microsoft、Trend Micro、Proofpoint、Check Point、VirusTotal。"
+                "如果 gap 与 IOC / 基础设施 / 恶意 URL / 载荷有关，优先先查 ThreatFox 或 URLhaus 这类结构化 abuse.ch 数据源，再决定是否需要搜索和读页面。"
                 "当目标是家族归因、行为补充或二次佐证时，优先生成“搜索技术来源 -> 读取页面正文 -> 提取 claim/TTP/二跳 IOC”的动作链。"
                 "可以使用 Google dorks，例如 site:any.run、site:malpedia.caad.fkie.fraunhofer.de、site:threatfox.abuse.ch、filetype:pdf。"
                 "不要重查本地库或 VT，也不要重复 baseline 已经做过的固定动作。"
