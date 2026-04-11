@@ -3,7 +3,7 @@ from html import unescape
 from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import parse_qs, unquote, urlparse
 
-from .renderers.artifacts import severity_from_confidence
+from ..renderers.artifacts import severity_from_confidence
 
 
 _GENERIC_WEB_SOURCES = {"html_fallback", "ddgs", "serpapi", "web_search"}

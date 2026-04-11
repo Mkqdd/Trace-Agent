@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Any, Dict, List, Optional
 
-from ..config import DatabaseConfig, load_database_config
+from ...config import DatabaseConfig, load_database_config
 
 try:
     import pymysql

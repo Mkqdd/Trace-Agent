@@ -9,13 +9,9 @@ from urllib.parse import urlparse
 
 from langchain_core.prompts import ChatPromptTemplate
 
-from ..analysis import build_analysis
-from ..agents.react_agent import build_gap_fill_executor, run_gap_fill_react
-from ..baseline_investigators import get_investigator
 from ..config import AgentConfig
 from ..renderers.report_markdown import render_report_from_analysis
-from ..schemas import GapPlan, model_dump
-from ..tooling import (
+from ..tools import (
     advanced_web_search,
     extract_claim_candidates_from_page,
     extract_entities_from_page,
@@ -27,7 +23,11 @@ from ..tooling import (
     threatfox_ioc_lookup,
     urlhaus_ioc_lookup,
 )
+from ..types.analysis import build_analysis
+from ..types.schemas import GapPlan, model_dump
+from .baseline import get_investigator
 from .gap_planner import plan_gap_actions
+from .react import build_gap_fill_executor, run_gap_fill_react
 
 
 def _plan_gap_actions_with_timeout(llm: Any, analysis: Dict[str, Any], timeout_s: float = 15.0) -> GapPlan:

@@ -6,7 +6,7 @@ from langchain.agents import AgentExecutor, create_react_agent
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import BaseTool
 
-from ..schemas import SupplementalResult, model_dump, validate_model
+from ..types.schemas import SupplementalResult, model_dump, validate_model
 
 
 def build_react_executor(llm: Any, tools: List[BaseTool], *, verbose: bool = True) -> AgentExecutor:
@@ -136,4 +136,3 @@ def run_gap_fill_react(executor: AgentExecutor, *, analysis: Dict[str, Any], gap
         "result": result,
         "parsed": model_dump(validated),
     }
-

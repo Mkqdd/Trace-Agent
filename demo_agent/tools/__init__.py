@@ -1,9 +1,7 @@
-import json
-
 from langchain_core.tools import tool
 
 from ..renderers.artifacts import build_topology
-from ..storage.io import save_text
+from ..utils.io import save_text
 from .baseline import (
     abuse_ch_lookup,
     family_intel_lookup,
@@ -32,6 +30,8 @@ family_intel = family_intel_lookup
 @tool
 def build_topology_json(event_json: str) -> str:
     """Build topology JSON from event JSON. Returns topology JSON string."""
+    import json
+
     event = json.loads(event_json)
     topo = build_topology(event)
     return json.dumps(topo, ensure_ascii=False)
@@ -40,6 +40,7 @@ def build_topology_json(event_json: str) -> str:
 @tool
 def save_report_md(out_dir: str, content: str) -> str:
     """Save Markdown report to report.md in out_dir. Returns JSON with path."""
+    import json
     from pathlib import Path
 
     out = Path(out_dir).resolve()

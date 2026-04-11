@@ -5,9 +5,9 @@ from typing import Any, Dict, List
 
 from langchain_core.tools import tool
 
-from ..clients.abuse_ch import ThreatFoxClient, URLhausClient
-from ..clients.local_intel import LocalIntelClient
-from ..clients.vt_client import VirusTotalClient
+from .sources.abuse_ch import ThreatFoxClient, URLhausClient
+from .sources.local_intel import LocalIntelClient
+from .sources.vt_client import VirusTotalClient
 from .common import (
     _CACHE_LOCAL_INTEL,
     _CACHE_VT_IP,

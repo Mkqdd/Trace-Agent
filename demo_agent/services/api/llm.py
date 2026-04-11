@@ -1,6 +1,6 @@
 from langchain_openai import ChatOpenAI
 
-from ..config import AgentConfig
+from ...config import AgentConfig
 
 
 def make_llm(cfg: AgentConfig) -> ChatOpenAI:

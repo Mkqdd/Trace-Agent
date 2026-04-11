@@ -109,7 +109,7 @@ def _run_case(case: SmokeCase, run_dir: Path) -> Dict[str, Any]:
     cmd = [
         sys.executable,
         "-m",
-        "demo_agent.langchain_agent",
+        "demo_agent",
         "--alert",
         str(case.alert_path),
         "--out",

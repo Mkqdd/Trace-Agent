@@ -5,7 +5,7 @@ from typing import Any, Dict, List
 
 from langchain_core.prompts import ChatPromptTemplate
 
-from ..schemas import GapPlan, GapPlanAction, GapPlanItem, model_dump, validate_model
+from ..types.schemas import GapPlan, GapPlanAction, GapPlanItem, model_dump, validate_model
 
 
 def _read_page_actions(*, focus: str, goal: str, notes_prefix: str = "") -> List[GapPlanAction]:
