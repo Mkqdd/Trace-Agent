@@ -20,9 +20,18 @@ demo_agent/.env.example
 - `LLM_API_KEY`
 - `LLM_BASE_URL`
 - `LLM_MODEL`
+- `REPORT_RENDERER`
 - `VT_API_KEY`
 - `SERPAPI_API_KEY`
 - `ABUSECH_AUTH_KEY`
+
+当前默认建议：
+
+```text
+REPORT_RENDERER=local
+```
+
+这表示 `report.md` 默认直接由本地代码从 `analysis.json` 渲染生成，而不是再把整份 `analysis` 交给 LLM 自由写整篇报告。这样更稳定，也更适合当前主线。
 
 ## 3. 运行主链
 

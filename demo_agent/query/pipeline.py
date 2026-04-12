@@ -455,7 +455,9 @@ def run_pipeline(llm: Any, cfg: AgentConfig, *, event: Dict[str, Any], out_dir: 
     else:
         stage_timings["gap_planner_s"] = 0.0
 
-    use_local_renderer = str(os.getenv("REPORT_RENDERER") or "").strip().lower() == "local"
+    # 默认优先使用本地 renderer，避免把整份 analysis 交给 LLM 生成整篇报告时
+    # 出现长时间阻塞；只有在显式设置非 local 时才走 LLM 报告路径。
+    use_local_renderer = str(os.getenv("REPORT_RENDERER") or "local").strip().lower() == "local"
     report_md = ""
     report_started = time.perf_counter()
     if use_local_renderer:
