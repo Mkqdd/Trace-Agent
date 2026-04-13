@@ -31,7 +31,7 @@ demo_agent/.env.example
 REPORT_RENDERER=local
 ```
 
-这表示 `report.md` 默认直接由本地代码从 `analysis.json` 渲染生成，而不是再把整份 `analysis` 交给 LLM 自由写整篇报告。这样更稳定，也更适合当前主线。
+这表示 `report.md` 默认直接由本地代码从 `analysis.json` 渲染生成，而不是再把整份 `analysis` 交给 LLM 自由写整篇报告。（看上去当前调用的模型不足以吃下整个analysis，后续会优化）
 
 ## 3. 运行主链
 
