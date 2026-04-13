@@ -461,7 +461,7 @@ def run_pipeline(llm: Any, cfg: AgentConfig, *, event: Dict[str, Any], out_dir: 
     report_md = ""
     report_started = time.perf_counter()
     if use_local_renderer:
-        report_md = render_report_from_analysis(analysis)
+        report_md = render_report_from_analysis(analysis, llm=llm)
     else:
         prompt = ChatPromptTemplate.from_messages(
             [
@@ -482,7 +482,7 @@ def run_pipeline(llm: Any, cfg: AgentConfig, *, event: Dict[str, Any], out_dir: 
         try:
             report_md = (llm.invoke(msg).content or "").strip()  # type: ignore[attr-defined]
         except Exception:
-            report_md = render_report_from_analysis(analysis)
+            report_md = render_report_from_analysis(analysis, llm=llm)
     stage_timings["report_render_s"] = round(time.perf_counter() - report_started, 4)
 
     saved = json.loads(save_report_md.invoke({"out_dir": out_dir, "content": report_md}))

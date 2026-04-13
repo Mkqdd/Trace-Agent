@@ -1,5 +1,5 @@
 __pycache__/
-outputs/
+
 demo_agent/out_*/
 test_graph_drawer_graphviz.py
 tools/graph_drawer_graphviz.py
