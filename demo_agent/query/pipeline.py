@@ -26,6 +26,7 @@ from ..tools import (
 from ..types.analysis import build_analysis
 from ..types.schemas import GapPlan, model_dump
 from .baseline import get_investigator
+from .baseline.page_enrichment import enrich_baseline_pages
 from .gap_planner import plan_gap_actions
 from .react import build_gap_fill_executor, run_gap_fill_react
 
@@ -376,6 +377,7 @@ def run_pipeline(llm: Any, cfg: AgentConfig, *, event: Dict[str, Any], out_dir: 
     obs_family = baseline.get("obs_family")
     baseline_timings = dict(baseline.get("timings") or {})
     supplemental: Optional[Dict[str, Any]] = None
+    page_enrichment: Optional[Dict[str, Any]] = None
     gap_plan = GapPlan(items=[])
     gap_execution_mode = "not_needed"
     stage_timings: Dict[str, Any] = {
@@ -393,6 +395,24 @@ def run_pipeline(llm: Any, cfg: AgentConfig, *, event: Dict[str, Any], out_dir: 
         obs_family=obs_family,
     )
     stage_timings["draft_analysis_s"] = round(time.perf_counter() - analysis_started, 4)
+
+    page_enrichment_started = time.perf_counter()
+    page_enrichment = enrich_baseline_pages(
+        draft_analysis=analysis,
+        event=event,
+    )
+    stage_timings["page_enrichment_s"] = round(time.perf_counter() - page_enrichment_started, 4)
+    enrichment_analysis_started = time.perf_counter()
+    analysis = build_analysis(
+        event=event,
+        mode="plan",
+        local_intel=local_obs,
+        obs_fp=obs_fp,
+        obs_context=obs_context,
+        obs_family=obs_family,
+        page_enrichment=page_enrichment,
+    )
+    stage_timings["enriched_analysis_s"] = round(time.perf_counter() - enrichment_analysis_started, 4)
 
     if analysis.get("gap_fill_needed"):
         gap_planner_started = time.perf_counter()
@@ -448,6 +468,7 @@ def run_pipeline(llm: Any, cfg: AgentConfig, *, event: Dict[str, Any], out_dir: 
                     obs_context=obs_context,
                     obs_family=obs_family,
                     supplemental=supplemental,
+                    page_enrichment=page_enrichment,
                 )
                 stage_timings["final_analysis_s"] = round(time.perf_counter() - final_analysis_started, 4)
         else:

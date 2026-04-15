@@ -32,7 +32,9 @@ class VirusTotalClient:
 
         url = f"{self.base_url}/ip_addresses/{ip}"
         headers = {"x-apikey": self.api_key}
-        r = requests.get(url, headers=headers, timeout=timeout_s)
+        with requests.Session() as session:
+            session.trust_env = False
+            r = session.get(url, headers=headers, timeout=timeout_s)
         r.raise_for_status()
         data = r.json()
 

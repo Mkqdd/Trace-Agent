@@ -38,13 +38,35 @@ _LOW_SIGNAL_TITLE_PARTS = (
     "free ja3 database",
     "github topics",
     "resolved malware",
+    "malicious ssl certificates",
+    "sha-1 deprecation for ssl/tls certificates",
 )
 _LOW_SIGNAL_SNIPPET_PARTS = (
     "using the form below, you can search",
     "freely available database of ja3 data",
     "github topics",
+    "provides a link to microsoft security advisory",
+    "browse all malicious ssl certificates",
 )
 _LOW_SIGNAL_DOMAIN_PARTS = ("forum", "forums.", "github.com", "trustmyip.com", "ja3.me")
+_LOW_SIGNAL_PAGE_PARTS = (
+    "get a demo",
+    "start for free",
+    "portal login",
+    "integrations integrations",
+    "support documentation",
+    "see huntress in action",
+    "meet the team",
+    "founded by former",
+    "awards awards",
+    "contact us",
+    "search get a demo",
+    "support blog",
+    "sign up now",
+    "download report",
+    "choose your language",
+    "incapsula incident id",
+)
 _SEARCH_KIND_STRENGTH = {
     "event": 100,
     "local_intel": 92,
@@ -222,6 +244,13 @@ def _mentions_context(title: str, claim: str, family: str, fp_value: str) -> boo
     return family_hit or fingerprint_hit
 
 
+def _claim_mentions_context(claim: str, family: str, fp_value: str) -> bool:
+    lowered = _clean_text(claim).lower()
+    family_hit = bool(family and family != "Unknown" and family.lower() in lowered)
+    fingerprint_hit = bool(fp_value and fp_value.lower() in lowered)
+    return family_hit or fingerprint_hit
+
+
 def _looks_low_signal(title: str, claim: str, url: Any) -> bool:
     lowered = f"{title} {claim}".lower()
     domain = _extract_domain(url)
@@ -232,6 +261,19 @@ def _looks_low_signal(title: str, claim: str, url: Any) -> bool:
     if any(part in domain for part in _LOW_SIGNAL_DOMAIN_PARTS):
         return True
     return False
+
+
+def _looks_weak_claim(claim: str) -> bool:
+    lowered = _clean_text(claim).lower()
+    if not lowered:
+        return True
+    weak_parts = (
+        "incapsula incident id",
+        "provides a link to microsoft security advisory",
+        "browse all malicious ssl certificates",
+        "identified by sslbl",
+    )
+    return any(part in lowered for part in weak_parts)
 
 
 def _weight_label(weight: int) -> str:
@@ -259,6 +301,61 @@ def _best_local_match(local_intel: Optional[Dict[str, Any]]) -> Optional[Dict[st
         return None
     best = local_intel.get("best_match")
     return best if isinstance(best, dict) else None
+
+
+def _page_enrichment_item(page_enrichment: Optional[Dict[str, Any]], *, url: Any, raw_ref: str = "") -> Optional[Dict[str, Any]]:
+    if not isinstance(page_enrichment, dict):
+        return None
+    normalized_url = _normalize_url(url)
+    items = list(page_enrichment.get("items") or [])
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        if raw_ref and _clean_text(item.get("raw_ref")) == _clean_text(raw_ref):
+            return item
+        if normalized_url and _normalize_url(item.get("url")) == normalized_url:
+            return item
+    return None
+
+
+def _page_enriched_claim(result: Dict[str, Any], page_enrichment: Optional[Dict[str, Any]], *, raw_ref: str = "") -> Dict[str, Any]:
+    enriched = _page_enrichment_item(page_enrichment, url=result.get("url"), raw_ref=raw_ref)
+    if not isinstance(enriched, dict) or not enriched.get("ok"):
+        return {
+            "claim": _clean_text(result.get("snippet")) or _clean_text(result.get("title")),
+            "claim_origin": "snippet",
+            "page_claims": [],
+            "page_summary": "",
+            "page_title": "",
+            "page_entities": {},
+        }
+
+    claims = [
+        str(item).strip()
+        for item in list(enriched.get("claims") or [])
+        if str(item).strip() and not any(part in str(item).strip().lower() for part in _LOW_SIGNAL_PAGE_PARTS)
+    ]
+    summary = _clean_text(enriched.get("summary_hint"))
+    if any(part in summary.lower() for part in _LOW_SIGNAL_PAGE_PARTS):
+        summary = ""
+    claim = summary or " ".join(claims[:3]).strip()
+    if not claim:
+        return {
+            "claim": _clean_text(result.get("snippet")) or _clean_text(result.get("title")),
+            "claim_origin": "snippet",
+            "page_claims": [],
+            "page_summary": "",
+            "page_title": "",
+            "page_entities": {},
+        }
+    return {
+        "claim": claim,
+        "claim_origin": "page_enrichment",
+        "page_claims": claims,
+        "page_summary": summary,
+        "page_title": _clean_text(enriched.get("page_title") or enriched.get("title")),
+        "page_entities": enriched.get("entities") or {},
+    }
 
 
 def _append_evidence(evidence: List[Dict[str, Any]], item: Dict[str, Any]) -> None:
@@ -300,7 +397,11 @@ def _should_keep_evidence(item: Dict[str, Any], family: str, fp_value: str) -> b
         return False
 
     context_hit = _mentions_context(title, claim, family, fp_value)
+    claim_context_hit = _claim_mentions_context(claim, family, fp_value)
     if _looks_low_signal(title, claim, url) and not context_hit:
+        return False
+
+    if kind in {"family_intel", "search_result"} and _looks_weak_claim(claim) and not claim_context_hit:
         return False
 
     if kind in {"family_intel", "search_result"} and authority < 70 and not context_hit:
@@ -738,12 +839,14 @@ def _build_external_intel(
     obs_context: Optional[Dict[str, Any]],
     obs_family: Optional[Dict[str, Any]],
     supplemental: Optional[Dict[str, Any]],
+    page_enrichment: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     return {
         "fingerprint_enrichment": obs_fp,
         "context_search": obs_context,
         "family_intel": obs_family,
         "supplemental": supplemental,
+        "page_enrichment": page_enrichment,
     }
 
 
@@ -1006,6 +1109,7 @@ def _build_evidence(
     obs_context: Optional[Dict[str, Any]],
     obs_family: Optional[Dict[str, Any]],
     supplemental: Optional[Dict[str, Any]],
+    page_enrichment: Optional[Dict[str, Any]],
     family: str,
     confidence: int,
 ) -> List[Dict[str, Any]]:
@@ -1091,6 +1195,11 @@ def _build_evidence(
             )
         elif obs_fp.get("ok") is True:
             for index, result in enumerate((obs_fp.get("results") or [])[:5]):
+                enriched = _page_enriched_claim(
+                    result,
+                    page_enrichment,
+                    raw_ref=f"external_intel.fingerprint_enrichment.results[{index}]",
+                )
                 _append_evidence(
                     evidence,
                     {
@@ -1100,14 +1209,24 @@ def _build_evidence(
                         "query": obs_fp.get("query"),
                         "url": result.get("url"),
                         "title": result.get("title") or f"指纹外部搜索 {index + 1}",
-                        "claim": result.get("snippet") or result.get("title"),
+                        "claim": enriched.get("claim"),
                         "confidence": _coerce_int(result.get("confidence"), default=60),
                         "raw_ref": f"external_intel.fingerprint_enrichment.results[{index}]",
+                        "claim_origin": enriched.get("claim_origin"),
+                        "page_claims": enriched.get("page_claims"),
+                        "page_summary": enriched.get("page_summary"),
+                        "page_title": enriched.get("page_title"),
+                        "page_entities": enriched.get("page_entities"),
                     },
                 )
 
     if isinstance(obs_context, dict) and obs_context.get("ok") is True:
         for index, result in enumerate((obs_context.get("results") or [])[:5]):
+            enriched = _page_enriched_claim(
+                result,
+                page_enrichment,
+                raw_ref=f"external_intel.context_search.results[{index}]",
+            )
             _append_evidence(
                 evidence,
                 {
@@ -1117,9 +1236,14 @@ def _build_evidence(
                     "query": obs_context.get("query"),
                     "url": result.get("url"),
                     "title": result.get("title") or f"上下文搜索 {index + 1}",
-                    "claim": result.get("snippet") or result.get("title"),
+                    "claim": enriched.get("claim"),
                     "confidence": _coerce_int(result.get("confidence"), default=62),
                     "raw_ref": f"external_intel.context_search.results[{index}]",
+                    "claim_origin": enriched.get("claim_origin"),
+                    "page_claims": enriched.get("page_claims"),
+                    "page_summary": enriched.get("page_summary"),
+                    "page_title": enriched.get("page_title"),
+                    "page_entities": enriched.get("page_entities"),
                 },
             )
 
@@ -1127,6 +1251,11 @@ def _build_evidence(
     family_results = (family_raw or {}).get("results") if isinstance(family_raw, dict) else []
     if isinstance(family_results, list):
         for index, result in enumerate(family_results[:5]):
+            enriched = _page_enriched_claim(
+                result,
+                page_enrichment,
+                raw_ref=f"external_intel.family_intel.raw.results[{index}]",
+            )
             _append_evidence(
                 evidence,
                 {
@@ -1136,9 +1265,14 @@ def _build_evidence(
                     "query": (obs_family or {}).get("query"),
                     "url": result.get("url"),
                     "title": result.get("title") or f"{family} 家族情报 {index + 1}",
-                    "claim": result.get("snippet") or result.get("title"),
+                    "claim": enriched.get("claim"),
                     "confidence": 65,
                     "raw_ref": f"external_intel.family_intel.raw.results[{index}]",
+                    "claim_origin": enriched.get("claim_origin"),
+                    "page_claims": enriched.get("page_claims"),
+                    "page_summary": enriched.get("page_summary"),
+                    "page_title": enriched.get("page_title"),
+                    "page_entities": enriched.get("page_entities"),
                 },
             )
 
@@ -1422,6 +1556,7 @@ def build_analysis(
     obs_context: Optional[Dict[str, Any]] = None,
     obs_family: Optional[Dict[str, Any]] = None,
     supplemental: Optional[Dict[str, Any]] = None,
+    page_enrichment: Optional[Dict[str, Any]] = None,
     report_markdown: Optional[str] = None,
     report_path: Optional[str] = None,
 ) -> Dict[str, Any]:
@@ -1477,7 +1612,13 @@ def build_analysis(
         family=family,
         confidence=confidence,
     )
-    external_intel = _build_external_intel(obs_fp=obs_fp, obs_context=obs_context, obs_family=obs_family, supplemental=supplemental)
+    external_intel = _build_external_intel(
+        obs_fp=obs_fp,
+        obs_context=obs_context,
+        obs_family=obs_family,
+        supplemental=supplemental,
+        page_enrichment=page_enrichment,
+    )
     evidence = _build_evidence(
         event=event,
         local_intel=local_summary,
@@ -1485,6 +1626,7 @@ def build_analysis(
         obs_context=obs_context,
         obs_family=obs_family,
         supplemental=supplemental,
+        page_enrichment=page_enrichment,
         family=family,
         confidence=confidence,
     )
@@ -1544,6 +1686,7 @@ def build_analysis(
             "context_search": obs_context,
             "family_intel": obs_family,
             "supplemental": supplemental,
+            "page_enrichment": page_enrichment,
         },
         "corroboration": corroboration,
         "gaps": gaps,

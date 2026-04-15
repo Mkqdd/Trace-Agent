@@ -19,6 +19,117 @@ _CACHE_VT_IP: Dict[str, Dict[str, Any]] = {}
 _CACHE_WEB: Dict[str, Dict[str, Any]] = {}
 _CACHE_LOCAL_INTEL: Dict[str, Dict[str, Any]] = {}
 _CACHE_PAGE: Dict[str, Dict[str, Any]] = {}
+_CONTENT_SELECTORS = (
+    "article",
+    "main",
+    "[role='main']",
+    "[itemprop='articleBody']",
+    ".article-body",
+    ".article-content",
+    ".entry-content",
+    ".post-content",
+    ".post-body",
+    ".threat-library",
+    ".main-content",
+    "#main-content",
+    "#main",
+)
+_BOILERPLATE_LINE_PARTS = (
+    "get a demo",
+    "start for free",
+    "portal login",
+    "investor relations",
+    "choose your language",
+    "support documentation",
+    "see huntress in action",
+    "meet the team",
+    "founded by former",
+    "awards awards",
+    "contact us",
+    "search get a demo",
+    "support blog",
+    "sign up now",
+    "download report",
+    "all rights reserved",
+    "privacy policy",
+    "cookie policy",
+    "accept cookies",
+    "terms of use",
+)
+_NAV_LINE_WORDS = {
+    "about",
+    "awards",
+    "blog",
+    "careers",
+    "company",
+    "contact",
+    "demo",
+    "documentation",
+    "download",
+    "free",
+    "home",
+    "integrations",
+    "investor",
+    "language",
+    "leadership",
+    "login",
+    "newsroom",
+    "portal",
+    "pricing",
+    "products",
+    "report",
+    "search",
+    "services",
+    "solutions",
+    "start",
+    "support",
+    "team",
+}
+_NON_DOMAIN_TLDS = {
+    "apk",
+    "bat",
+    "bin",
+    "cfg",
+    "cmd",
+    "csv",
+    "dat",
+    "dll",
+    "doc",
+    "docx",
+    "exe",
+    "gif",
+    "hta",
+    "html",
+    "ini",
+    "jar",
+    "jpg",
+    "js",
+    "json",
+    "log",
+    "msi",
+    "pdf",
+    "php",
+    "png",
+    "ps1",
+    "rar",
+    "rtf",
+    "sh",
+    "svg",
+    "sys",
+    "tar",
+    "txt",
+    "vbs",
+    "xml",
+    "yaml",
+    "yml",
+    "zip",
+}
+
+
+def _direct_session() -> requests.Session:
+    session = requests.Session()
+    session.trust_env = False
+    return session
 
 
 def strip_quotes(value: str) -> str:
@@ -46,6 +157,67 @@ def normalize_url(url: Any) -> Optional[str]:
                 target = f"https:{target}"
             return target
     return text
+
+
+def _looks_like_boilerplate_line(text: str) -> bool:
+    normalized = clean_text(text)
+    lowered = normalized.lower()
+    if not lowered:
+        return True
+    if any(part in lowered for part in _BOILERPLATE_LINE_PARTS):
+        return True
+    words = re.findall(r"[a-zA-Z]+", lowered)
+    if len(words) >= 8:
+        nav_hits = sum(1 for word in words if word in _NAV_LINE_WORDS)
+        if nav_hits / max(len(words), 1) >= 0.45:
+            return True
+    if len(words) >= 6 and len(set(words)) <= max(3, len(words) // 4):
+        return True
+    return False
+
+
+def _filtered_page_lines(text: str) -> List[str]:
+    lines: List[str] = []
+    seen = set()
+    for raw_line in re.split(r"\n+", str(text or "")):
+        line = clean_text(raw_line)
+        if not line:
+            continue
+        if _looks_like_boilerplate_line(line):
+            continue
+        key = line.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        lines.append(line)
+    return lines
+
+
+def _page_text_from_node(node: Any) -> str:
+    if node is None:
+        return ""
+    return node.get_text(separator="\n", strip=True)
+
+
+def _select_best_content_node(soup: Any) -> Any:
+    body = soup.body or soup
+    best_node = None
+    best_score = 0
+    seen = set()
+    for selector in _CONTENT_SELECTORS:
+        for node in soup.select(selector):
+            node_id = id(node)
+            if node_id in seen:
+                continue
+            seen.add(node_id)
+            filtered = _filtered_page_lines(_page_text_from_node(node))
+            if not filtered:
+                continue
+            score = sum(len(item) for item in filtered)
+            if score > best_score:
+                best_score = score
+                best_node = node
+    return best_node or body
 
 
 def merge_search_observations(*observations: Optional[Dict[str, Any]]) -> Dict[str, Any]:
@@ -150,11 +322,12 @@ def search_web(query: str, max_results: int = 5, *, constraint: str = "") -> Dic
 
     if serp_key:
         try:
-            resp = requests.get(
+            with _direct_session() as session:
+                resp = session.get(
                 "https://serpapi.com/search.json",
                 params={"engine": "google", "q": full_query, "api_key": serp_key, "num": max_results},
                 timeout=25,
-            )
+                )
             resp.raise_for_status()
             data = resp.json()
             results: List[Dict[str, Any]] = []
@@ -199,16 +372,17 @@ def search_web(query: str, max_results: int = 5, *, constraint: str = "") -> Dic
 
     try:
         url = "https://duckduckgo.com/html/?" + urllib.parse.urlencode({"q": full_query})
-        resp = requests.get(
-            url,
-            headers={
-                "User-Agent": (
-                    "Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/537.36 "
-                    "(KHTML, like Gecko) Chrome/123 Safari/537.36"
-                )
-            },
-            timeout=20,
-        )
+        with _direct_session() as session:
+            resp = session.get(
+                url,
+                headers={
+                    "User-Agent": (
+                        "Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/537.36 "
+                        "(KHTML, like Gecko) Chrome/123 Safari/537.36"
+                    )
+                },
+                timeout=20,
+            )
         resp.raise_for_status()
         html = resp.text
         link_re = re.compile(r'<a[^>]+class="result__a"[^>]+href="([^"]+)"[^>]*>(.*?)</a>', re.IGNORECASE)
@@ -261,7 +435,8 @@ def fetch_page(url: str, *, max_chars: int = 6000, timeout_s: int = 20) -> Dict[
         )
     }
     try:
-        resp = requests.get(normalized, headers=headers, timeout=timeout_s)
+        with _direct_session() as session:
+            resp = session.get(normalized, headers=headers, timeout=timeout_s)
         resp.raise_for_status()
         html = resp.text
     except Exception as exc:
@@ -277,20 +452,20 @@ def fetch_page(url: str, *, max_chars: int = 6000, timeout_s: int = 20) -> Dict[
         soup = BeautifulSoup(html, "html.parser")
         for tag in soup(["script", "style", "noscript", "svg", "nav", "footer", "header", "aside"]):
             tag.decompose()
-        root = soup.body or soup
-        text = root.get_text(separator="\n", strip=True)
-        text = re.sub(r"\n{3,}", "\n\n", text)
-        text = re.sub(r"[ \t]+\n", "\n", text)
-        text = re.sub(r"\n[ \t]+", "\n", text)
-        text = re.sub(r"[ \t]{2,}", " ", text)
-        text = text.strip()
+        root = _select_best_content_node(soup)
+        lines = _filtered_page_lines(_page_text_from_node(root))
+        if sum(len(item) for item in lines) < 400:
+            fallback_lines = _filtered_page_lines(_page_text_from_node(soup.body or soup))
+            if sum(len(item) for item in fallback_lines) > sum(len(item) for item in lines):
+                lines = fallback_lines
+        text = "\n".join(lines).strip()
     else:
         text = re.sub(r"(?is)<script.*?>.*?</script>", " ", html)
         text = re.sub(r"(?is)<style.*?>.*?</style>", " ", text)
         text = re.sub(r"(?is)<noscript.*?>.*?</noscript>", " ", text)
         text = re.sub(r"(?is)<svg.*?>.*?</svg>", " ", text)
         text = re.sub(r"(?is)<[^>]+>", " ", text)
-        text = clean_text(text)
+        text = "\n".join(_filtered_page_lines(text))
 
     truncated = len(text) > max_chars
     content = text[:max_chars].rstrip()
@@ -316,7 +491,8 @@ def extract_text_entities(text: str) -> Dict[str, List[str]]:
     md5 = sorted(set(re.findall(r"\b[a-fA-F0-9]{32}\b", content)))
     domains = []
     for match in re.findall(r"\b(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b", content):
-        if not is_ip(match):
+        tld = match.rsplit(".", 1)[-1].lower()
+        if not is_ip(match) and tld not in _NON_DOMAIN_TLDS:
             domains.append(match.lower())
     return {
         "ips": ips[:20],

@@ -73,6 +73,7 @@ _TECHNICAL_SEARCH_PRESETS = {
 }
 
 _CLAIM_KEYWORDS = (
+    "allows",
     "persistence",
     "inject",
     "injection",
@@ -90,10 +91,69 @@ _CLAIM_KEYWORDS = (
     "phishing",
     "exfil",
     "download",
+    "downloader",
+    "dropper",
+    "execute",
+    "execution",
+    "remote access",
+    "remote control",
     "powershell",
     "credential",
+    "cookies",
+    "wallet",
+    "browser",
+    "token",
+    "ransomware",
+    "infostealer",
+    "steal",
+    "stealer",
+    "exfiltrate",
+    "exfiltration",
+    "loader",
+    "phishing",
     "botnet",
     "ttp",
+)
+_CLAIM_SIGNAL_PARTS = (
+    "is a",
+    "is an",
+    "used to",
+    "capable of",
+    "used by",
+    "allows attackers",
+    "allows the attacker",
+    "can ",
+    "targets",
+    "steals",
+    "collects",
+    "downloads",
+    "drops",
+    "communicates",
+    "connects",
+    "delivers",
+    "installs",
+    "executes",
+    "loads",
+)
+_BOILERPLATE_SENTENCE_PARTS = (
+    "get a demo",
+    "start for free",
+    "portal login",
+    "investor relations",
+    "choose your language",
+    "support documentation",
+    "see huntress in action",
+    "meet the team",
+    "founded by former",
+    "awards awards",
+    "contact us",
+    "search get a demo",
+    "support blog",
+    "sign up now",
+    "download report",
+    "privacy policy",
+    "cookie policy",
+    "what to do now",
 )
 
 
@@ -130,16 +190,48 @@ def _split_sentences(content: str) -> List[str]:
     return sentences
 
 
+def _looks_like_boilerplate_sentence(sentence: str) -> bool:
+    lowered = clean_text(sentence).lower()
+    if not lowered:
+        return True
+    if any(part in lowered for part in _BOILERPLATE_SENTENCE_PARTS):
+        return True
+    words = re.findall(r"[a-zA-Z]+", lowered)
+    if len(words) >= 8 and len(set(words)) <= max(3, len(words) // 4):
+        return True
+    return False
+
+
 def _claim_kind(sentence: str, entities: Dict[str, List[str]], focus: str) -> str:
     lowered = sentence.lower()
     focus_text = focus.lower().strip()
-    if any(values for values in entities.values()):
-        return "ioc"
     if focus_text and focus_text in lowered:
         return "family_or_indicator"
     if any(keyword in lowered for keyword in _CLAIM_KEYWORDS):
         return "ttp"
+    if any(values for values in entities.values()):
+        return "ioc"
     return "context"
+
+
+def _claim_score(sentence: str, entities: Dict[str, List[str]], focus: str) -> int:
+    lowered = sentence.lower()
+    score = 0
+    if focus and focus.lower() in lowered:
+        score += 6
+    keyword_hits = sum(1 for keyword in _CLAIM_KEYWORDS if keyword in lowered)
+    score += min(6, keyword_hits * 2)
+    signal_hits = sum(1 for token in _CLAIM_SIGNAL_PARTS if token in lowered)
+    score += min(4, signal_hits)
+    if any(values for values in entities.values()):
+        score += 3
+    if 60 <= len(sentence) <= 320:
+        score += 2
+    if len(sentence) < 35:
+        score -= 2
+    if _looks_like_boilerplate_sentence(sentence):
+        score -= 8
+    return score
 
 
 @tool
@@ -191,13 +283,21 @@ def extract_claim_candidates_from_page(content: str, focus: str = "") -> str:
     claims: List[Dict[str, Any]] = []
 
     for sentence in sentences:
+        if _looks_like_boilerplate_sentence(sentence):
+            continue
         lowered = sentence.lower()
-        if focus and focus.lower() not in lowered and not any(keyword in lowered for keyword in _CLAIM_KEYWORDS):
+        has_keyword = any(keyword in lowered for keyword in _CLAIM_KEYWORDS)
+        has_signal = any(token in lowered for token in _CLAIM_SIGNAL_PARTS)
+        if focus and focus.lower() not in lowered and not has_keyword and not has_signal:
             entities = extract_text_entities(sentence)
             if not any(values for values in entities.values()):
                 continue
-        entities = extract_text_entities(sentence)
+        else:
+            entities = extract_text_entities(sentence)
         kind = _claim_kind(sentence, entities, focus)
+        score = _claim_score(sentence, entities, focus)
+        if score < 2:
+            continue
         key = (kind, sentence)
         if key in seen:
             continue
@@ -207,10 +307,17 @@ def extract_claim_candidates_from_page(content: str, focus: str = "") -> str:
                 "kind": kind,
                 "text": sentence,
                 "entities": entities,
+                "score": score,
             }
         )
-        if len(claims) >= 8:
-            break
+    claims.sort(
+        key=lambda item: (
+            -int(item.get("score") or 0),
+            {"family_or_indicator": 0, "ttp": 1, "ioc": 2, "context": 3}.get(str(item.get("kind") or ""), 9),
+            -len(str(item.get("text") or "")),
+        )
+    )
+    claims = claims[:8]
 
     return dumps_json(
         {

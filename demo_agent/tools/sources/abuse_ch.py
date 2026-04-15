@@ -36,6 +36,12 @@ def _first_non_empty(*values: Any) -> str:
     return ""
 
 
+def _direct_session() -> requests.Session:
+    session = requests.Session()
+    session.trust_env = False
+    return session
+
+
 class ThreatFoxClient:
     def __init__(
         self,
@@ -56,12 +62,13 @@ class ThreatFoxClient:
     def _post(self, payload: Dict[str, Any], timeout_s: float = 20.0) -> Dict[str, Any]:
         if not self.auth_key:
             raise RuntimeError("ThreatFox Auth-Key missing.")
-        response = requests.post(
-            self.base_url,
-            headers={"Auth-Key": self.auth_key},
-            json=payload,
-            timeout=timeout_s,
-        )
+        with _direct_session() as session:
+            response = session.post(
+                self.base_url,
+                headers={"Auth-Key": self.auth_key},
+                json=payload,
+                timeout=timeout_s,
+            )
         response.raise_for_status()
         data = response.json()
         return data if isinstance(data, dict) else {}
@@ -197,12 +204,13 @@ class URLhausClient:
     def _post_form(self, endpoint: str, data: Dict[str, Any], timeout_s: float = 20.0) -> Dict[str, Any]:
         if not self.auth_key:
             raise RuntimeError("URLhaus Auth-Key missing.")
-        response = requests.post(
-            f"{self.base_url}/{endpoint.strip('/')}/",
-            headers={"Auth-Key": self.auth_key},
-            data=data,
-            timeout=timeout_s,
-        )
+        with _direct_session() as session:
+            response = session.post(
+                f"{self.base_url}/{endpoint.strip('/')}/",
+                headers={"Auth-Key": self.auth_key},
+                data=data,
+                timeout=timeout_s,
+            )
         response.raise_for_status()
         payload = response.json()
         return payload if isinstance(payload, dict) else {}
