@@ -1,0 +1,1313 @@
+{
+  "mode": "plan",
+  "event": {
+    "event_time": "2026-03-29 10:40:00",
+    "simulated": false,
+    "src": {
+      "ip": "10.20.8.41",
+      "port": null
+    },
+    "dst": {
+      "ip": "203.0.113.77",
+      "port": null
+    },
+    "protocol": "TLS",
+    "trigger_fingerprint": {
+      "type": "JA4",
+      "value": "t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "matched": true
+    },
+    "enrichment": {
+      "info": "IcedID",
+      "reference": "JA4DB",
+      "update_time": "2026-03-28 23:16:27"
+    },
+    "raw_alert": {
+      "timestamp": "2026-03-29 10:40:00",
+      "src_ip": "10.20.8.41",
+      "dst_ip": "203.0.113.77",
+      "protocol": "TLS",
+      "trigger_fingerprint": {
+        "type": "JA4",
+        "value": "t13d201100_2b729b4bf6f3_9e7b989ebec8"
+      },
+      "info": "IcedID",
+      "reference": "JA4DB",
+      "update_time": "2026-03-28 23:16:27"
+    }
+  },
+  "facts": {
+    "event_time": "2026-03-29 10:40:00",
+    "src": {
+      "ip": "10.20.8.41",
+      "port": null
+    },
+    "dst": {
+      "ip": "203.0.113.77",
+      "port": null
+    },
+    "protocol": "TLS",
+    "fingerprint": {
+      "type": "JA4",
+      "value": "t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "matched": true
+    }
+  },
+  "entities": {
+    "src_ip": "10.20.8.41",
+    "dst_ip": "203.0.113.77",
+    "protocol": "TLS",
+    "fingerprint": {
+      "type": "JA4",
+      "value": "t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "matched": true
+    },
+    "family_hint": "IcedID",
+    "reference": "JA4DB",
+    "update_time": "2026-03-28 23:16:27"
+  },
+  "local_intel": {
+    "enabled": true,
+    "matched": true,
+    "query": {
+      "indicator_type": "JA4",
+      "indicator_value": "t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "candidates": [
+        "ja4"
+      ]
+    },
+    "match_count": 1,
+    "matches": [
+      {
+        "indicator_type": "ja4",
+        "indicator_value": "t13d201100_2b729b4bf6f3_9e7b989ebec8",
+        "malware_family": "IcedID",
+        "severity": null,
+        "confidence": null,
+        "source": "JA4DB",
+        "last_updated": "2026-03-28T23:16:27"
+      }
+    ],
+    "indicator_type": "ja4",
+    "indicator_value": "t13d201100_2b729b4bf6f3_9e7b989ebec8",
+    "malware_family": "IcedID",
+    "severity": null,
+    "confidence": null,
+    "source": "JA4DB",
+    "last_updated": "2026-03-28T23:16:27",
+    "best_match": {
+      "indicator_type": "ja4",
+      "indicator_value": "t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "malware_family": "IcedID",
+      "severity": null,
+      "confidence": null,
+      "source": "JA4DB",
+      "last_updated": "2026-03-28T23:16:27"
+    }
+  },
+  "external_intel": {
+    "fingerprint_enrichment": {
+      "ok": true,
+      "query": "JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 IcedID | JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "results": [
+        {
+          "title": "IcedID • Application • JA4+ Database",
+          "url": "https://ja4db.com/application/IcedID%20",
+          "snippet": "JA4+ Database is a community-maintained repository of JA4+ fingerprints sourced from networks across the Internet.",
+          "source": "serpapi"
+        },
+        {
+          "title": "FoxIO-LLC/ja4: JA4+ is a suite of network fingerprinting ...",
+          "url": "https://github.com/FoxIO-LLC/ja4",
+          "snippet": "JA4+ is a suite of network fingerprinting methods by FoxIO that are easy to use and easy to share. These methods are both human and machine readable.",
+          "source": "serpapi"
+        },
+        {
+          "title": "JA4+ network fingerprinting",
+          "url": "https://blog.apnic.net/2023/11/22/ja4-network-fingerprinting/",
+          "snippet": "JA4+ is a set of simple yet powerful network fingerprints for multiple protocols that are both human and machine-readable, facilitating improved threat-hunting ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "IcedID Malware: Analysis, Detection, Removal",
+          "url": "https://www.huntress.com/threat-library/malware/icedid",
+          "snippet": "IcedID malware is a banking trojan designed to steal sensitive information, particularly financial credentials.",
+          "source": "serpapi"
+        },
+        {
+          "title": "Trojan:Win32/IcedId threat description",
+          "url": "https://www.microsoft.com/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/IcedId",
+          "snippet": "Microsoft Defender Antivirus detects and removes this threat. This threat is a modular banking trojan first observed in 2017.",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi,abuse_ch_structured,serpapi"
+    },
+    "context_search": {
+      "ok": true,
+      "query": "JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family IcedID | JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "results": [
+        {
+          "title": "IcedID (Malware Family)",
+          "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.icedid",
+          "snippet": "a banking malware and was first observed in 2017. It also acts as a loader for other malware, including ransomware. The well-known IcedID version consists ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "IcedID Malware: Analysis, Detection, Removal",
+          "url": "https://www.huntress.com/threat-library/malware/icedid",
+          "snippet": "What is IcedID malware? IcedID malware is a banking trojan designed to steal sensitive information, particularly financial credentials. Over the ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "YiBackdoor: Linked to IcedID and Latrodectus | ThreatLabz",
+          "url": "https://www.zscaler.com/blogs/security-research/yibackdoor-new-malware-family-links-icedid-and-latrodectus",
+          "snippet": "Zscaler ThreatLabz has identified a new malware family that we named YiBackdoor, which was first observed in June 2025.",
+          "source": "serpapi"
+        },
+        {
+          "title": "JA4+ network fingerprinting",
+          "url": "https://blog.apnic.net/2023/11/22/ja4-network-fingerprinting/",
+          "snippet": "The use cases for these fingerprints include scanning for threat actors, malware detection, session hijacking prevention, compliance automation, ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "IcedID, Software S0483",
+          "url": "https://attack.mitre.org/software/S0483/",
+          "snippet": "COVID-19 and FMLA Campaigns used to install new IcedID banking malware. Retrieved July 14, 2020. DFIR. (2022, April 25). Quantum Ransomware. Retrieved July 26, ...",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi,abuse_ch_structured,serpapi"
+    },
+    "family_intel": {
+      "ok": true,
+      "family": "IcedID",
+      "query": "IcedID t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family C2",
+      "highlights": [
+        "- IcedID Malware: Analysis, Detection, Removal（https://www.huntress.com/threat-library/malware/icedid）",
+        "- Latrodectus Malware Analysis: IcedID 2.0（https://www.proofpoint.com/us/blog/threat-insight/latrodectus-spider-bytes-ice）",
+        "- IcedID, Software S0483（https://attack.mitre.org/software/S0483/）",
+        "- IcedID - Red Canary Threat Detection Report（https://redcanary.com/threat-detection-report/threats/icedid/）",
+        "- Breaking the Ice: A Deep Dive Into the IcedID Banking ...（https://www.ibm.com/think/x-force/breaking-the-ice-a-deep-dive-into-the-icedid-banking-trojans-new-major-version-release）"
+      ],
+      "raw": {
+        "ok": true,
+        "query": "site:malpedia.caad.fkie.fraunhofer.de OR site:microsoft.com OR site:abuse.ch OR site:checkpoint.com OR site:trendmicro.com OR site:proofpoint.com IcedID t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family C2 | IcedID t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family C2",
+        "results": [
+          {
+            "title": "IcedID Malware: Analysis, Detection, Removal",
+            "url": "https://www.huntress.com/threat-library/malware/icedid",
+            "snippet": "What is IcedID malware? IcedID malware is a banking trojan designed to steal sensitive information, particularly financial credentials. Over the ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "Latrodectus Malware Analysis: IcedID 2.0",
+            "url": "https://www.proofpoint.com/us/blog/threat-insight/latrodectus-spider-bytes-ice",
+            "snippet": "Share with your network! April 04, 2024 Proofpoint Threat Research and Team Cymru S2 Threat Research. Proofpoint's Threat Research team joined up with the ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "IcedID, Software S0483",
+            "url": "https://attack.mitre.org/software/S0483/",
+            "snippet": "IcedID is a modular banking malware designed to steal financial information that has been observed in the wild since at least 2017.",
+            "source": "serpapi"
+          },
+          {
+            "title": "IcedID - Red Canary Threat Detection Report",
+            "url": "https://redcanary.com/threat-detection-report/threats/icedid/",
+            "snippet": "IcedID, also known as Bokbot, is a banking trojan delivered through phishing and other malware. It was commonly found as the result of TA551.",
+            "source": "serpapi"
+          },
+          {
+            "title": "Breaking the Ice: A Deep Dive Into the IcedID Banking ...",
+            "url": "https://www.ibm.com/think/x-force/breaking-the-ice-a-deep-dive-into-the-icedid-banking-trojans-new-major-version-release",
+            "snippet": "Since 2017, the IcedID Trojan has received consistent updates that enable it to continue targeting banks and other businesses. Find out what changes were ...",
+            "source": "serpapi"
+          }
+        ],
+        "mode": "serpapi"
+      }
+    },
+    "supplemental": null,
+    "page_enrichment": {
+      "ok": true,
+      "focus": "IcedID",
+      "items": [
+        {
+          "ok": true,
+          "url": "https://www.huntress.com/threat-library/malware/icedid",
+          "title": "IcedID Malware: Analysis, Detection, Removal",
+          "page_title": "IcedID Malware: Analysis, Detection, Removal | Huntress",
+          "source": "huntress.com",
+          "kind": "family_intel",
+          "raw_ref": "external_intel.family_intel.raw.results[0]",
+          "page_fetch_ok": true,
+          "summary_hint": "IcedID is a banking trojan that steals financial credentials and can deploy ransomware. It spreads via phishing emails, drive-by downloads, and exploit kits.",
+          "claims": [
+            "IcedID spreads through phishing emails, drive-by downloads, and exploit kits.",
+            "It uses web injection techniques to steal user data and maintains persistence through multiple components.",
+            "IcedID employs advanced evasion techniques such as DLL injection and encryption."
+          ],
+          "relevance": "High",
+          "iocs": [
+            "examplebank-login.net",
+            "secureauthentic.xyz"
+          ],
+          "entities": {
+            "ips": [],
+            "domains": [
+              "examplebank-login.net",
+              "secureauthentic.xyz"
+            ],
+            "urls": [],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 4553,
+          "truncated": false,
+          "llm_used": true
+        },
+        {
+          "ok": true,
+          "url": "https://www.proofpoint.com/us/blog/threat-insight/latrodectus-spider-bytes-ice",
+          "title": "Latrodectus Malware Analysis: IcedID 2.0",
+          "page_title": "Latrodectus Malware Analysis: IcedID 2.0 | Proofpoint US",
+          "source": "proofpoint.com",
+          "kind": "family_intel",
+          "raw_ref": "external_intel.family_intel.raw.results[1]",
+          "page_fetch_ok": true,
+          "summary_hint": "Prevent misdirected emails and hidden exfiltration of sensitive data. Latrodectus Malware Analysis: IcedID 2.0 | Proofpoint US Gain a hightouch strategic partnership with a team of Proofpoint specialists who optimize your security and monitoring.",
+          "claims": [
+            "Prevent misdirected emails and hidden exfiltration of sensitive data.",
+            "Latrodectus Malware Analysis: IcedID 2.0 | Proofpoint US",
+            "Gain a hightouch strategic partnership with a team of Proofpoint specialists who optimize your security and monitoring.",
+            "Give your team access to expert guidance while they manage daily operations of your Proofpoint platform.",
+            "Defend humans and agents against modern cyber threats across email and collaboration channels."
+          ],
+          "relevance": "",
+          "iocs": [],
+          "entities": {
+            "ips": [],
+            "domains": [],
+            "urls": [],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 7000,
+          "truncated": true,
+          "llm_used": false
+        },
+        {
+          "ok": true,
+          "url": "https://www.ibm.com/think/x-force/breaking-the-ice-a-deep-dive-into-the-icedid-banking-trojans-new-major-version-release",
+          "title": "Breaking the Ice: A Deep Dive Into the IcedID Banking ...",
+          "page_title": "Breaking the Ice: A Deep Dive Into the IcedID Banking Trojan's New Major Version Release | IBM",
+          "source": "ibm.com",
+          "kind": "family_intel",
+          "raw_ref": "external_intel.family_intel.raw.results[4]",
+          "page_fetch_ok": true,
+          "summary_hint": "The loader communicates with the C2 to fetch the IcedID payload The downloader downloads the malicious payload – a file named photo.png* The loader runs photo.png The loader creates a new instance of svchost.exe Loader injects the malicious payload into the new svchost.exe process The browser hooking will allow IcedID to detect targeted URLs and deploy web-injections accordingly. Next, the loader creates a new process, svchost, and injects the decrypted IcedID payload into it.",
+          "claims": [
+            "The loader communicates with the C2 to fetch the IcedID payload The downloader downloads the malicious payload – a file named photo.png* The loader runs photo.png The loader creates a new instance of svchost.exe Loader injects the malicious payload into the new svchost.exe process",
+            "The browser hooking will allow IcedID to detect targeted URLs and deploy web-injections accordingly.",
+            "Next, the loader creates a new process, svchost, and injects the decrypted IcedID payload into it.",
+            "It downloads and reads different files necessary for the execution flow, like the configuration file (chercrgnaa.dat in this case), certificate file (3D8C2D77.tmp in this case), and other supporting resources.",
+            "One of the important files the loader fetches is the malicious payload that contains all of IcedID’s logic and which is actually the main module of the malware."
+          ],
+          "relevance": "",
+          "iocs": [],
+          "entities": {
+            "ips": [],
+            "domains": [
+              "3d8c2d77.tmp",
+              "files.the",
+              "not.if"
+            ],
+            "urls": [],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 7000,
+          "truncated": true,
+          "llm_used": false
+        },
+        {
+          "ok": true,
+          "url": "https://redcanary.com/threat-detection-report/threats/icedid/",
+          "title": "IcedID - Red Canary Threat Detection Report",
+          "page_title": "IcedID - Red Canary Threat Detection Report",
+          "source": "redcanary.com",
+          "kind": "family_intel",
+          "raw_ref": "external_intel.family_intel.raw.results[3]",
+          "page_fetch_ok": true,
+          "summary_hint": "IcedID - Red Canary Threat Detection Report",
+          "claims": [
+            "IcedID - Red Canary Threat Detection Report"
+          ],
+          "relevance": "",
+          "iocs": [],
+          "entities": {
+            "ips": [],
+            "domains": [],
+            "urls": [],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 43,
+          "truncated": false,
+          "llm_used": false
+        }
+      ],
+      "selected_urls": [
+        "https://www.huntress.com/threat-library/malware/icedid",
+        "https://www.proofpoint.com/us/blog/threat-insight/latrodectus-spider-bytes-ice",
+        "https://www.ibm.com/think/x-force/breaking-the-ice-a-deep-dive-into-the-icedid-banking-trojans-new-major-version-release",
+        "https://redcanary.com/threat-detection-report/threats/icedid/"
+      ],
+      "timings": {
+        "page_enrichment_s": 8.652,
+        "page_enrichment_count": 4,
+        "page_enrichment_llm_count": 1
+      }
+    }
+  },
+  "observations": {
+    "local_intel": {
+      "enabled": true,
+      "matched": true,
+      "query": {
+        "indicator_type": "JA4",
+        "indicator_value": "t13d201100_2b729b4bf6f3_9e7b989ebec8",
+        "candidates": [
+          "ja4"
+        ]
+      },
+      "match_count": 1,
+      "matches": [
+        {
+          "indicator_type": "ja4",
+          "indicator_value": "t13d201100_2b729b4bf6f3_9e7b989ebec8",
+          "malware_family": "IcedID",
+          "severity": null,
+          "confidence": null,
+          "source": "JA4DB",
+          "last_updated": "2026-03-28T23:16:27"
+        }
+      ],
+      "indicator_type": "ja4",
+      "indicator_value": "t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "malware_family": "IcedID",
+      "severity": null,
+      "confidence": null,
+      "source": "JA4DB",
+      "last_updated": "2026-03-28T23:16:27",
+      "best_match": {
+        "indicator_type": "ja4",
+        "indicator_value": "t13d201100_2b729b4bf6f3_9e7b989ebec8",
+        "malware_family": "IcedID",
+        "severity": null,
+        "confidence": null,
+        "source": "JA4DB",
+        "last_updated": "2026-03-28T23:16:27"
+      }
+    },
+    "fingerprint_enrichment": {
+      "ok": true,
+      "query": "JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 IcedID | JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "results": [
+        {
+          "title": "IcedID • Application • JA4+ Database",
+          "url": "https://ja4db.com/application/IcedID%20",
+          "snippet": "JA4+ Database is a community-maintained repository of JA4+ fingerprints sourced from networks across the Internet.",
+          "source": "serpapi"
+        },
+        {
+          "title": "FoxIO-LLC/ja4: JA4+ is a suite of network fingerprinting ...",
+          "url": "https://github.com/FoxIO-LLC/ja4",
+          "snippet": "JA4+ is a suite of network fingerprinting methods by FoxIO that are easy to use and easy to share. These methods are both human and machine readable.",
+          "source": "serpapi"
+        },
+        {
+          "title": "JA4+ network fingerprinting",
+          "url": "https://blog.apnic.net/2023/11/22/ja4-network-fingerprinting/",
+          "snippet": "JA4+ is a set of simple yet powerful network fingerprints for multiple protocols that are both human and machine-readable, facilitating improved threat-hunting ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "IcedID Malware: Analysis, Detection, Removal",
+          "url": "https://www.huntress.com/threat-library/malware/icedid",
+          "snippet": "IcedID malware is a banking trojan designed to steal sensitive information, particularly financial credentials.",
+          "source": "serpapi"
+        },
+        {
+          "title": "Trojan:Win32/IcedId threat description",
+          "url": "https://www.microsoft.com/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/IcedId",
+          "snippet": "Microsoft Defender Antivirus detects and removes this threat. This threat is a modular banking trojan first observed in 2017.",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi,abuse_ch_structured,serpapi"
+    },
+    "context_search": {
+      "ok": true,
+      "query": "JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family IcedID | JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "results": [
+        {
+          "title": "IcedID (Malware Family)",
+          "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.icedid",
+          "snippet": "a banking malware and was first observed in 2017. It also acts as a loader for other malware, including ransomware. The well-known IcedID version consists ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "IcedID Malware: Analysis, Detection, Removal",
+          "url": "https://www.huntress.com/threat-library/malware/icedid",
+          "snippet": "What is IcedID malware? IcedID malware is a banking trojan designed to steal sensitive information, particularly financial credentials. Over the ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "YiBackdoor: Linked to IcedID and Latrodectus | ThreatLabz",
+          "url": "https://www.zscaler.com/blogs/security-research/yibackdoor-new-malware-family-links-icedid-and-latrodectus",
+          "snippet": "Zscaler ThreatLabz has identified a new malware family that we named YiBackdoor, which was first observed in June 2025.",
+          "source": "serpapi"
+        },
+        {
+          "title": "JA4+ network fingerprinting",
+          "url": "https://blog.apnic.net/2023/11/22/ja4-network-fingerprinting/",
+          "snippet": "The use cases for these fingerprints include scanning for threat actors, malware detection, session hijacking prevention, compliance automation, ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "IcedID, Software S0483",
+          "url": "https://attack.mitre.org/software/S0483/",
+          "snippet": "COVID-19 and FMLA Campaigns used to install new IcedID banking malware. Retrieved July 14, 2020. DFIR. (2022, April 25). Quantum Ransomware. Retrieved July 26, ...",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi,abuse_ch_structured,serpapi"
+    },
+    "family_intel": {
+      "ok": true,
+      "family": "IcedID",
+      "query": "IcedID t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family C2",
+      "highlights": [
+        "- IcedID Malware: Analysis, Detection, Removal（https://www.huntress.com/threat-library/malware/icedid）",
+        "- Latrodectus Malware Analysis: IcedID 2.0（https://www.proofpoint.com/us/blog/threat-insight/latrodectus-spider-bytes-ice）",
+        "- IcedID, Software S0483（https://attack.mitre.org/software/S0483/）",
+        "- IcedID - Red Canary Threat Detection Report（https://redcanary.com/threat-detection-report/threats/icedid/）",
+        "- Breaking the Ice: A Deep Dive Into the IcedID Banking ...（https://www.ibm.com/think/x-force/breaking-the-ice-a-deep-dive-into-the-icedid-banking-trojans-new-major-version-release）"
+      ],
+      "raw": {
+        "ok": true,
+        "query": "site:malpedia.caad.fkie.fraunhofer.de OR site:microsoft.com OR site:abuse.ch OR site:checkpoint.com OR site:trendmicro.com OR site:proofpoint.com IcedID t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family C2 | IcedID t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family C2",
+        "results": [
+          {
+            "title": "IcedID Malware: Analysis, Detection, Removal",
+            "url": "https://www.huntress.com/threat-library/malware/icedid",
+            "snippet": "What is IcedID malware? IcedID malware is a banking trojan designed to steal sensitive information, particularly financial credentials. Over the ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "Latrodectus Malware Analysis: IcedID 2.0",
+            "url": "https://www.proofpoint.com/us/blog/threat-insight/latrodectus-spider-bytes-ice",
+            "snippet": "Share with your network! April 04, 2024 Proofpoint Threat Research and Team Cymru S2 Threat Research. Proofpoint's Threat Research team joined up with the ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "IcedID, Software S0483",
+            "url": "https://attack.mitre.org/software/S0483/",
+            "snippet": "IcedID is a modular banking malware designed to steal financial information that has been observed in the wild since at least 2017.",
+            "source": "serpapi"
+          },
+          {
+            "title": "IcedID - Red Canary Threat Detection Report",
+            "url": "https://redcanary.com/threat-detection-report/threats/icedid/",
+            "snippet": "IcedID, also known as Bokbot, is a banking trojan delivered through phishing and other malware. It was commonly found as the result of TA551.",
+            "source": "serpapi"
+          },
+          {
+            "title": "Breaking the Ice: A Deep Dive Into the IcedID Banking ...",
+            "url": "https://www.ibm.com/think/x-force/breaking-the-ice-a-deep-dive-into-the-icedid-banking-trojans-new-major-version-release",
+            "snippet": "Since 2017, the IcedID Trojan has received consistent updates that enable it to continue targeting banks and other businesses. Find out what changes were ...",
+            "source": "serpapi"
+          }
+        ],
+        "mode": "serpapi"
+      }
+    },
+    "supplemental": null,
+    "page_enrichment": {
+      "ok": true,
+      "focus": "IcedID",
+      "items": [
+        {
+          "ok": true,
+          "url": "https://www.huntress.com/threat-library/malware/icedid",
+          "title": "IcedID Malware: Analysis, Detection, Removal",
+          "page_title": "IcedID Malware: Analysis, Detection, Removal | Huntress",
+          "source": "huntress.com",
+          "kind": "family_intel",
+          "raw_ref": "external_intel.family_intel.raw.results[0]",
+          "page_fetch_ok": true,
+          "summary_hint": "IcedID is a banking trojan that steals financial credentials and can deploy ransomware. It spreads via phishing emails, drive-by downloads, and exploit kits.",
+          "claims": [
+            "IcedID spreads through phishing emails, drive-by downloads, and exploit kits.",
+            "It uses web injection techniques to steal user data and maintains persistence through multiple components.",
+            "IcedID employs advanced evasion techniques such as DLL injection and encryption."
+          ],
+          "relevance": "High",
+          "iocs": [
+            "examplebank-login.net",
+            "secureauthentic.xyz"
+          ],
+          "entities": {
+            "ips": [],
+            "domains": [
+              "examplebank-login.net",
+              "secureauthentic.xyz"
+            ],
+            "urls": [],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 4553,
+          "truncated": false,
+          "llm_used": true
+        },
+        {
+          "ok": true,
+          "url": "https://www.proofpoint.com/us/blog/threat-insight/latrodectus-spider-bytes-ice",
+          "title": "Latrodectus Malware Analysis: IcedID 2.0",
+          "page_title": "Latrodectus Malware Analysis: IcedID 2.0 | Proofpoint US",
+          "source": "proofpoint.com",
+          "kind": "family_intel",
+          "raw_ref": "external_intel.family_intel.raw.results[1]",
+          "page_fetch_ok": true,
+          "summary_hint": "Prevent misdirected emails and hidden exfiltration of sensitive data. Latrodectus Malware Analysis: IcedID 2.0 | Proofpoint US Gain a hightouch strategic partnership with a team of Proofpoint specialists who optimize your security and monitoring.",
+          "claims": [
+            "Prevent misdirected emails and hidden exfiltration of sensitive data.",
+            "Latrodectus Malware Analysis: IcedID 2.0 | Proofpoint US",
+            "Gain a hightouch strategic partnership with a team of Proofpoint specialists who optimize your security and monitoring.",
+            "Give your team access to expert guidance while they manage daily operations of your Proofpoint platform.",
+            "Defend humans and agents against modern cyber threats across email and collaboration channels."
+          ],
+          "relevance": "",
+          "iocs": [],
+          "entities": {
+            "ips": [],
+            "domains": [],
+            "urls": [],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 7000,
+          "truncated": true,
+          "llm_used": false
+        },
+        {
+          "ok": true,
+          "url": "https://www.ibm.com/think/x-force/breaking-the-ice-a-deep-dive-into-the-icedid-banking-trojans-new-major-version-release",
+          "title": "Breaking the Ice: A Deep Dive Into the IcedID Banking ...",
+          "page_title": "Breaking the Ice: A Deep Dive Into the IcedID Banking Trojan's New Major Version Release | IBM",
+          "source": "ibm.com",
+          "kind": "family_intel",
+          "raw_ref": "external_intel.family_intel.raw.results[4]",
+          "page_fetch_ok": true,
+          "summary_hint": "The loader communicates with the C2 to fetch the IcedID payload The downloader downloads the malicious payload – a file named photo.png* The loader runs photo.png The loader creates a new instance of svchost.exe Loader injects the malicious payload into the new svchost.exe process The browser hooking will allow IcedID to detect targeted URLs and deploy web-injections accordingly. Next, the loader creates a new process, svchost, and injects the decrypted IcedID payload into it.",
+          "claims": [
+            "The loader communicates with the C2 to fetch the IcedID payload The downloader downloads the malicious payload – a file named photo.png* The loader runs photo.png The loader creates a new instance of svchost.exe Loader injects the malicious payload into the new svchost.exe process",
+            "The browser hooking will allow IcedID to detect targeted URLs and deploy web-injections accordingly.",
+            "Next, the loader creates a new process, svchost, and injects the decrypted IcedID payload into it.",
+            "It downloads and reads different files necessary for the execution flow, like the configuration file (chercrgnaa.dat in this case), certificate file (3D8C2D77.tmp in this case), and other supporting resources.",
+            "One of the important files the loader fetches is the malicious payload that contains all of IcedID’s logic and which is actually the main module of the malware."
+          ],
+          "relevance": "",
+          "iocs": [],
+          "entities": {
+            "ips": [],
+            "domains": [
+              "3d8c2d77.tmp",
+              "files.the",
+              "not.if"
+            ],
+            "urls": [],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 7000,
+          "truncated": true,
+          "llm_used": false
+        },
+        {
+          "ok": true,
+          "url": "https://redcanary.com/threat-detection-report/threats/icedid/",
+          "title": "IcedID - Red Canary Threat Detection Report",
+          "page_title": "IcedID - Red Canary Threat Detection Report",
+          "source": "redcanary.com",
+          "kind": "family_intel",
+          "raw_ref": "external_intel.family_intel.raw.results[3]",
+          "page_fetch_ok": true,
+          "summary_hint": "IcedID - Red Canary Threat Detection Report",
+          "claims": [
+            "IcedID - Red Canary Threat Detection Report"
+          ],
+          "relevance": "",
+          "iocs": [],
+          "entities": {
+            "ips": [],
+            "domains": [],
+            "urls": [],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 43,
+          "truncated": false,
+          "llm_used": false
+        }
+      ],
+      "selected_urls": [
+        "https://www.huntress.com/threat-library/malware/icedid",
+        "https://www.proofpoint.com/us/blog/threat-insight/latrodectus-spider-bytes-ice",
+        "https://www.ibm.com/think/x-force/breaking-the-ice-a-deep-dive-into-the-icedid-banking-trojans-new-major-version-release",
+        "https://redcanary.com/threat-detection-report/threats/icedid/"
+      ],
+      "timings": {
+        "page_enrichment_s": 8.652,
+        "page_enrichment_count": 4,
+        "page_enrichment_llm_count": 1
+      }
+    }
+  },
+  "corroboration": {
+    "local_family": "IcedID",
+    "external_family_candidates": [],
+    "supported_by_external": true,
+    "conflict": false,
+    "confidence_driver": "local_and_external",
+    "summary": "当前主结论以本地指纹情报 `IcedID` 为主，并获得外部结构化情报的补充支持。",
+    "selected_family": "IcedID",
+    "supplemental_evidence_count": 0,
+    "primary_source": {
+      "family": "IcedID",
+      "source": "JA4DB",
+      "source_kind": "local_intel",
+      "confidence": 85,
+      "precedence": 100,
+      "url": null
+    },
+    "supporting_sources": [
+      {
+        "family": "IcedID",
+        "source": "JA4DB",
+        "source_kind": "alert_hint",
+        "confidence": 70,
+        "precedence": 62,
+        "url": null
+      },
+      {
+        "family": "IcedID",
+        "source": "family_intel",
+        "source_kind": "family_background",
+        "confidence": 68,
+        "precedence": 74,
+        "url": null
+      }
+    ],
+    "conflicting_sources": [],
+    "conflicting_candidates": [],
+    "family_candidates": [
+      {
+        "family": "IcedID",
+        "max_precedence": 100,
+        "max_confidence": 85,
+        "support_count": 3,
+        "has_local": true
+      }
+    ],
+    "review_priority": "normal"
+  },
+  "gaps": [],
+  "gap_fill_needed": false,
+  "supplemental": {},
+  "evidence": [
+    {
+      "kind": "event",
+      "source": "alert",
+      "type": "matched_alert",
+      "query": null,
+      "url": null,
+      "title": "命中后告警事件",
+      "claim": "在 2026-03-29 10:40:00 观察到 10.20.8.41 -> 203.0.113.77 的 TLS 流量，命中 JA4 指纹 t13d201100_2b729b4bf6f3_9e7b989ebec8。",
+      "confidence": 95,
+      "raw_ref": "event.raw_alert",
+      "domain": null,
+      "weight": 96,
+      "weight_level": "高",
+      "weight_reason": "原始告警事实",
+      "evidence_tier": "strong",
+      "page_type": "article",
+      "is_reportable": true,
+      "id": "e01"
+    },
+    {
+      "kind": "local_intel",
+      "source": "JA4DB",
+      "type": "local_indicator_match",
+      "query": "t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "url": null,
+      "title": "本地指纹情报命中",
+      "claim": "本地情报库将 ja4 t13d201100_2b729b4bf6f3_9e7b989ebec8 关联到家族/标签 IcedID，来源 JA4DB。",
+      "confidence": 85,
+      "raw_ref": "local_intel.best_match",
+      "domain": null,
+      "weight": 88,
+      "weight_level": "高",
+      "weight_reason": "本地结构化指纹情报",
+      "evidence_tier": "strong",
+      "page_type": "article",
+      "is_reportable": true,
+      "id": "e02"
+    },
+    {
+      "kind": "family_intel",
+      "source": "huntress.com",
+      "type": "family_search",
+      "query": "IcedID t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family C2",
+      "url": "https://www.huntress.com/threat-library/malware/icedid",
+      "title": "IcedID Malware: Analysis, Detection, Removal",
+      "claim": "IcedID is a banking trojan that steals financial credentials and can deploy ransomware. It spreads via phishing emails, drive-by downloads, and exploit kits.",
+      "confidence": 65,
+      "raw_ref": "external_intel.family_intel.raw.results[0]",
+      "claim_origin": "page_enrichment",
+      "page_claims": [
+        "IcedID spreads through phishing emails, drive-by downloads, and exploit kits.",
+        "It uses web injection techniques to steal user data and maintains persistence through multiple components.",
+        "IcedID employs advanced evasion techniques such as DLL injection and encryption."
+      ],
+      "page_summary": "IcedID is a banking trojan that steals financial credentials and can deploy ransomware. It spreads via phishing emails, drive-by downloads, and exploit kits.",
+      "page_title": "IcedID Malware: Analysis, Detection, Removal | Huntress",
+      "page_entities": {
+        "ips": [],
+        "domains": [
+          "examplebank-login.net",
+          "secureauthentic.xyz"
+        ],
+        "urls": [],
+        "sha256": [],
+        "sha1": [],
+        "md5": []
+      },
+      "page_relevance": "High",
+      "page_iocs": [
+        "examplebank-login.net",
+        "secureauthentic.xyz"
+      ],
+      "domain": "huntress.com",
+      "weight": 74,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 huntress.com",
+      "evidence_tier": "supporting",
+      "page_type": "profile",
+      "is_reportable": true,
+      "id": "e03"
+    },
+    {
+      "kind": "search_result",
+      "source": "malpedia.caad.fkie.fraunhofer.de",
+      "type": "context_search",
+      "query": "JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family IcedID | JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.icedid",
+      "title": "IcedID (Malware Family)",
+      "claim": "a banking malware and was first observed in 2017. It also acts as a loader for other malware, including ransomware. The well-known IcedID version consists ...",
+      "confidence": 62,
+      "raw_ref": "external_intel.context_search.results[0]",
+      "claim_origin": "snippet",
+      "page_claims": [],
+      "page_summary": "",
+      "page_title": "",
+      "page_entities": {},
+      "page_relevance": "",
+      "page_iocs": [],
+      "domain": "malpedia.caad.fkie.fraunhofer.de",
+      "weight": 73,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 malpedia.caad.fkie.fraunhofer.de",
+      "evidence_tier": "supporting",
+      "page_type": "profile",
+      "is_reportable": true,
+      "id": "e04"
+    },
+    {
+      "kind": "hint",
+      "source": "JA4DB",
+      "type": "family_hint",
+      "query": null,
+      "url": null,
+      "title": "告警附带家族提示",
+      "claim": "原始告警将该事件关联到家族/标签 IcedID。",
+      "confidence": 70,
+      "raw_ref": "event.enrichment",
+      "domain": null,
+      "weight": 72,
+      "weight_level": "中",
+      "weight_reason": "结构化本地信息",
+      "evidence_tier": "supporting",
+      "page_type": "article",
+      "is_reportable": true,
+      "id": "e05"
+    },
+    {
+      "kind": "search_result",
+      "source": "microsoft.com",
+      "type": "fingerprint_search",
+      "query": "JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 IcedID | JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "url": "https://www.microsoft.com/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/IcedId",
+      "title": "Trojan:Win32/IcedId threat description",
+      "claim": "Microsoft Defender Antivirus detects and removes this threat. This threat is a modular banking trojan first observed in 2017.",
+      "confidence": 60,
+      "raw_ref": "external_intel.fingerprint_enrichment.results[4]",
+      "claim_origin": "snippet",
+      "page_claims": [],
+      "page_summary": "",
+      "page_title": "",
+      "page_entities": {},
+      "page_relevance": "",
+      "page_iocs": [],
+      "domain": "microsoft.com",
+      "weight": 72,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 microsoft.com",
+      "evidence_tier": "supporting",
+      "page_type": "profile",
+      "is_reportable": true,
+      "id": "e06"
+    },
+    {
+      "kind": "search_result",
+      "source": "huntress.com",
+      "type": "context_search",
+      "query": "JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family IcedID | JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "url": "https://www.huntress.com/threat-library/malware/icedid",
+      "title": "IcedID Malware: Analysis, Detection, Removal",
+      "claim": "IcedID is a banking trojan that steals financial credentials and can deploy ransomware. It spreads via phishing emails, drive-by downloads, and exploit kits.",
+      "confidence": 62,
+      "raw_ref": "external_intel.context_search.results[1]",
+      "claim_origin": "page_enrichment",
+      "page_claims": [
+        "IcedID spreads through phishing emails, drive-by downloads, and exploit kits.",
+        "It uses web injection techniques to steal user data and maintains persistence through multiple components.",
+        "IcedID employs advanced evasion techniques such as DLL injection and encryption."
+      ],
+      "page_summary": "IcedID is a banking trojan that steals financial credentials and can deploy ransomware. It spreads via phishing emails, drive-by downloads, and exploit kits.",
+      "page_title": "IcedID Malware: Analysis, Detection, Removal | Huntress",
+      "page_entities": {
+        "ips": [],
+        "domains": [
+          "examplebank-login.net",
+          "secureauthentic.xyz"
+        ],
+        "urls": [],
+        "sha256": [],
+        "sha1": [],
+        "md5": []
+      },
+      "page_relevance": "High",
+      "page_iocs": [
+        "examplebank-login.net",
+        "secureauthentic.xyz"
+      ],
+      "domain": "huntress.com",
+      "weight": 71,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 huntress.com",
+      "evidence_tier": "supporting",
+      "page_type": "profile",
+      "is_reportable": true,
+      "id": "e07"
+    },
+    {
+      "kind": "search_result",
+      "source": "huntress.com",
+      "type": "fingerprint_search",
+      "query": "JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 IcedID | JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "url": "https://www.huntress.com/threat-library/malware/icedid",
+      "title": "IcedID Malware: Analysis, Detection, Removal",
+      "claim": "IcedID is a banking trojan that steals financial credentials and can deploy ransomware. It spreads via phishing emails, drive-by downloads, and exploit kits.",
+      "confidence": 60,
+      "raw_ref": "external_intel.fingerprint_enrichment.results[3]",
+      "claim_origin": "page_enrichment",
+      "page_claims": [
+        "IcedID spreads through phishing emails, drive-by downloads, and exploit kits.",
+        "It uses web injection techniques to steal user data and maintains persistence through multiple components.",
+        "IcedID employs advanced evasion techniques such as DLL injection and encryption."
+      ],
+      "page_summary": "IcedID is a banking trojan that steals financial credentials and can deploy ransomware. It spreads via phishing emails, drive-by downloads, and exploit kits.",
+      "page_title": "IcedID Malware: Analysis, Detection, Removal | Huntress",
+      "page_entities": {
+        "ips": [],
+        "domains": [
+          "examplebank-login.net",
+          "secureauthentic.xyz"
+        ],
+        "urls": [],
+        "sha256": [],
+        "sha1": [],
+        "md5": []
+      },
+      "page_relevance": "High",
+      "page_iocs": [
+        "examplebank-login.net",
+        "secureauthentic.xyz"
+      ],
+      "domain": "huntress.com",
+      "weight": 71,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 huntress.com",
+      "evidence_tier": "supporting",
+      "page_type": "profile",
+      "is_reportable": true,
+      "id": "e08"
+    },
+    {
+      "kind": "family_intel",
+      "source": "ibm.com",
+      "type": "family_search",
+      "query": "IcedID t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family C2",
+      "url": "https://www.ibm.com/think/x-force/breaking-the-ice-a-deep-dive-into-the-icedid-banking-trojans-new-major-version-release",
+      "title": "Breaking the Ice: A Deep Dive Into the IcedID Banking ...",
+      "claim": "The loader communicates with the C2 to fetch the IcedID payload The downloader downloads the malicious payload – a file named photo.png* The loader runs photo.png The loader creates a new instance of svchost.exe Loader injects the malicious payload into the new svchost.exe process The browser hooking will allow IcedID to detect targeted URLs and deploy web-injections accordingly. Next, the loader creates a new process, svchost, and injects the decrypted IcedID payload into it.",
+      "confidence": 65,
+      "raw_ref": "external_intel.family_intel.raw.results[4]",
+      "claim_origin": "page_enrichment",
+      "page_claims": [
+        "The loader communicates with the C2 to fetch the IcedID payload The downloader downloads the malicious payload – a file named photo.png* The loader runs photo.png The loader creates a new instance of svchost.exe Loader injects the malicious payload into the new svchost.exe process",
+        "The browser hooking will allow IcedID to detect targeted URLs and deploy web-injections accordingly.",
+        "Next, the loader creates a new process, svchost, and injects the decrypted IcedID payload into it.",
+        "It downloads and reads different files necessary for the execution flow, like the configuration file (chercrgnaa.dat in this case), certificate file (3D8C2D77.tmp in this case), and other supporting resources.",
+        "One of the important files the loader fetches is the malicious payload that contains all of IcedID’s logic and which is actually the main module of the malware."
+      ],
+      "page_summary": "The loader communicates with the C2 to fetch the IcedID payload The downloader downloads the malicious payload – a file named photo.png* The loader runs photo.png The loader creates a new instance of svchost.exe Loader injects the malicious payload into the new svchost.exe process The browser hooking will allow IcedID to detect targeted URLs and deploy web-injections accordingly. Next, the loader creates a new process, svchost, and injects the decrypted IcedID payload into it.",
+      "page_title": "Breaking the Ice: A Deep Dive Into the IcedID Banking Trojan's New Major Version Release | IBM",
+      "page_entities": {
+        "ips": [],
+        "domains": [
+          "3d8c2d77.tmp",
+          "files.the",
+          "not.if"
+        ],
+        "urls": [],
+        "sha256": [],
+        "sha1": [],
+        "md5": []
+      },
+      "page_relevance": "",
+      "page_iocs": [],
+      "domain": "ibm.com",
+      "weight": 65,
+      "weight_level": "中",
+      "weight_reason": "一般网页来源 ibm.com",
+      "evidence_tier": "background",
+      "page_type": "detail",
+      "is_reportable": true,
+      "id": "e09"
+    },
+    {
+      "kind": "family_intel",
+      "source": "redcanary.com",
+      "type": "family_search",
+      "query": "IcedID t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family C2",
+      "url": "https://redcanary.com/threat-detection-report/threats/icedid/",
+      "title": "IcedID - Red Canary Threat Detection Report",
+      "claim": "IcedID - Red Canary Threat Detection Report",
+      "confidence": 65,
+      "raw_ref": "external_intel.family_intel.raw.results[3]",
+      "claim_origin": "page_enrichment",
+      "page_claims": [
+        "IcedID - Red Canary Threat Detection Report"
+      ],
+      "page_summary": "IcedID - Red Canary Threat Detection Report",
+      "page_title": "IcedID - Red Canary Threat Detection Report",
+      "page_entities": {
+        "ips": [],
+        "domains": [],
+        "urls": [],
+        "sha256": [],
+        "sha1": [],
+        "md5": []
+      },
+      "page_relevance": "",
+      "page_iocs": [],
+      "domain": "redcanary.com",
+      "weight": 65,
+      "weight_level": "中",
+      "weight_reason": "一般网页来源 redcanary.com",
+      "evidence_tier": "background",
+      "page_type": "article",
+      "is_reportable": true,
+      "id": "e10"
+    },
+    {
+      "kind": "family_intel",
+      "source": "attack.mitre.org",
+      "type": "family_search",
+      "query": "IcedID t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family C2",
+      "url": "https://attack.mitre.org/software/S0483/",
+      "title": "IcedID, Software S0483",
+      "claim": "IcedID is a modular banking malware designed to steal financial information that has been observed in the wild since at least 2017.",
+      "confidence": 65,
+      "raw_ref": "external_intel.family_intel.raw.results[2]",
+      "claim_origin": "snippet",
+      "page_claims": [],
+      "page_summary": "",
+      "page_title": "",
+      "page_entities": {},
+      "page_relevance": "",
+      "page_iocs": [],
+      "domain": "attack.mitre.org",
+      "weight": 65,
+      "weight_level": "中",
+      "weight_reason": "一般网页来源 attack.mitre.org",
+      "evidence_tier": "background",
+      "page_type": "article",
+      "is_reportable": true,
+      "id": "e11"
+    },
+    {
+      "kind": "family_intel",
+      "source": "proofpoint.com",
+      "type": "family_search",
+      "query": "IcedID t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family C2",
+      "url": "https://www.proofpoint.com/us/blog/threat-insight/latrodectus-spider-bytes-ice",
+      "title": "Latrodectus Malware Analysis: IcedID 2.0",
+      "claim": "Prevent misdirected emails and hidden exfiltration of sensitive data. Latrodectus Malware Analysis: IcedID 2.0 | Proofpoint US Gain a hightouch strategic partnership with a team of Proofpoint specialists who optimize your security and monitoring.",
+      "confidence": 65,
+      "raw_ref": "external_intel.family_intel.raw.results[1]",
+      "claim_origin": "page_enrichment",
+      "page_claims": [
+        "Prevent misdirected emails and hidden exfiltration of sensitive data.",
+        "Latrodectus Malware Analysis: IcedID 2.0 | Proofpoint US",
+        "Gain a hightouch strategic partnership with a team of Proofpoint specialists who optimize your security and monitoring.",
+        "Give your team access to expert guidance while they manage daily operations of your Proofpoint platform.",
+        "Defend humans and agents against modern cyber threats across email and collaboration channels."
+      ],
+      "page_summary": "Prevent misdirected emails and hidden exfiltration of sensitive data. Latrodectus Malware Analysis: IcedID 2.0 | Proofpoint US Gain a hightouch strategic partnership with a team of Proofpoint specialists who optimize your security and monitoring.",
+      "page_title": "Latrodectus Malware Analysis: IcedID 2.0 | Proofpoint US",
+      "page_entities": {
+        "ips": [],
+        "domains": [],
+        "urls": [],
+        "sha256": [],
+        "sha1": [],
+        "md5": []
+      },
+      "page_relevance": "",
+      "page_iocs": [],
+      "domain": "proofpoint.com",
+      "weight": 65,
+      "weight_level": "中",
+      "weight_reason": "一般网页来源 proofpoint.com",
+      "evidence_tier": "background",
+      "page_type": "profile",
+      "is_reportable": true,
+      "id": "e12"
+    },
+    {
+      "kind": "search_result",
+      "source": "attack.mitre.org",
+      "type": "context_search",
+      "query": "JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family IcedID | JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "url": "https://attack.mitre.org/software/S0483/",
+      "title": "IcedID, Software S0483",
+      "claim": "COVID-19 and FMLA Campaigns used to install new IcedID banking malware. Retrieved July 14, 2020. DFIR. (2022, April 25). Quantum Ransomware. Retrieved July 26, ...",
+      "confidence": 62,
+      "raw_ref": "external_intel.context_search.results[4]",
+      "claim_origin": "snippet",
+      "page_claims": [],
+      "page_summary": "",
+      "page_title": "",
+      "page_entities": {},
+      "page_relevance": "",
+      "page_iocs": [],
+      "domain": "attack.mitre.org",
+      "weight": 62,
+      "weight_level": "低",
+      "weight_reason": "一般网页来源 attack.mitre.org",
+      "evidence_tier": "background",
+      "page_type": "article",
+      "is_reportable": true,
+      "id": "e13"
+    },
+    {
+      "kind": "search_result",
+      "source": "zscaler.com",
+      "type": "context_search",
+      "query": "JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 malware family IcedID | JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "url": "https://www.zscaler.com/blogs/security-research/yibackdoor-new-malware-family-links-icedid-and-latrodectus",
+      "title": "YiBackdoor: Linked to IcedID and Latrodectus | ThreatLabz",
+      "claim": "Zscaler ThreatLabz has identified a new malware family that we named YiBackdoor, which was first observed in June 2025.",
+      "confidence": 62,
+      "raw_ref": "external_intel.context_search.results[2]",
+      "claim_origin": "snippet",
+      "page_claims": [],
+      "page_summary": "",
+      "page_title": "",
+      "page_entities": {},
+      "page_relevance": "",
+      "page_iocs": [],
+      "domain": "zscaler.com",
+      "weight": 62,
+      "weight_level": "低",
+      "weight_reason": "一般网页来源 zscaler.com",
+      "evidence_tier": "background",
+      "page_type": "detail",
+      "is_reportable": true,
+      "id": "e14"
+    },
+    {
+      "kind": "search_result",
+      "source": "ja4db.com",
+      "type": "fingerprint_search",
+      "query": "JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 IcedID | JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch JA4 t13d201100_2b729b4bf6f3_9e7b989ebec8",
+      "url": "https://ja4db.com/application/IcedID%20",
+      "title": "IcedID • Application • JA4+ Database",
+      "claim": "JA4+ Database is a community-maintained repository of JA4+ fingerprints sourced from networks across the Internet.",
+      "confidence": 60,
+      "raw_ref": "external_intel.fingerprint_enrichment.results[0]",
+      "claim_origin": "snippet",
+      "page_claims": [],
+      "page_summary": "",
+      "page_title": "",
+      "page_entities": {},
+      "page_relevance": "",
+      "page_iocs": [],
+      "domain": "ja4db.com",
+      "weight": 62,
+      "weight_level": "低",
+      "weight_reason": "一般网页来源 ja4db.com",
+      "evidence_tier": "background",
+      "page_type": "article",
+      "is_reportable": true,
+      "id": "e15"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f01",
+      "title": "命中后恶意流量告警",
+      "statement": "源 10.20.8.41 与目的 203.0.113.77 的 TLS 流量命中 JA4 指纹 t13d201100_2b729b4bf6f3_9e7b989ebec8。",
+      "confidence": 95,
+      "severity": "高危",
+      "based_on": [
+        "e01"
+      ]
+    },
+    {
+      "id": "f02",
+      "title": "本地情报命中",
+      "statement": "本地指纹情报库对该指标存在直接命中记录，可作为家族归因的强参考。",
+      "confidence": 90,
+      "severity": "高危",
+      "based_on": [
+        "e02"
+      ]
+    },
+    {
+      "id": "f03",
+      "title": "当前家族判断",
+      "statement": "综合本地命中与外部佐证后，该事件当前更可能与 IcedID 相关。",
+      "confidence": 95,
+      "severity": "高危",
+      "based_on": [
+        "e03",
+        "e04",
+        "e05",
+        "e06",
+        "e07",
+        "e08",
+        "e09",
+        "e10",
+        "e11",
+        "e12",
+        "e13",
+        "e14",
+        "e15"
+      ]
+    }
+  ],
+  "uncertainties": [],
+  "recommended_actions": [
+    {
+      "id": "a01",
+      "priority": "high",
+      "action": "排查并视情况隔离源主机 10.20.8.41。",
+      "rationale": "源主机产生了命中后恶意流量，需要确认是否存在持续外联或二次投递行为。"
+    },
+    {
+      "id": "a02",
+      "priority": "high",
+      "action": "在边界侧监控或阻断与 203.0.113.77 相关的后续通信。",
+      "rationale": "当前告警中的网络目的地址是最直接的外联对象，应优先纳入监测范围。"
+    },
+    {
+      "id": "a03",
+      "priority": "medium",
+      "action": "基于 JA4 指纹 t13d201100_2b729b4bf6f3_9e7b989ebec8 在历史流量中做横向检索。",
+      "rationale": "可以快速判断是否存在相同指纹的历史通信或更多受影响资产。"
+    },
+    {
+      "id": "a04",
+      "priority": "medium",
+      "action": "结合 IcedID 相关 TTP 做主机侧排查与 IOC 扩线。",
+      "rationale": "已有家族线索时，可以更有针对性地检查样本行为、持久化方式和额外外联特征。"
+    }
+  ],
+  "assessment": {
+    "family": "IcedID",
+    "verdict": "suspected_malware_activity",
+    "confidence": 95,
+    "severity": "高危",
+    "rationale": "当前主结论以本地指纹情报 `IcedID` 为主，并获得外部结构化情报的补充支持。",
+    "requires_manual_review": false
+  },
+  "derived": {
+    "family": "IcedID",
+    "labels": [
+      "IcedID"
+    ],
+    "confidence": 95,
+    "severity": "高危",
+    "destination_enrichment": {}
+  },
+  "gap_plan": {
+    "items": []
+  },
+  "timings": {
+    "baseline_total_s": 0.2454,
+    "baseline": {
+      "local_lookup_s": 0.0116,
+      "fingerprint_search_s": 0.2433,
+      "context_search_s": 0.238,
+      "abuse_lookup_s": 0.2301,
+      "family_lookup_s": 0.236
+    },
+    "draft_analysis_s": 0.0026,
+    "page_enrichment_s": 8.652,
+    "enriched_analysis_s": 0.0023,
+    "gap_planner_s": 0.0,
+    "report_render_s": 19.9588,
+    "gap_execution_mode": "not_needed",
+    "pipeline_total_s": 28.8623
+  },
+  "report": {
+    "path": "/tmp/plan6_eval_live_v6/003/report.md",
+    "content": "# 网络安全事件分析报告\n\n## 事件概述\n- 事件时间：2026-03-29 10:40:00\n- 通信关系：`10.20.8.41` -> `203.0.113.77`\n- 协议：TLS\n- 命中指标：JA4 `t13d201100_2b729b4bf6f3_9e7b989ebec8`\n- 当前研判：IcedID\n- 置信度：95\n- 严重度：高危\n\n## 研判结论\n在 2026-03-29 10:40:00，检测到 10.20.8.41 与 203.0.113.77 之间存在 TLS 流量，该流量命中 JA4 指标 `t13d201100_2b729b4bf6f3_9e7b989ebec8`。\n\n结合本地指纹情报与外部公开情报，当前将该事件关联到 `IcedID` 的把握为较高。\n\n## 归因依据\n当前归因结果为 `IcedID`，置信度为 95。 主依据来自 `JA4DB`。 另有 `JA4DB、家族背景情报` 提供补充支持。 当前主结论以本地指纹情报 `IcedID` 为主，并获得外部结构化情报的补充支持。\n\n本次事件涉及IcedID银行木马，该木马通过多种方式进行传播，并具有窃取金融凭证和部署勒索软件的能力。多个来源证实了该家族的活动及其传播方式，包括钓鱼邮件和利用工具包。\n\n## 事件直接证据\n### 本地指纹情报命中\n来源：JA4DB\n证据等级：高\n本地情报库将ja4 t13d201100_2b729b4bf6f3_9e7b989ebec8关联到IcedID家族，这进一步确认了当前事件中的恶意软件属于IcedID。\n\n### IcedID (Malware Family)\n来源：malpedia.caad.fkie.fraunhofer.de\n证据等级：中\nMalpedia提供了关于IcedID的详细背景信息，指出这是一种自2017年起活跃的银行木马，还充当其他恶意软件的加载器，包括勒索软件。\n参考：[https://malpedia.caad.fkie.fraunhofer.de/details/win.icedid](https://malpedia.caad.fkie.fraunhofer.de/details/win.icedid)\n\n### Trojan:Win32/IcedId threat description\n来源：microsoft.com\n证据等级：中\n微软的安全报告确认了IcedID是一种模块化的银行木马，自2017年起被观察到，微软的防御系统可以检测并移除这种威胁。\n参考：[https://www.microsoft.com/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/IcedId](https://www.microsoft.com/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/IcedId)\n\n### IcedID Malware: Analysis, Detection, Removal\n来源：huntress.com\n证据等级：中\nHuntress.com提供的情报显示，IcedID主要通过钓鱼邮件、驱动下载和利用工具包进行传播，其采用Web注入技术窃取用户数据，并通过DLL注入和加密等高级规避技术维持持久性。\n参考：[https://www.huntress.com/threat-library/malware/icedid](https://www.huntress.com/threat-library/malware/icedid)\n\n## 家族背景与补充参考\n### IcedID, Software S0483\n来源：attack.mitre.org\n证据等级：低\nIcedID利用COVID-19和FMLA相关主题进行钓鱼攻击，以安装银行木马。这表明攻击者可能通过社会工程学手段诱骗受害者点击恶意链接或附件，从而感染系统。\n参考：[https://attack.mitre.org/software/S0483/](https://attack.mitre.org/software/S0483/)\n\n### YiBackdoor: Linked to IcedID and Latrodectus | ThreatLabz\n来源：zscaler.com\n证据等级：低\nZscaler ThreatLabz发现了一种新的恶意软件家族YiBackdoor，该家族首次在2025年6月被观察到，并且与IcedID有关联。这表明IcedID家族正在不断发展新的恶意软件变种来扩大其威胁能力。\n参考：[https://www.zscaler.com/blogs/security-research/yibackdoor-new-malware-family-links-icedid-and-latrodectus](https://www.zscaler.com/blogs/security-research/yibackdoor-new-malware-family-links-icedid-and-latrodectus)\n\n## 处置建议\n### 基础响应\n- [HIGH] 排查并视情况隔离源主机 10.20.8.41。 理由：源主机产生了命中后恶意流量，需要确认是否存在持续外联或二次投递行为。\n- [HIGH] 在边界侧监控或阻断与 203.0.113.77 相关的后续通信。 理由：当前告警中的网络目的地址是最直接的外联对象，应优先纳入监测范围。\n- [MEDIUM] 基于 JA4 指纹 t13d201100_2b729b4bf6f3_9e7b989ebec8 在历史流量中做横向检索。 理由：可以快速判断是否存在相同指纹的历史通信或更多受影响资产。\n- [MEDIUM] 结合 IcedID 相关 TTP 做主机侧排查与 IOC 扩线。 理由：已有家族线索时，可以更有针对性地检查样本行为、持久化方式和额外外联特征。\n\n### 建议追加的威胁猎捕动作\n- 围绕浏览器凭据、Cookie、钱包插件和本地敏感配置文件开展主机侧排查，确认是否存在信息窃取后的残留痕迹。\n- 基于当前外联目标、同证书指纹或同类 TLS 特征继续扩线，排查是否存在持续 C2 通信或其他受影响资产。\n- 在历史流量中进一步检索相同 JA4 指标 `t13d201100_2b729b4bf6f3_9e7b989ebec8`，确认是否存在横向复用、批量投递或多资产命中。\n"
+  }
+}

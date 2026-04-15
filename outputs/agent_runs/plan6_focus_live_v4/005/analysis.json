@@ -1,0 +1,1158 @@
+{
+  "mode": "plan",
+  "event": {
+    "event_time": "2026-03-29 15:05:00",
+    "simulated": false,
+    "src": {
+      "ip": "10.10.14.33",
+      "port": null
+    },
+    "dst": {
+      "ip": "203.0.113.19",
+      "port": null
+    },
+    "protocol": "TLS",
+    "trigger_fingerprint": {
+      "type": "SSL_SHA1",
+      "value": "01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "matched": true
+    },
+    "enrichment": {
+      "info": "QuasarRAT",
+      "reference": "SSLBL",
+      "update_time": "2026-03-26 07:46:12"
+    },
+    "raw_alert": {
+      "timestamp": "2026-03-29 15:05:00",
+      "src_ip": "10.10.14.33",
+      "dst_ip": "203.0.113.19",
+      "protocol": "TLS",
+      "trigger_fingerprint": {
+        "type": "SSL_SHA1",
+        "value": "01fca6410fefef1530ac71c5e34d6985a6e23643"
+      },
+      "info": "QuasarRAT",
+      "reference": "SSLBL",
+      "update_time": "2026-03-26 07:46:12"
+    }
+  },
+  "facts": {
+    "event_time": "2026-03-29 15:05:00",
+    "src": {
+      "ip": "10.10.14.33",
+      "port": null
+    },
+    "dst": {
+      "ip": "203.0.113.19",
+      "port": null
+    },
+    "protocol": "TLS",
+    "fingerprint": {
+      "type": "SSL_SHA1",
+      "value": "01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "matched": true
+    }
+  },
+  "entities": {
+    "src_ip": "10.10.14.33",
+    "dst_ip": "203.0.113.19",
+    "protocol": "TLS",
+    "fingerprint": {
+      "type": "SSL_SHA1",
+      "value": "01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "matched": true
+    },
+    "family_hint": "QuasarRAT",
+    "reference": "SSLBL",
+    "update_time": "2026-03-26 07:46:12"
+  },
+  "local_intel": {
+    "enabled": true,
+    "matched": true,
+    "query": {
+      "indicator_type": "SSL_SHA1",
+      "indicator_value": "01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "candidates": [
+        "ssl_sha1"
+      ]
+    },
+    "match_count": 1,
+    "matches": [
+      {
+        "indicator_type": "ssl_sha1",
+        "indicator_value": "01fca6410fefef1530ac71c5e34d6985a6e23643",
+        "malware_family": "QuasarRAT",
+        "severity": "",
+        "confidence": null,
+        "source": "SSLBL",
+        "last_updated": "2026-03-26T07:46:12"
+      }
+    ],
+    "indicator_type": "ssl_sha1",
+    "indicator_value": "01fca6410fefef1530ac71c5e34d6985a6e23643",
+    "malware_family": "QuasarRAT",
+    "severity": "",
+    "confidence": null,
+    "source": "SSLBL",
+    "last_updated": "2026-03-26T07:46:12",
+    "best_match": {
+      "indicator_type": "ssl_sha1",
+      "indicator_value": "01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "malware_family": "QuasarRAT",
+      "severity": "",
+      "confidence": null,
+      "source": "SSLBL",
+      "last_updated": "2026-03-26T07:46:12"
+    }
+  },
+  "external_intel": {
+    "fingerprint_enrichment": {
+      "ok": true,
+      "query": "SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 QuasarRAT | SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "results": [
+        {
+          "title": "Backdoor:Win32/QuasarRAT.A threat description",
+          "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A&ThreatID=2147731545",
+          "snippet": "Understand how this virus or malware spreads and how its payloads affects your computer. Protect against this threat, identify symptoms, ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "Quasar - Remote Administration Tool for Windows",
+          "url": "https://github.com/quasar/Quasar",
+          "snippet": "Quasar is a fast and light-weight remote administration tool coded in C#. The usage ranges from user support through day-to-day administrative work to employee ...",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi,abuse_ch_structured,serpapi"
+    },
+    "context_search": {
+      "ok": true,
+      "query": "SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 malware family QuasarRAT | SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "results": [
+        {
+          "title": "Backdoor.Quasar",
+          "url": "https://www.malwarebytes.com/blog/detections/backdoor-quasar",
+          "snippet": "Backdoor.Quasar is a lightweight, publicly available open-source Remote Access Trojan (RAT) which primarily targets Windows OS systems.",
+          "source": "serpapi"
+        },
+        {
+          "title": "Quasar RAT (Malware Family)",
+          "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.quasar_rat",
+          "snippet": "Quasar RAT is a malware family written in .NET which is used by a variety of attackers. The malware is fully functional and open source, and is often packed ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "Found a \"Quasar\" folder in my software folder, and I don't ...",
+          "url": "https://www.reddit.com/r/techsupport/comments/1khzp0m/found_a_quasar_folder_in_my_software_folder_and_i/",
+          "snippet": "You are most likely dealing with QuasarRAT which as you mentioned is a remote access Trojan and can give an attacker access to your computer.",
+          "source": "serpapi"
+        },
+        {
+          "title": "Backdoor:Win32/QuasarRAT.A threat description",
+          "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A",
+          "snippet": "Apply security updates promptly, especially for the specified vulnerabilities, on all applications and operating systems. Consult the Microsoft ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "Detecting Quasar RAT Malware",
+          "url": "https://corelight.com/blog/quasar-rat-detection",
+          "snippet": "We develop signatures that detect Quasar, a popular Windows-based remote access tool that has been abused for malware infections in the wild since 2014.",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi,abuse_ch_structured,serpapi"
+    },
+    "family_intel": {
+      "ok": true,
+      "family": "QuasarRAT",
+      "query": "QuasarRAT 01fca6410fefef1530ac71c5e34d6985a6e23643 malware family C2",
+      "highlights": [
+        "- Quasar RAT (Malware Family)（https://malpedia.caad.fkie.fraunhofer.de/details/win.quasar_rat）",
+        "- Backdoor:Win32/QuasarRAT.A threat description（https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A&ThreatID=2147731545）",
+        "- Detecting Quasar RAT Malware（https://corelight.com/blog/quasar-rat-detection）",
+        "- Quasar RAT | NJCCIC - NJ.gov（https://www.cyber.nj.gov/threat-landscape/malware/trojans/quasar-rat）",
+        "- VERMIN: Quasar RAT and Custom Malware Used In Ukraine（https://unit42.paloaltonetworks.com/unit42-vermin-quasar-rat-custom-malware-used-ukraine/）"
+      ],
+      "raw": {
+        "ok": true,
+        "query": "site:malpedia.caad.fkie.fraunhofer.de OR site:microsoft.com OR site:abuse.ch OR site:checkpoint.com OR site:trendmicro.com OR site:proofpoint.com QuasarRAT 01fca6410fefef1530ac71c5e34d6985a6e23643 malware family C2 | QuasarRAT 01fca6410fefef1530ac71c5e34d6985a6e23643 malware family C2",
+        "results": [
+          {
+            "title": "Quasar RAT (Malware Family)",
+            "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.quasar_rat",
+            "snippet": "Quasar RAT is a malware family written in .NET which is used by a variety of attackers. The malware is fully functional and open source, and is often packed ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "Backdoor:Win32/QuasarRAT.A threat description",
+            "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A&ThreatID=2147731545",
+            "snippet": "Understand how this virus or malware spreads and how its payloads affects your computer. Protect against this threat, identify symptoms, ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "Detecting Quasar RAT Malware",
+            "url": "https://corelight.com/blog/quasar-rat-detection",
+            "snippet": "We develop signatures that detect Quasar, a popular Windows-based remote access tool that has been abused for malware infections in the wild since 2014.",
+            "source": "serpapi"
+          },
+          {
+            "title": "Quasar RAT | NJCCIC - NJ.gov",
+            "url": "https://www.cyber.nj.gov/threat-landscape/malware/trojans/quasar-rat",
+            "snippet": "Quasar RAT is a .NET framework open-source remote access trojan family used in cyber-criminal and cyber-espionage campaigns to target Windows operating system ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "VERMIN: Quasar RAT and Custom Malware Used In Ukraine",
+            "url": "https://unit42.paloaltonetworks.com/unit42-vermin-quasar-rat-custom-malware-used-ukraine/",
+            "snippet": "Palo Alto Networks Unit 42 has discovered a new malware family written using the Microsoft .NET Framework which the authors call VERMIN; an ironic term for a ...",
+            "source": "serpapi"
+          }
+        ],
+        "mode": "serpapi"
+      }
+    },
+    "supplemental": null,
+    "page_enrichment": {
+      "ok": true,
+      "focus": "QuasarRAT",
+      "items": [
+        {
+          "ok": true,
+          "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A&ThreatID=2147731545",
+          "title": "Backdoor:Win32/QuasarRAT.A threat description",
+          "page_title": "Backdoor:Win32/QuasarRAT.A threat description - Microsoft Security Intelligence",
+          "source": "microsoft.com",
+          "kind": "family_intel",
+          "raw_ref": "external_intel.family_intel.raw.results[1]",
+          "page_fetch_ok": true,
+          "summary_hint": "Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C# and is open-source, available on GitHub.",
+          "claims": [
+            "Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C#, which allows for various remote administrative functions.",
+            "Infected devices may show suspicious connections on port 4782, though this port can be changed.",
+            "Due to its open-source nature, threat actors often modify QuasarRAT to meet their specific needs."
+          ],
+          "relevance": "The alert is relevant as it identifies a known threat actor using a .NET-based malware with specific behaviors and symptoms.",
+          "iocs": [
+            "https://github[.]com/quasar/Quasar",
+            "SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643"
+          ],
+          "entities": {
+            "ips": [],
+            "domains": [],
+            "urls": [
+              "https://github[.]com/quasar/Quasar"
+            ],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 7000,
+          "truncated": true,
+          "llm_used": true
+        },
+        {
+          "ok": true,
+          "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.quasar_rat",
+          "title": "Quasar RAT (Malware Family)",
+          "page_title": "Quasar RAT (Malware Family)",
+          "source": "malpedia.caad.fkie.fraunhofer.de",
+          "kind": "family_intel",
+          "raw_ref": "external_intel.family_intel.raw.results[0]",
+          "page_fetch_ok": true,
+          "summary_hint": "Embee_research Malware Analysis - Powershell decoding and .NET C2 Extraction (Quasar RAT) Quasar RAT Counter Threat Unit ResearchTeam BRONZE STARLIGHT Ransomware Operations Use HUI Loader ATOMSILO Stephan Berger Hunting AsyncRAT & QuasarRAT AsyncRAT",
+          "claims": [
+            "Embee_research Malware Analysis - Powershell decoding and .NET C2 Extraction (Quasar RAT) Quasar RAT",
+            "Counter Threat Unit ResearchTeam BRONZE STARLIGHT Ransomware Operations Use HUI Loader ATOMSILO",
+            "Stephan Berger Hunting AsyncRAT & QuasarRAT AsyncRAT",
+            "Tim Peck Analyzing OBSCURE#BAT Threat Actors Lure Victims into Executing Malicious Batch Scripts to Deploy Stealthy Rootkits Quasar RAT",
+            "Nimantha Deshappriya RATs on the island (Remote Access Trojans in Sri Lanka's Cybersecurity Landscape) AsyncRAT"
+          ],
+          "relevance": "",
+          "iocs": [],
+          "entities": {
+            "ips": [],
+            "domains": [
+              "dfir.ch",
+              "hunt.io"
+            ],
+            "urls": [],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 6999,
+          "truncated": true,
+          "llm_used": false
+        },
+        {
+          "ok": true,
+          "url": "https://www.cyber.nj.gov/threat-landscape/malware/trojans/quasar-rat",
+          "title": "Quasar RAT | NJCCIC - NJ.gov",
+          "page_title": "",
+          "source": "cyber.nj.gov",
+          "kind": "family_intel",
+          "raw_ref": "external_intel.family_intel.raw.results[3]",
+          "page_fetch_ok": true,
+          "summary_hint": "Incapsula incident ID: 260000510204980099-117293688560028869",
+          "claims": [
+            "Incapsula incident ID: 260000510204980099-117293688560028869"
+          ],
+          "relevance": "",
+          "iocs": [],
+          "entities": {
+            "ips": [],
+            "domains": [],
+            "urls": [],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 82,
+          "truncated": false,
+          "llm_used": false
+        },
+        {
+          "ok": true,
+          "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A",
+          "title": "Backdoor:Win32/QuasarRAT.A threat description",
+          "page_title": "Backdoor:Win32/QuasarRAT.A threat description - Microsoft Security Intelligence",
+          "source": "microsoft.com",
+          "kind": "search_result",
+          "raw_ref": "external_intel.context_search.results[3]",
+          "page_fetch_ok": true,
+          "summary_hint": "Backdoor:Win32/QuasarRAT.A is a open source .NET-based of the remote administration ( https://github[.]com/quasar/Quasar ). Users whose devices are infected with Backdoor:Win32/QuasarRAT.A can experience the following symptoms: Suspicious connection on port 4782 (default port, but may be altered to use a different port). Threat behavior Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C#.",
+          "claims": [
+            "Backdoor:Win32/QuasarRAT.A is a open source .NET-based of the remote administration ( https://github[.]com/quasar/Quasar ).",
+            "Users whose devices are infected with Backdoor:Win32/QuasarRAT.A can experience the following symptoms: Suspicious connection on port 4782 (default port, but may be altered to use a different port).",
+            "Threat behavior Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C#.",
+            "Backdoor:Win32/QuasarRAT.A offers the following features for remote threat actors: Access the task manager to monitor running processes Create a remote shell for launching commands Allow reverse proxy Launch remote files Initiate file manager for directory traversal and file transfer Launch the Windows registry editor Log keystrokes Monitor TCP connections Obtain system information Provide remote desktop connections Retrieve passwords View startup programs",
+            "Backdoor:Win32/QuasarRAT.A consists of two components: the server and the client."
+          ],
+          "relevance": "",
+          "iocs": [],
+          "entities": {
+            "ips": [],
+            "domains": [],
+            "urls": [
+              "https://github[.]com/quasar/Quasar"
+            ],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 7000,
+          "truncated": true,
+          "llm_used": false
+        }
+      ],
+      "selected_urls": [
+        "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A&ThreatID=2147731545",
+        "https://malpedia.caad.fkie.fraunhofer.de/details/win.quasar_rat",
+        "https://www.cyber.nj.gov/threat-landscape/malware/trojans/quasar-rat",
+        "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A"
+      ],
+      "timings": {
+        "page_enrichment_s": 12.3131,
+        "page_enrichment_count": 4,
+        "page_enrichment_llm_count": 1
+      }
+    }
+  },
+  "observations": {
+    "local_intel": {
+      "enabled": true,
+      "matched": true,
+      "query": {
+        "indicator_type": "SSL_SHA1",
+        "indicator_value": "01fca6410fefef1530ac71c5e34d6985a6e23643",
+        "candidates": [
+          "ssl_sha1"
+        ]
+      },
+      "match_count": 1,
+      "matches": [
+        {
+          "indicator_type": "ssl_sha1",
+          "indicator_value": "01fca6410fefef1530ac71c5e34d6985a6e23643",
+          "malware_family": "QuasarRAT",
+          "severity": "",
+          "confidence": null,
+          "source": "SSLBL",
+          "last_updated": "2026-03-26T07:46:12"
+        }
+      ],
+      "indicator_type": "ssl_sha1",
+      "indicator_value": "01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "malware_family": "QuasarRAT",
+      "severity": "",
+      "confidence": null,
+      "source": "SSLBL",
+      "last_updated": "2026-03-26T07:46:12",
+      "best_match": {
+        "indicator_type": "ssl_sha1",
+        "indicator_value": "01fca6410fefef1530ac71c5e34d6985a6e23643",
+        "malware_family": "QuasarRAT",
+        "severity": "",
+        "confidence": null,
+        "source": "SSLBL",
+        "last_updated": "2026-03-26T07:46:12"
+      }
+    },
+    "fingerprint_enrichment": {
+      "ok": true,
+      "query": "SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 QuasarRAT | SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "results": [
+        {
+          "title": "Backdoor:Win32/QuasarRAT.A threat description",
+          "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A&ThreatID=2147731545",
+          "snippet": "Understand how this virus or malware spreads and how its payloads affects your computer. Protect against this threat, identify symptoms, ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "Quasar - Remote Administration Tool for Windows",
+          "url": "https://github.com/quasar/Quasar",
+          "snippet": "Quasar is a fast and light-weight remote administration tool coded in C#. The usage ranges from user support through day-to-day administrative work to employee ...",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi,abuse_ch_structured,serpapi"
+    },
+    "context_search": {
+      "ok": true,
+      "query": "SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 malware family QuasarRAT | SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "results": [
+        {
+          "title": "Backdoor.Quasar",
+          "url": "https://www.malwarebytes.com/blog/detections/backdoor-quasar",
+          "snippet": "Backdoor.Quasar is a lightweight, publicly available open-source Remote Access Trojan (RAT) which primarily targets Windows OS systems.",
+          "source": "serpapi"
+        },
+        {
+          "title": "Quasar RAT (Malware Family)",
+          "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.quasar_rat",
+          "snippet": "Quasar RAT is a malware family written in .NET which is used by a variety of attackers. The malware is fully functional and open source, and is often packed ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "Found a \"Quasar\" folder in my software folder, and I don't ...",
+          "url": "https://www.reddit.com/r/techsupport/comments/1khzp0m/found_a_quasar_folder_in_my_software_folder_and_i/",
+          "snippet": "You are most likely dealing with QuasarRAT which as you mentioned is a remote access Trojan and can give an attacker access to your computer.",
+          "source": "serpapi"
+        },
+        {
+          "title": "Backdoor:Win32/QuasarRAT.A threat description",
+          "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A",
+          "snippet": "Apply security updates promptly, especially for the specified vulnerabilities, on all applications and operating systems. Consult the Microsoft ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "Detecting Quasar RAT Malware",
+          "url": "https://corelight.com/blog/quasar-rat-detection",
+          "snippet": "We develop signatures that detect Quasar, a popular Windows-based remote access tool that has been abused for malware infections in the wild since 2014.",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi,abuse_ch_structured,serpapi"
+    },
+    "family_intel": {
+      "ok": true,
+      "family": "QuasarRAT",
+      "query": "QuasarRAT 01fca6410fefef1530ac71c5e34d6985a6e23643 malware family C2",
+      "highlights": [
+        "- Quasar RAT (Malware Family)（https://malpedia.caad.fkie.fraunhofer.de/details/win.quasar_rat）",
+        "- Backdoor:Win32/QuasarRAT.A threat description（https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A&ThreatID=2147731545）",
+        "- Detecting Quasar RAT Malware（https://corelight.com/blog/quasar-rat-detection）",
+        "- Quasar RAT | NJCCIC - NJ.gov（https://www.cyber.nj.gov/threat-landscape/malware/trojans/quasar-rat）",
+        "- VERMIN: Quasar RAT and Custom Malware Used In Ukraine（https://unit42.paloaltonetworks.com/unit42-vermin-quasar-rat-custom-malware-used-ukraine/）"
+      ],
+      "raw": {
+        "ok": true,
+        "query": "site:malpedia.caad.fkie.fraunhofer.de OR site:microsoft.com OR site:abuse.ch OR site:checkpoint.com OR site:trendmicro.com OR site:proofpoint.com QuasarRAT 01fca6410fefef1530ac71c5e34d6985a6e23643 malware family C2 | QuasarRAT 01fca6410fefef1530ac71c5e34d6985a6e23643 malware family C2",
+        "results": [
+          {
+            "title": "Quasar RAT (Malware Family)",
+            "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.quasar_rat",
+            "snippet": "Quasar RAT is a malware family written in .NET which is used by a variety of attackers. The malware is fully functional and open source, and is often packed ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "Backdoor:Win32/QuasarRAT.A threat description",
+            "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A&ThreatID=2147731545",
+            "snippet": "Understand how this virus or malware spreads and how its payloads affects your computer. Protect against this threat, identify symptoms, ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "Detecting Quasar RAT Malware",
+            "url": "https://corelight.com/blog/quasar-rat-detection",
+            "snippet": "We develop signatures that detect Quasar, a popular Windows-based remote access tool that has been abused for malware infections in the wild since 2014.",
+            "source": "serpapi"
+          },
+          {
+            "title": "Quasar RAT | NJCCIC - NJ.gov",
+            "url": "https://www.cyber.nj.gov/threat-landscape/malware/trojans/quasar-rat",
+            "snippet": "Quasar RAT is a .NET framework open-source remote access trojan family used in cyber-criminal and cyber-espionage campaigns to target Windows operating system ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "VERMIN: Quasar RAT and Custom Malware Used In Ukraine",
+            "url": "https://unit42.paloaltonetworks.com/unit42-vermin-quasar-rat-custom-malware-used-ukraine/",
+            "snippet": "Palo Alto Networks Unit 42 has discovered a new malware family written using the Microsoft .NET Framework which the authors call VERMIN; an ironic term for a ...",
+            "source": "serpapi"
+          }
+        ],
+        "mode": "serpapi"
+      }
+    },
+    "supplemental": null,
+    "page_enrichment": {
+      "ok": true,
+      "focus": "QuasarRAT",
+      "items": [
+        {
+          "ok": true,
+          "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A&ThreatID=2147731545",
+          "title": "Backdoor:Win32/QuasarRAT.A threat description",
+          "page_title": "Backdoor:Win32/QuasarRAT.A threat description - Microsoft Security Intelligence",
+          "source": "microsoft.com",
+          "kind": "family_intel",
+          "raw_ref": "external_intel.family_intel.raw.results[1]",
+          "page_fetch_ok": true,
+          "summary_hint": "Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C# and is open-source, available on GitHub.",
+          "claims": [
+            "Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C#, which allows for various remote administrative functions.",
+            "Infected devices may show suspicious connections on port 4782, though this port can be changed.",
+            "Due to its open-source nature, threat actors often modify QuasarRAT to meet their specific needs."
+          ],
+          "relevance": "The alert is relevant as it identifies a known threat actor using a .NET-based malware with specific behaviors and symptoms.",
+          "iocs": [
+            "https://github[.]com/quasar/Quasar",
+            "SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643"
+          ],
+          "entities": {
+            "ips": [],
+            "domains": [],
+            "urls": [
+              "https://github[.]com/quasar/Quasar"
+            ],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 7000,
+          "truncated": true,
+          "llm_used": true
+        },
+        {
+          "ok": true,
+          "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.quasar_rat",
+          "title": "Quasar RAT (Malware Family)",
+          "page_title": "Quasar RAT (Malware Family)",
+          "source": "malpedia.caad.fkie.fraunhofer.de",
+          "kind": "family_intel",
+          "raw_ref": "external_intel.family_intel.raw.results[0]",
+          "page_fetch_ok": true,
+          "summary_hint": "Embee_research Malware Analysis - Powershell decoding and .NET C2 Extraction (Quasar RAT) Quasar RAT Counter Threat Unit ResearchTeam BRONZE STARLIGHT Ransomware Operations Use HUI Loader ATOMSILO Stephan Berger Hunting AsyncRAT & QuasarRAT AsyncRAT",
+          "claims": [
+            "Embee_research Malware Analysis - Powershell decoding and .NET C2 Extraction (Quasar RAT) Quasar RAT",
+            "Counter Threat Unit ResearchTeam BRONZE STARLIGHT Ransomware Operations Use HUI Loader ATOMSILO",
+            "Stephan Berger Hunting AsyncRAT & QuasarRAT AsyncRAT",
+            "Tim Peck Analyzing OBSCURE#BAT Threat Actors Lure Victims into Executing Malicious Batch Scripts to Deploy Stealthy Rootkits Quasar RAT",
+            "Nimantha Deshappriya RATs on the island (Remote Access Trojans in Sri Lanka's Cybersecurity Landscape) AsyncRAT"
+          ],
+          "relevance": "",
+          "iocs": [],
+          "entities": {
+            "ips": [],
+            "domains": [
+              "dfir.ch",
+              "hunt.io"
+            ],
+            "urls": [],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 6999,
+          "truncated": true,
+          "llm_used": false
+        },
+        {
+          "ok": true,
+          "url": "https://www.cyber.nj.gov/threat-landscape/malware/trojans/quasar-rat",
+          "title": "Quasar RAT | NJCCIC - NJ.gov",
+          "page_title": "",
+          "source": "cyber.nj.gov",
+          "kind": "family_intel",
+          "raw_ref": "external_intel.family_intel.raw.results[3]",
+          "page_fetch_ok": true,
+          "summary_hint": "Incapsula incident ID: 260000510204980099-117293688560028869",
+          "claims": [
+            "Incapsula incident ID: 260000510204980099-117293688560028869"
+          ],
+          "relevance": "",
+          "iocs": [],
+          "entities": {
+            "ips": [],
+            "domains": [],
+            "urls": [],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 82,
+          "truncated": false,
+          "llm_used": false
+        },
+        {
+          "ok": true,
+          "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A",
+          "title": "Backdoor:Win32/QuasarRAT.A threat description",
+          "page_title": "Backdoor:Win32/QuasarRAT.A threat description - Microsoft Security Intelligence",
+          "source": "microsoft.com",
+          "kind": "search_result",
+          "raw_ref": "external_intel.context_search.results[3]",
+          "page_fetch_ok": true,
+          "summary_hint": "Backdoor:Win32/QuasarRAT.A is a open source .NET-based of the remote administration ( https://github[.]com/quasar/Quasar ). Users whose devices are infected with Backdoor:Win32/QuasarRAT.A can experience the following symptoms: Suspicious connection on port 4782 (default port, but may be altered to use a different port). Threat behavior Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C#.",
+          "claims": [
+            "Backdoor:Win32/QuasarRAT.A is a open source .NET-based of the remote administration ( https://github[.]com/quasar/Quasar ).",
+            "Users whose devices are infected with Backdoor:Win32/QuasarRAT.A can experience the following symptoms: Suspicious connection on port 4782 (default port, but may be altered to use a different port).",
+            "Threat behavior Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C#.",
+            "Backdoor:Win32/QuasarRAT.A offers the following features for remote threat actors: Access the task manager to monitor running processes Create a remote shell for launching commands Allow reverse proxy Launch remote files Initiate file manager for directory traversal and file transfer Launch the Windows registry editor Log keystrokes Monitor TCP connections Obtain system information Provide remote desktop connections Retrieve passwords View startup programs",
+            "Backdoor:Win32/QuasarRAT.A consists of two components: the server and the client."
+          ],
+          "relevance": "",
+          "iocs": [],
+          "entities": {
+            "ips": [],
+            "domains": [],
+            "urls": [
+              "https://github[.]com/quasar/Quasar"
+            ],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 7000,
+          "truncated": true,
+          "llm_used": false
+        }
+      ],
+      "selected_urls": [
+        "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A&ThreatID=2147731545",
+        "https://malpedia.caad.fkie.fraunhofer.de/details/win.quasar_rat",
+        "https://www.cyber.nj.gov/threat-landscape/malware/trojans/quasar-rat",
+        "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A"
+      ],
+      "timings": {
+        "page_enrichment_s": 12.3131,
+        "page_enrichment_count": 4,
+        "page_enrichment_llm_count": 1
+      }
+    }
+  },
+  "corroboration": {
+    "local_family": "QuasarRAT",
+    "external_family_candidates": [],
+    "supported_by_external": true,
+    "conflict": false,
+    "confidence_driver": "local_and_external",
+    "summary": "当前主结论以本地指纹情报 `QuasarRAT` 为主，并获得外部结构化情报的补充支持。",
+    "selected_family": "QuasarRAT",
+    "supplemental_evidence_count": 0,
+    "primary_source": {
+      "family": "QuasarRAT",
+      "source": "SSLBL",
+      "source_kind": "local_intel",
+      "confidence": 85,
+      "precedence": 100,
+      "url": null
+    },
+    "supporting_sources": [
+      {
+        "family": "QuasarRAT",
+        "source": "SSLBL",
+        "source_kind": "alert_hint",
+        "confidence": 70,
+        "precedence": 62,
+        "url": null
+      },
+      {
+        "family": "QuasarRAT",
+        "source": "family_intel",
+        "source_kind": "family_background",
+        "confidence": 68,
+        "precedence": 74,
+        "url": null
+      }
+    ],
+    "conflicting_sources": [],
+    "conflicting_candidates": [],
+    "family_candidates": [
+      {
+        "family": "QuasarRAT",
+        "max_precedence": 100,
+        "max_confidence": 85,
+        "support_count": 3,
+        "has_local": true
+      }
+    ],
+    "review_priority": "normal"
+  },
+  "gaps": [],
+  "gap_fill_needed": false,
+  "supplemental": {},
+  "evidence": [
+    {
+      "kind": "event",
+      "source": "alert",
+      "type": "matched_alert",
+      "query": null,
+      "url": null,
+      "title": "命中后告警事件",
+      "claim": "在 2026-03-29 15:05:00 观察到 10.10.14.33 -> 203.0.113.19 的 TLS 流量，命中 SSL_SHA1 指纹 01fca6410fefef1530ac71c5e34d6985a6e23643。",
+      "confidence": 95,
+      "raw_ref": "event.raw_alert",
+      "domain": null,
+      "weight": 96,
+      "weight_level": "高",
+      "weight_reason": "原始告警事实",
+      "evidence_tier": "strong",
+      "page_type": "article",
+      "is_reportable": true,
+      "id": "e01"
+    },
+    {
+      "kind": "local_intel",
+      "source": "SSLBL",
+      "type": "local_indicator_match",
+      "query": "01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "url": null,
+      "title": "本地指纹情报命中",
+      "claim": "本地情报库将 ssl_sha1 01fca6410fefef1530ac71c5e34d6985a6e23643 关联到家族/标签 QuasarRAT，来源 SSLBL。",
+      "confidence": 85,
+      "raw_ref": "local_intel.best_match",
+      "domain": null,
+      "weight": 88,
+      "weight_level": "高",
+      "weight_reason": "本地结构化指纹情报",
+      "evidence_tier": "strong",
+      "page_type": "article",
+      "is_reportable": true,
+      "id": "e02"
+    },
+    {
+      "kind": "family_intel",
+      "source": "microsoft.com",
+      "type": "family_search",
+      "query": "QuasarRAT 01fca6410fefef1530ac71c5e34d6985a6e23643 malware family C2",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A&ThreatID=2147731545",
+      "title": "Backdoor:Win32/QuasarRAT.A threat description",
+      "claim": "Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C# and is open-source, available on GitHub.",
+      "confidence": 65,
+      "raw_ref": "external_intel.family_intel.raw.results[1]",
+      "claim_origin": "page_enrichment",
+      "page_claims": [
+        "Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C#, which allows for various remote administrative functions.",
+        "Infected devices may show suspicious connections on port 4782, though this port can be changed.",
+        "Due to its open-source nature, threat actors often modify QuasarRAT to meet their specific needs."
+      ],
+      "page_summary": "Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C# and is open-source, available on GitHub.",
+      "page_title": "Backdoor:Win32/QuasarRAT.A threat description - Microsoft Security Intelligence",
+      "page_entities": {
+        "ips": [],
+        "domains": [],
+        "urls": [
+          "https://github[.]com/quasar/Quasar"
+        ],
+        "sha256": [],
+        "sha1": [],
+        "md5": []
+      },
+      "page_relevance": "The alert is relevant as it identifies a known threat actor using a .NET-based malware with specific behaviors and symptoms.",
+      "page_iocs": [
+        "https://github[.]com/quasar/Quasar",
+        "SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643"
+      ],
+      "domain": "microsoft.com",
+      "weight": 76,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 microsoft.com",
+      "evidence_tier": "supporting",
+      "page_type": "profile",
+      "is_reportable": true,
+      "id": "e03"
+    },
+    {
+      "kind": "family_intel",
+      "source": "malpedia.caad.fkie.fraunhofer.de",
+      "type": "family_search",
+      "query": "QuasarRAT 01fca6410fefef1530ac71c5e34d6985a6e23643 malware family C2",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.quasar_rat",
+      "title": "Quasar RAT (Malware Family)",
+      "claim": "Embee_research Malware Analysis - Powershell decoding and .NET C2 Extraction (Quasar RAT) Quasar RAT Counter Threat Unit ResearchTeam BRONZE STARLIGHT Ransomware Operations Use HUI Loader ATOMSILO Stephan Berger Hunting AsyncRAT & QuasarRAT AsyncRAT",
+      "confidence": 65,
+      "raw_ref": "external_intel.family_intel.raw.results[0]",
+      "claim_origin": "page_enrichment",
+      "page_claims": [
+        "Embee_research Malware Analysis - Powershell decoding and .NET C2 Extraction (Quasar RAT) Quasar RAT",
+        "Counter Threat Unit ResearchTeam BRONZE STARLIGHT Ransomware Operations Use HUI Loader ATOMSILO",
+        "Stephan Berger Hunting AsyncRAT & QuasarRAT AsyncRAT",
+        "Tim Peck Analyzing OBSCURE#BAT Threat Actors Lure Victims into Executing Malicious Batch Scripts to Deploy Stealthy Rootkits Quasar RAT",
+        "Nimantha Deshappriya RATs on the island (Remote Access Trojans in Sri Lanka's Cybersecurity Landscape) AsyncRAT"
+      ],
+      "page_summary": "Embee_research Malware Analysis - Powershell decoding and .NET C2 Extraction (Quasar RAT) Quasar RAT Counter Threat Unit ResearchTeam BRONZE STARLIGHT Ransomware Operations Use HUI Loader ATOMSILO Stephan Berger Hunting AsyncRAT & QuasarRAT AsyncRAT",
+      "page_title": "Quasar RAT (Malware Family)",
+      "page_entities": {
+        "ips": [],
+        "domains": [
+          "dfir.ch",
+          "hunt.io"
+        ],
+        "urls": [],
+        "sha256": [],
+        "sha1": [],
+        "md5": []
+      },
+      "page_relevance": "",
+      "page_iocs": [],
+      "domain": "malpedia.caad.fkie.fraunhofer.de",
+      "weight": 76,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 malpedia.caad.fkie.fraunhofer.de",
+      "evidence_tier": "supporting",
+      "page_type": "profile",
+      "is_reportable": true,
+      "id": "e04"
+    },
+    {
+      "kind": "search_result",
+      "source": "microsoft.com",
+      "type": "context_search",
+      "query": "SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 malware family QuasarRAT | SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A",
+      "title": "Backdoor:Win32/QuasarRAT.A threat description",
+      "claim": "Backdoor:Win32/QuasarRAT.A is a open source .NET-based of the remote administration ( https://github[.]com/quasar/Quasar ). Users whose devices are infected with Backdoor:Win32/QuasarRAT.A can experience the following symptoms: Suspicious connection on port 4782 (default port, but may be altered to use a different port). Threat behavior Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C#.",
+      "confidence": 62,
+      "raw_ref": "external_intel.context_search.results[3]",
+      "claim_origin": "page_enrichment",
+      "page_claims": [
+        "Backdoor:Win32/QuasarRAT.A is a open source .NET-based of the remote administration ( https://github[.]com/quasar/Quasar ).",
+        "Users whose devices are infected with Backdoor:Win32/QuasarRAT.A can experience the following symptoms: Suspicious connection on port 4782 (default port, but may be altered to use a different port).",
+        "Threat behavior Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C#.",
+        "Backdoor:Win32/QuasarRAT.A offers the following features for remote threat actors: Access the task manager to monitor running processes Create a remote shell for launching commands Allow reverse proxy Launch remote files Initiate file manager for directory traversal and file transfer Launch the Windows registry editor Log keystrokes Monitor TCP connections Obtain system information Provide remote desktop connections Retrieve passwords View startup programs",
+        "Backdoor:Win32/QuasarRAT.A consists of two components: the server and the client."
+      ],
+      "page_summary": "Backdoor:Win32/QuasarRAT.A is a open source .NET-based of the remote administration ( https://github[.]com/quasar/Quasar ). Users whose devices are infected with Backdoor:Win32/QuasarRAT.A can experience the following symptoms: Suspicious connection on port 4782 (default port, but may be altered to use a different port). Threat behavior Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C#.",
+      "page_title": "Backdoor:Win32/QuasarRAT.A threat description - Microsoft Security Intelligence",
+      "page_entities": {
+        "ips": [],
+        "domains": [],
+        "urls": [
+          "https://github[.]com/quasar/Quasar"
+        ],
+        "sha256": [],
+        "sha1": [],
+        "md5": []
+      },
+      "page_relevance": "",
+      "page_iocs": [],
+      "domain": "microsoft.com",
+      "weight": 73,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 microsoft.com",
+      "evidence_tier": "supporting",
+      "page_type": "profile",
+      "is_reportable": true,
+      "id": "e05"
+    },
+    {
+      "kind": "search_result",
+      "source": "malpedia.caad.fkie.fraunhofer.de",
+      "type": "context_search",
+      "query": "SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 malware family QuasarRAT | SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.quasar_rat",
+      "title": "Quasar RAT (Malware Family)",
+      "claim": "Embee_research Malware Analysis - Powershell decoding and .NET C2 Extraction (Quasar RAT) Quasar RAT Counter Threat Unit ResearchTeam BRONZE STARLIGHT Ransomware Operations Use HUI Loader ATOMSILO Stephan Berger Hunting AsyncRAT & QuasarRAT AsyncRAT",
+      "confidence": 62,
+      "raw_ref": "external_intel.context_search.results[1]",
+      "claim_origin": "page_enrichment",
+      "page_claims": [
+        "Embee_research Malware Analysis - Powershell decoding and .NET C2 Extraction (Quasar RAT) Quasar RAT",
+        "Counter Threat Unit ResearchTeam BRONZE STARLIGHT Ransomware Operations Use HUI Loader ATOMSILO",
+        "Stephan Berger Hunting AsyncRAT & QuasarRAT AsyncRAT",
+        "Tim Peck Analyzing OBSCURE#BAT Threat Actors Lure Victims into Executing Malicious Batch Scripts to Deploy Stealthy Rootkits Quasar RAT",
+        "Nimantha Deshappriya RATs on the island (Remote Access Trojans in Sri Lanka's Cybersecurity Landscape) AsyncRAT"
+      ],
+      "page_summary": "Embee_research Malware Analysis - Powershell decoding and .NET C2 Extraction (Quasar RAT) Quasar RAT Counter Threat Unit ResearchTeam BRONZE STARLIGHT Ransomware Operations Use HUI Loader ATOMSILO Stephan Berger Hunting AsyncRAT & QuasarRAT AsyncRAT",
+      "page_title": "Quasar RAT (Malware Family)",
+      "page_entities": {
+        "ips": [],
+        "domains": [
+          "dfir.ch",
+          "hunt.io"
+        ],
+        "urls": [],
+        "sha256": [],
+        "sha1": [],
+        "md5": []
+      },
+      "page_relevance": "",
+      "page_iocs": [],
+      "domain": "malpedia.caad.fkie.fraunhofer.de",
+      "weight": 73,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 malpedia.caad.fkie.fraunhofer.de",
+      "evidence_tier": "supporting",
+      "page_type": "profile",
+      "is_reportable": true,
+      "id": "e06"
+    },
+    {
+      "kind": "hint",
+      "source": "SSLBL",
+      "type": "family_hint",
+      "query": null,
+      "url": null,
+      "title": "告警附带家族提示",
+      "claim": "原始告警将该事件关联到家族/标签 QuasarRAT。",
+      "confidence": 70,
+      "raw_ref": "event.enrichment",
+      "domain": null,
+      "weight": 72,
+      "weight_level": "中",
+      "weight_reason": "结构化本地信息",
+      "evidence_tier": "supporting",
+      "page_type": "article",
+      "is_reportable": true,
+      "id": "e07"
+    },
+    {
+      "kind": "family_intel",
+      "source": "cyber.nj.gov",
+      "type": "family_search",
+      "query": "QuasarRAT 01fca6410fefef1530ac71c5e34d6985a6e23643 malware family C2",
+      "url": "https://www.cyber.nj.gov/threat-landscape/malware/trojans/quasar-rat",
+      "title": "Quasar RAT | NJCCIC - NJ.gov",
+      "claim": "Quasar RAT is a .NET framework open-source remote access trojan family used in cyber-criminal and cyber-espionage campaigns to target Windows operating system ...",
+      "confidence": 65,
+      "raw_ref": "external_intel.family_intel.raw.results[3]",
+      "claim_origin": "snippet",
+      "page_claims": [],
+      "page_summary": "",
+      "page_title": "",
+      "page_entities": {},
+      "page_relevance": "",
+      "page_iocs": [],
+      "domain": "cyber.nj.gov",
+      "weight": 72,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 cyber.nj.gov",
+      "evidence_tier": "supporting",
+      "page_type": "article",
+      "is_reportable": true,
+      "id": "e08"
+    },
+    {
+      "kind": "search_result",
+      "source": "microsoft.com",
+      "type": "fingerprint_search",
+      "query": "SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 QuasarRAT | SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A&ThreatID=2147731545",
+      "title": "Backdoor:Win32/QuasarRAT.A threat description",
+      "claim": "Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C# and is open-source, available on GitHub.",
+      "confidence": 60,
+      "raw_ref": "external_intel.fingerprint_enrichment.results[0]",
+      "claim_origin": "page_enrichment",
+      "page_claims": [
+        "Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C#, which allows for various remote administrative functions.",
+        "Infected devices may show suspicious connections on port 4782, though this port can be changed.",
+        "Due to its open-source nature, threat actors often modify QuasarRAT to meet their specific needs."
+      ],
+      "page_summary": "Backdoor:Win32/QuasarRAT.A is a .NET-based malware coded in C# and is open-source, available on GitHub.",
+      "page_title": "Backdoor:Win32/QuasarRAT.A threat description - Microsoft Security Intelligence",
+      "page_entities": {
+        "ips": [],
+        "domains": [],
+        "urls": [
+          "https://github[.]com/quasar/Quasar"
+        ],
+        "sha256": [],
+        "sha1": [],
+        "md5": []
+      },
+      "page_relevance": "The alert is relevant as it identifies a known threat actor using a .NET-based malware with specific behaviors and symptoms.",
+      "page_iocs": [
+        "https://github[.]com/quasar/Quasar",
+        "SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643"
+      ],
+      "domain": "microsoft.com",
+      "weight": 72,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 microsoft.com",
+      "evidence_tier": "supporting",
+      "page_type": "profile",
+      "is_reportable": true,
+      "id": "e09"
+    },
+    {
+      "kind": "search_result",
+      "source": "malwarebytes.com",
+      "type": "context_search",
+      "query": "SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 malware family QuasarRAT | SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "url": "https://www.malwarebytes.com/blog/detections/backdoor-quasar",
+      "title": "Backdoor.Quasar",
+      "claim": "Backdoor.Quasar is a lightweight, publicly available open-source Remote Access Trojan (RAT) which primarily targets Windows OS systems.",
+      "confidence": 62,
+      "raw_ref": "external_intel.context_search.results[0]",
+      "claim_origin": "snippet",
+      "page_claims": [],
+      "page_summary": "",
+      "page_title": "",
+      "page_entities": {},
+      "page_relevance": "",
+      "page_iocs": [],
+      "domain": "malwarebytes.com",
+      "weight": 70,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 malwarebytes.com",
+      "evidence_tier": "supporting",
+      "page_type": "detail",
+      "is_reportable": true,
+      "id": "e10"
+    },
+    {
+      "kind": "search_result",
+      "source": "reddit.com",
+      "type": "context_search",
+      "query": "SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 malware family QuasarRAT | SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch SSL_SHA1 01fca6410fefef1530ac71c5e34d6985a6e23643",
+      "url": "https://www.reddit.com/r/techsupport/comments/1khzp0m/found_a_quasar_folder_in_my_software_folder_and_i/",
+      "title": "Found a \"Quasar\" folder in my software folder, and I don't ...",
+      "claim": "You are most likely dealing with QuasarRAT which as you mentioned is a remote access Trojan and can give an attacker access to your computer.",
+      "confidence": 62,
+      "raw_ref": "external_intel.context_search.results[2]",
+      "claim_origin": "snippet",
+      "page_claims": [],
+      "page_summary": "",
+      "page_title": "",
+      "page_entities": {},
+      "page_relevance": "",
+      "page_iocs": [],
+      "domain": "reddit.com",
+      "weight": 62,
+      "weight_level": "低",
+      "weight_reason": "一般网页来源 reddit.com",
+      "evidence_tier": "noisy",
+      "page_type": "forum",
+      "is_reportable": false,
+      "id": "e11"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f01",
+      "title": "命中后恶意流量告警",
+      "statement": "源 10.10.14.33 与目的 203.0.113.19 的 TLS 流量命中 SSL_SHA1 指纹 01fca6410fefef1530ac71c5e34d6985a6e23643。",
+      "confidence": 95,
+      "severity": "高危",
+      "based_on": [
+        "e01"
+      ]
+    },
+    {
+      "id": "f02",
+      "title": "本地情报命中",
+      "statement": "本地指纹情报库对该指标存在直接命中记录，可作为家族归因的强参考。",
+      "confidence": 90,
+      "severity": "高危",
+      "based_on": [
+        "e02"
+      ]
+    },
+    {
+      "id": "f03",
+      "title": "当前家族判断",
+      "statement": "综合本地命中与外部佐证后，该事件当前更可能与 QuasarRAT 相关。",
+      "confidence": 95,
+      "severity": "高危",
+      "based_on": [
+        "e03",
+        "e04",
+        "e05",
+        "e06",
+        "e07",
+        "e08",
+        "e09",
+        "e10",
+        "e11"
+      ]
+    }
+  ],
+  "uncertainties": [],
+  "recommended_actions": [
+    {
+      "id": "a01",
+      "priority": "high",
+      "action": "排查并视情况隔离源主机 10.10.14.33。",
+      "rationale": "源主机产生了命中后恶意流量，需要确认是否存在持续外联或二次投递行为。"
+    },
+    {
+      "id": "a02",
+      "priority": "high",
+      "action": "在边界侧监控或阻断与 203.0.113.19 相关的后续通信。",
+      "rationale": "当前告警中的网络目的地址是最直接的外联对象，应优先纳入监测范围。"
+    },
+    {
+      "id": "a03",
+      "priority": "medium",
+      "action": "基于 SSL_SHA1 指纹 01fca6410fefef1530ac71c5e34d6985a6e23643 在历史流量中做横向检索。",
+      "rationale": "可以快速判断是否存在相同指纹的历史通信或更多受影响资产。"
+    },
+    {
+      "id": "a04",
+      "priority": "medium",
+      "action": "结合 QuasarRAT 相关 TTP 做主机侧排查与 IOC 扩线。",
+      "rationale": "已有家族线索时，可以更有针对性地检查样本行为、持久化方式和额外外联特征。"
+    }
+  ],
+  "assessment": {
+    "family": "QuasarRAT",
+    "verdict": "suspected_malware_activity",
+    "confidence": 95,
+    "severity": "高危",
+    "rationale": "当前主结论以本地指纹情报 `QuasarRAT` 为主，并获得外部结构化情报的补充支持。",
+    "requires_manual_review": false
+  },
+  "derived": {
+    "family": "QuasarRAT",
+    "labels": [
+      "QuasarRAT"
+    ],
+    "confidence": 95,
+    "severity": "高危",
+    "destination_enrichment": {}
+  },
+  "gap_plan": {
+    "items": []
+  },
+  "timings": {
+    "baseline_total_s": 0.2201,
+    "baseline": {
+      "local_lookup_s": 0.0099,
+      "fingerprint_search_s": 0.2066,
+      "context_search_s": 0.2057,
+      "abuse_lookup_s": 0.2008,
+      "family_lookup_s": 0.2135
+    },
+    "draft_analysis_s": 0.0015,
+    "page_enrichment_s": 12.3131,
+    "enriched_analysis_s": 0.0017,
+    "gap_planner_s": 0.0,
+    "report_render_s": 19.4925,
+    "gap_execution_mode": "not_needed",
+    "pipeline_total_s": 32.0299
+  },
+  "report": {
+    "path": "/tmp/plan6_focus_live_v4/005/report.md",
+    "content": "# 网络安全事件分析报告\n\n## 事件概述\n- 事件时间：2026-03-29 15:05:00\n- 通信关系：`10.10.14.33` -> `203.0.113.19`\n- 协议：TLS\n- 命中指标：SSL_SHA1 `01fca6410fefef1530ac71c5e34d6985a6e23643`\n- 当前研判：QuasarRAT\n- 置信度：95\n- 严重度：高危\n\n## 研判结论\n在 2026-03-29 15:05:00，检测到 10.10.14.33 与 203.0.113.19 之间存在 TLS 流量，该流量命中 SSL_SHA1 指标 `01fca6410fefef1530ac71c5e34d6985a6e23643`。\n\n结合本地指纹情报与外部公开情报，当前将该事件关联到 `QuasarRAT` 的把握为较高。\n\n## 归因依据\n当前归因结果为 `QuasarRAT`，置信度为 95。 主依据来自 `SSLBL`。 另有 `SSLBL、家族背景情报` 提供补充支持。 当前主结论以本地指纹情报 `QuasarRAT` 为主，并获得外部结构化情报的补充支持。\n\n本次事件涉及QuasarRAT家族的恶意软件活动。本地指纹情报命中显示了与QuasarRAT相关的SSL证书指纹，进一步验证了这一威胁。微软的安全文档详细描述了QuasarRAT的特征和技术细节，包括其使用.NET框架编码，主要通过端口4782进行通信，并具备远程访问功能。这些信息有助于我们更准确地识别和应对当前的恶意软件威胁。\n\n## 事件直接证据\n### 本地指纹情报命中\n来源：SSLBL\n证据等级：高\n本地情报库 `SSLBL` 直接将当前命中的 SSL_SHA1 指标 `01fca6410fefef1530ac71c5e34d6985a6e23643` 关联到 `QuasarRAT`，这不是泛化的家族背景描述，而是直接落在本次告警触发项上的结构化命中，因此应视为本轮归因的核心证据。 该记录最近更新时间为 2026-03-26T07:46:12，说明这条映射并非孤立的历史残留，仍可以作为当前事件研判的高权重依据。 这意味着当前告警并不是仅凭标题或模糊标签做出的猜测，而是已经拿到了可以与历史情报库稳定对应的指纹线索，因此后续外部页面证据的主要作用是补充 `QuasarRAT` 的能力画像和行为细节，而不是替代这条直接映射。 从落地排查角度看，可以优先围绕 `01fca6410fefef1530ac71c5e34d6985a6e23643` 做历史流量横向检索，确认是否存在同指纹复用、持续外联或多资产同时命中的情况。\n参考：[https://sslbl.abuse.ch/ssl-certificates/sha1/01fca6410fefef1530ac71c5e34d6985a6e23643/](https://sslbl.abuse.ch/ssl-certificates/sha1/01fca6410fefef1530ac71c5e34d6985a6e23643/)\n\n### Backdoor:Win32/QuasarRAT.A threat description\n来源：microsoft.com\n证据等级：中\nBackdoor:Win32/QuasarRAT.A 是一个基于 .NET 的开源远程管理工具，用 C# 编写。感染此恶意软件的设备可能会出现可疑的端口 4782 连接（默认端口，但可能更改）。该威胁行为包括访问任务管理器、创建远程 shell 和监控 TCP 连接等。这些特征与当前告警中的 QuasarRAT 家族一致，表明可能存在 QuasarRAT 活动。\n参考：[https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A](https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/QuasarRAT.A)\n\n### Quasar RAT (Malware Family)\n来源：malpedia.caad.fkie.fraunhofer.de\n证据等级：中\nMalpedia提供的QuasarRAT相关信息指出，该恶意软件可以通过PowerShell解码和.NET C2提取来分析。此外，QuasarRAT与其他恶意软件如AsyncRAT有相关联，这表明QuasarRAT可能与其他威胁活动有关。这些信息虽然不直接支持当前事件，但提供了QuasarRAT的更多背景知识，有助于全面了解其威胁行为。\n参考：[https://malpedia.caad.fkie.fraunhofer.de/details/win.quasar_rat](https://malpedia.caad.fkie.fraunhofer.de/details/win.quasar_rat)\n\n## 处置建议\n### 基础响应\n- [HIGH] 排查并视情况隔离源主机 10.10.14.33。 理由：源主机产生了命中后恶意流量，需要确认是否存在持续外联或二次投递行为。\n- [HIGH] 在边界侧监控或阻断与 203.0.113.19 相关的后续通信。 理由：当前告警中的网络目的地址是最直接的外联对象，应优先纳入监测范围。\n- [MEDIUM] 基于 SSL_SHA1 指纹 01fca6410fefef1530ac71c5e34d6985a6e23643 在历史流量中做横向检索。 理由：可以快速判断是否存在相同指纹的历史通信或更多受影响资产。\n- [MEDIUM] 结合 QuasarRAT 相关 TTP 做主机侧排查与 IOC 扩线。 理由：已有家族线索时，可以更有针对性地检查样本行为、持久化方式和额外外联特征。\n\n### 建议追加的威胁猎捕动作\n- 回溯受害主机近期 Web 访问、下载链和跳转链路，重点排查恶意广告、伪造 CAPTCHA 页面、被入侵站点或第三方托管下载源。\n- 基于当前外联目标、同证书指纹或同类 TLS 特征继续扩线，排查是否存在持续 C2 通信或其他受影响资产。\n- 在历史流量中进一步检索相同 SSL_SHA1 指标 `01fca6410fefef1530ac71c5e34d6985a6e23643`，确认是否存在横向复用、批量投递或多资产命中。\n"
+  }
+}

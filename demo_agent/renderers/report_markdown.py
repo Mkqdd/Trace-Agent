@@ -22,6 +22,19 @@ _TRUSTED_MULTI_DOC_DOMAINS = {
     "trendmicro.com",
     "proofpoint.com",
 }
+_LOW_SIGNAL_REPORT_PARTS = (
+    "get a demo",
+    "start for free",
+    "support documentation",
+    "portal login",
+    "strategic partnership",
+    "gain a hightouch",
+    "optimize your security",
+    "contact us",
+    "free trial",
+    "meet the team",
+    "threat detection report",
+)
 
 
 @dataclass
@@ -358,6 +371,15 @@ def _event_evidence_candidates(analysis: Dict[str, Any], limit: int = 4) -> List
             continue
         if not bool(item.get("is_reportable")) or tier == "noisy":
             continue
+        if _skip_report_item(item):
+            continue
+        signals = _substantive_signal_count(item)
+        claim_origin = _text(item.get("claim_origin")).lower()
+        title = _text(item.get("title"))
+        if kind == "search_result" and claim_origin == "snippet" and signals < 2:
+            continue
+        if kind in {"family_intel", "search_result"} and _looks_indicatorish_title(title) and signals < 3:
+            continue
         key = _evidence_key(item, analysis)
         if key in used:
             continue
@@ -384,24 +406,41 @@ def _background_evidence_candidates(
     analysis: Dict[str, Any],
     *,
     used_keys: Set[str],
+    used_domains: Optional[Set[str]] = None,
     limit: int = 2,
 ) -> List[Dict[str, Any]]:
     evidence: List[Dict[str, Any]] = list(analysis.get("evidence") or [])
     result: List[Dict[str, Any]] = []
     per_domain: Dict[str, int] = {}
+    used_domains = set(used_domains or set())
     for item in sorted(evidence, key=_evidence_sort_key):
         kind = _text(item.get("kind"))
         if kind not in {"family_intel", "search_result"}:
             continue
         if not bool(item.get("is_reportable")) or _text(item.get("evidence_tier")) == "noisy":
             continue
+        if _skip_report_item(item):
+            continue
         key = _evidence_key(item, analysis)
         if key in used_keys:
             continue
         domain = _text(item.get("domain"))
+        if domain and domain.lower() in used_domains:
+            continue
         if domain and per_domain.get(domain, 0) >= _per_domain_limit(item):
             continue
         if not _text(item.get("claim")) and not _text(item.get("title")):
+            continue
+        signals = _substantive_signal_count(item)
+        claim_origin = _text(item.get("claim_origin")).lower()
+        title = _text(item.get("title"))
+        if signals < 2:
+            continue
+        if claim_origin == "snippet" and signals < 3:
+            continue
+        if _looks_indicatorish_title(title):
+            continue
+        if not _mentions_family_content(item, analysis) and signals < 3:
             continue
         if _coerce_int(item.get("weight"), 0) < 65 and _coerce_int(item.get("confidence"), 0) < 60:
             continue
@@ -414,12 +453,253 @@ def _background_evidence_candidates(
     return result
 
 
-def _fallback_item_paragraph(item: Dict[str, Any], analysis: Dict[str, Any]) -> str:
+def _skip_report_item(item: Dict[str, Any]) -> bool:
+    kind = _text(item.get("kind"))
+    if kind in {"local_intel", "enrichment"}:
+        return False
+    title = _text(item.get("title")).lower()
+    url = _text(item.get("url")).lower()
+    page_type = _text(item.get("page_type")).lower()
+    claim_origin = _text(item.get("claim_origin")).lower()
+    if title in {"download ja3 ids ruleset (suricata 4.1.0 or newer)", "malicious ssl certificates"}:
+        return True
+    if url.endswith("/blacklist/ja3_fingerprints.rules") or url.endswith("/blacklist/sslblacklist.csv"):
+        return True
+    if page_type == "list" and claim_origin != "page_enrichment":
+        return True
+    return False
+
+
+def _page_claims(item: Dict[str, Any], *, limit: int = 4, per_item_limit: int = 200) -> List[str]:
+    claims: List[str] = []
+    seen: Set[str] = set()
+    for raw in list(item.get("page_claims") or []):
+        text = _normalized_text(_text(raw))
+        if not text:
+            continue
+        key = text.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        claims.append(_short_text(text, per_item_limit))
+        if len(claims) >= limit:
+            break
+    return claims
+
+
+def _page_iocs(item: Dict[str, Any], *, limit: int = 4, per_item_limit: int = 120) -> List[str]:
+    result: List[str] = []
+    seen: Set[str] = set()
+    for raw in list(item.get("page_iocs") or []):
+        text = _text(raw)
+        if not text:
+            continue
+        key = text.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(_short_text(text, per_item_limit))
+        if len(result) >= limit:
+            break
+    return result
+
+
+def _looks_indicatorish_title(title: str) -> bool:
+    normalized = _text(title).lower()
+    if not normalized:
+        return False
+    if re.fullmatch(r"[a-f0-9]{24,}", normalized):
+        return True
+    if re.fullmatch(r"t\d+[a-z0-9_]{18,}", normalized):
+        return True
+    if normalized.endswith("...") and ("_" in normalized or any(ch.isdigit() for ch in normalized[:6])):
+        return True
+    if normalized.startswith(("ja3 fingerprint ", "ja4 fingerprint ", "ssl fingerprint ", "ssl certificate ")):
+        return True
+    return False
+
+
+def _substantive_signal_count(item: Dict[str, Any]) -> int:
+    signals = 0
+    summary = _normalized_text(_text(item.get("page_summary")))
+    if summary and len(summary) >= 80 and not any(part in summary.lower() for part in _LOW_SIGNAL_REPORT_PARTS):
+        signals += 2
+    for claim in _page_claims(item, limit=5, per_item_limit=320):
+        lowered = claim.lower()
+        if len(claim) < 50:
+            continue
+        if any(part in lowered for part in _LOW_SIGNAL_REPORT_PARTS):
+            continue
+        signals += 1
+    if _text(item.get("page_relevance")):
+        signals += 1
+    if list(item.get("page_iocs") or []):
+        signals += 1
+    return signals
+
+
+def _mentions_family_content(item: Dict[str, Any], analysis: Dict[str, Any]) -> bool:
+    family = _family_name(analysis).lower()
+    if not family or family in {"unknown", "该家族"}:
+        return False
+    haystack = " ".join(
+        [
+            _text(item.get("title")),
+            _text(item.get("claim")),
+            _text(item.get("page_summary")),
+            " ".join(_text(value) for value in list(item.get("page_claims") or [])),
+            _text(item.get("page_relevance")),
+        ]
+    ).lower()
+    return family in haystack
+
+
+def _sentence_count(text: str) -> int:
+    normalized = _normalized_text(_text(text))
+    if not normalized:
+        return 0
+    parts = [part for part in re.split(r"[。！？!?]+", normalized) if part.strip()]
+    return len(parts) if parts else 1
+
+
+def _needs_detail_expansion(text: str, detail_mode: str) -> bool:
+    normalized = _normalized_text(_text(text))
+    if not normalized:
+        return True
+    length = len(normalized)
+    sentences = _sentence_count(normalized)
+    if detail_mode == "primary":
+        return length < 150 or sentences < 4
+    if detail_mode == "secondary":
+        return length < 85 or sentences < 2
+    return length < 40
+
+
+def _supports_primary_detail(item: Dict[str, Any]) -> bool:
+    if _text(item.get("kind")) == "local_intel":
+        return True
+    return _substantive_signal_count(item) >= 5
+
+
+def _event_focus_score(item: Dict[str, Any], analysis: Dict[str, Any]) -> int:
+    kind = _text(item.get("kind"))
+    title = _text(item.get("title")).lower()
+    url = _text(item.get("url")).lower()
+    page_type = _text(item.get("page_type")).lower()
+    claim_origin = _text(item.get("claim_origin")).lower()
+    family = _family_name(analysis).lower()
+
+    score = _coerce_int(item.get("weight"), 0)
+    if kind == "local_intel":
+        score += 120
+    if claim_origin == "page_enrichment":
+        score += 18
+    if claim_origin == "snippet":
+        score -= 12
+    if kind == "family_intel":
+        score += 8
+    if page_type in {"profile", "detail"}:
+        score += 8
+    score += _substantive_signal_count(item) * 6
+    if _looks_indicatorish_title(title):
+        score -= 18
+    if family and family != "该家族" and family in title:
+        score += 5
+    if title in {"ja3 fingerprint " + _text((analysis.get("event") or {}).get("trigger_fingerprint", {}).get("value")).lower()}:
+        score -= 12
+    if "fingerprint" in title:
+        score -= 8
+    if "sslbl.abuse.ch" in url and any(token in url for token in ("/ja3-fingerprints/", "/ssl-certificates/")):
+        score -= 18
+    if any(part in title for part in ("linked to", "latest alerts", "threat detection report")):
+        score -= 10
+    if any(part in (_normalized_text(_text(item.get("page_summary"))) + " " + " ".join(_page_claims(item, limit=3, per_item_limit=240))).lower() for part in _LOW_SIGNAL_REPORT_PARTS):
+        score -= 12
+    return score
+
+
+def _background_focus_score(item: Dict[str, Any], analysis: Dict[str, Any]) -> int:
+    score = _event_focus_score(item, analysis)
+    title = _text(item.get("title")).lower()
+    claim_origin = _text(item.get("claim_origin")).lower()
+    signals = _substantive_signal_count(item)
+    family = _family_name(analysis).lower()
+    if family and family in title:
+        score += 4
+    if claim_origin == "snippet":
+        score -= 18
+    if signals < 2:
+        score -= 18
+    if _looks_indicatorish_title(title):
+        score -= 20
+    if any(part in title for part in ("linked to", "new malware family")):
+        score -= 8
+    return score
+
+
+def _evidence_payload(
+    item: Dict[str, Any],
+    analysis: Dict[str, Any],
+    *,
+    evidence_id: str = "",
+    detail_mode: str = "secondary",
+) -> Dict[str, Any]:
+    claim_limit = 320
+    page_summary_limit = 360
+    page_relevance_limit = 220
+    claim_count = 4
+    claim_item_limit = 200
+    ioc_count = 4
+    if detail_mode == "primary":
+        claim_limit = 820
+        page_summary_limit = 1200
+        page_relevance_limit = 520
+        claim_count = 6
+        claim_item_limit = 360
+        ioc_count = 8
+    elif detail_mode == "background":
+        claim_limit = 220
+        page_summary_limit = 240
+        page_relevance_limit = 140
+        claim_count = 2
+        claim_item_limit = 160
+        ioc_count = 2
+    payload: Dict[str, Any] = {
+        "title": _text(item.get("title")),
+        "source": _source_label(item.get("source")),
+        "kind": _text(item.get("kind")),
+        "type": _text(item.get("type")),
+        "claim": _short_text(_text(item.get("claim")), claim_limit),
+        "page_summary": _short_text(_text(item.get("page_summary")), page_summary_limit),
+        "page_claims": _page_claims(item, limit=claim_count, per_item_limit=claim_item_limit),
+        "page_relevance": _short_text(_text(item.get("page_relevance")), page_relevance_limit),
+        "page_iocs": _page_iocs(item, limit=ioc_count),
+        "url": _synthesized_url(item, analysis),
+        "family": _family_name(analysis),
+        "claim_origin": _text(item.get("claim_origin")),
+        "detail_mode": detail_mode,
+    }
+    if evidence_id:
+        payload["id"] = evidence_id
+    return payload
+
+
+def _fallback_item_paragraph(
+    item: Dict[str, Any],
+    analysis: Dict[str, Any],
+    *,
+    detail_mode: str = "secondary",
+    section: str = "event",
+) -> str:
     kind = _text(item.get("kind"))
     family = _family_name(analysis)
     title = _text(item.get("title")) or "相关来源"
     source = _source_label(item.get("source"))
     claim = _normalized_text(_text(item.get("claim")))
+    page_summary = _normalized_text(_text(item.get("page_summary")))
+    page_claims = _page_claims(item, limit=5 if detail_mode == "primary" else 3, per_item_limit=320 if detail_mode == "primary" else 220)
+    page_relevance = _normalized_text(_text(item.get("page_relevance")))
+    page_iocs = _page_iocs(item, limit=6 if detail_mode == "primary" else 3)
     local_intel = analysis.get("local_intel") or {}
     fp = (analysis.get("event") or {}).get("trigger_fingerprint") or {}
     fp_type = _text(fp.get("type"))
@@ -427,21 +707,85 @@ def _fallback_item_paragraph(item: Dict[str, Any], analysis: Dict[str, Any]) -> 
 
     if kind == "local_intel":
         parts = [
-            f"本地情报库 `{source}` 直接将当前命中的 {fp_type} 指标 `{fp_value}` 关联到 `{family}`，这类结构化指纹命中与当前告警直接对应，属于本次归因的主证据。"
+            f"本地情报库 `{source}` 直接将当前命中的 {fp_type} 指标 `{fp_value}` 关联到 `{family}`，这不是泛化的家族背景描述，而是直接落在本次告警触发项上的结构化命中，因此应视为本轮归因的核心证据。"
         ]
         last_updated = _text(local_intel.get("last_updated"))
         if last_updated:
-            parts.append(f"该记录最近更新时间为 {last_updated}，说明这条映射并非孤立的历史残留，仍可作为当前事件研判的高权重依据。")
+            parts.append(f"该记录最近更新时间为 {last_updated}，说明这条映射并非孤立的历史残留，仍可以作为当前事件研判的高权重依据。")
         else:
-            parts.append("相较于泛化的家族背景介绍，这类直接落在触发指标上的本地情报更能解释本次告警为何成立。")
+            parts.append("相较于泛化的家族背景介绍，这类直接落在触发指标上的本地情报，更能解释本次告警为什么会被判定为该家族相关活动。")
+        if detail_mode == "primary":
+            parts.append(
+                f"这意味着当前告警并不是仅凭标题或模糊标签做出的猜测，而是已经拿到了可以与历史情报库稳定对应的指纹线索，因此后续外部页面证据的主要作用是补充 `{family}` 的能力画像和行为细节，而不是替代这条直接映射。"
+            )
+            parts.append(
+                f"从落地排查角度看，可以优先围绕 `{fp_value}` 做历史流量横向检索，确认是否存在同指纹复用、持续外联或多资产同时命中的情况。"
+            )
+        return " ".join(parts)
+
+    if page_summary or page_claims:
+        parts: List[str] = []
+        if detail_mode == "primary":
+            if page_summary:
+                parts.append(f"`{title}` 的正文对 `{family}` 给出了更完整的能力画像：{_short_text(page_summary, 560)}")
+            elif claim:
+                parts.append(f"`{title}` 提供了与当前家族判断直接相关的页面证据：{_short_text(claim, 460)}")
+            if page_claims:
+                points = "；".join(page_claims[:3])
+                parts.append(f"从页面正文能直接抽出的关键技术点包括：{points}。")
+            if page_relevance:
+                parts.append(f"就当前告警而言，{_short_text(page_relevance, 300)}")
+            elif section == "event":
+                parts.append(
+                    f"放回当前告警语境里看，这些信息的价值不只是补充背景，而是说明 `{family}` 已知的传播、持久化、模块加载或窃密特征，与当前流量命中后的家族判断能够互相支撑。"
+                )
+            else:
+                parts.append(f"这也说明当前报告里的 `{family}` 不是一个空泛标签，而是能够从公开研究中还原出相对清晰的行为画像和风险轮廓。")
+            if page_iocs:
+                parts.append(f"页面中还出现了 {', '.join(page_iocs[:4])} 等可继续用于扩线或交叉验证的技术线索。")
+            else:
+                parts.append("从研判与处置角度看，这类正文型来源能够帮助我们把“命中某个家族”进一步展开为“该家族通常如何传播、落地后会做什么、后续还该排查哪些痕迹”，因此比单纯标签更有分析价值。")
+        elif detail_mode == "background":
+            if page_summary:
+                parts.append(f"`{title}` 补充说明了 `{family}` 的已知背景：{_short_text(page_summary, 220)}")
+            elif claim:
+                parts.append(f"`{title}` 还补充了一条家族背景线索：{_short_text(claim, 180)}")
+            if page_claims:
+                parts.append(f"其中值得保留的一点是：{page_claims[0]}。")
+        else:
+            if page_summary:
+                parts.append(f"`{title}` 的页面正文提到了更具体的家族行为：{_short_text(page_summary, 320)}")
+            elif claim:
+                parts.append(f"`{title}` 的页面正文给出了与当前事件相关的线索：{_short_text(claim, 240)}")
+            if page_claims:
+                points = "；".join(page_claims[:2])
+                parts.append(f"其中较直接的技术点包括：{points}。")
+            if page_relevance:
+                parts.append(_short_text(page_relevance, 180))
+            elif kind in {"search_result", "supplemental", "enrichment"}:
+                parts.append("这些信息更贴近当前指标或其关联家族，可为本次外联流量和归因判断提供更具体的背景支撑。")
+            else:
+                parts.append(f"这类研究性来源有助于解释 `{family}` 的已知能力与传播方式，从而补强本次归因。")
+            if page_iocs:
+                parts.append(f"正文还出现了 {', '.join(page_iocs[:3])} 等可供继续扩线的技术线索。")
         return " ".join(parts)
 
     if claim:
-        snippet = _short_text(claim, 260)
+        snippet = _short_text(claim, 320 if detail_mode == "primary" else 260)
         if kind in {"search_result", "supplemental", "enrichment"}:
+            if detail_mode == "primary":
+                return (
+                    f"`{title}` 的页面或搜索内容直接提到了与当前指标或其关联家族相关的线索：{snippet} "
+                    f"虽然这条证据还不足以单独确认事件细节，但它至少说明当前命中的指标与 `{family}` 之间并非孤立关联，而是能在公开来源中得到进一步呼应。"
+                )
             return (
                 f"`{title}` 的页面或搜索内容直接提到了与当前指标或其关联家族相关的线索：{snippet} "
                 f"这类来源更贴近本次事件本身，能够为当前流量、证书、指纹或基础设施的判断提供直接补充。"
+            )
+        if detail_mode == "background":
+            return (
+                f"`{title}` 提到了 `{family}` 的一条背景事实：{snippet} "
+                f"这条信息更适合作为家族画像补充，而不是当前告警的直接证据。"
             )
         return (
             f"`{title}` 的正文内容指出：{snippet} "
@@ -457,44 +801,47 @@ def _fallback_item_paragraph(item: Dict[str, Any], analysis: Dict[str, Any]) -> 
 def _synthesize_evidence_paragraphs(
     analysis: Dict[str, Any],
     items: Sequence[Dict[str, Any]],
+    *,
+    detail_modes: Optional[Dict[str, str]] = None,
+    section: str = "event",
     llm: Any = None,
 ) -> Dict[str, str]:
     if llm is None or not items:
         return {}
 
+    detail_modes = detail_modes or {}
     payload_items = []
     for idx, item in enumerate(items):
+        evidence_id = f"ev{idx}"
         payload_items.append(
-            {
-                "id": f"ev{idx}",
-                "title": _text(item.get("title")),
-                "source": _source_label(item.get("source")),
-                "kind": _text(item.get("kind")),
-                "type": _text(item.get("type")),
-                "claim": _short_text(_text(item.get("claim")), 320),
-                "url": _synthesized_url(item, analysis),
-                "family": _family_name(analysis),
-            }
+            _evidence_payload(
+                item,
+                analysis,
+                evidence_id=evidence_id,
+                detail_mode=detail_modes.get(evidence_id, "secondary"),
+            )
         )
 
     prompt = ChatPromptTemplate.from_messages(
         [
             (
                 "system",
-                "你是一位高级网络安全分析师。请只根据给定结构化证据，为每条证据生成 2-3 句中文段落。"
-                "要求：1）提炼页面或情报里的具体内容，不要只写“概述了某家族”；"
-                "2）说明该来源如何支持当前事件或归因判断；"
-                "3）每条摘要必须体现该条 claim/snippet 中至少一个具体信息点，例如传播方式、功能、受害对象、IOC、TTP、基础设施线索之一；"
-                "4）不要编造证据中没有的新事实；"
-                "5）不同条目的摘要不要写成几乎相同的套话；"
-                "6）不要重复标题，不要输出链接，不要使用项目符号。"
-                "同时再输出 1 段 2-3 句的总体分析摘要。"
+                "你是一位高级网络安全分析师。请只根据给定结构化证据，为每条证据生成中文段落。"
+                "要求：1）优先使用 page_summary、page_claims、page_relevance、page_iocs 里的内容，提炼页面或情报里的具体事实，不要只写“概述了某家族”；"
+                "2）detail_mode=primary 的条目必须写成至少 4 句、约 120-220 字的长段，并按“来源核心结论 -> 2-3 个关键技术细节 -> 与当前告警的关系 -> 对研判或排查的意义”组织；"
+                "3）detail_mode=secondary 的条目写成至少 2 句、约 70-140 字；detail_mode=background 的条目写成 1-2 句、约 40-90 字；"
+                "4）一条证据只保留最重要的 2-3 个事实，不要把所有 claim 机械平铺，也不要泛泛复述‘这是某家族恶意软件’；"
+                "5）说明该来源如何支持当前事件或归因判断，并注意区分“直接支撑当前告警”和“只提供家族背景补充”；"
+                "6）不要编造证据中没有的新事实；"
+                "7）不同条目的摘要不要写成几乎相同的套话；"
+                "8）不要重复标题，不要输出链接，不要使用项目符号。"
+                "同时再输出 1 段总体分析摘要。"
                 "必须只返回一个 JSON 对象，不要输出 markdown 代码块，不要输出解释性文字。"
                 ' JSON 结构为 {{"analyst_summary":"...","items":[{{"id":"ev0","summary":"..."}},{{"id":"ev1","summary":"..."}}]}}。',
             ),
             (
                 "user",
-                "当前事件概览：\n{event_brief}\n\n证据列表：\n{evidence_json}",
+                "当前事件概览：\n{event_brief}\n\n当前报告区段：{section_name}\n\n证据列表：\n{evidence_json}",
             ),
         ]
     )
@@ -509,6 +856,7 @@ def _synthesize_evidence_paragraphs(
     )
     messages = prompt.format_messages(
         event_brief=event_brief,
+        section_name="事件直接证据" if section == "event" else "家族背景与补充参考",
         evidence_json=json.dumps(payload_items, ensure_ascii=False, indent=2),
     )
     summaries: Dict[str, str] = {}
@@ -524,12 +872,12 @@ def _synthesize_evidence_paragraphs(
 
     parsed = result.model_dump() if hasattr(result, "model_dump") else dict(result)
     analyst_summary = _text(parsed.get("analyst_summary"))
-    if analyst_summary:
+    if analyst_summary and not _looks_mostly_ascii(analyst_summary):
         summaries["__analyst_summary__"] = analyst_summary
     for item in parsed.get("items") or []:
         item_id = _text((item or {}).get("id"))
         summary = _text((item or {}).get("summary"))
-        if item_id and summary:
+        if item_id and summary and not _looks_mostly_ascii(summary):
             summaries[item_id] = summary
     return summaries
 
@@ -538,6 +886,8 @@ def _synthesize_single_evidence_paragraph(
     analysis: Dict[str, Any],
     item: Dict[str, Any],
     *,
+    detail_mode: str = "secondary",
+    section: str = "event",
     llm: Any = None,
 ) -> str:
     if llm is None:
@@ -547,16 +897,18 @@ def _synthesize_single_evidence_paragraph(
         [
             (
                 "system",
-                "你是一位高级网络安全分析师。请只根据给定单条结构化证据，输出 2 句中文摘要。"
-                "要求：1）提炼该来源中真正有信息量的内容；"
-                "2）说明它如何支持当前事件或归因判断；"
-                "3）不要编造 claim/snippet 之外的新事实；"
-                "4）不要重复标题，不要输出链接，不要使用项目符号。"
+                "你是一位高级网络安全分析师。请只根据给定单条结构化证据输出中文摘要。"
+                "要求：1）优先使用 page_summary、page_claims、page_relevance、page_iocs 里的内容，提炼该来源中真正有信息量的内容；"
+                "2）detail_mode=primary 时必须写成至少 4 句、约 120-220 字，并按“来源核心结论 -> 2-3 个关键细节 -> 与当前告警关系 -> 排查或研判含义”的顺序组织；"
+                "3）detail_mode=secondary 时写成至少 2 句、约 70-140 字；detail_mode=background 时写成 1-2 句、约 40-90 字；"
+                "4）说明它如何支持当前事件或归因判断，并注意区分当前告警直接证据和家族背景补充；"
+                "5）不要编造 claim/snippet/page_summary 之外的新事实，也不要泛泛重复标题；"
+                "6）不要输出链接，不要使用项目符号。"
                 ' 必须只返回一个 JSON 对象，格式为 {{"summary":"..."}}，不要输出 markdown 代码块，不要输出其他解释。',
             ),
             (
                 "user",
-                "事件概览：{event_brief}\n\n单条证据：{evidence_json}",
+                "事件概览：{event_brief}\n\n当前报告区段：{section_name}\n\n单条证据：{evidence_json}",
             ),
         ]
     )
@@ -569,16 +921,10 @@ def _synthesize_single_evidence_paragraph(
         f"命中指标：{fp.get('type')} {fp.get('value')}；"
         f"当前家族：{_family_name(analysis)}。"
     )
-    payload = {
-        "title": _text(item.get("title")),
-        "source": _source_label(item.get("source")),
-        "kind": _text(item.get("kind")),
-        "type": _text(item.get("type")),
-        "claim": _short_text(_text(item.get("claim")), 320),
-        "url": _synthesized_url(item, analysis),
-    }
+    payload = _evidence_payload(item, analysis, detail_mode=detail_mode)
     messages = prompt.format_messages(
         event_brief=event_brief,
+        section_name="事件直接证据" if section == "event" else "家族背景与补充参考",
         evidence_json=json.dumps(payload, ensure_ascii=False, indent=2),
     )
     result = _invoke_structured_llm_with_timeout(
@@ -591,7 +937,10 @@ def _synthesize_single_evidence_paragraph(
     if result is None:
         return ""
     parsed = result.model_dump() if hasattr(result, "model_dump") else dict(result)
-    return _text(parsed.get("summary"))
+    summary = _text(parsed.get("summary"))
+    if _looks_mostly_ascii(summary):
+        return ""
+    return summary
 
 
 def _build_evidence_views(
@@ -599,18 +948,30 @@ def _build_evidence_views(
     items: Sequence[Dict[str, Any]],
     *,
     synthesized: Optional[Dict[str, str]] = None,
+    detail_modes: Optional[Dict[str, str]] = None,
+    section: str = "event",
     llm: Any = None,
 ) -> List[EvidenceView]:
     synthesized = synthesized or {}
+    detail_modes = detail_modes or {}
     views: List[EvidenceView] = []
     for idx, item in enumerate(items):
         evidence_id = f"ev{idx}"
         claim = _text(item.get("claim"))
         body = _text(synthesized.get(evidence_id))
-        if not body:
-            body = _synthesize_single_evidence_paragraph(analysis, item, llm=llm)
-        if not body:
-            body = _fallback_item_paragraph(item, analysis)
+        detail_mode = detail_modes.get(evidence_id, "secondary")
+        if _text(item.get("kind")) == "local_intel":
+            body = _fallback_item_paragraph(item, analysis, detail_mode=detail_mode, section=section)
+        elif not body or _needs_detail_expansion(body, detail_mode):
+            body = _synthesize_single_evidence_paragraph(
+                analysis,
+                item,
+                detail_mode=detail_mode,
+                section=section,
+                llm=llm,
+            )
+        if not body or _needs_detail_expansion(body, detail_mode):
+            body = _fallback_item_paragraph(item, analysis, detail_mode=detail_mode, section=section)
         views.append(
             EvidenceView(
                 evidence_id=evidence_id,
@@ -644,6 +1005,19 @@ def _overall_analyst_summary(
     )
 
 
+def _event_detail_modes(items: Sequence[Dict[str, Any]]) -> Dict[str, str]:
+    modes: Dict[str, str] = {}
+    primary_budget = 2
+    for idx, item in enumerate(items):
+        evidence_id = f"ev{idx}"
+        if primary_budget > 0 and _supports_primary_detail(item):
+            modes[evidence_id] = "primary"
+            primary_budget -= 1
+        else:
+            modes[evidence_id] = "secondary"
+    return modes
+
+
 def _base_action_lines(analysis: Dict[str, Any]) -> List[str]:
     actions: List[Dict[str, Any]] = list(analysis.get("recommended_actions") or [])
     rendered: List[str] = []
@@ -655,7 +1029,17 @@ def _base_action_lines(analysis: Dict[str, Any]) -> List[str]:
 
 
 def _threat_hunt_actions(analysis: Dict[str, Any]) -> List[str]:
-    claims = " ".join(_text(item.get("claim")) for item in (analysis.get("evidence") or []))
+    claims = " ".join(
+        " ".join(
+            [
+                _text(item.get("claim")),
+                _text(item.get("page_summary")),
+                " ".join(_text(value) for value in list(item.get("page_claims") or [])),
+                _text(item.get("page_relevance")),
+            ]
+        )
+        for item in (analysis.get("evidence") or [])
+    )
     lowered = claims.lower()
     event = analysis.get("event") or {}
     fp = event.get("trigger_fingerprint") or {}
@@ -688,30 +1072,75 @@ def _build_report_view_model(analysis: Dict[str, Any], *, llm: Any = None) -> Re
     model.base_actions = _base_action_lines(analysis)
     model.threat_hunt_actions = _threat_hunt_actions(analysis)
 
-    event_items = _event_evidence_candidates(analysis)
+    event_pool = sorted(
+        _event_evidence_candidates(analysis, limit=8),
+        key=lambda item: (
+            0 if _text(item.get("kind")) == "local_intel" else 1,
+            -_event_focus_score(item, analysis),
+            -_coerce_int(item.get("weight"), 0),
+        ),
+    )
+    event_items = event_pool[:2]
+    if len(event_pool) > 2:
+        third = event_pool[2]
+        if _event_focus_score(third, analysis) >= 92:
+            event_items.append(third)
     used_keys = {_evidence_key(item, analysis) for item in event_items}
-    background_items = _background_evidence_candidates(analysis, used_keys=used_keys, limit=2)
+    used_domains = {_text(item.get("domain")).lower() for item in event_items if _text(item.get("domain"))}
+    background_pool = sorted(
+        _background_evidence_candidates(analysis, used_keys=used_keys, used_domains=used_domains, limit=6),
+        key=lambda item: (-_background_focus_score(item, analysis), -_coerce_int(item.get("weight"), 0)),
+    )
+    background_items = [item for item in background_pool if _background_focus_score(item, analysis) >= 78][:1]
+    event_detail_modes = _event_detail_modes(event_items)
+    background_detail_modes = {f"ev{idx}": "background" for idx, _ in enumerate(background_items)}
 
     llm_summary = ""
     event_payload: Dict[str, str] = {}
     background_payload: Dict[str, str] = {}
     if event_items:
-        event_payload = _synthesize_evidence_paragraphs(analysis, event_items, llm=llm)
+        event_payload = _synthesize_evidence_paragraphs(
+            analysis,
+            event_items,
+            detail_modes=event_detail_modes,
+            section="event",
+            llm=llm,
+        )
         if llm is not None and not event_payload:
             LOGGER.warning(
                 "Renderer event evidence synthesis returned empty; falling back to deterministic paragraphs for %d items",
                 len(event_items),
             )
     if background_items:
-        background_payload = _synthesize_evidence_paragraphs(analysis, background_items, llm=llm)
+        background_payload = _synthesize_evidence_paragraphs(
+            analysis,
+            background_items,
+            detail_modes=background_detail_modes,
+            section="background",
+            llm=llm,
+        )
         if llm is not None and not background_payload:
             LOGGER.warning(
                 "Renderer background evidence synthesis returned empty; falling back to deterministic paragraphs for %d items",
                 len(background_items),
             )
 
-    model.event_evidence = _build_evidence_views(analysis, event_items, synthesized=event_payload, llm=llm)
-    model.background_references = _build_evidence_views(analysis, background_items, synthesized=background_payload, llm=llm)
+    model.event_evidence = _build_evidence_views(
+        analysis,
+        event_items,
+        synthesized=event_payload,
+        detail_modes=event_detail_modes,
+        section="event",
+        llm=llm,
+    )
+    model.background_references = _build_evidence_views(
+        analysis,
+        background_items,
+        synthesized=background_payload,
+        detail_modes=background_detail_modes,
+        section="background",
+        llm=llm,
+    )
     llm_summary = _text(event_payload.get("__analyst_summary__"))
 
     model.analyst_summary = _overall_analyst_summary(analysis, model.event_evidence, llm_summary=llm_summary)

@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-03-29 15:05:00",
+  "src_ip": "10.10.14.33",
+  "dst_ip": "203.0.113.19",
+  "protocol": "TLS",
+  "trigger_fingerprint": {
+    "type": "SSL_SHA1",
+    "value": "01fca6410fefef1530ac71c5e34d6985a6e23643"
+  },
+  "info": "QuasarRAT",
+  "reference": "SSLBL",
+  "update_time": "2026-03-26 07:46:12"
+}

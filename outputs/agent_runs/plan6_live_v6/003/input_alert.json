@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-03-29 10:40:00",
+  "src_ip": "10.20.8.41",
+  "dst_ip": "203.0.113.77",
+  "protocol": "TLS",
+  "trigger_fingerprint": {
+    "type": "JA4",
+    "value": "t13d201100_2b729b4bf6f3_9e7b989ebec8"
+  },
+  "info": "IcedID",
+  "reference": "JA4DB",
+  "update_time": "2026-03-28 23:16:27"
+}

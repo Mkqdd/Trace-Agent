@@ -1,0 +1,634 @@
+{
+  "mode": "plan",
+  "event": {
+    "event_time": "2026-03-20 10:00:00",
+    "simulated": false,
+    "src": {
+      "ip": "194.226.121.108",
+      "port": null
+    },
+    "dst": {
+      "ip": "44.33.22.11",
+      "port": null
+    },
+    "protocol": "HTTP",
+    "trigger_fingerprint": {
+      "type": "IP",
+      "value": "194.226.121.108",
+      "matched": true
+    },
+    "enrichment": {
+      "info": "discordgrabber",
+      "reference": "maltrail-static",
+      "update_time": "None"
+    },
+    "raw_alert": {
+      "timestamp": "2026-03-20 10:00:00",
+      "src_ip": "194.226.121.108",
+      "dst_ip": "44.33.22.11",
+      "protocol": "HTTP",
+      "trigger_fingerprint": {
+        "type": "IP",
+        "value": "194.226.121.108"
+      },
+      "info": "discordgrabber",
+      "reference": "maltrail-static",
+      "update_time": "None"
+    }
+  },
+  "facts": {
+    "event_time": "2026-03-20 10:00:00",
+    "src": {
+      "ip": "194.226.121.108",
+      "port": null
+    },
+    "dst": {
+      "ip": "44.33.22.11",
+      "port": null
+    },
+    "protocol": "HTTP",
+    "fingerprint": {
+      "type": "IP",
+      "value": "194.226.121.108",
+      "matched": true
+    }
+  },
+  "entities": {
+    "src_ip": "194.226.121.108",
+    "dst_ip": "44.33.22.11",
+    "protocol": "HTTP",
+    "fingerprint": {
+      "type": "IP",
+      "value": "194.226.121.108",
+      "matched": true
+    },
+    "family_hint": "discordgrabber",
+    "reference": "maltrail-static",
+    "update_time": "None"
+  },
+  "local_intel": {
+    "enabled": true,
+    "matched": false,
+    "query": {
+      "indicator_type": "IP",
+      "indicator_value": "194.226.121.108",
+      "candidates": [
+        "ip"
+      ]
+    },
+    "match_count": 0,
+    "matches": []
+  },
+  "external_intel": {
+    "fingerprint_enrichment": {
+      "enabled": true,
+      "ip": "194.226.121.108",
+      "country": "RU",
+      "asn": 41745,
+      "as_owner": "Baykov Ilya Sergeevich",
+      "reputation": 0,
+      "last_analysis_stats": {
+        "malicious": 12,
+        "suspicious": 1,
+        "undetected": 34,
+        "harmless": 47,
+        "timeout": 0
+      },
+      "confidence": 48
+    },
+    "context_search": {
+      "ok": true,
+      "query": "194.226.121.108 malware C2 discordgrabber | IP 194.226.121.108 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch IP 194.226.121.108",
+      "results": [
+        {
+          "title": "Stealing Credentials Through Discord",
+          "url": "https://www.netskope.com/blog/here-comes-troublegrabber-stealing-credentials-through-discord",
+          "snippet": "TroubleGrabber is a new credential stealer that is being spread through Discord attachments and uses Discord messages to communicate stolen credentials back to ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "Self-Checkout This Discord C2",
+          "url": "https://www.ibm.com/think/x-force/self-checkout-discord-c2",
+          "snippet": "IBM Security X-Force identified a novel technique employed by an attacker introducing a command and control (C2) channel built upon Discord channel messages ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "Someone sent a Discord token grabber.. Didn't click, but ...",
+          "url": "https://www.reddit.com/r/discordapp/comments/1iocecq/someone_sent_a_discord_token_grabber_didnt_click/",
+          "snippet": "A few minutes ago, someone from a mutual server dmed me. I sent them like 2 messages, and then they sent me back a very obvious Discord ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "Skuld Infostealer Malware uses Discord Webhook C2",
+          "url": "https://medium.com/@isaiahilly/skuld-infostealer-malware-uses-discord-webhook-c2-acad32dd2a01",
+          "snippet": "The information provided is designed to help understand how infostealers operate in order to better defend against them. It is illegal to test ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "Ransomware uses Discord for C2 communications",
+          "url": "https://www.sonicwall.com/blog/ransomware-uses-discord-for-c2-communications",
+          "snippet": "This ransomware uses Discord's built in webhooks function. Discord is much more than just a text and voice communication platform geared towards gamers.",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi,abuse_ch_structured,serpapi"
+    },
+    "family_intel": {
+      "ok": true,
+      "family": "discordgrabber",
+      "query": "discordgrabber 194.226.121.108 malware family C2",
+      "highlights": [
+        "- If I happen to fall victim to malware that steals my Discord ...（https://www.reddit.com/r/discordapp/comments/1odmyzh/if_i_happen_to_fall_victim_to_malware_that_steals/）",
+        "- PC infected with a token grabber, no antivirus has found it ...（https://www.reddit.com/r/computerviruses/comments/1rj1u1c/pc_infected_with_a_token_grabber_no_antivirus_has/）",
+        "- Discord warns users about new malware called ...（https://proprivacy.com/privacy-news/discord-users-warned-of-troublegrabber-malware）",
+        "- The Discord \"Grabber\" that Hacks the Hackers（https://www.youtube.com/watch?v=VQgWBYOQDdc）",
+        "- Possibility of discord token grabber program on PC（https://forums.malwarebytes.com/topic/318319-possibility-of-discord-token-grabber-program-on-pc/）"
+      ],
+      "raw": {
+        "ok": true,
+        "query": "site:malpedia.caad.fkie.fraunhofer.de OR site:microsoft.com OR site:abuse.ch OR site:checkpoint.com OR site:trendmicro.com OR site:proofpoint.com discordgrabber 194.226.121.108 malware family C2 | discordgrabber 194.226.121.108 malware family C2",
+        "results": [
+          {
+            "title": "If I happen to fall victim to malware that steals my Discord ...",
+            "url": "https://www.reddit.com/r/discordapp/comments/1odmyzh/if_i_happen_to_fall_victim_to_malware_that_steals/",
+            "snippet": "If I happen to fall victim to malware that steals my Discord token while I have multiple accounts connected to the app, ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "PC infected with a token grabber, no antivirus has found it ...",
+            "url": "https://www.reddit.com/r/computerviruses/comments/1rj1u1c/pc_infected_with_a_token_grabber_no_antivirus_has/",
+            "snippet": "This started happening in February, in the last few weeks. It's been 3 times my discord token got grabbed and i seriously have no idea of ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "Discord warns users about new malware called ...",
+            "url": "https://proprivacy.com/privacy-news/discord-users-warned-of-troublegrabber-malware",
+            "snippet": "Discord has warned users about new malware on the platform called trouble gabber. The malware was first discovered by Netskope at the end of ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "The Discord \"Grabber\" that Hacks the Hackers",
+            "url": "https://www.youtube.com/watch?v=VQgWBYOQDdc",
+            "snippet": "It installs a rat and it will mine crypto with your computer and it steals all your information so it's about as bad as it can get.",
+            "source": "serpapi"
+          },
+          {
+            "title": "Possibility of discord token grabber program on PC",
+            "url": "https://forums.malwarebytes.com/topic/318319-possibility-of-discord-token-grabber-program-on-pc/",
+            "snippet": "A few hours ago, without warning, a bot had created its own session on my discord account (while I was still logged in) and sent a spam link ...",
+            "source": "serpapi"
+          }
+        ],
+        "mode": "serpapi"
+      }
+    },
+    "supplemental": null,
+    "page_enrichment": {
+      "ok": true,
+      "focus": "discordgrabber",
+      "items": [
+        {
+          "ok": true,
+          "url": "https://www.netskope.com/blog/here-comes-troublegrabber-stealing-credentials-through-discord",
+          "title": "Stealing Credentials Through Discord",
+          "page_title": "Here Comes TroubleGrabber: Stealing Credentials Through Discord - Netskope",
+          "source": "netskope.com",
+          "kind": "search_result",
+          "raw_ref": "external_intel.context_search.results[0]",
+          "page_fetch_ok": true,
+          "summary_hint": "TroubleGrabber is a new credential stealer distributed via Discord attachments and communicates stolen credentials back to attackers using Discord messages.",
+          "claims": [
+            "TroubleGrabber is distributed through Discord attachments.",
+            "Stolen credentials are communicated back to attackers via Discord messages."
+          ],
+          "relevance": "The alert is relevant as it identifies a new threat vector involving the distribution of a credential stealer through Discord.",
+          "iocs": [],
+          "entities": {
+            "ips": [],
+            "domains": [],
+            "urls": [],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 7000,
+          "truncated": true,
+          "llm_used": true
+        }
+      ],
+      "selected_urls": [
+        "https://www.netskope.com/blog/here-comes-troublegrabber-stealing-credentials-through-discord"
+      ],
+      "timings": {
+        "page_enrichment_s": 5.1711,
+        "page_enrichment_count": 1,
+        "page_enrichment_llm_count": 1
+      }
+    }
+  },
+  "observations": {
+    "local_intel": {
+      "enabled": true,
+      "matched": false,
+      "query": {
+        "indicator_type": "IP",
+        "indicator_value": "194.226.121.108",
+        "candidates": [
+          "ip"
+        ]
+      },
+      "match_count": 0,
+      "matches": []
+    },
+    "fingerprint_enrichment": {
+      "enabled": true,
+      "ip": "194.226.121.108",
+      "country": "RU",
+      "asn": 41745,
+      "as_owner": "Baykov Ilya Sergeevich",
+      "reputation": 0,
+      "last_analysis_stats": {
+        "malicious": 12,
+        "suspicious": 1,
+        "undetected": 34,
+        "harmless": 47,
+        "timeout": 0
+      },
+      "confidence": 48
+    },
+    "context_search": {
+      "ok": true,
+      "query": "194.226.121.108 malware C2 discordgrabber | IP 194.226.121.108 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch IP 194.226.121.108",
+      "results": [
+        {
+          "title": "Stealing Credentials Through Discord",
+          "url": "https://www.netskope.com/blog/here-comes-troublegrabber-stealing-credentials-through-discord",
+          "snippet": "TroubleGrabber is a new credential stealer that is being spread through Discord attachments and uses Discord messages to communicate stolen credentials back to ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "Self-Checkout This Discord C2",
+          "url": "https://www.ibm.com/think/x-force/self-checkout-discord-c2",
+          "snippet": "IBM Security X-Force identified a novel technique employed by an attacker introducing a command and control (C2) channel built upon Discord channel messages ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "Someone sent a Discord token grabber.. Didn't click, but ...",
+          "url": "https://www.reddit.com/r/discordapp/comments/1iocecq/someone_sent_a_discord_token_grabber_didnt_click/",
+          "snippet": "A few minutes ago, someone from a mutual server dmed me. I sent them like 2 messages, and then they sent me back a very obvious Discord ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "Skuld Infostealer Malware uses Discord Webhook C2",
+          "url": "https://medium.com/@isaiahilly/skuld-infostealer-malware-uses-discord-webhook-c2-acad32dd2a01",
+          "snippet": "The information provided is designed to help understand how infostealers operate in order to better defend against them. It is illegal to test ...",
+          "source": "serpapi"
+        },
+        {
+          "title": "Ransomware uses Discord for C2 communications",
+          "url": "https://www.sonicwall.com/blog/ransomware-uses-discord-for-c2-communications",
+          "snippet": "This ransomware uses Discord's built in webhooks function. Discord is much more than just a text and voice communication platform geared towards gamers.",
+          "source": "serpapi"
+        }
+      ],
+      "mode": "serpapi,abuse_ch_structured,serpapi"
+    },
+    "family_intel": {
+      "ok": true,
+      "family": "discordgrabber",
+      "query": "discordgrabber 194.226.121.108 malware family C2",
+      "highlights": [
+        "- If I happen to fall victim to malware that steals my Discord ...（https://www.reddit.com/r/discordapp/comments/1odmyzh/if_i_happen_to_fall_victim_to_malware_that_steals/）",
+        "- PC infected with a token grabber, no antivirus has found it ...（https://www.reddit.com/r/computerviruses/comments/1rj1u1c/pc_infected_with_a_token_grabber_no_antivirus_has/）",
+        "- Discord warns users about new malware called ...（https://proprivacy.com/privacy-news/discord-users-warned-of-troublegrabber-malware）",
+        "- The Discord \"Grabber\" that Hacks the Hackers（https://www.youtube.com/watch?v=VQgWBYOQDdc）",
+        "- Possibility of discord token grabber program on PC（https://forums.malwarebytes.com/topic/318319-possibility-of-discord-token-grabber-program-on-pc/）"
+      ],
+      "raw": {
+        "ok": true,
+        "query": "site:malpedia.caad.fkie.fraunhofer.de OR site:microsoft.com OR site:abuse.ch OR site:checkpoint.com OR site:trendmicro.com OR site:proofpoint.com discordgrabber 194.226.121.108 malware family C2 | discordgrabber 194.226.121.108 malware family C2",
+        "results": [
+          {
+            "title": "If I happen to fall victim to malware that steals my Discord ...",
+            "url": "https://www.reddit.com/r/discordapp/comments/1odmyzh/if_i_happen_to_fall_victim_to_malware_that_steals/",
+            "snippet": "If I happen to fall victim to malware that steals my Discord token while I have multiple accounts connected to the app, ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "PC infected with a token grabber, no antivirus has found it ...",
+            "url": "https://www.reddit.com/r/computerviruses/comments/1rj1u1c/pc_infected_with_a_token_grabber_no_antivirus_has/",
+            "snippet": "This started happening in February, in the last few weeks. It's been 3 times my discord token got grabbed and i seriously have no idea of ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "Discord warns users about new malware called ...",
+            "url": "https://proprivacy.com/privacy-news/discord-users-warned-of-troublegrabber-malware",
+            "snippet": "Discord has warned users about new malware on the platform called trouble gabber. The malware was first discovered by Netskope at the end of ...",
+            "source": "serpapi"
+          },
+          {
+            "title": "The Discord \"Grabber\" that Hacks the Hackers",
+            "url": "https://www.youtube.com/watch?v=VQgWBYOQDdc",
+            "snippet": "It installs a rat and it will mine crypto with your computer and it steals all your information so it's about as bad as it can get.",
+            "source": "serpapi"
+          },
+          {
+            "title": "Possibility of discord token grabber program on PC",
+            "url": "https://forums.malwarebytes.com/topic/318319-possibility-of-discord-token-grabber-program-on-pc/",
+            "snippet": "A few hours ago, without warning, a bot had created its own session on my discord account (while I was still logged in) and sent a spam link ...",
+            "source": "serpapi"
+          }
+        ],
+        "mode": "serpapi"
+      }
+    },
+    "supplemental": null,
+    "page_enrichment": {
+      "ok": true,
+      "focus": "discordgrabber",
+      "items": [
+        {
+          "ok": true,
+          "url": "https://www.netskope.com/blog/here-comes-troublegrabber-stealing-credentials-through-discord",
+          "title": "Stealing Credentials Through Discord",
+          "page_title": "Here Comes TroubleGrabber: Stealing Credentials Through Discord - Netskope",
+          "source": "netskope.com",
+          "kind": "search_result",
+          "raw_ref": "external_intel.context_search.results[0]",
+          "page_fetch_ok": true,
+          "summary_hint": "TroubleGrabber is a new credential stealer distributed via Discord attachments and communicates stolen credentials back to attackers using Discord messages.",
+          "claims": [
+            "TroubleGrabber is distributed through Discord attachments.",
+            "Stolen credentials are communicated back to attackers via Discord messages."
+          ],
+          "relevance": "The alert is relevant as it identifies a new threat vector involving the distribution of a credential stealer through Discord.",
+          "iocs": [],
+          "entities": {
+            "ips": [],
+            "domains": [],
+            "urls": [],
+            "sha256": [],
+            "sha1": [],
+            "md5": []
+          },
+          "chars": 7000,
+          "truncated": true,
+          "llm_used": true
+        }
+      ],
+      "selected_urls": [
+        "https://www.netskope.com/blog/here-comes-troublegrabber-stealing-credentials-through-discord"
+      ],
+      "timings": {
+        "page_enrichment_s": 5.1711,
+        "page_enrichment_count": 1,
+        "page_enrichment_llm_count": 1
+      }
+    }
+  },
+  "corroboration": {
+    "local_family": null,
+    "external_family_candidates": [
+      "discordgrabber"
+    ],
+    "supported_by_external": true,
+    "conflict": false,
+    "confidence_driver": "external_only",
+    "summary": "当前家族判断主要依赖外部情报线索 `discordgrabber`。",
+    "selected_family": "discordgrabber",
+    "supplemental_evidence_count": 0,
+    "primary_source": {
+      "family": "discordgrabber",
+      "source": "family_intel",
+      "source_kind": "family_background",
+      "confidence": 68,
+      "precedence": 74,
+      "url": null
+    },
+    "supporting_sources": [
+      {
+        "family": "discordgrabber",
+        "source": "maltrail-static",
+        "source_kind": "alert_hint",
+        "confidence": 70,
+        "precedence": 62,
+        "url": null
+      }
+    ],
+    "conflicting_sources": [],
+    "conflicting_candidates": [],
+    "family_candidates": [
+      {
+        "family": "discordgrabber",
+        "max_precedence": 74,
+        "max_confidence": 70,
+        "support_count": 2,
+        "has_local": false
+      }
+    ],
+    "review_priority": "normal"
+  },
+  "gaps": [
+    {
+      "id": "g01",
+      "type": "missing_local_match",
+      "priority": "medium",
+      "question": "本地情报库没有直接命中该指标，是否还能找到稳定的家族或来源线索？",
+      "status": "open"
+    }
+  ],
+  "gap_fill_needed": false,
+  "supplemental": {},
+  "evidence": [
+    {
+      "kind": "event",
+      "source": "alert",
+      "type": "matched_alert",
+      "query": null,
+      "url": null,
+      "title": "命中后告警事件",
+      "claim": "在 2026-03-20 10:00:00 观察到 194.226.121.108 -> 44.33.22.11 的 HTTP 流量，命中 IP 指纹 194.226.121.108。",
+      "confidence": 95,
+      "raw_ref": "event.raw_alert",
+      "domain": null,
+      "weight": 96,
+      "weight_level": "高",
+      "weight_reason": "原始告警事实",
+      "evidence_tier": "strong",
+      "page_type": "detail",
+      "is_reportable": true,
+      "id": "e01"
+    },
+    {
+      "kind": "enrichment",
+      "source": "VirusTotal",
+      "type": "vt_ip",
+      "query": "194.226.121.108",
+      "url": null,
+      "title": "VirusTotal IP 富化",
+      "claim": "VirusTotal 返回 IP 194.226.121.108 的信誉/归属信息。 VT 分析统计为 {'malicious': 12, 'suspicious': 1, 'undetected': 34, 'harmless': 47, 'timeout': 0}。",
+      "confidence": 48,
+      "raw_ref": "external_intel.fingerprint_enrichment",
+      "domain": null,
+      "weight": 75,
+      "weight_level": "中",
+      "weight_reason": "结构化信誉情报",
+      "evidence_tier": "strong",
+      "page_type": "article",
+      "is_reportable": true,
+      "id": "e02"
+    },
+    {
+      "kind": "hint",
+      "source": "maltrail-static",
+      "type": "family_hint",
+      "query": null,
+      "url": null,
+      "title": "告警附带家族提示",
+      "claim": "原始告警将该事件关联到家族/标签 discordgrabber。",
+      "confidence": 70,
+      "raw_ref": "event.enrichment",
+      "domain": null,
+      "weight": 74,
+      "weight_level": "中",
+      "weight_reason": "本地静态情报命中",
+      "evidence_tier": "supporting",
+      "page_type": "article",
+      "is_reportable": true,
+      "id": "e03"
+    },
+    {
+      "kind": "search_result",
+      "source": "netskope.com",
+      "type": "context_search",
+      "query": "194.226.121.108 malware C2 discordgrabber | IP 194.226.121.108 | site:abuse.ch OR site:sslbl.abuse.ch OR site:threatfox.abuse.ch OR site:urlhaus.abuse.ch OR site:bazaar.abuse.ch IP 194.226.121.108",
+      "url": "https://www.netskope.com/blog/here-comes-troublegrabber-stealing-credentials-through-discord",
+      "title": "Stealing Credentials Through Discord",
+      "claim": "TroubleGrabber is a new credential stealer distributed via Discord attachments and communicates stolen credentials back to attackers using Discord messages.",
+      "confidence": 62,
+      "raw_ref": "external_intel.context_search.results[0]",
+      "claim_origin": "page_enrichment",
+      "page_claims": [
+        "TroubleGrabber is distributed through Discord attachments.",
+        "Stolen credentials are communicated back to attackers via Discord messages."
+      ],
+      "page_summary": "TroubleGrabber is a new credential stealer distributed via Discord attachments and communicates stolen credentials back to attackers using Discord messages.",
+      "page_title": "Here Comes TroubleGrabber: Stealing Credentials Through Discord - Netskope",
+      "page_entities": {
+        "ips": [],
+        "domains": [],
+        "urls": [],
+        "sha256": [],
+        "sha1": [],
+        "md5": []
+      },
+      "page_relevance": "The alert is relevant as it identifies a new threat vector involving the distribution of a credential stealer through Discord.",
+      "page_iocs": [],
+      "domain": "netskope.com",
+      "weight": 71,
+      "weight_level": "中",
+      "weight_reason": "权威外部来源 netskope.com",
+      "evidence_tier": "supporting",
+      "page_type": "detail",
+      "is_reportable": true,
+      "id": "e04"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f01",
+      "title": "命中后恶意流量告警",
+      "statement": "源 194.226.121.108 与目的 44.33.22.11 的 HTTP 流量命中 IP 指纹 194.226.121.108。",
+      "confidence": 95,
+      "severity": "中危",
+      "based_on": [
+        "e01"
+      ]
+    },
+    {
+      "id": "f03",
+      "title": "当前家族判断",
+      "statement": "综合本地命中与外部佐证后，该事件当前更可能与 discordgrabber 相关。",
+      "confidence": 77,
+      "severity": "中危",
+      "based_on": [
+        "e03",
+        "e04"
+      ]
+    }
+  ],
+  "uncertainties": [
+    {
+      "id": "u07",
+      "statement": "本地情报库没有直接命中该指标，是否还能找到稳定的家族或来源线索？",
+      "reason": "gap=missing_local_match priority=medium"
+    }
+  ],
+  "recommended_actions": [
+    {
+      "id": "a01",
+      "priority": "high",
+      "action": "排查并视情况隔离源主机 194.226.121.108。",
+      "rationale": "源主机产生了命中后恶意流量，需要确认是否存在持续外联或二次投递行为。"
+    },
+    {
+      "id": "a02",
+      "priority": "high",
+      "action": "在边界侧监控或阻断与 44.33.22.11 相关的后续通信。",
+      "rationale": "当前告警中的网络目的地址是最直接的外联对象，应优先纳入监测范围。"
+    },
+    {
+      "id": "a03",
+      "priority": "medium",
+      "action": "基于 IP 指纹 194.226.121.108 在历史流量中做横向检索。",
+      "rationale": "可以快速判断是否存在相同指纹的历史通信或更多受影响资产。"
+    },
+    {
+      "id": "a04",
+      "priority": "medium",
+      "action": "结合 discordgrabber 相关 TTP 做主机侧排查与 IOC 扩线。",
+      "rationale": "已有家族线索时，可以更有针对性地检查样本行为、持久化方式和额外外联特征。"
+    }
+  ],
+  "assessment": {
+    "family": "discordgrabber",
+    "verdict": "suspected_malware_activity",
+    "confidence": 77,
+    "severity": "中危",
+    "rationale": "当前家族判断主要依赖外部情报线索 `discordgrabber`。",
+    "requires_manual_review": false
+  },
+  "derived": {
+    "family": "discordgrabber",
+    "labels": [
+      "discordgrabber"
+    ],
+    "confidence": 77,
+    "severity": "中危",
+    "destination_enrichment": {}
+  },
+  "gap_plan": {
+    "items": []
+  },
+  "timings": {
+    "baseline_total_s": 6.3294,
+    "baseline": {
+      "local_lookup_s": 0.01,
+      "vt_lookup_s": 1.3901,
+      "standard_context_s": 0.2698,
+      "abuse_lookup_s": 6.3248,
+      "family_lookup_s": 0.2867
+    },
+    "draft_analysis_s": 0.0008,
+    "page_enrichment_s": 5.1711,
+    "enriched_analysis_s": 0.0011,
+    "gap_planner_s": 0.0,
+    "report_render_s": 12.996,
+    "gap_execution_mode": "not_needed",
+    "pipeline_total_s": 24.4994
+  },
+  "report": {
+    "path": "/tmp/plan6_focus_live_v4/001/report.md",
+    "content": "# 网络安全事件分析报告\n\n## 事件概述\n- 事件时间：2026-03-20 10:00:00\n- 通信关系：`194.226.121.108` -> `44.33.22.11`\n- 协议：HTTP\n- 命中指标：IP `194.226.121.108`\n- 当前研判：discordgrabber\n- 置信度：77\n- 严重度：中危\n\n## 研判结论\n在 2026-03-20 10:00:00，检测到 194.226.121.108 与 44.33.22.11 之间存在 HTTP 流量，该流量命中 IP 指标 `194.226.121.108`。\n\n当前家族线索主要来自告警附带标签和外部情报，现阶段更倾向于将该事件关联到 `discordgrabber`。\n\n## 归因依据\n当前归因结果为 `discordgrabber`，置信度为 77。 主依据来自 `家族背景情报`。 另有 `maltrail-static` 提供补充支持。 当前家族判断主要依赖外部情报线索 `discordgrabber`。\n\n本次事件涉及一个名为TroubleGrabber的新类型凭证窃取器，通过Discord附件进行传播，并利用Discord消息将窃取到的凭证发送给攻击者。IP地址194.226.121.108的信誉评分为高度可疑，进一步支持了该威胁的存在。\n\n## 事件直接证据\n### Stealing Credentials Through Discord\n来源：netskope.com\n证据等级：中\n`Stealing Credentials Through Discord` 的正文对 `discordgrabber` 给出了更完整的能力画像：TroubleGrabber is a new credential stealer distributed via Discord attachments and communicates stolen credentials back to attackers using Discord messages. 从页面正文能直接抽出的关键技术点包括：TroubleGrabber is distributed through Discord attachments.；Stolen credentials are communicated back to attackers via Discord messages.。 就当前告警而言，The alert is relevant as it identifies a new threat vector involving the distribution of a credential stealer through Discord. 从研判与处置角度看，这类正文型来源能够帮助我们把“命中某个家族”进一步展开为“该家族通常如何传播、落地后会做什么、后续还该排查哪些痕迹”，因此比单纯标签更有分析价值。\n参考：[https://www.netskope.com/blog/here-comes-troublegrabber-stealing-credentials-through-discord](https://www.netskope.com/blog/here-comes-troublegrabber-stealing-credentials-through-discord)\n\n### VirusTotal IP 富化\n来源：VirusTotal\n证据等级：中\nVirusTotal 提供的 IP 地址 194.226.121.108 的信誉报告显示该 IP 具有较高的恶意评分（12 次恶意检测），进一步证实了该 IP 地址与恶意活动相关联。这些信息有助于确认当前告警的有效性。\n参考：[https://www.virustotal.com/gui/ip-address/194.226.121.108](https://www.virustotal.com/gui/ip-address/194.226.121.108)\n\n## 处置建议\n### 基础响应\n- [HIGH] 排查并视情况隔离源主机 194.226.121.108。 理由：源主机产生了命中后恶意流量，需要确认是否存在持续外联或二次投递行为。\n- [HIGH] 在边界侧监控或阻断与 44.33.22.11 相关的后续通信。 理由：当前告警中的网络目的地址是最直接的外联对象，应优先纳入监测范围。\n- [MEDIUM] 基于 IP 指纹 194.226.121.108 在历史流量中做横向检索。 理由：可以快速判断是否存在相同指纹的历史通信或更多受影响资产。\n- [MEDIUM] 结合 discordgrabber 相关 TTP 做主机侧排查与 IOC 扩线。 理由：已有家族线索时，可以更有针对性地检查样本行为、持久化方式和额外外联特征。\n\n### 建议追加的威胁猎捕动作\n- 围绕浏览器凭据、Cookie、钱包插件和本地敏感配置文件开展主机侧排查，确认是否存在信息窃取后的残留痕迹。\n"
+  }
+}

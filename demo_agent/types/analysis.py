@@ -328,6 +328,8 @@ def _page_enriched_claim(result: Dict[str, Any], page_enrichment: Optional[Dict[
             "page_summary": "",
             "page_title": "",
             "page_entities": {},
+            "page_relevance": "",
+            "page_iocs": [],
         }
 
     claims = [
@@ -347,6 +349,8 @@ def _page_enriched_claim(result: Dict[str, Any], page_enrichment: Optional[Dict[
             "page_summary": "",
             "page_title": "",
             "page_entities": {},
+            "page_relevance": "",
+            "page_iocs": [],
         }
     return {
         "claim": claim,
@@ -355,6 +359,8 @@ def _page_enriched_claim(result: Dict[str, Any], page_enrichment: Optional[Dict[
         "page_summary": summary,
         "page_title": _clean_text(enriched.get("page_title") or enriched.get("title")),
         "page_entities": enriched.get("entities") or {},
+        "page_relevance": _clean_text(enriched.get("relevance")),
+        "page_iocs": [str(item).strip() for item in list(enriched.get("iocs") or []) if str(item).strip()][:6],
     }
 
 
@@ -1217,6 +1223,8 @@ def _build_evidence(
                         "page_summary": enriched.get("page_summary"),
                         "page_title": enriched.get("page_title"),
                         "page_entities": enriched.get("page_entities"),
+                        "page_relevance": enriched.get("page_relevance"),
+                        "page_iocs": enriched.get("page_iocs"),
                     },
                 )
 
@@ -1244,6 +1252,8 @@ def _build_evidence(
                     "page_summary": enriched.get("page_summary"),
                     "page_title": enriched.get("page_title"),
                     "page_entities": enriched.get("page_entities"),
+                    "page_relevance": enriched.get("page_relevance"),
+                    "page_iocs": enriched.get("page_iocs"),
                 },
             )
 
@@ -1273,6 +1283,8 @@ def _build_evidence(
                     "page_summary": enriched.get("page_summary"),
                     "page_title": enriched.get("page_title"),
                     "page_entities": enriched.get("page_entities"),
+                    "page_relevance": enriched.get("page_relevance"),
+                    "page_iocs": enriched.get("page_iocs"),
                 },
             )
 

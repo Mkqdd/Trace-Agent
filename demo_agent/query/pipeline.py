@@ -400,6 +400,7 @@ def run_pipeline(llm: Any, cfg: AgentConfig, *, event: Dict[str, Any], out_dir: 
     page_enrichment = enrich_baseline_pages(
         draft_analysis=analysis,
         event=event,
+        llm=llm,
     )
     stage_timings["page_enrichment_s"] = round(time.perf_counter() - page_enrichment_started, 4)
     enrichment_analysis_started = time.perf_counter()
