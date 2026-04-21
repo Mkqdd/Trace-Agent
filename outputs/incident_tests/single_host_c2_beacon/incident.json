@@ -1,0 +1,563 @@
+{
+  "schema_version": "0.1",
+  "mode": "incident",
+  "fixture_case": "single_host_c2_beacon",
+  "seed": {
+    "event_time": "2026-03-29 09:15:00",
+    "simulated": false,
+    "src": {
+      "ip": "10.20.5.23",
+      "port": null
+    },
+    "dst": {
+      "ip": "198.51.100.24",
+      "port": null
+    },
+    "protocol": "TLS",
+    "trigger_fingerprint": {
+      "type": "JA4",
+      "value": "t12i190700_d83cc789557e_16bbda4055b2",
+      "matched": true
+    },
+    "enrichment": {
+      "info": "Possible Cobalt Strike beacon",
+      "reference": "fixture",
+      "update_time": "2026-03-29 09:15:00"
+    },
+    "raw_alert": {
+      "timestamp": "2026-03-29 09:15:00",
+      "src_ip": "10.20.5.23",
+      "dst_ip": "198.51.100.24",
+      "protocol": "TLS",
+      "trigger_fingerprint": {
+        "type": "JA4",
+        "value": "t12i190700_d83cc789557e_16bbda4055b2"
+      },
+      "info": "Possible Cobalt Strike beacon",
+      "reference": "fixture",
+      "update_time": "2026-03-29 09:15:00"
+    }
+  },
+  "state": {
+    "context_built": true,
+    "entry_assessed": true,
+    "cluster_built": true,
+    "entities_grounded": true,
+    "timeline_built": true,
+    "scope_assessed": true,
+    "intrusion_hypothesis_grounded": true,
+    "external_infra_grounded": true,
+    "counterevidence_checked": true,
+    "report_ready": true
+  },
+  "verdict": {
+    "status": "confirmed_incident",
+    "status_label": "确认事件",
+    "confidence": 92,
+    "severity": "高危",
+    "rationale": [
+      "最小上下文中已出现多条高风险相关事件，且正向恶意信号明显强于反证。",
+      "同一批外部基础设施在最小上下文里被重复命中，具备持续通信特征。",
+      "seed alert 自带家族/工具提示：Possible Cobalt Strike beacon。"
+    ]
+  },
+  "summary": {
+    "headline": "单资产疑似 Possible Cobalt Strike beacon 事件",
+    "verdict": "确认事件",
+    "confidence": 92,
+    "seed_asset": "ws-finance-23",
+    "suspected_asset_count": 1,
+    "primary_indicator_count": 3,
+    "time_window": {
+      "start": "2026-03-29T09:12:10Z",
+      "end": "2026-03-29T09:48:00Z"
+    },
+    "stage_labels": [
+      "command-and-control",
+      "execution"
+    ]
+  },
+  "decision_basis": {
+    "narrative": "决策主要建立在种子告警后的重复外联、同基础设施复现以及后续执行线索之上。",
+    "focus_statement": "ws-finance-23 围绕 198.51.100.24、cdn-sync-update.com、api.telemetry-sync.net 的重复外联已经延伸到主机侧执行，事件闭环已经基本形成。",
+    "positive_summary": "ws-finance-23 先围绕 198.51.100.24、cdn-sync-update.com、api.telemetry-sync.net 形成重复外联，随后又出现主机侧执行痕迹，因此判断已经超过单点命中。",
+    "counter_summary": "反证主要来自维护窗口和签名更新流量，这些背景足以解释为什么不能只凭 seed alert 直接定性。",
+    "positive_signals": [
+      {
+        "event_id": "evt-003",
+        "summary": "Seed JA4 alert matched a known beacon-style fingerprint.",
+        "kind": "alert",
+        "role": "seed",
+        "ts": "2026-03-29T09:15:00Z",
+        "asset_id": "ws-finance-23",
+        "classification": "malicious",
+        "stages": [
+          "command-and-control"
+        ],
+        "indicator_text": "198.51.100.24 / cdn-sync-update.com / JA4 t12i190700_d83cc789557e_16bbda4055b2",
+        "detail": "ws-finance-23 -> 198.51.100.24 / cdn-sync-update.com: Seed JA4 alert matched a known beacon-style fingerprint.",
+        "why_it_matters": "这是种子命中的直接落点，说明告警并不是孤立的指纹命中。"
+      },
+      {
+        "event_id": "evt-001",
+        "summary": "Rare DNS lookup for domain later reused by the seed alert.",
+        "kind": "dns",
+        "role": "supporting",
+        "ts": "2026-03-29T09:12:10Z",
+        "asset_id": "ws-finance-23",
+        "classification": "suspicious",
+        "stages": [
+          "command-and-control"
+        ],
+        "indicator_text": "cdn-sync-update.com / DNS answers 198.51.100.24",
+        "detail": "ws-finance-23 -> cdn-sync-update.com: Rare DNS lookup for domain later reused by the seed alert.",
+        "why_it_matters": "它给出了可疑外联之前的解析准备动作，说明相关基础设施不是只在告警瞬间出现。"
+      },
+      {
+        "event_id": "evt-002",
+        "summary": "Outbound TLS session to rare external infra using the same JA4 fingerprint as the seed event.",
+        "kind": "flow",
+        "role": "supporting",
+        "ts": "2026-03-29T09:14:40Z",
+        "asset_id": "ws-finance-23",
+        "classification": "suspicious",
+        "stages": [
+          "command-and-control"
+        ],
+        "indicator_text": "198.51.100.24 / cdn-sync-update.com / JA4 t12i190700_d83cc789557e_16bbda4055b2",
+        "detail": "ws-finance-23 -> 198.51.100.24 / cdn-sync-update.com: Outbound TLS session to rare external infra using the same JA4 fingerprint as the seed event.",
+        "why_it_matters": "同一资产围绕同一批外部基础设施再次通信，单条告警已经扩展成连续事件链。"
+      },
+      {
+        "event_id": "evt-004",
+        "summary": "Second outbound TLS session to the same external infrastructure after the seed alert.",
+        "kind": "flow",
+        "role": "supporting",
+        "ts": "2026-03-29T09:21:05Z",
+        "asset_id": "ws-finance-23",
+        "classification": "suspicious",
+        "stages": [
+          "command-and-control"
+        ],
+        "indicator_text": "198.51.100.24 / cdn-sync-update.com",
+        "detail": "ws-finance-23 -> 198.51.100.24 / cdn-sync-update.com: Second outbound TLS session to the same external infrastructure after the seed alert.",
+        "why_it_matters": "同一资产围绕同一批外部基础设施再次通信，单条告警已经扩展成连续事件链。"
+      }
+    ],
+    "counterevidence": [
+      {
+        "event_id": "evt-008",
+        "summary": "Scheduled package update traffic during the same hour.",
+        "kind": "flow",
+        "role": "counterevidence",
+        "ts": "2026-03-29T09:48:00Z",
+        "asset_id": "ws-finance-23",
+        "classification": "benign",
+        "stages": [],
+        "indicator_text": "203.0.113.10 / packages.vendor.example",
+        "detail": "ws-finance-23 -> 203.0.113.10 / packages.vendor.example: Scheduled package update traffic during the same hour.",
+        "why_it_matters": "这条记录更接近计划内维护或正常更新背景，是当前能够降级或收窄判断的重要原因。"
+      }
+    ],
+    "supporting_cluster": {
+      "title": "C2 / Beacon 证据簇",
+      "summary": "多条事件指向同一批外联基础设施，并表现出重复 beacon 特征。"
+    },
+    "counter_cluster": {
+      "title": "反证 / 基线解释",
+      "summary": "这些事件提供了计划内活动或正常运维背景。"
+    }
+  },
+  "context_bundle": {
+    "minimal_event_ids": [
+      "evt-001",
+      "evt-002",
+      "evt-003",
+      "evt-004",
+      "evt-005",
+      "evt-006"
+    ],
+    "minimal_event_count": 6
+  },
+  "cluster": {
+    "seed_event_id": "evt-003",
+    "supporting_event_ids": [
+      "evt-001",
+      "evt-002",
+      "evt-003",
+      "evt-004",
+      "evt-005",
+      "evt-006",
+      "evt-007"
+    ],
+    "counterevidence_event_ids": [
+      "evt-008"
+    ],
+    "events": [
+      {
+        "id": "evt-001",
+        "ts": "2026-03-29T09:12:10Z",
+        "kind": "dns",
+        "asset_id": "ws-finance-23",
+        "src_ip": "10.20.5.23",
+        "domain": "cdn-sync-update.com",
+        "answers": [
+          "198.51.100.24"
+        ],
+        "classification": "suspicious",
+        "tags": [
+          "command-and-control"
+        ],
+        "summary": "Rare DNS lookup for domain later reused by the seed alert.",
+        "role": "supporting",
+        "stages": [
+          "command-and-control"
+        ]
+      },
+      {
+        "id": "evt-002",
+        "ts": "2026-03-29T09:14:40Z",
+        "kind": "flow",
+        "asset_id": "ws-finance-23",
+        "src_ip": "10.20.5.23",
+        "dst_ip": "198.51.100.24",
+        "dst_port": 443,
+        "domain": "cdn-sync-update.com",
+        "ja4": "t12i190700_d83cc789557e_16bbda4055b2",
+        "classification": "suspicious",
+        "tags": [
+          "command-and-control",
+          "beacon"
+        ],
+        "summary": "Outbound TLS session to rare external infra using the same JA4 fingerprint as the seed event.",
+        "role": "supporting",
+        "stages": [
+          "command-and-control"
+        ]
+      },
+      {
+        "id": "evt-003",
+        "ts": "2026-03-29T09:15:00Z",
+        "kind": "alert",
+        "asset_id": "ws-finance-23",
+        "src_ip": "10.20.5.23",
+        "dst_ip": "198.51.100.24",
+        "domain": "cdn-sync-update.com",
+        "ja4": "t12i190700_d83cc789557e_16bbda4055b2",
+        "classification": "malicious",
+        "tags": [
+          "command-and-control",
+          "beacon"
+        ],
+        "summary": "Seed JA4 alert matched a known beacon-style fingerprint.",
+        "role": "seed",
+        "stages": [
+          "command-and-control"
+        ]
+      },
+      {
+        "id": "evt-004",
+        "ts": "2026-03-29T09:21:05Z",
+        "kind": "flow",
+        "asset_id": "ws-finance-23",
+        "src_ip": "10.20.5.23",
+        "dst_ip": "198.51.100.24",
+        "dst_port": 443,
+        "domain": "cdn-sync-update.com",
+        "classification": "suspicious",
+        "tags": [
+          "command-and-control",
+          "beacon"
+        ],
+        "summary": "Second outbound TLS session to the same external infrastructure after the seed alert.",
+        "role": "supporting",
+        "stages": [
+          "command-and-control"
+        ]
+      },
+      {
+        "id": "evt-005",
+        "ts": "2026-03-29T09:27:20Z",
+        "kind": "flow",
+        "asset_id": "ws-finance-23",
+        "src_ip": "10.20.5.23",
+        "dst_ip": "198.51.100.24",
+        "dst_port": 443,
+        "domain": "api.telemetry-sync.net",
+        "classification": "suspicious",
+        "tags": [
+          "command-and-control",
+          "beacon"
+        ],
+        "summary": "Another periodic outbound connection to a sibling domain on the same external IP.",
+        "role": "supporting",
+        "stages": [
+          "command-and-control"
+        ]
+      },
+      {
+        "id": "evt-006",
+        "ts": "2026-03-29T09:30:00Z",
+        "kind": "dns",
+        "asset_id": "ws-finance-23",
+        "src_ip": "10.20.5.23",
+        "domain": "api.telemetry-sync.net",
+        "answers": [
+          "198.51.100.24"
+        ],
+        "classification": "suspicious",
+        "tags": [
+          "command-and-control"
+        ],
+        "summary": "Follow-up DNS resolution for a second suspicious domain on the same infrastructure.",
+        "role": "supporting",
+        "stages": [
+          "command-and-control"
+        ]
+      },
+      {
+        "id": "evt-007",
+        "ts": "2026-03-29T09:45:10Z",
+        "kind": "alert",
+        "asset_id": "ws-finance-23",
+        "src_ip": "10.20.5.23",
+        "classification": "suspicious",
+        "tags": [
+          "execution"
+        ],
+        "summary": "Suspicious post-beacon process activity appeared on the same workstation after external communications started.",
+        "role": "supporting",
+        "stages": [
+          "execution",
+          "command-and-control"
+        ]
+      },
+      {
+        "id": "evt-008",
+        "ts": "2026-03-29T09:48:00Z",
+        "kind": "flow",
+        "asset_id": "ws-finance-23",
+        "src_ip": "10.20.5.23",
+        "dst_ip": "203.0.113.10",
+        "dst_port": 443,
+        "domain": "packages.vendor.example",
+        "classification": "benign",
+        "tags": [
+          "patching"
+        ],
+        "summary": "Scheduled package update traffic during the same hour.",
+        "role": "counterevidence",
+        "stages": []
+      }
+    ],
+    "event_count": 8
+  },
+  "entities": {
+    "seed_asset": "ws-finance-23",
+    "assets": [
+      "ws-finance-23"
+    ],
+    "observed_assets": [
+      "ws-finance-23"
+    ],
+    "suspected_assets": [
+      "ws-finance-23"
+    ],
+    "related_assets": [],
+    "internal_ips": [
+      "10.20.5.23"
+    ],
+    "external_ips": [
+      "198.51.100.24",
+      "203.0.113.10"
+    ],
+    "primary_external_ips": [
+      "198.51.100.24"
+    ],
+    "contextual_external_ips": [
+      "203.0.113.10"
+    ],
+    "domains": [
+      "cdn-sync-update.com",
+      "api.telemetry-sync.net",
+      "packages.vendor.example"
+    ],
+    "primary_domains": [
+      "cdn-sync-update.com",
+      "api.telemetry-sync.net"
+    ],
+    "contextual_domains": [
+      "packages.vendor.example"
+    ],
+    "users": []
+  },
+  "timeline": [
+    {
+      "event_id": "evt-001",
+      "ts": "2026-03-29T09:12:10Z",
+      "kind": "dns",
+      "classification": "suspicious",
+      "role": "supporting",
+      "stages": [
+        "command-and-control"
+      ],
+      "summary": "Rare DNS lookup for domain later reused by the seed alert."
+    },
+    {
+      "event_id": "evt-002",
+      "ts": "2026-03-29T09:14:40Z",
+      "kind": "flow",
+      "classification": "suspicious",
+      "role": "supporting",
+      "stages": [
+        "command-and-control"
+      ],
+      "summary": "Outbound TLS session to rare external infra using the same JA4 fingerprint as the seed event."
+    },
+    {
+      "event_id": "evt-003",
+      "ts": "2026-03-29T09:15:00Z",
+      "kind": "alert",
+      "classification": "malicious",
+      "role": "seed",
+      "stages": [
+        "command-and-control"
+      ],
+      "summary": "Seed JA4 alert matched a known beacon-style fingerprint."
+    },
+    {
+      "event_id": "evt-004",
+      "ts": "2026-03-29T09:21:05Z",
+      "kind": "flow",
+      "classification": "suspicious",
+      "role": "supporting",
+      "stages": [
+        "command-and-control"
+      ],
+      "summary": "Second outbound TLS session to the same external infrastructure after the seed alert."
+    },
+    {
+      "event_id": "evt-005",
+      "ts": "2026-03-29T09:27:20Z",
+      "kind": "flow",
+      "classification": "suspicious",
+      "role": "supporting",
+      "stages": [
+        "command-and-control"
+      ],
+      "summary": "Another periodic outbound connection to a sibling domain on the same external IP."
+    },
+    {
+      "event_id": "evt-006",
+      "ts": "2026-03-29T09:30:00Z",
+      "kind": "dns",
+      "classification": "suspicious",
+      "role": "supporting",
+      "stages": [
+        "command-and-control"
+      ],
+      "summary": "Follow-up DNS resolution for a second suspicious domain on the same infrastructure."
+    },
+    {
+      "event_id": "evt-007",
+      "ts": "2026-03-29T09:45:10Z",
+      "kind": "alert",
+      "classification": "suspicious",
+      "role": "supporting",
+      "stages": [
+        "execution",
+        "command-and-control"
+      ],
+      "summary": "Suspicious post-beacon process activity appeared on the same workstation after external communications started."
+    },
+    {
+      "event_id": "evt-008",
+      "ts": "2026-03-29T09:48:00Z",
+      "kind": "flow",
+      "classification": "benign",
+      "role": "counterevidence",
+      "stages": [],
+      "summary": "Scheduled package update traffic during the same hour."
+    }
+  ],
+  "evidence_clusters": [
+    {
+      "title": "C2 / Beacon 证据簇",
+      "summary": "多条事件指向同一批外联基础设施，并表现出重复 beacon 特征。",
+      "event_ids": [
+        "evt-001",
+        "evt-002",
+        "evt-003",
+        "evt-004",
+        "evt-005",
+        "evt-006",
+        "evt-007"
+      ],
+      "details": [
+        "ws-finance-23 -> cdn-sync-update.com: Rare DNS lookup for domain later reused by the seed alert.",
+        "ws-finance-23 -> 198.51.100.24 / cdn-sync-update.com: Outbound TLS session to rare external infra using the same JA4 fingerprint as the seed event.",
+        "ws-finance-23 -> 198.51.100.24 / cdn-sync-update.com: Seed JA4 alert matched a known beacon-style fingerprint.",
+        "ws-finance-23 -> 198.51.100.24 / cdn-sync-update.com: Second outbound TLS session to the same external infrastructure after the seed alert.",
+        "ws-finance-23 -> 198.51.100.24 / api.telemetry-sync.net: Another periodic outbound connection to a sibling domain on the same external IP.",
+        "ws-finance-23 -> api.telemetry-sync.net: Follow-up DNS resolution for a second suspicious domain on the same infrastructure.",
+        "ws-finance-23: Suspicious post-beacon process activity appeared on the same workstation after external communications started."
+      ]
+    },
+    {
+      "title": "反证 / 基线解释",
+      "summary": "这些事件提供了计划内活动或正常运维背景。",
+      "event_ids": [
+        "evt-008"
+      ],
+      "details": [
+        "ws-finance-23 -> 203.0.113.10 / packages.vendor.example: Scheduled package update traffic during the same hour."
+      ]
+    }
+  ],
+  "hypothesis": {
+    "title": "单资产疑似 Possible Cobalt Strike beacon 事件",
+    "narrative": "最小上下文和扩展事件簇都显示该资产与同一批外部基础设施发生重复通信，已经具备 C2 / beacon 事件特征。",
+    "stages": [
+      "command-and-control",
+      "execution"
+    ]
+  },
+  "scope": {
+    "event_count": 8,
+    "primary_event_count": 7,
+    "context_event_count": 0,
+    "counterevidence_count": 1,
+    "time_window": {
+      "start": "2026-03-29T09:12:10Z",
+      "end": "2026-03-29T09:48:00Z"
+    },
+    "affected_assets": [
+      "ws-finance-23"
+    ],
+    "related_assets": [],
+    "primary_external_indicators": [
+      "198.51.100.24",
+      "cdn-sync-update.com",
+      "api.telemetry-sync.net"
+    ],
+    "contextual_external_indicators": [
+      "203.0.113.10",
+      "packages.vendor.example"
+    ],
+    "external_indicators": [
+      "198.51.100.24",
+      "cdn-sync-update.com",
+      "api.telemetry-sync.net",
+      "203.0.113.10",
+      "packages.vendor.example"
+    ]
+  },
+  "uncertainties": [
+    "当前事件链主要从外联和执行阶段收敛，初始入侵入口仍未识别。"
+  ],
+  "recommendations": [
+    "优先隔离或重点监控资产：ws-finance-23。",
+    "在边界和代理设备上排查并封禁外部基础设施：198.51.100.24、cdn-sync-update.com、api.telemetry-sync.net。",
+    "以 seed 指标和事件簇中的域名 / IP 为 pivot，继续检索同时间窗内的重复通信。"
+  ]
+}

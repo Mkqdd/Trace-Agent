@@ -1,0 +1,108 @@
+[
+  {
+    "step": "context_assemble",
+    "status": "ok",
+    "matched_events": 4,
+    "matched_event_ids": [
+      "evt-201",
+      "evt-202",
+      "evt-203",
+      "evt-204"
+    ],
+    "reasons_by_event": {
+      "evt-201": [
+        "same_src_ip_in_20m"
+      ],
+      "evt-202": [
+        "same_src_ip_in_20m",
+        "same_dst_ip_in_30m",
+        "same_fingerprint_in_45m"
+      ],
+      "evt-203": [
+        "same_src_ip_in_20m",
+        "same_dst_ip_in_30m"
+      ],
+      "evt-204": [
+        "same_dst_ip_in_30m"
+      ]
+    }
+  },
+  {
+    "step": "context_aware_verify",
+    "status": "needs_review",
+    "status_label": "待人工复核",
+    "confidence": 58,
+    "reasons": [
+      "当前上下文已形成关联，但证据强度仍不足以自动确认事件。"
+    ],
+    "suspicious_count": 2,
+    "benign_count": 0,
+    "positive_score": 4,
+    "negative_score": 0,
+    "repeated_infrastructure": [
+      "198.51.100.66",
+      "auth-sync-edge.net"
+    ]
+  },
+  {
+    "step": "incident_expand",
+    "status": "ok",
+    "expanded_events": 5,
+    "expanded_event_ids": [
+      "evt-201",
+      "evt-202",
+      "evt-203",
+      "evt-204",
+      "evt-205"
+    ],
+    "pivot_assets": [
+      "ws-design-07",
+      "ws-design-11"
+    ],
+    "pivot_src_ips": [
+      "10.55.4.19",
+      "10.55.4.21"
+    ],
+    "pivot_dst_ips": [
+      "198.51.100.66"
+    ],
+    "pivot_domains": [
+      "auth-sync-edge.net",
+      "cdn-auth-sync.net"
+    ],
+    "pivot_fingerprints": [
+      "t13d190900_44ae3120b3c1_909fe43ab981"
+    ],
+    "reasons_by_event": {
+      "evt-201": [
+        "same_asset",
+        "same_src_ip",
+        "same_domain"
+      ],
+      "evt-202": [
+        "same_asset",
+        "same_src_ip",
+        "same_dst_ip",
+        "same_domain",
+        "same_fingerprint"
+      ],
+      "evt-203": [
+        "same_asset",
+        "same_src_ip",
+        "same_dst_ip",
+        "same_domain"
+      ],
+      "evt-204": [
+        "same_asset",
+        "same_src_ip",
+        "same_dst_ip",
+        "same_domain"
+      ],
+      "evt-205": [
+        "same_asset",
+        "same_src_ip",
+        "same_domain"
+      ]
+    }
+  }
+]

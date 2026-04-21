@@ -1,0 +1,117 @@
+{
+  "version": "2.0",
+  "title": "事件级溯源拓扑",
+  "nodes": [
+    {
+      "id": "fp:ja4:t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+      "label": "JA4 t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+      "type": "fingerprint_ja4"
+    },
+    {
+      "id": "asset:srv-ops-01",
+      "label": "srv-ops-01",
+      "type": "internal_host"
+    },
+    {
+      "id": "asset:srv-ops-02",
+      "label": "srv-ops-02",
+      "type": "internal_host"
+    },
+    {
+      "id": "ip:203.0.113.50",
+      "label": "203.0.113.50",
+      "type": "external_ip"
+    },
+    {
+      "id": "domain:updates.vendor.example",
+      "label": "updates.vendor.example",
+      "type": "domain"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:evt-101:asset-fp",
+      "source": "asset:srv-ops-01",
+      "target": "fp:ja4:t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-102:asset-fp",
+      "source": "asset:srv-ops-01",
+      "target": "fp:ja4:t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-103:asset-ip",
+      "source": "asset:srv-ops-01",
+      "target": "ip:203.0.113.50",
+      "label": "alert"
+    },
+    {
+      "id": "edge:evt-103:ip-domain",
+      "source": "ip:203.0.113.50",
+      "target": "domain:updates.vendor.example",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-103:asset-fp",
+      "source": "asset:srv-ops-01",
+      "target": "fp:ja4:t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-104:asset-ip",
+      "source": "asset:srv-ops-01",
+      "target": "ip:203.0.113.50",
+      "label": "http"
+    },
+    {
+      "id": "edge:evt-104:ip-domain",
+      "source": "ip:203.0.113.50",
+      "target": "domain:updates.vendor.example",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-104:asset-fp",
+      "source": "asset:srv-ops-01",
+      "target": "fp:ja4:t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-105:asset-ip",
+      "source": "asset:srv-ops-01",
+      "target": "ip:203.0.113.50",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-105:ip-domain",
+      "source": "ip:203.0.113.50",
+      "target": "domain:updates.vendor.example",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-105:asset-fp",
+      "source": "asset:srv-ops-01",
+      "target": "fp:ja4:t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-106:asset-ip",
+      "source": "asset:srv-ops-02",
+      "target": "ip:203.0.113.50",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-106:ip-domain",
+      "source": "ip:203.0.113.50",
+      "target": "domain:updates.vendor.example",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-106:asset-fp",
+      "source": "asset:srv-ops-02",
+      "target": "fp:ja4:t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+      "label": "seed_indicator"
+    }
+  ]
+}

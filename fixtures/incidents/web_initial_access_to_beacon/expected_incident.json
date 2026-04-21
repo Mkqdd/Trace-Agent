@@ -1,0 +1,5 @@
+{
+  "fixture_case": "web_initial_access_to_beacon",
+  "expected_status": "confirmed_incident",
+  "expected_headline": "单资产疑似 Possible web-shell beacon 事件"
+}

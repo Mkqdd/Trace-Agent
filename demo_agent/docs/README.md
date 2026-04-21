@@ -1,7 +1,8 @@
-# 快速开始
+# Incident-Agent 快速开始
 
+当前仓库主线只保留 `incident-agent`。
 
-## 2. 配置 `.env`
+## 1. 配置 `.env`
 
 配置文件位置：
 
@@ -9,82 +10,56 @@
 demo_agent/.env
 ```
 
-可以先参考：
+可以参考：
 
 ```text
 demo_agent/.env.example
 ```
 
-当前最常用的配置项有：
+当前常用配置项有：
 
 - `LLM_API_KEY`
 - `LLM_BASE_URL`
 - `LLM_MODEL`
-- `REPORT_RENDERER`
-- `VT_API_KEY`
-- `SERPAPI_API_KEY`
+- `INCIDENT_AGENT_ENABLE_LLM`
+- `INCIDENT_AGENT_LIVE_INTEL`
 - `ABUSECH_AUTH_KEY`
 
-当前默认建议：
-
-```text
-REPORT_RENDERER=local
-```
-
-这表示 `report.md` 默认直接由本地代码从 `analysis.json` 渲染生成，而不是再把整份 `analysis` 交给 LLM 自由写整篇报告。（看上去当前调用的模型不足以吃下整个analysis，后续会优化）
-
-## 3. 运行主链
+## 2. 运行 incident-agent
 
 在仓库根目录运行：
 
 ```bash
 python -m demo_agent \
-  --alert demo_alert.json \
-  --out outputs/agent_runs/default \
-  --mode plan
+  --alert fixtures/incidents/web_initial_access_to_beacon \
+  --out outputs/incident_tests/web_initial_access_to_beacon/agent \
+  --mode incident-agent
 ```
 
 说明：
 
-- `--alert`：输入告警 JSON，可以是单条对象，也可以是对象数组
+- `--alert`：可以直接指向 fixture case 目录，也可以指向 `seed_alert.json`
 - `--out`：输出目录
-- `--mode`：当前只支持 `plan`
+- `--mode`：当前只保留 `incident-agent`
 
-## 4. 输出内容
-
-如果输入是一个告警数组，输出会按 `000/001/002...` 分目录保存。
+## 3. 输出内容
 
 每条 case 通常会生成：
 
 - `input_alert.json`
 - `event.json`
-- `analysis.json`
+- `incident.json`
+- `investigation_trace.json`
+- `report_outline.json`
 - `report.md`
 - `topology.json`
 - `topology.html`
-- `agent_output.txt`
 
-默认输出目录示例：
-
-```text
-outputs/agent_runs/default/004/
-```
-
-## 5. 常见查看顺序
+## 4. 常见查看顺序
 
 建议先看：
 
 1. `report.md`
-2. `analysis.json`
-3. `topology.html`
-
-## 6. 运行单条样例
-
-如果你只想测一条告警，最简单的方式是先准备一个只包含单条对象的 JSON 文件，再运行：
-
-```bash
-python -m demo_agent \
-  --alert /tmp/demo_alert_single.json \
-  --out outputs/agent_runs/single_check \
-  --mode plan
-```
+2. `incident.json`
+3. `investigation_trace.json`
+4. `topology.html`

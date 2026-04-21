@@ -1,0 +1,19 @@
+{
+  "verdict_status": "confirmed_incident",
+  "min_event_count": 5,
+  "must_include_assets": [
+    "web-app-01"
+  ],
+  "must_include_domains": [
+    "cdn-auth-check.net"
+  ],
+  "must_include_stages": [
+    "initial-access",
+    "command-and-control",
+    "execution"
+  ],
+  "timeline_contains": [
+    "exploit requests",
+    "PowerShell launcher"
+  ]
+}

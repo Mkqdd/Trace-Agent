@@ -1,0 +1,151 @@
+{
+  "version": "2.0",
+  "title": "事件级溯源拓扑",
+  "nodes": [
+    {
+      "id": "fp:ja4:t12i190700_d83cc789557e_16bbda4055b2",
+      "label": "JA4 t12i190700_d83cc789557e_16bbda4055b2",
+      "type": "fingerprint_ja4"
+    },
+    {
+      "id": "asset:ws-finance-23",
+      "label": "ws-finance-23",
+      "type": "internal_host"
+    },
+    {
+      "id": "ip:198.51.100.24",
+      "label": "198.51.100.24",
+      "type": "external_ip"
+    },
+    {
+      "id": "ip:203.0.113.10",
+      "label": "203.0.113.10",
+      "type": "external_ip"
+    },
+    {
+      "id": "domain:cdn-sync-update.com",
+      "label": "cdn-sync-update.com",
+      "type": "domain"
+    },
+    {
+      "id": "domain:api.telemetry-sync.net",
+      "label": "api.telemetry-sync.net",
+      "type": "domain"
+    },
+    {
+      "id": "domain:packages.vendor.example",
+      "label": "packages.vendor.example",
+      "type": "domain"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:evt-001:asset-fp",
+      "source": "asset:ws-finance-23",
+      "target": "fp:ja4:t12i190700_d83cc789557e_16bbda4055b2",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-002:asset-ip",
+      "source": "asset:ws-finance-23",
+      "target": "ip:198.51.100.24",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-002:ip-domain",
+      "source": "ip:198.51.100.24",
+      "target": "domain:cdn-sync-update.com",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-002:asset-fp",
+      "source": "asset:ws-finance-23",
+      "target": "fp:ja4:t12i190700_d83cc789557e_16bbda4055b2",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-003:asset-ip",
+      "source": "asset:ws-finance-23",
+      "target": "ip:198.51.100.24",
+      "label": "alert"
+    },
+    {
+      "id": "edge:evt-003:ip-domain",
+      "source": "ip:198.51.100.24",
+      "target": "domain:cdn-sync-update.com",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-003:asset-fp",
+      "source": "asset:ws-finance-23",
+      "target": "fp:ja4:t12i190700_d83cc789557e_16bbda4055b2",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-004:asset-ip",
+      "source": "asset:ws-finance-23",
+      "target": "ip:198.51.100.24",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-004:ip-domain",
+      "source": "ip:198.51.100.24",
+      "target": "domain:cdn-sync-update.com",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-004:asset-fp",
+      "source": "asset:ws-finance-23",
+      "target": "fp:ja4:t12i190700_d83cc789557e_16bbda4055b2",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-005:asset-ip",
+      "source": "asset:ws-finance-23",
+      "target": "ip:198.51.100.24",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-005:ip-domain",
+      "source": "ip:198.51.100.24",
+      "target": "domain:api.telemetry-sync.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-005:asset-fp",
+      "source": "asset:ws-finance-23",
+      "target": "fp:ja4:t12i190700_d83cc789557e_16bbda4055b2",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-006:asset-fp",
+      "source": "asset:ws-finance-23",
+      "target": "fp:ja4:t12i190700_d83cc789557e_16bbda4055b2",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-007:asset-fp",
+      "source": "asset:ws-finance-23",
+      "target": "fp:ja4:t12i190700_d83cc789557e_16bbda4055b2",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-008:asset-ip",
+      "source": "asset:ws-finance-23",
+      "target": "ip:203.0.113.10",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-008:ip-domain",
+      "source": "ip:203.0.113.10",
+      "target": "domain:packages.vendor.example",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-008:asset-fp",
+      "source": "asset:ws-finance-23",
+      "target": "fp:ja4:t12i190700_d83cc789557e_16bbda4055b2",
+      "label": "seed_indicator"
+    }
+  ]
+}

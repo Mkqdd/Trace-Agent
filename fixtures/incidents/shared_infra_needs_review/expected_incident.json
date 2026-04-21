@@ -1,0 +1,18 @@
+{
+  "verdict": "needs_review",
+  "affected_assets": [
+    "ws-design-07"
+  ],
+  "related_assets": [
+    "ws-design-11"
+  ],
+  "external_indicators": [
+    "198.51.100.66",
+    "auth-sync-edge.net",
+    "cdn-auth-sync.net"
+  ],
+  "expected_stages": [
+    "command-and-control"
+  ],
+  "analyst_expectation": "The agent should keep the event open for review because the infrastructure repeats, but the current cluster still lacks execution evidence."
+}

@@ -1,0 +1,19 @@
+{
+  "verdict_status": "needs_review",
+  "min_event_count": 5,
+  "must_include_assets": [
+    "ws-rnd-04",
+    "ws-rnd-09"
+  ],
+  "must_include_domains": [
+    "files-sync-share.net"
+  ],
+  "must_include_stages": [
+    "execution",
+    "exfiltration"
+  ],
+  "timeline_contains": [
+    "Archive utility",
+    "outbound HTTPS upload"
+  ]
+}

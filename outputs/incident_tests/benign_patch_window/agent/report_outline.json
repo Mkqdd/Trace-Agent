@@ -1,0 +1,240 @@
+{
+  "title": "事件级溯源报告",
+  "template_version": "incident-agent-v2",
+  "executive_summary": {
+    "event_conclusion": "降级观察",
+    "status_code": "monitor_only",
+    "severity": "低危",
+    "confidence": 55,
+    "headline": "弱信号已被背景流量部分解释",
+    "one_sentence_summary": "当前看到的告警与补充背景更接近计划内活动或正常变更，建议继续观察而不是立即定性为入侵。",
+    "primary_action": "保留当前告警与上下文，作为后续相似行为的基线样本。"
+  },
+  "scope_and_boundary": {
+    "seed_alert": "2026-04-02 02:00:00，srv-ops-01 命中 Unknown suspicious TLS fingerprint JA4 规则。",
+    "time_window": {
+      "start": "2026-04-02T01:55:00Z",
+      "end": "2026-04-02T02:06:20Z"
+    },
+    "seed_asset": "srv-ops-01",
+    "suspected_label": "重点观察资产",
+    "suspected_assets": [
+      "srv-ops-01"
+    ],
+    "related_label": "关联资产",
+    "related_assets": [
+      "srv-ops-02"
+    ],
+    "internal_ips": [
+      "10.40.8.10",
+      "10.40.8.11"
+    ],
+    "external_ips": [
+      "203.0.113.50"
+    ],
+    "domains": [
+      "updates.vendor.example"
+    ],
+    "stage_labels": [],
+    "primary_external_indicators": [
+      "203.0.113.50",
+      "updates.vendor.example"
+    ],
+    "contextual_external_indicators": [
+      "203.0.113.50",
+      "updates.vendor.example"
+    ],
+    "event_count": 6,
+    "primary_event_count": 1,
+    "context_event_count": 0,
+    "counterevidence_count": 5,
+    "current_boundary": "当前更倾向于把这起告警解释为计划内活动中的弱信号，而不是已经成立的入侵事件。",
+    "unresolved_scope": [
+      "当前降级依赖于维护窗口和更新背景；如果后续在相同指示物上出现脱离基线的重复通信，需要重新升级研判。",
+      "关联资产出现的同类访问目前更像共享基线，而不是扩散迹象。"
+    ]
+  },
+  "timeline": [
+    {
+      "ts": "2026-04-02T01:55:00Z",
+      "summary": "Host entered the scheduled monthly patch window controlled by the operations team.",
+      "role": "反证",
+      "observation_ids": [
+        "obs-001",
+        "obs-002"
+      ]
+    },
+    {
+      "ts": "2026-04-02T01:57:10Z",
+      "summary": "DNS query resolved the vendor update endpoint used during the patch window.",
+      "role": "反证",
+      "observation_ids": [
+        "obs-001",
+        "obs-002"
+      ]
+    },
+    {
+      "ts": "2026-04-02T02:00:00Z",
+      "summary": "Seed heuristic JA4 alert fired on update traffic during the patch window.",
+      "role": "种子告警",
+      "observation_ids": [
+        "obs-001",
+        "obs-002"
+      ]
+    },
+    {
+      "ts": "2026-04-02T02:01:30Z",
+      "summary": "Host downloaded a signed package manifest from the same vendor endpoint.",
+      "role": "反证",
+      "observation_ids": [
+        "obs-001",
+        "obs-002"
+      ]
+    },
+    {
+      "ts": "2026-04-02T02:05:00Z",
+      "summary": "Follow-up TLS session transferred the expected patch package.",
+      "role": "反证",
+      "observation_ids": [
+        "obs-001",
+        "obs-002"
+      ]
+    },
+    {
+      "ts": "2026-04-02T02:06:20Z",
+      "summary": "A sibling server contacted the same update endpoint in the same maintenance window.",
+      "role": "反证",
+      "observation_ids": []
+    }
+  ],
+  "evidence_chain": {
+    "supporting": [
+      {
+        "id": "E-01",
+        "category": "网络",
+        "strength": "高",
+        "fact_description": "在 2026-04-02 02:00:00 UTC，资产 `srv-ops-01` 出现了一条告警观测，关联的核心指示物为 203.0.113.50 / updates.vendor.example / JA4 t13d1516h2_1f8c0d19a111_39bb8eb7d001。 原始摘要显示：Seed heuristic JA4 alert fired on update traffic during the patch window.",
+        "reason_text": "这是种子命中的直接落点，说明告警并不是孤立的指纹命中。",
+        "limitation_text": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002"
+        ]
+      }
+    ],
+    "counterevidence": [
+      {
+        "id": "C-01",
+        "category": "资产背景",
+        "strength": "高",
+        "fact_description": "在 2026-04-02 01:55:00 UTC，资产 `srv-ops-01` 出现了一条资产背景观测。 原始摘要显示：Host entered the scheduled monthly patch window controlled by the operations team.",
+        "reason_text": "这条记录更接近计划内维护或正常更新背景，是当前能够降级或收窄判断的重要原因。",
+        "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002"
+        ]
+      },
+      {
+        "id": "C-02",
+        "category": "网络",
+        "strength": "高",
+        "fact_description": "在 2026-04-02 01:57:10 UTC，资产 `srv-ops-01` 出现了一条DNS观测，关联的核心指示物为 updates.vendor.example / DNS answers 203.0.113.50。 原始摘要显示：DNS query resolved the vendor update endpoint used during the patch window.",
+        "reason_text": "这条记录更接近计划内维护或正常更新背景，是当前能够降级或收窄判断的重要原因。",
+        "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002"
+        ]
+      },
+      {
+        "id": "C-03",
+        "category": "网络",
+        "strength": "高",
+        "fact_description": "在 2026-04-02 02:01:30 UTC，资产 `srv-ops-01` 出现了一条HTTP观测，关联的核心指示物为 203.0.113.50 / updates.vendor.example。 原始摘要显示：Host downloaded a signed package manifest from the same vendor endpoint.",
+        "reason_text": "这条记录更接近计划内维护或正常更新背景，是当前能够降级或收窄判断的重要原因。",
+        "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002"
+        ]
+      },
+      {
+        "id": "C-04",
+        "category": "网络",
+        "strength": "高",
+        "fact_description": "在 2026-04-02 02:05:00 UTC，资产 `srv-ops-01` 出现了一条网络流量观测，关联的核心指示物为 203.0.113.50 / updates.vendor.example。 原始摘要显示：Follow-up TLS session transferred the expected patch package.",
+        "reason_text": "这条记录更接近计划内维护或正常更新背景，是当前能够降级或收窄判断的重要原因。",
+        "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002"
+        ]
+      }
+    ],
+    "family_context": null
+  },
+  "analysis": {
+    "primary_hypothesis": "srv-ops-01 疑似恶意外联事件",
+    "alternative_hypothesis": "围绕 203.0.113.50、updates.vendor.example 的通信可能存在正常背景解释",
+    "why_this_conclusion": "决策主要建立在明确的维护窗口、重复的正常更新流量和可解释的背景证据之上。 唯一的主支撑仍然是 seed alert 本身，它没有得到更多恶意侧信号的放大。 当前证据更容易被维护窗口、补丁、备份或共享基线解释。",
+    "why_not_other_status": "反证主要来自维护窗口、签名更新以及兄弟资产同步访问，这些背景足以解释为什么不能只凭 seed alert 直接定性。",
+    "unresolved_items": [
+      "当前降级依赖于维护窗口和更新背景；如果后续在相同指示物上出现脱离基线的重复通信，需要重新升级研判。",
+      "关联资产出现的同类访问目前更像共享基线，而不是扩散迹象。"
+    ],
+    "next_best_evidence": [
+      "当前降级依赖于维护窗口和更新背景；如果后续在相同指示物上出现脱离基线的重复通信，需要重新升级研判。",
+      "关联资产出现的同类访问目前更像共享基线，而不是扩散迹象。"
+    ]
+  },
+  "recommendations": {
+    "immediate": [],
+    "short_term": [],
+    "follow_up": [
+      "保留当前告警与上下文，作为后续相似行为的基线样本。",
+      "结合变更窗口、补丁任务和资产画像确认是否需要做白名单或检测规则收敛。"
+    ]
+  },
+  "appendix": {
+    "ioc_rows": [
+      {
+        "type": "IP",
+        "value": "203.0.113.50",
+        "relation": "事件中的核心外部基础设施"
+      },
+      {
+        "type": "域名",
+        "value": "updates.vendor.example",
+        "relation": "种子告警前后持续出现的关联域名"
+      },
+      {
+        "type": "JA4",
+        "value": "t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+        "relation": "种子告警命中的关键指纹"
+      }
+    ],
+    "observation_rows": [
+      {
+        "observation_id": "obs-001",
+        "tool_name": "search_seed_context",
+        "summary": "检索到 1 条偏可疑事件，围绕 updates.vendor.example、203.0.113.50 展开。"
+      },
+      {
+        "observation_id": "obs-002",
+        "tool_name": "search_related_events",
+        "summary": "检索到 1 条偏可疑事件，围绕 updates.vendor.example、203.0.113.50 展开。"
+      },
+      {
+        "observation_id": "obs-003",
+        "tool_name": "expand_asset_scope",
+        "summary": "检索到 1 条更接近维护、更新或正常基线的事件。"
+      },
+      {
+        "observation_id": "obs-004",
+        "tool_name": "extract_claim_candidates_from_page",
+        "summary": "从当前事件摘要中抽取出 5 条可直接引用的 claim。"
+      }
+    ]
+  }
+}

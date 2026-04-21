@@ -1,0 +1,339 @@
+[
+  {
+    "step_index": 1,
+    "open_questions": [
+      {
+        "id": "build_context",
+        "priority": "high",
+        "question": "仍需围绕 seed alert 补足最小上下文。"
+      },
+      {
+        "id": "identify_assets",
+        "priority": "high",
+        "question": "仍需确认事件涉及的关键资产。"
+      },
+      {
+        "id": "execution_gap",
+        "priority": "medium",
+        "question": "是否存在主机侧执行、持久化或横向移动证据？"
+      },
+      {
+        "id": "ground_infra",
+        "priority": "medium",
+        "question": "仍需补足外部基础设施、域名或家族背景。"
+      },
+      {
+        "id": "structure_evidence",
+        "priority": "medium",
+        "question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。"
+      }
+    ],
+    "working_hypotheses": [
+      {
+        "id": "primary",
+        "kind": "primary",
+        "title": "种子资产 疑似恶意外联事件",
+        "score": 0,
+        "status": "supported",
+        "supporting_observation_ids": [],
+        "counter_observation_ids": []
+      },
+      {
+        "id": "secondary",
+        "kind": "secondary",
+        "title": "共享基础设施上的待复核扩展",
+        "score": 3,
+        "status": "open",
+        "supporting_observation_ids": [],
+        "counter_observation_ids": []
+      },
+      {
+        "id": "benign",
+        "kind": "benign",
+        "title": "维护、补丁、备份或共享基线解释",
+        "score": 0,
+        "status": "open",
+        "supporting_observation_ids": [],
+        "counter_observation_ids": []
+      }
+    ],
+    "selected_action": {
+      "tool_name": "search_seed_context",
+      "question": "建立围绕 seed alert 的最小上下文。",
+      "trace_params": {
+        "src_ip": "10.80.9.20",
+        "dst_ip": "203.0.113.210"
+      },
+      "expected_gain": "确认 seed 是否孤立、是否已有重复通信或相邻事件。",
+      "llm_reason": ""
+    },
+    "observation_ids": [
+      "obs-001"
+    ],
+    "state_updates": {
+      "verdict": {
+        "status": "monitor_only",
+        "status_label": "降级观察",
+        "confidence": 55,
+        "severity": "低危",
+        "rationale": [
+          "当前证据更容易被维护窗口、补丁、备份或共享基线解释。"
+        ]
+      },
+      "report_ready": false,
+      "known_event_count": 6,
+      "supporting_observation_ids": [
+        "obs-001"
+      ],
+      "counter_observation_ids": []
+    },
+    "continue_reason": "continue"
+  },
+  {
+    "step_index": 2,
+    "open_questions": [
+      {
+        "id": "structure_evidence",
+        "priority": "medium",
+        "question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。"
+      }
+    ],
+    "working_hypotheses": [
+      {
+        "id": "primary",
+        "kind": "primary",
+        "title": "backup-srv-01 疑似恶意外联事件",
+        "score": 3,
+        "status": "supported",
+        "supporting_observation_ids": [
+          "obs-001"
+        ],
+        "counter_observation_ids": []
+      },
+      {
+        "id": "secondary",
+        "kind": "secondary",
+        "title": "backup-srv-02 等资产的关联范围仍待确认",
+        "score": 0,
+        "status": "open",
+        "supporting_observation_ids": [],
+        "counter_observation_ids": []
+      },
+      {
+        "id": "benign",
+        "kind": "benign",
+        "title": "围绕 203.0.113.210、backup.vendor.example 的通信可能存在正常背景解释",
+        "score": 5,
+        "status": "leading",
+        "supporting_observation_ids": [],
+        "counter_observation_ids": [
+          "obs-001"
+        ]
+      }
+    ],
+    "selected_action": {
+      "tool_name": "search_related_events",
+      "question": "基于当前 pivot 扩大事件簇。",
+      "trace_params": {
+        "asset_ids": [
+          "backup-srv-01",
+          "backup-srv-02"
+        ],
+        "dst_ips": [
+          "203.0.113.210"
+        ],
+        "domains": [
+          "backup.vendor.example"
+        ]
+      },
+      "expected_gain": "确认是否存在同资产重复通信、同域名/同 IP 复现或更多可疑事件。",
+      "llm_reason": ""
+    },
+    "observation_ids": [
+      "obs-002"
+    ],
+    "state_updates": {
+      "verdict": {
+        "status": "monitor_only",
+        "status_label": "降级观察",
+        "confidence": 55,
+        "severity": "低危",
+        "rationale": [
+          "当前证据更容易被维护窗口、补丁、备份或共享基线解释。"
+        ]
+      },
+      "report_ready": false,
+      "known_event_count": 6,
+      "supporting_observation_ids": [
+        "obs-001",
+        "obs-002"
+      ],
+      "counter_observation_ids": []
+    },
+    "continue_reason": "continue"
+  },
+  {
+    "step_index": 3,
+    "open_questions": [
+      {
+        "id": "structure_evidence",
+        "priority": "medium",
+        "question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。"
+      }
+    ],
+    "working_hypotheses": [
+      {
+        "id": "primary",
+        "kind": "primary",
+        "title": "backup-srv-01 疑似恶意外联事件",
+        "score": 6,
+        "status": "supported",
+        "supporting_observation_ids": [
+          "obs-001",
+          "obs-002"
+        ],
+        "counter_observation_ids": []
+      },
+      {
+        "id": "secondary",
+        "kind": "secondary",
+        "title": "backup-srv-02 等资产的关联范围仍待确认",
+        "score": 0,
+        "status": "open",
+        "supporting_observation_ids": [],
+        "counter_observation_ids": []
+      },
+      {
+        "id": "benign",
+        "kind": "benign",
+        "title": "围绕 203.0.113.210、backup.vendor.example 的通信可能存在正常背景解释",
+        "score": 5,
+        "status": "leading",
+        "supporting_observation_ids": [],
+        "counter_observation_ids": [
+          "obs-001",
+          "obs-002"
+        ]
+      }
+    ],
+    "selected_action": {
+      "tool_name": "expand_asset_scope",
+      "question": "围绕关联资产补采主机上下文。",
+      "trace_params": {
+        "asset_ids": [
+          "backup-srv-02"
+        ]
+      },
+      "expected_gain": "确认关联资产是共享背景，还是已经进入同一事件范围。",
+      "llm_reason": ""
+    },
+    "observation_ids": [
+      "obs-003"
+    ],
+    "state_updates": {
+      "verdict": {
+        "status": "monitor_only",
+        "status_label": "降级观察",
+        "confidence": 55,
+        "severity": "低危",
+        "rationale": [
+          "当前证据更容易被维护窗口、补丁、备份或共享基线解释。"
+        ]
+      },
+      "report_ready": false,
+      "known_event_count": 6,
+      "supporting_observation_ids": [
+        "obs-001",
+        "obs-002"
+      ],
+      "counter_observation_ids": [
+        "obs-003"
+      ]
+    },
+    "continue_reason": "continue"
+  },
+  {
+    "step_index": 4,
+    "open_questions": [
+      {
+        "id": "structure_evidence",
+        "priority": "medium",
+        "question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。"
+      }
+    ],
+    "working_hypotheses": [
+      {
+        "id": "primary",
+        "kind": "primary",
+        "title": "backup-srv-01 疑似恶意外联事件",
+        "score": 6,
+        "status": "supported",
+        "supporting_observation_ids": [
+          "obs-001",
+          "obs-002"
+        ],
+        "counter_observation_ids": [
+          "obs-003"
+        ]
+      },
+      {
+        "id": "secondary",
+        "kind": "secondary",
+        "title": "backup-srv-02 等资产的关联范围仍待确认",
+        "score": 0,
+        "status": "open",
+        "supporting_observation_ids": [],
+        "counter_observation_ids": []
+      },
+      {
+        "id": "benign",
+        "kind": "benign",
+        "title": "围绕 203.0.113.210、backup.vendor.example 的通信可能存在正常背景解释",
+        "score": 8,
+        "status": "leading",
+        "supporting_observation_ids": [
+          "obs-003"
+        ],
+        "counter_observation_ids": [
+          "obs-001",
+          "obs-002"
+        ]
+      }
+    ],
+    "selected_action": {
+      "tool_name": "extract_claim_candidates_from_page",
+      "question": "从当前事件摘要中抽取可用于报告的关键 claim。",
+      "trace_params": {
+        "content_preview": "Seed alert summary:\n- src=10.80.9.20 dst=203.0.113.210 fp=t13d1516h2_9f7710a0ab12_0011ab22cd33\nCurrent working hypotheses:\n- primary: backup-srv-01 疑似恶意外联事件 (score=6)\n- secondary: backup-srv-02 等资产的关联范围仍待确认 (score=0)\n- benign: 围绕 203.0.113.",
+        "focus": "203.0.113.210"
+      },
+      "expected_gain": "把当前调查事实压缩成结构化证据与 TTP 线索。",
+      "llm_reason": ""
+    },
+    "observation_ids": [
+      "obs-004"
+    ],
+    "state_updates": {
+      "verdict": {
+        "status": "monitor_only",
+        "status_label": "降级观察",
+        "confidence": 55,
+        "severity": "低危",
+        "rationale": [
+          "当前证据更容易被维护窗口、补丁、备份或共享基线解释。"
+        ]
+      },
+      "report_ready": true,
+      "known_event_count": 6,
+      "supporting_observation_ids": [
+        "obs-001",
+        "obs-002",
+        "obs-004"
+      ],
+      "counter_observation_ids": [
+        "obs-003"
+      ]
+    },
+    "stop_reason": "report_ready"
+  }
+]

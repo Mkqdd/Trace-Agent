@@ -1,0 +1,5 @@
+{
+  "fixture_case": "suspected_exfil_after_execution",
+  "expected_status": "needs_review",
+  "expected_note": "execution plus possible exfil without enough confirmation to auto-close as confirmed"
+}

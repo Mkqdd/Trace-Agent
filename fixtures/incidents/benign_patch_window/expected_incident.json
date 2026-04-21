@@ -1,0 +1,12 @@
+{
+  "verdict": "monitor_only",
+  "affected_assets": [
+    "srv-ops-01"
+  ],
+  "external_indicators": [
+    "203.0.113.50",
+    "updates.vendor.example"
+  ],
+  "expected_stages": [],
+  "analyst_expectation": "The seed alert should be downgraded after the agent sees patch-window context and parallel vendor traffic."
+}

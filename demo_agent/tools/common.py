@@ -15,9 +15,7 @@ except Exception:  # pragma: no cover - optional dependency fallback
     BeautifulSoup = None  # type: ignore[assignment]
 
 
-_CACHE_VT_IP: Dict[str, Dict[str, Any]] = {}
 _CACHE_WEB: Dict[str, Dict[str, Any]] = {}
-_CACHE_LOCAL_INTEL: Dict[str, Dict[str, Any]] = {}
 _CACHE_PAGE: Dict[str, Dict[str, Any]] = {}
 _CONTENT_SELECTORS = (
     "article",

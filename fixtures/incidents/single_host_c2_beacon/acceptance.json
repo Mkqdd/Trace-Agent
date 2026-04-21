@@ -1,0 +1,19 @@
+{
+  "verdict_status": "confirmed_incident",
+  "min_event_count": 6,
+  "must_include_assets": [
+    "ws-finance-23"
+  ],
+  "must_include_domains": [
+    "cdn-sync-update.com",
+    "api.telemetry-sync.net"
+  ],
+  "must_include_stages": [
+    "command-and-control"
+  ],
+  "timeline_contains": [
+    "Rare DNS lookup",
+    "Second outbound TLS session",
+    "post-beacon process activity"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-03-29 09:15:00",
+  "src_ip": "10.20.5.23",
+  "dst_ip": "198.51.100.24",
+  "protocol": "TLS",
+  "trigger_fingerprint": {
+    "type": "JA4",
+    "value": "t12i190700_d83cc789557e_16bbda4055b2"
+  },
+  "info": "Possible Cobalt Strike beacon",
+  "reference": "fixture",
+  "update_time": "2026-03-29 09:15:00"
+}

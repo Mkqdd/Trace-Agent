@@ -1,0 +1,16 @@
+{
+  "verdict": "confirmed_incident",
+  "affected_assets": [
+    "ws-finance-23"
+  ],
+  "external_indicators": [
+    "198.51.100.24",
+    "cdn-sync-update.com",
+    "api.telemetry-sync.net"
+  ],
+  "expected_stages": [
+    "command-and-control",
+    "execution"
+  ],
+  "analyst_expectation": "The seed alert should expand into a single-host beacon-style incident with repeated communications to the same external infrastructure."
+}

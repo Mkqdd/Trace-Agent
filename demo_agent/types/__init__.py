@@ -1,25 +1,9 @@
-from .analysis import build_analysis
-from .event import normalize_alert
-from .schemas import (
-    GapPlan,
-    GapPlanAction,
-    GapPlanItem,
-    GapUpdate,
-    SupplementalEvidence,
-    SupplementalResult,
-    model_dump,
-    validate_model,
-)
+__all__ = ["normalize_alert"]
 
-__all__ = [
-    "GapPlan",
-    "GapPlanAction",
-    "GapPlanItem",
-    "GapUpdate",
-    "SupplementalEvidence",
-    "SupplementalResult",
-    "build_analysis",
-    "model_dump",
-    "normalize_alert",
-    "validate_model",
-]
+
+def __getattr__(name: str):
+    if name == "normalize_alert":
+        from .event import normalize_alert
+
+        return normalize_alert
+    raise AttributeError(name)

@@ -1,0 +1,104 @@
+{
+  "version": "2.0",
+  "title": "事件级溯源拓扑",
+  "nodes": [
+    {
+      "id": "fp:ja4:t13d190900_44ae3120b3c1_909fe43ab981",
+      "label": "JA4 t13d190900_44ae3120b3c1_909fe43ab981",
+      "type": "fingerprint_ja4"
+    },
+    {
+      "id": "asset:ws-design-07",
+      "label": "ws-design-07",
+      "type": "internal_host"
+    },
+    {
+      "id": "asset:ws-design-11",
+      "label": "ws-design-11",
+      "type": "internal_host"
+    },
+    {
+      "id": "ip:198.51.100.66",
+      "label": "198.51.100.66",
+      "type": "external_ip"
+    },
+    {
+      "id": "domain:auth-sync-edge.net",
+      "label": "auth-sync-edge.net",
+      "type": "domain"
+    },
+    {
+      "id": "domain:cdn-auth-sync.net",
+      "label": "cdn-auth-sync.net",
+      "type": "domain"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:evt-201:asset-fp",
+      "source": "asset:ws-design-07",
+      "target": "fp:ja4:t13d190900_44ae3120b3c1_909fe43ab981",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-202:asset-ip",
+      "source": "asset:ws-design-07",
+      "target": "ip:198.51.100.66",
+      "label": "alert"
+    },
+    {
+      "id": "edge:evt-202:ip-domain",
+      "source": "ip:198.51.100.66",
+      "target": "domain:auth-sync-edge.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-202:asset-fp",
+      "source": "asset:ws-design-07",
+      "target": "fp:ja4:t13d190900_44ae3120b3c1_909fe43ab981",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-203:asset-ip",
+      "source": "asset:ws-design-07",
+      "target": "ip:198.51.100.66",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-203:ip-domain",
+      "source": "ip:198.51.100.66",
+      "target": "domain:auth-sync-edge.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-203:asset-fp",
+      "source": "asset:ws-design-07",
+      "target": "fp:ja4:t13d190900_44ae3120b3c1_909fe43ab981",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-204:asset-ip",
+      "source": "asset:ws-design-11",
+      "target": "ip:198.51.100.66",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-204:ip-domain",
+      "source": "ip:198.51.100.66",
+      "target": "domain:cdn-auth-sync.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-204:asset-fp",
+      "source": "asset:ws-design-11",
+      "target": "fp:ja4:t13d190900_44ae3120b3c1_909fe43ab981",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-205:asset-fp",
+      "source": "asset:ws-design-11",
+      "target": "fp:ja4:t13d190900_44ae3120b3c1_909fe43ab981",
+      "label": "seed_indicator"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "event_time": "2026-04-07 11:20:00",
+  "simulated": false,
+  "src": {
+    "ip": "10.55.4.19",
+    "port": null
+  },
+  "dst": {
+    "ip": "198.51.100.66",
+    "port": null
+  },
+  "protocol": "TLS",
+  "trigger_fingerprint": {
+    "type": "JA4",
+    "value": "t13d190900_44ae3120b3c1_909fe43ab981",
+    "matched": true
+  },
+  "enrichment": {
+    "info": "Suspicious shared-infra beacon candidate",
+    "reference": "fixture",
+    "update_time": "2026-04-07 11:20:00"
+  },
+  "raw_alert": {
+    "timestamp": "2026-04-07 11:20:00",
+    "src_ip": "10.55.4.19",
+    "dst_ip": "198.51.100.66",
+    "protocol": "TLS",
+    "trigger_fingerprint": {
+      "type": "JA4",
+      "value": "t13d190900_44ae3120b3c1_909fe43ab981"
+    },
+    "info": "Suspicious shared-infra beacon candidate",
+    "reference": "fixture",
+    "update_time": "2026-04-07 11:20:00"
+  }
+}

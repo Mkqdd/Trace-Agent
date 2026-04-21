@@ -1,0 +1,270 @@
+{
+  "title": "事件级溯源报告",
+  "template_version": "incident-agent-v2",
+  "executive_summary": {
+    "event_conclusion": "确认事件",
+    "status_code": "confirmed",
+    "severity": "高危",
+    "confidence": 94,
+    "headline": "单资产疑似 Possible Cobalt Strike beacon 事件",
+    "one_sentence_summary": "最小上下文和扩展事件簇都显示该资产与同一批外部基础设施发生重复通信，已经具备 C2 / beacon 事件特征。",
+    "primary_action": "优先隔离或重点监控资产：ws-finance-23。"
+  },
+  "scope_and_boundary": {
+    "seed_alert": "2026-03-29 09:15:00，ws-finance-23 命中 Possible Cobalt Strike beacon JA4 规则。",
+    "time_window": {
+      "start": "2026-03-29T09:12:10Z",
+      "end": "2026-03-29T09:48:00Z"
+    },
+    "seed_asset": "ws-finance-23",
+    "suspected_label": "疑似受影响资产",
+    "suspected_assets": [
+      "ws-finance-23"
+    ],
+    "related_label": "关联资产",
+    "related_assets": [],
+    "internal_ips": [
+      "10.20.5.23"
+    ],
+    "external_ips": [
+      "198.51.100.24",
+      "203.0.113.10"
+    ],
+    "domains": [
+      "cdn-sync-update.com",
+      "api.telemetry-sync.net",
+      "packages.vendor.example"
+    ],
+    "stage_labels": [
+      "command-and-control",
+      "execution"
+    ],
+    "primary_external_indicators": [
+      "198.51.100.24",
+      "cdn-sync-update.com",
+      "api.telemetry-sync.net"
+    ],
+    "contextual_external_indicators": [
+      "203.0.113.10",
+      "packages.vendor.example"
+    ],
+    "event_count": 8,
+    "primary_event_count": 7,
+    "context_event_count": 0,
+    "counterevidence_count": 1,
+    "current_boundary": "当前自动化判断把事件边界收敛在 ws-finance-23 上，已经足以把本案从单条告警提升为已成立事件，但尚未确认存在更大范围扩散。",
+    "unresolved_scope": [
+      "当前事件链主要从外联和执行阶段收敛，初始入侵入口仍未识别。"
+    ]
+  },
+  "timeline": [
+    {
+      "ts": "2026-03-29T09:12:10Z",
+      "summary": "Rare DNS lookup for domain later reused by the seed alert.",
+      "role": "主证据",
+      "observation_ids": [
+        "obs-001",
+        "obs-002"
+      ]
+    },
+    {
+      "ts": "2026-03-29T09:14:40Z",
+      "summary": "Outbound TLS session to rare external infra using the same JA4 fingerprint as the seed event.",
+      "role": "主证据",
+      "observation_ids": [
+        "obs-001",
+        "obs-002"
+      ]
+    },
+    {
+      "ts": "2026-03-29T09:15:00Z",
+      "summary": "Seed JA4 alert matched a known beacon-style fingerprint.",
+      "role": "种子告警",
+      "observation_ids": [
+        "obs-001",
+        "obs-002"
+      ]
+    },
+    {
+      "ts": "2026-03-29T09:21:05Z",
+      "summary": "Second outbound TLS session to the same external infrastructure after the seed alert.",
+      "role": "主证据",
+      "observation_ids": [
+        "obs-001",
+        "obs-002"
+      ]
+    },
+    {
+      "ts": "2026-03-29T09:27:20Z",
+      "summary": "Another periodic outbound connection to a sibling domain on the same external IP.",
+      "role": "主证据",
+      "observation_ids": []
+    },
+    {
+      "ts": "2026-03-29T09:30:00Z",
+      "summary": "Follow-up DNS resolution for a second suspicious domain on the same infrastructure.",
+      "role": "主证据",
+      "observation_ids": []
+    },
+    {
+      "ts": "2026-03-29T09:45:10Z",
+      "summary": "Suspicious post-beacon process activity appeared on the same workstation after external communications started.",
+      "role": "执行线索",
+      "observation_ids": []
+    },
+    {
+      "ts": "2026-03-29T09:48:00Z",
+      "summary": "Scheduled package update traffic during the same hour.",
+      "role": "反证",
+      "observation_ids": [
+        "obs-002"
+      ]
+    }
+  ],
+  "evidence_chain": {
+    "supporting": [
+      {
+        "id": "E-01",
+        "category": "网络",
+        "strength": "高",
+        "fact_description": "在 2026-03-29 09:15:00 UTC，资产 `ws-finance-23` 出现了一条告警观测，关联的核心指示物为 198.51.100.24 / cdn-sync-update.com / JA4 t12i190700_d83cc789557e_16bbda4055b2。 原始摘要显示：Seed JA4 alert matched a known beacon-style fingerprint.",
+        "reason_text": "这是种子命中的直接落点，说明告警并不是孤立的指纹命中。",
+        "limitation_text": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002"
+        ]
+      },
+      {
+        "id": "E-02",
+        "category": "网络",
+        "strength": "高",
+        "fact_description": "在 2026-03-29 09:12:10 UTC，资产 `ws-finance-23` 出现了一条DNS观测，关联的核心指示物为 cdn-sync-update.com / DNS answers 198.51.100.24。 原始摘要显示：Rare DNS lookup for domain later reused by the seed alert.",
+        "reason_text": "它给出了可疑外联之前的解析准备动作，说明相关基础设施不是只在告警瞬间出现。",
+        "limitation_text": "仅凭网络侧重复通信仍可能在少数情况下被正常组件、同步组件或运维脚本解释，因此仍需要结合资产背景或主机侧结果。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002"
+        ]
+      },
+      {
+        "id": "E-03",
+        "category": "网络",
+        "strength": "高",
+        "fact_description": "在 2026-03-29 09:14:40 UTC，资产 `ws-finance-23` 出现了一条网络流量观测，关联的核心指示物为 198.51.100.24 / cdn-sync-update.com / JA4 t12i190700_d83cc789557e_16bbda4055b2。 原始摘要显示：Outbound TLS session to rare external infra using the same JA4 fingerprint as the seed event.",
+        "reason_text": "同一资产围绕同一批外部基础设施再次通信，单条告警已经扩展成连续事件链。",
+        "limitation_text": "仅凭网络侧重复通信仍可能在少数情况下被正常组件、同步组件或运维脚本解释，因此仍需要结合资产背景或主机侧结果。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002"
+        ]
+      },
+      {
+        "id": "E-04",
+        "category": "网络",
+        "strength": "高",
+        "fact_description": "在 2026-03-29 09:21:05 UTC，资产 `ws-finance-23` 出现了一条网络流量观测，关联的核心指示物为 198.51.100.24 / cdn-sync-update.com。 原始摘要显示：Second outbound TLS session to the same external infrastructure after the seed alert.",
+        "reason_text": "同一资产围绕同一批外部基础设施再次通信，单条告警已经扩展成连续事件链。",
+        "limitation_text": "仅凭网络侧重复通信仍可能在少数情况下被正常组件、同步组件或运维脚本解释，因此仍需要结合资产背景或主机侧结果。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002"
+        ]
+      }
+    ],
+    "counterevidence": [
+      {
+        "id": "C-01",
+        "category": "网络",
+        "strength": "高",
+        "fact_description": "在 2026-03-29 09:48:00 UTC，资产 `ws-finance-23` 出现了一条网络流量观测，关联的核心指示物为 203.0.113.10 / packages.vendor.example。 原始摘要显示：Scheduled package update traffic during the same hour.",
+        "reason_text": "这条记录更接近计划内维护或正常更新背景，是当前能够降级或收窄判断的重要原因。",
+        "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
+        "observation_ids": [
+          "obs-002"
+        ]
+      }
+    ],
+    "family_context": {
+      "hint": "Possible Cobalt Strike beacon",
+      "summary": "当前可获得的背景提示主要来自 seed 告警自带的家族/工具描述：Possible Cobalt Strike beacon。它与本案已经观察到的阶段形态 command-and-control、execution 基本一致，更适合作为解释当前事件链的辅助背景。",
+      "limits": "这类背景提示的价值在于帮助理解攻击链或工具形态，而不是直接完成家族归因、攻击团伙归因或样本级确认。",
+      "observation_ids": [
+        "obs-003"
+      ]
+    }
+  },
+  "analysis": {
+    "primary_hypothesis": "ws-finance-23 疑似 Possible Cobalt Strike beacon 相关事件",
+    "alternative_hypothesis": "围绕 198.51.100.24、cdn-sync-update.com 的通信可能存在正常背景解释",
+    "why_this_conclusion": "决策主要建立在种子告警后的重复外联、同基础设施复现以及后续执行线索之上。 ws-finance-23 先围绕 198.51.100.24、cdn-sync-update.com、api.telemetry-sync.net 形成重复外联，随后又出现主机侧执行痕迹，因此判断已经超过单点命中。 事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。 seed alert 自带家族/工具提示：Possible Cobalt Strike beacon。",
+    "why_not_other_status": "反证主要来自维护窗口和签名更新流量，这些背景足以解释为什么不能只凭 seed alert 直接定性。",
+    "unresolved_items": [
+      "当前事件链主要从外联和执行阶段收敛，初始入侵入口仍未识别。"
+    ],
+    "next_best_evidence": [
+      "当前事件链主要从外联和执行阶段收敛，初始入侵入口仍未识别。"
+    ]
+  },
+  "recommendations": {
+    "immediate": [
+      "优先隔离或重点监控资产：ws-finance-23。",
+      "在边界和代理设备上排查并封禁外部基础设施：198.51.100.24、cdn-sync-update.com、api.telemetry-sync.net。"
+    ],
+    "short_term": [
+      "以 seed 指标和事件簇中的域名 / IP 为 pivot，继续检索同时间窗内的重复通信。"
+    ],
+    "follow_up": []
+  },
+  "appendix": {
+    "ioc_rows": [
+      {
+        "type": "IP",
+        "value": "198.51.100.24",
+        "relation": "事件中的核心外部基础设施"
+      },
+      {
+        "type": "IP",
+        "value": "203.0.113.10",
+        "relation": "事件中的关联外部地址"
+      },
+      {
+        "type": "域名",
+        "value": "cdn-sync-update.com",
+        "relation": "种子告警前后持续出现的关联域名"
+      },
+      {
+        "type": "域名",
+        "value": "api.telemetry-sync.net",
+        "relation": "种子告警前后持续出现的关联域名"
+      },
+      {
+        "type": "域名",
+        "value": "packages.vendor.example",
+        "relation": "事件中的关联域名"
+      },
+      {
+        "type": "JA4",
+        "value": "t12i190700_d83cc789557e_16bbda4055b2",
+        "relation": "种子告警命中的关键指纹"
+      }
+    ],
+    "observation_rows": [
+      {
+        "observation_id": "obs-001",
+        "tool_name": "search_seed_context",
+        "summary": "检索到 6 条偏可疑事件，围绕 cdn-sync-update.com、api.telemetry-sync.net、198.51.100.24 展开。"
+      },
+      {
+        "observation_id": "obs-002",
+        "tool_name": "search_related_events",
+        "summary": "检索到 7 条偏可疑事件，围绕 cdn-sync-update.com、api.telemetry-sync.net、198.51.100.24 展开。"
+      },
+      {
+        "observation_id": "obs-003",
+        "tool_name": "extract_claim_candidates_from_page",
+        "summary": "从当前事件摘要中抽取出 8 条可直接引用的 claim。"
+      }
+    ]
+  }
+}

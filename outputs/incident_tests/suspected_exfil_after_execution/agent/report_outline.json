@@ -1,0 +1,224 @@
+{
+  "title": "事件级溯源报告",
+  "template_version": "incident-agent-v2",
+  "executive_summary": {
+    "event_conclusion": "待人工复核",
+    "status_code": "needs_review",
+    "severity": "中危",
+    "confidence": 66,
+    "headline": "上下文已形成，但仍需人工复核",
+    "one_sentence_summary": "自动聚合已经找到可关联的上下文，不过现阶段仍缺少足够强的执行或持续控制证据。",
+    "primary_action": "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。"
+  },
+  "scope_and_boundary": {
+    "seed_alert": "2026-06-03 16:40:00，ws-rnd-04 命中 Possible cloud-storage exfil candidate JA4 规则。",
+    "time_window": {
+      "start": "2026-06-03T16:34:00Z",
+      "end": "2026-06-03T17:05:00Z"
+    },
+    "seed_asset": "ws-rnd-04",
+    "suspected_label": "重点观察资产",
+    "suspected_assets": [
+      "ws-rnd-04"
+    ],
+    "related_label": "待排查关联资产",
+    "related_assets": [
+      "ws-rnd-09"
+    ],
+    "internal_ips": [
+      "10.90.2.44",
+      "10.90.2.49"
+    ],
+    "external_ips": [
+      "198.51.100.144"
+    ],
+    "domains": [
+      "files-sync-share.net"
+    ],
+    "stage_labels": [
+      "execution",
+      "exfiltration"
+    ],
+    "primary_external_indicators": [
+      "198.51.100.144",
+      "files-sync-share.net"
+    ],
+    "contextual_external_indicators": [],
+    "event_count": 5,
+    "primary_event_count": 3,
+    "context_event_count": 2,
+    "counterevidence_count": 0,
+    "current_boundary": "当前已经形成可关联的事件簇，但主要支撑信号仍不足以把结论稳定推进到确认事件。",
+    "unresolved_scope": [
+      "当前仍缺少足够强的主机侧执行或扩散证据，自动结论需要结合人工复核。",
+      "主支撑信号目前仍集中在单个重点资产上，尚未确认存在更大范围扩散。",
+      "其他关联资产目前更多体现为共享基础设施上的弱关联，仍需逐台确认是否真正受影响。",
+      "关联资产 ws-rnd-09 是否真正受影响？",
+      "seed 自带的家族提示 Possible cloud-storage exfil candidate 是否有更多外部证据支撑？"
+    ]
+  },
+  "timeline": [
+    {
+      "ts": "2026-06-03T16:34:00Z",
+      "summary": "The workstation resolved a rare storage domain shortly before the seed alert fired.",
+      "role": "上下文",
+      "observation_ids": []
+    },
+    {
+      "ts": "2026-06-03T16:40:00Z",
+      "summary": "Seed JA4 alert observed a suspicious TLS session to a rare storage edge.",
+      "role": "种子告警",
+      "observation_ids": [
+        "obs-001",
+        "obs-002"
+      ]
+    },
+    {
+      "ts": "2026-06-03T16:44:00Z",
+      "summary": "Archive utility spawned on the workstation shortly before the outbound transfer.",
+      "role": "执行线索",
+      "observation_ids": [
+        "obs-001",
+        "obs-002"
+      ]
+    },
+    {
+      "ts": "2026-06-03T16:47:00Z",
+      "summary": "A large outbound HTTPS upload followed the archive creation, but DLP visibility is incomplete.",
+      "role": "支撑证据",
+      "observation_ids": [
+        "obs-001",
+        "obs-002"
+      ]
+    },
+    {
+      "ts": "2026-06-03T17:05:00Z",
+      "summary": "A second workstation briefly connected to the same storage edge, but only once and without host evidence.",
+      "role": "上下文",
+      "observation_ids": []
+    }
+  ],
+  "evidence_chain": {
+    "supporting": [
+      {
+        "id": "E-01",
+        "category": "网络",
+        "strength": "高",
+        "fact_description": "在 2026-06-03 16:40:00 UTC，资产 `ws-rnd-04` 出现了一条告警观测，关联的核心指示物为 198.51.100.144 / files-sync-share.net / JA4 t13d190900_44ac2200b3c1_ab11cd22ee44。 原始摘要显示：Seed JA4 alert observed a suspicious TLS session to a rare storage edge.",
+        "reason_text": "这是种子命中的直接落点，说明告警并不是孤立的指纹命中。",
+        "limitation_text": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002"
+        ]
+      },
+      {
+        "id": "E-02",
+        "category": "主机",
+        "strength": "高",
+        "fact_description": "在 2026-06-03 16:44:00 UTC，资产 `ws-rnd-04` 出现了一条告警观测。 原始摘要显示：Archive utility spawned on the workstation shortly before the outbound transfer.",
+        "reason_text": "这条记录把可疑外联推进到了主机侧执行层，显著提高了事件成立概率。",
+        "limitation_text": "当前仍缺少更细的命令行、落地文件、持久化或内存证据，因此可以确认存在执行线索，但还不能完整描述具体载荷。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002"
+        ]
+      },
+      {
+        "id": "E-03",
+        "category": "网络",
+        "strength": "中",
+        "fact_description": "在 2026-06-03 16:47:00 UTC，资产 `ws-rnd-04` 出现了一条网络流量观测，关联的核心指示物为 198.51.100.144 / files-sync-share.net。 原始摘要显示：A large outbound HTTPS upload followed the archive creation, but DLP visibility is incomplete.",
+        "reason_text": "它强调了这批外部基础设施在当前环境中的稀有性。",
+        "limitation_text": "这条观测本身更适合用来补足上下文，而不是单独承担最终结论。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002"
+        ]
+      }
+    ],
+    "counterevidence": [],
+    "family_context": {
+      "hint": "Possible cloud-storage exfil candidate",
+      "summary": "当前可获得的背景提示主要来自 seed 告警自带的家族/工具描述：Possible cloud-storage exfil candidate。它与本案已经观察到的阶段形态 execution、exfiltration 基本一致，更适合作为解释当前事件链的辅助背景。",
+      "limits": "这类背景提示的价值在于帮助理解攻击链或工具形态，而不是直接完成家族归因、攻击团伙归因或样本级确认。",
+      "observation_ids": [
+        "obs-004"
+      ]
+    }
+  },
+  "analysis": {
+    "primary_hypothesis": "ws-rnd-04 疑似 Possible cloud-storage exfil candidate 相关事件",
+    "alternative_hypothesis": "围绕 198.51.100.144、files-sync-share.net 的通信可能存在正常背景解释",
+    "why_this_conclusion": "当前已有可疑关联，但支撑证据还不足以推进为确认事件。 目前最强的支撑来自 ws-rnd-04 围绕 198.51.100.144、files-sync-share.net 的重复通信，但这条链还没有延伸到执行或扩散层。 当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。 seed alert 自带家族/工具提示：Possible cloud-storage exfil candidate。 已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。",
+    "why_not_other_status": "其余关联资产目前更多体现为范围参考，而不是已经受影响的直接证据。",
+    "unresolved_items": [
+      "当前仍缺少足够强的主机侧执行或扩散证据，自动结论需要结合人工复核。",
+      "主支撑信号目前仍集中在单个重点资产上，尚未确认存在更大范围扩散。",
+      "其他关联资产目前更多体现为共享基础设施上的弱关联，仍需逐台确认是否真正受影响。",
+      "关联资产 ws-rnd-09 是否真正受影响？",
+      "seed 自带的家族提示 Possible cloud-storage exfil candidate 是否有更多外部证据支撑？"
+    ],
+    "next_best_evidence": [
+      "当前仍缺少足够强的主机侧执行或扩散证据，自动结论需要结合人工复核。",
+      "主支撑信号目前仍集中在单个重点资产上，尚未确认存在更大范围扩散。",
+      "其他关联资产目前更多体现为共享基础设施上的弱关联，仍需逐台确认是否真正受影响。"
+    ]
+  },
+  "recommendations": {
+    "immediate": [
+      "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。"
+    ],
+    "short_term": [
+      "继续围绕同域名 / 同 dst_ip / 同 JA4 搜索更宽时间窗内的关联事件。",
+      "把关联资产 ws-rnd-09 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。"
+    ],
+    "follow_up": []
+  },
+  "appendix": {
+    "ioc_rows": [
+      {
+        "type": "IP",
+        "value": "198.51.100.144",
+        "relation": "事件中的核心外部基础设施"
+      },
+      {
+        "type": "域名",
+        "value": "files-sync-share.net",
+        "relation": "种子告警前后持续出现的关联域名"
+      },
+      {
+        "type": "JA4",
+        "value": "t13d190900_44ac2200b3c1_ab11cd22ee44",
+        "relation": "种子告警命中的关键指纹"
+      },
+      {
+        "type": "行为线索",
+        "value": "Archive utility spawned on the workstation shortly before the outbound transfer.",
+        "relation": "执行阶段的重要主机侧线索"
+      }
+    ],
+    "observation_rows": [
+      {
+        "observation_id": "obs-001",
+        "tool_name": "search_seed_context",
+        "summary": "检索到 3 条偏可疑事件，围绕 files-sync-share.net、198.51.100.144 展开。"
+      },
+      {
+        "observation_id": "obs-002",
+        "tool_name": "search_related_events",
+        "summary": "检索到 3 条偏可疑事件，围绕 files-sync-share.net、198.51.100.144 展开。"
+      },
+      {
+        "observation_id": "obs-003",
+        "tool_name": "expand_asset_scope",
+        "summary": "检索到 1 条上下文事件，当前主要用于扩边界和补足范围。"
+      },
+      {
+        "observation_id": "obs-004",
+        "tool_name": "extract_claim_candidates_from_page",
+        "summary": "从当前事件摘要中抽取出 6 条可直接引用的 claim。"
+      }
+    ]
+  }
+}
