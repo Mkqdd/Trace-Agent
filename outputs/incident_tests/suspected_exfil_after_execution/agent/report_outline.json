@@ -8,7 +8,8 @@
     "confidence": 66,
     "headline": "上下文已形成，但仍需人工复核",
     "one_sentence_summary": "自动聚合已经找到可关联的上下文，不过现阶段仍缺少足够强的执行或持续控制证据。",
-    "primary_action": "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。"
+    "primary_action": "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。",
+    "delivery_note": "最小事件链、交付材料和反证检查均已到位，可按待人工复核结论交付。"
   },
   "scope_and_boundary": {
     "seed_alert": "2026-06-03 16:40:00，ws-rnd-04 命中 Possible cloud-storage exfil candidate JA4 规则。",
@@ -36,8 +37,8 @@
       "files-sync-share.net"
     ],
     "stage_labels": [
-      "execution",
-      "exfiltration"
+      "执行",
+      "数据外传"
     ],
     "primary_external_indicators": [
       "198.51.100.144",
@@ -70,7 +71,8 @@
       "role": "种子告警",
       "observation_ids": [
         "obs-001",
-        "obs-002"
+        "obs-002",
+        "obs-003"
       ]
     },
     {
@@ -79,7 +81,8 @@
       "role": "执行线索",
       "observation_ids": [
         "obs-001",
-        "obs-002"
+        "obs-002",
+        "obs-003"
       ]
     },
     {
@@ -88,7 +91,8 @@
       "role": "支撑证据",
       "observation_ids": [
         "obs-001",
-        "obs-002"
+        "obs-002",
+        "obs-003"
       ]
     },
     {
@@ -109,7 +113,8 @@
         "limitation_text": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -121,7 +126,8 @@
         "limitation_text": "当前仍缺少更细的命令行、落地文件、持久化或内存证据，因此可以确认存在执行线索，但还不能完整描述具体载荷。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -133,24 +139,26 @@
         "limitation_text": "这条观测本身更适合用来补足上下文，而不是单独承担最终结论。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       }
     ],
     "counterevidence": [],
     "family_context": {
       "hint": "Possible cloud-storage exfil candidate",
-      "summary": "当前可获得的背景提示主要来自 seed 告警自带的家族/工具描述：Possible cloud-storage exfil candidate。它与本案已经观察到的阶段形态 execution、exfiltration 基本一致，更适合作为解释当前事件链的辅助背景。",
+      "summary": "当前可获得的背景提示主要来自 seed 告警自带的家族/工具描述：Possible cloud-storage exfil candidate。它与本案已经观察到的阶段形态 执行、数据外传 基本一致，更适合作为解释当前事件链的辅助背景。",
       "limits": "这类背景提示的价值在于帮助理解攻击链或工具形态，而不是直接完成家族归因、攻击团伙归因或样本级确认。",
       "observation_ids": [
-        "obs-004"
+        "obs-003",
+        "obs-005"
       ]
     }
   },
   "analysis": {
     "primary_hypothesis": "ws-rnd-04 疑似 Possible cloud-storage exfil candidate 相关事件",
     "alternative_hypothesis": "围绕 198.51.100.144、files-sync-share.net 的通信可能存在正常背景解释",
-    "why_this_conclusion": "当前已有可疑关联，但支撑证据还不足以推进为确认事件。 目前最强的支撑来自 ws-rnd-04 围绕 198.51.100.144、files-sync-share.net 的重复通信，但这条链还没有延伸到执行或扩散层。 当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。 seed alert 自带家族/工具提示：Possible cloud-storage exfil candidate。 已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。",
+    "why_this_conclusion": "当前已有可疑关联，但支撑证据还不足以推进为确认事件。 目前最强的支撑来自 ws-rnd-04 围绕 198.51.100.144、files-sync-share.net 的重复通信，但这条链还没有延伸到执行或扩散层。 当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。 种子告警 自带家族/工具提示：Possible cloud-storage exfil candidate。 已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。 最小事件链、交付材料和反证检查均已到位，可按待人工复核结论交付。",
     "why_not_other_status": "其余关联资产目前更多体现为范围参考，而不是已经受影响的直接证据。",
     "unresolved_items": [
       "当前仍缺少足够强的主机侧执行或扩散证据，自动结论需要结合人工复核。",
@@ -165,6 +173,13 @@
       "其他关联资产目前更多体现为共享基础设施上的弱关联，仍需逐台确认是否真正受影响。"
     ]
   },
+  "delivery_readiness": {
+    "ready_for_delivery": true,
+    "summary": "最小事件链、交付材料和反证检查均已到位，可按待人工复核结论交付。",
+    "blocking_items": [],
+    "provisional_conclusion": "待人工复核",
+    "delivery_conclusion": "待人工复核"
+  },
   "recommendations": {
     "immediate": [
       "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。"
@@ -174,6 +189,76 @@
       "把关联资产 ws-rnd-09 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。"
     ],
     "follow_up": []
+  },
+  "reader_report": {
+    "title": "事件调查报告",
+    "judgment_label": "待人工复核",
+    "severity": "中危",
+    "confidence": "中（66/100）",
+    "one_sentence_summary": "资产 ws-rnd-04 已出现从可疑外联延伸到执行线索的迹象，但关键定性证据仍需人工复核。",
+    "judgment_text": "当前已经形成可疑事件链，但仍应按待人工复核结论交付。",
+    "boundary_text": "当前影响范围主要收敛在 ws-rnd-04，同时还存在待复核关联资产 ws-rnd-09；核心外部指示物为 198.51.100.144、files-sync-share.net。",
+    "primary_action": "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。",
+    "event_progression": [
+      "在 2026-06-03 16:34:00 UTC，资产 `ws-rnd-04` 先解析了 files-sync-share.net / DNS answers 198.51.100.144，说明相关基础设施并非只在告警瞬间出现。（观测引用：obs-001, obs-002, obs-003）",
+      "在 2026-06-03 16:40:00 UTC，资产 `ws-rnd-04` 命中了以 198.51.100.144 / files-sync-share.net / JA4 t13d190900_44ac2200b3c1_ab11cd22ee44 为核心的种子告警。（观测引用：obs-001, obs-002, obs-003）",
+      "在 2026-06-03 16:44:00 UTC，同一资产 `ws-rnd-04` 在可疑外联之后出现主机侧执行线索，说明事件已经从网络异常推进到执行阶段。（观测引用：obs-001, obs-002, obs-003）",
+      "在 2026-06-03 16:47:00 UTC，资产 `ws-rnd-04` 出现了一条与 198.51.100.144 / files-sync-share.net 相关的关键关联观测。（观测引用：obs-001, obs-002, obs-003）"
+    ],
+    "supporting_blocks": [
+      {
+        "title": "重复外联与回连形态",
+        "facts": [
+          "在 2026-06-03 16:40:00 UTC，资产 `ws-rnd-04` 命中了以 198.51.100.144 / files-sync-share.net / JA4 t13d190900_44ac2200b3c1_ab11cd22ee44 为核心的种子告警。"
+        ],
+        "judgment": "它为整个事件链提供了明确锚点，让后续调查可以围绕同一批指示物继续收敛。",
+        "boundary": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002",
+          "obs-003"
+        ]
+      },
+      {
+        "title": "主机侧执行佐证",
+        "facts": [
+          "在 2026-06-03 16:44:00 UTC，同一资产 `ws-rnd-04` 在可疑外联之后出现主机侧执行线索，说明事件已经从网络异常推进到执行阶段。"
+        ],
+        "judgment": "它把网络侧异常推进到了主机侧异常，对事件定性的权重明显更高。",
+        "boundary": "当前仍缺少更细的命令行、落地文件、持久化或内存证据，因此可以确认存在执行线索，但还不能完整描述具体载荷。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002",
+          "obs-003"
+        ]
+      }
+    ],
+    "counter_block": null,
+    "scope_lines": [
+      "时间窗口：2026-06-03 16:34:00 UTC 至 2026-06-03 17:05:00 UTC",
+      "种子资产：ws-rnd-04",
+      "当前已确认范围：ws-rnd-04",
+      "核心外部指示物：198.51.100.144、files-sync-share.net",
+      "当前攻击阶段：执行、数据外传",
+      "当前边界：当前已经形成可关联的事件簇，但主要支撑信号仍不足以把结论稳定推进到确认事件。"
+    ],
+    "actions": {
+      "immediate": [
+        "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。"
+      ],
+      "short_term": [
+        "继续围绕同域名 / 同 dst_ip / 同 JA4 搜索更宽时间窗内的关联事件。",
+        "把关联资产 ws-rnd-09 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。"
+      ],
+      "follow_up": []
+    },
+    "open_questions": [
+      "当前仍缺少足够强的主机侧执行或扩散证据，自动结论需要结合人工复核。",
+      "主支撑信号目前仍集中在单个重点资产上，尚未确认存在更大范围扩散。",
+      "其他关联资产目前更多体现为共享基础设施上的弱关联，仍需逐台确认是否真正受影响。",
+      "关联资产 ws-rnd-09 是否真正受影响？",
+      "seed 自带的家族提示 Possible cloud-storage exfil candidate 是否有更多外部证据支撑？"
+    ]
   },
   "appendix": {
     "ioc_rows": [
@@ -202,22 +287,37 @@
       {
         "observation_id": "obs-001",
         "tool_name": "search_seed_context",
+        "source_type": "trace_store.seed_context",
+        "source_ref": "",
         "summary": "检索到 3 条偏可疑事件，围绕 files-sync-share.net、198.51.100.144 展开。"
       },
       {
         "observation_id": "obs-002",
         "tool_name": "search_related_events",
+        "source_type": "trace_store.related_events",
+        "source_ref": "",
         "summary": "检索到 3 条偏可疑事件，围绕 files-sync-share.net、198.51.100.144 展开。"
       },
       {
         "observation_id": "obs-003",
-        "tool_name": "expand_asset_scope",
-        "summary": "检索到 1 条上下文事件，当前主要用于扩边界和补足范围。"
+        "tool_name": "check_counterevidence",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。"
       },
       {
         "observation_id": "obs-004",
+        "tool_name": "expand_asset_scope",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "检索到 1 条上下文事件，当前主要用于扩边界和补足范围。"
+      },
+      {
+        "observation_id": "obs-005",
         "tool_name": "extract_claim_candidates_from_page",
-        "summary": "从当前事件摘要中抽取出 6 条可直接引用的 claim。"
+        "source_type": "internal_digest",
+        "source_ref": "",
+        "summary": "从内部调查摘要中整理出 6 条 claim，用于结构化报告而不是新增外部证据。"
       }
     ]
   }

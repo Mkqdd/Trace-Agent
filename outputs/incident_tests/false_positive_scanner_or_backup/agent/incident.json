@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.2",
+  "schema_version": "0.3",
   "mode": "incident-agent",
   "fixture_case": "false_positive_scanner_or_backup",
   "seed": {
@@ -48,28 +48,115 @@
     "intrusion_hypothesis_grounded": false,
     "external_infra_grounded": true,
     "counterevidence_checked": true,
-    "report_ready": true
+    "provisional_status": "monitor_only",
+    "delivery_status": "monitor_only",
+    "report_ready": true,
+    "readiness": {
+      "ready_for_delivery": true,
+      "summary": "反证链路和背景解释已经完成交付级核查，可按降级观察交付。",
+      "checks": [
+        {
+          "id": "context_built",
+          "ok": true,
+          "reason": "已围绕 seed alert 建立最小上下文。"
+        },
+        {
+          "id": "cluster_built",
+          "ok": true,
+          "reason": "事件簇规模已经足以支撑时间线和范围判断。"
+        },
+        {
+          "id": "timeline_built",
+          "ok": true,
+          "reason": "已形成时间线，可解释关键观察的先后关系。"
+        },
+        {
+          "id": "scope_assessed",
+          "ok": true,
+          "reason": "当前事件范围已经落到资产或核心外部指示物上。"
+        },
+        {
+          "id": "evidence_chain_ready",
+          "ok": true,
+          "reason": "存在明确反证并且已经执行显式反证检查，可以把结论稳定降级为观察。"
+        },
+        {
+          "id": "counterevidence_checked",
+          "ok": true,
+          "reason": "已执行显式反证检查。"
+        },
+        {
+          "id": "supplemental_context_reviewed",
+          "ok": true,
+          "reason": "已执行至少一次情报或结构化整理动作，可支撑 deterministic report 生成。"
+        }
+      ],
+      "blocking_checks": []
+    }
+  },
+  "readiness": {
+    "ready_for_delivery": true,
+    "summary": "反证链路和背景解释已经完成交付级核查，可按降级观察交付。",
+    "checks": [
+      {
+        "id": "context_built",
+        "ok": true,
+        "reason": "已围绕 seed alert 建立最小上下文。"
+      },
+      {
+        "id": "cluster_built",
+        "ok": true,
+        "reason": "事件簇规模已经足以支撑时间线和范围判断。"
+      },
+      {
+        "id": "timeline_built",
+        "ok": true,
+        "reason": "已形成时间线，可解释关键观察的先后关系。"
+      },
+      {
+        "id": "scope_assessed",
+        "ok": true,
+        "reason": "当前事件范围已经落到资产或核心外部指示物上。"
+      },
+      {
+        "id": "evidence_chain_ready",
+        "ok": true,
+        "reason": "存在明确反证并且已经执行显式反证检查，可以把结论稳定降级为观察。"
+      },
+      {
+        "id": "counterevidence_checked",
+        "ok": true,
+        "reason": "已执行显式反证检查。"
+      },
+      {
+        "id": "supplemental_context_reviewed",
+        "ok": true,
+        "reason": "已执行至少一次情报或结构化整理动作，可支撑 deterministic report 生成。"
+      }
+    ],
+    "blocking_checks": []
   },
   "session_state": {
     "goal": "围绕 seed alert 10.80.9.20 -> 203.0.113.210 收敛为事件级研判结论。",
     "budgets": {
       "max_steps": 8,
-      "remaining_steps": 4,
+      "remaining_steps": 3,
       "max_tool_calls": 12,
-      "remaining_tool_calls": 8,
+      "remaining_tool_calls": 7,
       "max_event_queries": 8,
-      "remaining_event_queries": 5,
+      "remaining_event_queries": 4,
       "max_intel_queries": 4,
       "remaining_intel_queries": 3,
       "max_runtime_s": 120
     },
-    "step_index": 4,
+    "step_index": 5,
     "tool_history": [
       {
         "step_index": 1,
         "tool_name": "search_seed_context",
         "observation_id": "obs-001",
         "relation": "supporting",
+        "source_type": "trace_store.seed_context",
         "status": "ok"
       },
       {
@@ -77,20 +164,31 @@
         "tool_name": "search_related_events",
         "observation_id": "obs-002",
         "relation": "supporting",
+        "source_type": "trace_store.related_events",
         "status": "ok"
       },
       {
         "step_index": 3,
-        "tool_name": "expand_asset_scope",
+        "tool_name": "check_counterevidence",
         "observation_id": "obs-003",
         "relation": "counterevidence",
+        "source_type": "trace_store.asset_context",
         "status": "ok"
       },
       {
         "step_index": 4,
-        "tool_name": "extract_claim_candidates_from_page",
+        "tool_name": "expand_asset_scope",
         "observation_id": "obs-004",
-        "relation": "supporting",
+        "relation": "counterevidence",
+        "source_type": "trace_store.asset_context",
+        "status": "ok"
+      },
+      {
+        "step_index": 5,
+        "tool_name": "extract_claim_candidates_from_page",
+        "observation_id": "obs-005",
+        "relation": "context",
+        "source_type": "internal_digest",
         "status": "ok"
       }
     ],
@@ -100,43 +198,45 @@
         "id": "primary",
         "kind": "primary",
         "title": "backup-srv-01 疑似恶意外联事件",
-        "score": 9,
+        "score": 6,
         "status": "supported",
         "supporting_observation_ids": [
           "obs-001",
-          "obs-002",
-          "obs-004"
+          "obs-002"
         ],
         "counter_observation_ids": [
-          "obs-003"
+          "obs-003",
+          "obs-004"
         ]
       },
       {
         "id": "secondary",
         "kind": "secondary",
         "title": "backup-srv-02 等资产的关联范围仍待确认",
-        "score": 0,
-        "status": "open",
-        "supporting_observation_ids": [],
+        "score": 2,
+        "status": "supported",
+        "supporting_observation_ids": [
+          "obs-005"
+        ],
         "counter_observation_ids": []
       },
       {
         "id": "benign",
         "kind": "benign",
         "title": "围绕 203.0.113.210、backup.vendor.example 的通信可能存在正常背景解释",
-        "score": 8,
+        "score": 11,
         "status": "leading",
         "supporting_observation_ids": [
-          "obs-003"
+          "obs-003",
+          "obs-004"
         ],
         "counter_observation_ids": [
           "obs-001",
-          "obs-002",
-          "obs-004"
+          "obs-002"
         ]
       }
     ],
-    "stop_reason": "report_ready",
+    "stop_reason": "delivery_ready",
     "consecutive_low_value_steps": 0,
     "policy_mode": "heuristic_fallback"
   },
@@ -204,6 +304,7 @@
         "tool_name": "search_seed_context",
         "query": {},
         "source_type": "trace_store.seed_context",
+        "source_ref": "",
         "events": [
           {
             "id": "evt-501",
@@ -329,6 +430,7 @@
         "summary": "检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。",
         "note": "seed-context query over fixture trace events",
         "page_candidates": [],
+        "documents": [],
         "status": "ok"
       },
       {
@@ -359,6 +461,7 @@
           "limit": 60
         },
         "source_type": "trace_store.related_events",
+        "source_ref": "",
         "events": [
           {
             "id": "evt-501",
@@ -484,10 +587,154 @@
         "summary": "检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。",
         "note": "pivot expansion over fixture trace events",
         "page_candidates": [],
+        "documents": [],
         "status": "ok"
       },
       {
         "observation_id": "obs-003",
+        "tool_name": "check_counterevidence",
+        "query": {
+          "asset_ids": [
+            "backup-srv-01",
+            "backup-srv-02"
+          ],
+          "window_minutes": 240,
+          "limit": 80
+        },
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "events": [
+          {
+            "id": "evt-501",
+            "ts": "2026-05-26T01:05:00Z",
+            "kind": "asset_context",
+            "asset_id": "backup-srv-01",
+            "src_ip": "10.80.9.20",
+            "classification": "benign",
+            "tags": [
+              "maintenance"
+            ],
+            "summary": "Nightly backup window started on backup-srv-01 under the approved operations schedule."
+          },
+          {
+            "id": "evt-502",
+            "ts": "2026-05-26T01:08:00Z",
+            "kind": "dns",
+            "asset_id": "backup-srv-01",
+            "src_ip": "10.80.9.20",
+            "domain": "backup.vendor.example",
+            "answers": [
+              "203.0.113.210"
+            ],
+            "classification": "benign",
+            "tags": [
+              "backup"
+            ],
+            "summary": "The backup server resolved the approved vendor backup endpoint before the transfer began."
+          },
+          {
+            "id": "evt-503",
+            "ts": "2026-05-26T01:12:00Z",
+            "kind": "alert",
+            "asset_id": "backup-srv-01",
+            "src_ip": "10.80.9.20",
+            "dst_ip": "203.0.113.210",
+            "domain": "backup.vendor.example",
+            "ja4": "t13d1516h2_9f7710a0ab12_0011ab22cd33",
+            "classification": "needs_review",
+            "tags": [
+              "outlier"
+            ],
+            "summary": "Heuristic JA4 alert fired on backup traffic to the vendor repository."
+          },
+          {
+            "id": "evt-504",
+            "ts": "2026-05-26T01:14:30Z",
+            "kind": "flow",
+            "asset_id": "backup-srv-01",
+            "src_ip": "10.80.9.20",
+            "dst_ip": "203.0.113.210",
+            "dst_port": 443,
+            "domain": "backup.vendor.example",
+            "classification": "benign",
+            "tags": [
+              "backup"
+            ],
+            "summary": "Backup agent uploaded an encrypted archive to the approved vendor endpoint."
+          },
+          {
+            "id": "evt-505",
+            "ts": "2026-05-26T01:17:00Z",
+            "kind": "http",
+            "asset_id": "backup-srv-01",
+            "src_ip": "10.80.9.20",
+            "dst_ip": "203.0.113.210",
+            "domain": "backup.vendor.example",
+            "classification": "benign",
+            "tags": [
+              "backup"
+            ],
+            "summary": "Backup manifest and retention metadata were exchanged with the same service."
+          },
+          {
+            "id": "evt-506",
+            "ts": "2026-05-26T01:18:40Z",
+            "kind": "flow",
+            "asset_id": "backup-srv-02",
+            "src_ip": "10.80.9.21",
+            "dst_ip": "203.0.113.210",
+            "dst_port": 443,
+            "domain": "backup.vendor.example",
+            "classification": "benign",
+            "tags": [
+              "backup"
+            ],
+            "summary": "A sibling backup node contacted the same endpoint during the same backup window."
+          }
+        ],
+        "derived_entities": {
+          "asset_ids": [
+            "backup-srv-01",
+            "backup-srv-02"
+          ],
+          "src_ips": [
+            "10.80.9.20",
+            "10.80.9.21"
+          ],
+          "dst_ips": [
+            "203.0.113.210"
+          ],
+          "domains": [
+            "backup.vendor.example"
+          ],
+          "fingerprints": [
+            "t13d1516h2_9f7710a0ab12_0011ab22cd33"
+          ],
+          "families": []
+        },
+        "claims": [
+          {
+            "text": "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。",
+            "kind": "counterevidence_check",
+            "score": 78
+          }
+        ],
+        "confidence": 78,
+        "supports_hypothesis": [
+          "benign"
+        ],
+        "contradicts_hypothesis": [
+          "primary"
+        ],
+        "relation": "counterevidence",
+        "summary": "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。",
+        "note": "asset-context expansion over fixture trace events",
+        "page_candidates": [],
+        "documents": [],
+        "status": "ok"
+      },
+      {
+        "observation_id": "obs-004",
         "tool_name": "expand_asset_scope",
         "query": {
           "asset_ids": [
@@ -497,6 +744,7 @@
           "limit": 60
         },
         "source_type": "trace_store.asset_context",
+        "source_ref": "",
         "events": [
           {
             "id": "evt-506",
@@ -548,16 +796,18 @@
         "summary": "检索到 1 条更接近维护、更新或正常基线的事件。",
         "note": "asset-context expansion over fixture trace events",
         "page_candidates": [],
+        "documents": [],
         "status": "ok"
       },
       {
-        "observation_id": "obs-004",
+        "observation_id": "obs-005",
         "tool_name": "extract_claim_candidates_from_page",
         "query": {
-          "content": "Seed alert summary:\n- src=10.80.9.20 dst=203.0.113.210 fp=t13d1516h2_9f7710a0ab12_0011ab22cd33\nCurrent working hypotheses:\n- primary: backup-srv-01 疑似恶意外联事件 (score=6)\n- secondary: backup-srv-02 等资产的关联范围仍待确认 (score=0)\n- benign: 围绕 203.0.113.210、backup.vendor.example 的通信可能存在正常背景解释 (score=8)\nEvent summaries:\n- Nightly backup window started on backup-srv-01 under the approved operations schedule.\n- The backup server resolved the approved vendor backup endpoint before the transfer began.\n- Heuristic JA4 alert fired on backup traffic to the vendor repository.\n- Backup agent uploaded an encrypted archive to the approved vendor endpoint.\n- Backup manifest and retention metadata were exchanged with the same service.\n- A sibling backup node contacted the same endpoint during the same backup window.\nEvidence ledger:\n- supporting: 检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。 [evt-501,evt-502,evt-503,evt-504,evt-505,evt-506]\n- supporting: 检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。 [evt-501,evt-502,evt-503,evt-504,evt-505,evt-506]\n- counterevidence: 检索到 1 条更接近维护、更新或正常基线的事件。 [evt-506]",
+          "content": "Seed alert summary:\n- src=10.80.9.20 dst=203.0.113.210 fp=t13d1516h2_9f7710a0ab12_0011ab22cd33\nCurrent working hypotheses:\n- primary: backup-srv-01 疑似恶意外联事件 (score=6)\n- secondary: backup-srv-02 等资产的关联范围仍待确认 (score=0)\n- benign: 围绕 203.0.113.210、backup.vendor.example 的通信可能存在正常背景解释 (score=11)\nEvent summaries:\n- Nightly backup window started on backup-srv-01 under the approved operations schedule.\n- The backup server resolved the approved vendor backup endpoint before the transfer began.\n- Heuristic JA4 alert fired on backup traffic to the vendor repository.\n- Backup agent uploaded an encrypted archive to the approved vendor endpoint.\n- Backup manifest and retention metadata were exchanged with the same service.\n- A sibling backup node contacted the same endpoint during the same backup window.\nEvidence ledger:\n- supporting: 检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。 [evt-501,evt-502,evt-503,evt-504,evt-505,evt-506]\n- supporting: 检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。 [evt-501,evt-502,evt-503,evt-504,evt-505,evt-506]\n- counterevidence: 显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。 [evt-501,evt-502,evt-503,evt-504,evt-505,evt-506]\n- counterevidence: 检索到 1 条更接近维护、更新或正常基线的事件。 [evt-506]",
           "focus": "203.0.113.210"
         },
-        "source_type": "page_tool",
+        "source_type": "internal_digest",
+        "source_ref": "",
         "events": [],
         "derived_entities": {
           "asset_ids": [],
@@ -593,7 +843,7 @@
           },
           {
             "kind": "family_or_indicator",
-            "text": "- benign: 围绕 203.0.113.210、backup.vendor.example 的通信可能存在正常背景解释 (score=8)",
+            "text": "- benign: 围绕 203.0.113.210、backup.vendor.example 的通信可能存在正常背景解释 (score=11)",
             "entities": {
               "ips": [
                 "203.0.113.210"
@@ -653,17 +903,17 @@
           }
         ],
         "confidence": 70,
-        "supports_hypothesis": [
-          "primary"
-        ],
+        "supports_hypothesis": [],
         "contradicts_hypothesis": [],
-        "relation": "supporting",
-        "summary": "从当前事件摘要中抽取出 5 条可直接引用的 claim。",
+        "relation": "context",
+        "summary": "从内部调查摘要中整理出 5 条 claim，用于结构化报告而不是新增外部证据。",
         "note": "",
         "page_candidates": [],
+        "documents": [],
         "status": "ok"
       }
     ],
+    "page_documents": [],
     "entities": {
       "seed_asset": "backup-srv-01",
       "assets": [
@@ -794,6 +1044,7 @@
         "tool_name": "search_seed_context",
         "relation": "supporting",
         "source_type": "trace_store.seed_context",
+        "source_ref": "",
         "summary": "检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。",
         "event_ids": [
           "evt-501",
@@ -817,6 +1068,7 @@
         "tool_name": "search_related_events",
         "relation": "supporting",
         "source_type": "trace_store.related_events",
+        "source_ref": "",
         "summary": "检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。",
         "event_ids": [
           "evt-501",
@@ -837,9 +1089,36 @@
       },
       {
         "observation_id": "obs-003",
+        "tool_name": "check_counterevidence",
+        "relation": "counterevidence",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。",
+        "event_ids": [
+          "evt-501",
+          "evt-502",
+          "evt-503",
+          "evt-504",
+          "evt-505",
+          "evt-506"
+        ],
+        "claim_texts": [
+          "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。"
+        ],
+        "confidence": 78,
+        "supports_hypothesis": [
+          "benign"
+        ],
+        "contradicts_hypothesis": [
+          "primary"
+        ]
+      },
+      {
+        "observation_id": "obs-004",
         "tool_name": "expand_asset_scope",
         "relation": "counterevidence",
         "source_type": "trace_store.asset_context",
+        "source_ref": "",
         "summary": "检索到 1 条更接近维护、更新或正常基线的事件。",
         "event_ids": [
           "evt-506"
@@ -856,31 +1135,57 @@
         ]
       },
       {
-        "observation_id": "obs-004",
+        "observation_id": "obs-005",
         "tool_name": "extract_claim_candidates_from_page",
-        "relation": "supporting",
-        "source_type": "page_tool",
-        "summary": "从当前事件摘要中抽取出 5 条可直接引用的 claim。",
+        "relation": "context",
+        "source_type": "internal_digest",
+        "source_ref": "",
+        "summary": "从内部调查摘要中整理出 5 条 claim，用于结构化报告而不是新增外部证据。",
         "event_ids": [],
         "claim_texts": [
           "- src=10.80.9.20 dst=203.0.113.210 fp=t13d1516h2_9f7710a0ab12_0011ab22cd33",
-          "- benign: 围绕 203.0.113.210、backup.vendor.example 的通信可能存在正常背景解释 (score=8)",
+          "- benign: 围绕 203.0.113.210、backup.vendor.example 的通信可能存在正常背景解释 (score=11)",
           "- supporting: 检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。",
           "- Nightly backup window started on backup-srv-01 under the approved operations schedule."
         ],
         "confidence": 70,
-        "supports_hypothesis": [
-          "primary"
-        ],
+        "supports_hypothesis": [],
         "contradicts_hypothesis": []
       }
     ],
     "counterevidence": [
       {
         "observation_id": "obs-003",
+        "tool_name": "check_counterevidence",
+        "relation": "counterevidence",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。",
+        "event_ids": [
+          "evt-501",
+          "evt-502",
+          "evt-503",
+          "evt-504",
+          "evt-505",
+          "evt-506"
+        ],
+        "claim_texts": [
+          "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。"
+        ],
+        "confidence": 78,
+        "supports_hypothesis": [
+          "benign"
+        ],
+        "contradicts_hypothesis": [
+          "primary"
+        ]
+      },
+      {
+        "observation_id": "obs-004",
         "tool_name": "expand_asset_scope",
         "relation": "counterevidence",
         "source_type": "trace_store.asset_context",
+        "source_ref": "",
         "summary": "检索到 1 条更接近维护、更新或正常基线的事件。",
         "event_ids": [
           "evt-506"
@@ -897,7 +1202,7 @@
         ]
       }
     ],
-    "verdict": {
+    "provisional_verdict": {
       "status": "monitor_only",
       "status_label": "降级观察",
       "confidence": 55,
@@ -906,8 +1211,74 @@
         "当前证据更容易被维护窗口、补丁、备份或共享基线解释。"
       ]
     },
+    "delivery_verdict": {
+      "status": "monitor_only",
+      "status_label": "降级观察",
+      "confidence": 55,
+      "severity": "低危",
+      "rationale": [
+        "当前证据更容易被维护窗口、补丁、备份或共享基线解释。",
+        "反证链路和背景解释已经完成交付级核查，可按降级观察交付。"
+      ],
+      "delivery_ready": true,
+      "blocked_by": []
+    },
+    "verdict": {
+      "status": "monitor_only",
+      "status_label": "降级观察",
+      "confidence": 55,
+      "severity": "低危",
+      "rationale": [
+        "当前证据更容易被维护窗口、补丁、备份或共享基线解释。",
+        "反证链路和背景解释已经完成交付级核查，可按降级观察交付。"
+      ],
+      "delivery_ready": true,
+      "blocked_by": []
+    },
     "confidence": 55,
-    "report_ready": true
+    "report_ready": true,
+    "readiness": {
+      "ready_for_delivery": true,
+      "summary": "反证链路和背景解释已经完成交付级核查，可按降级观察交付。",
+      "checks": [
+        {
+          "id": "context_built",
+          "ok": true,
+          "reason": "已围绕 seed alert 建立最小上下文。"
+        },
+        {
+          "id": "cluster_built",
+          "ok": true,
+          "reason": "事件簇规模已经足以支撑时间线和范围判断。"
+        },
+        {
+          "id": "timeline_built",
+          "ok": true,
+          "reason": "已形成时间线，可解释关键观察的先后关系。"
+        },
+        {
+          "id": "scope_assessed",
+          "ok": true,
+          "reason": "当前事件范围已经落到资产或核心外部指示物上。"
+        },
+        {
+          "id": "evidence_chain_ready",
+          "ok": true,
+          "reason": "存在明确反证并且已经执行显式反证检查，可以把结论稳定降级为观察。"
+        },
+        {
+          "id": "counterevidence_checked",
+          "ok": true,
+          "reason": "已执行显式反证检查。"
+        },
+        {
+          "id": "supplemental_context_reviewed",
+          "ok": true,
+          "reason": "已执行至少一次情报或结构化整理动作，可支撑 deterministic report 生成。"
+        }
+      ],
+      "blocking_checks": []
+    }
   },
   "open_questions": [],
   "working_hypotheses": [
@@ -915,43 +1286,45 @@
       "id": "primary",
       "kind": "primary",
       "title": "backup-srv-01 疑似恶意外联事件",
-      "score": 9,
+      "score": 6,
       "status": "supported",
       "supporting_observation_ids": [
         "obs-001",
-        "obs-002",
-        "obs-004"
+        "obs-002"
       ],
       "counter_observation_ids": [
-        "obs-003"
+        "obs-003",
+        "obs-004"
       ]
     },
     {
       "id": "secondary",
       "kind": "secondary",
       "title": "backup-srv-02 等资产的关联范围仍待确认",
-      "score": 0,
-      "status": "open",
-      "supporting_observation_ids": [],
+      "score": 2,
+      "status": "supported",
+      "supporting_observation_ids": [
+        "obs-005"
+      ],
       "counter_observation_ids": []
     },
     {
       "id": "benign",
       "kind": "benign",
       "title": "围绕 203.0.113.210、backup.vendor.example 的通信可能存在正常背景解释",
-      "score": 8,
+      "score": 11,
       "status": "leading",
       "supporting_observation_ids": [
-        "obs-003"
+        "obs-003",
+        "obs-004"
       ],
       "counter_observation_ids": [
         "obs-001",
-        "obs-002",
-        "obs-004"
+        "obs-002"
       ]
     }
   ],
-  "verdict": {
+  "provisional_verdict": {
     "status": "monitor_only",
     "status_label": "降级观察",
     "confidence": 55,
@@ -959,6 +1332,30 @@
     "rationale": [
       "当前证据更容易被维护窗口、补丁、备份或共享基线解释。"
     ]
+  },
+  "delivery_verdict": {
+    "status": "monitor_only",
+    "status_label": "降级观察",
+    "confidence": 55,
+    "severity": "低危",
+    "rationale": [
+      "当前证据更容易被维护窗口、补丁、备份或共享基线解释。",
+      "反证链路和背景解释已经完成交付级核查，可按降级观察交付。"
+    ],
+    "delivery_ready": true,
+    "blocked_by": []
+  },
+  "verdict": {
+    "status": "monitor_only",
+    "status_label": "降级观察",
+    "confidence": 55,
+    "severity": "低危",
+    "rationale": [
+      "当前证据更容易被维护窗口、补丁、备份或共享基线解释。",
+      "反证链路和背景解释已经完成交付级核查，可按降级观察交付。"
+    ],
+    "delivery_ready": true,
+    "blocked_by": []
   },
   "summary": {
     "headline": "弱信号已被背景流量部分解释",
@@ -993,7 +1390,8 @@
         "why_it_matters": "这是种子命中的直接落点，说明告警并不是孤立的指纹命中。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       }
     ],
@@ -1012,7 +1410,8 @@
         "why_it_matters": "这条记录更接近计划内维护或正常更新背景，是当前能够降级或收窄判断的重要原因。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -1029,7 +1428,8 @@
         "why_it_matters": "这条记录更接近计划内维护或正常更新背景，是当前能够降级或收窄判断的重要原因。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -1046,7 +1446,8 @@
         "why_it_matters": "这条记录更接近计划内维护或正常更新背景，是当前能够降级或收窄判断的重要原因。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -1063,7 +1464,8 @@
         "why_it_matters": "这条记录更接近计划内维护或正常更新背景，是当前能够降级或收窄判断的重要原因。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       }
     ],
@@ -1074,11 +1476,11 @@
     },
     "positive_observation_ids": [
       "obs-001",
-      "obs-002",
-      "obs-004"
+      "obs-002"
     ],
     "counter_observation_ids": [
-      "obs-003"
+      "obs-003",
+      "obs-004"
     ]
   },
   "context_bundle": {
@@ -1339,6 +1741,7 @@
       "tool_name": "search_seed_context",
       "relation": "supporting",
       "source_type": "trace_store.seed_context",
+      "source_ref": "",
       "summary": "检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。",
       "event_ids": [
         "evt-501",
@@ -1362,6 +1765,7 @@
       "tool_name": "search_related_events",
       "relation": "supporting",
       "source_type": "trace_store.related_events",
+      "source_ref": "",
       "summary": "检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。",
       "event_ids": [
         "evt-501",
@@ -1382,9 +1786,36 @@
     },
     {
       "observation_id": "obs-003",
+      "tool_name": "check_counterevidence",
+      "relation": "counterevidence",
+      "source_type": "trace_store.asset_context",
+      "source_ref": "",
+      "summary": "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。",
+      "event_ids": [
+        "evt-501",
+        "evt-502",
+        "evt-503",
+        "evt-504",
+        "evt-505",
+        "evt-506"
+      ],
+      "claim_texts": [
+        "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。"
+      ],
+      "confidence": 78,
+      "supports_hypothesis": [
+        "benign"
+      ],
+      "contradicts_hypothesis": [
+        "primary"
+      ]
+    },
+    {
+      "observation_id": "obs-004",
       "tool_name": "expand_asset_scope",
       "relation": "counterevidence",
       "source_type": "trace_store.asset_context",
+      "source_ref": "",
       "summary": "检索到 1 条更接近维护、更新或正常基线的事件。",
       "event_ids": [
         "evt-506"
@@ -1401,22 +1832,21 @@
       ]
     },
     {
-      "observation_id": "obs-004",
+      "observation_id": "obs-005",
       "tool_name": "extract_claim_candidates_from_page",
-      "relation": "supporting",
-      "source_type": "page_tool",
-      "summary": "从当前事件摘要中抽取出 5 条可直接引用的 claim。",
+      "relation": "context",
+      "source_type": "internal_digest",
+      "source_ref": "",
+      "summary": "从内部调查摘要中整理出 5 条 claim，用于结构化报告而不是新增外部证据。",
       "event_ids": [],
       "claim_texts": [
         "- src=10.80.9.20 dst=203.0.113.210 fp=t13d1516h2_9f7710a0ab12_0011ab22cd33",
-        "- benign: 围绕 203.0.113.210、backup.vendor.example 的通信可能存在正常背景解释 (score=8)",
+        "- benign: 围绕 203.0.113.210、backup.vendor.example 的通信可能存在正常背景解释 (score=11)",
         "- supporting: 检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。",
         "- Nightly backup window started on backup-srv-01 under the approved operations schedule."
       ],
       "confidence": 70,
-      "supports_hypothesis": [
-        "primary"
-      ],
+      "supports_hypothesis": [],
       "contradicts_hypothesis": []
     }
   ],
@@ -1471,7 +1901,8 @@
       "confidence": 55,
       "headline": "弱信号已被背景流量部分解释",
       "one_sentence_summary": "当前看到的告警与补充背景更接近计划内活动或正常变更，建议继续观察而不是立即定性为入侵。",
-      "primary_action": "保留当前告警与上下文，作为后续相似行为的基线样本。"
+      "primary_action": "保留当前告警与上下文，作为后续相似行为的基线样本。",
+      "delivery_note": "反证链路和背景解释已经完成交付级核查，可按降级观察交付。"
     },
     "scope_and_boundary": {
       "seed_alert": "2026-05-26 01:12:00，backup-srv-01 命中 Backup traffic outlier candidate JA4 规则。",
@@ -1524,7 +1955,8 @@
         "role": "反证",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -1533,7 +1965,8 @@
         "role": "反证",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -1542,7 +1975,8 @@
         "role": "种子告警",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -1551,7 +1985,8 @@
         "role": "反证",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -1560,7 +1995,8 @@
         "role": "反证",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -1581,7 +2017,8 @@
           "limitation_text": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
           "observation_ids": [
             "obs-001",
-            "obs-002"
+            "obs-002",
+            "obs-003"
           ]
         }
       ],
@@ -1595,7 +2032,8 @@
           "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
           "observation_ids": [
             "obs-001",
-            "obs-002"
+            "obs-002",
+            "obs-003"
           ]
         },
         {
@@ -1607,7 +2045,8 @@
           "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
           "observation_ids": [
             "obs-001",
-            "obs-002"
+            "obs-002",
+            "obs-003"
           ]
         },
         {
@@ -1619,7 +2058,8 @@
           "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
           "observation_ids": [
             "obs-001",
-            "obs-002"
+            "obs-002",
+            "obs-003"
           ]
         },
         {
@@ -1631,7 +2071,8 @@
           "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
           "observation_ids": [
             "obs-001",
-            "obs-002"
+            "obs-002",
+            "obs-003"
           ]
         }
       ],
@@ -1640,8 +2081,8 @@
     "analysis": {
       "primary_hypothesis": "backup-srv-01 疑似恶意外联事件",
       "alternative_hypothesis": "围绕 203.0.113.210、backup.vendor.example 的通信可能存在正常背景解释",
-      "why_this_conclusion": "决策主要建立在明确的维护窗口、重复的正常更新流量和可解释的背景证据之上。 唯一的主支撑仍然是 seed alert 本身，它没有得到更多恶意侧信号的放大。 当前证据更容易被维护窗口、补丁、备份或共享基线解释。",
-      "why_not_other_status": "反证主要来自维护窗口、签名更新以及兄弟资产同步访问，这些背景足以解释为什么不能只凭 seed alert 直接定性。",
+      "why_this_conclusion": "决策主要建立在明确的维护窗口、重复的正常更新流量和可解释的背景证据之上。 唯一的主支撑仍然是 种子告警 本身，它没有得到更多恶意侧信号的放大。 当前证据更容易被维护窗口、补丁、备份或共享基线解释。 反证链路和背景解释已经完成交付级核查，可按降级观察交付。",
+      "why_not_other_status": "反证主要来自维护窗口、签名更新以及兄弟资产同步访问，这些背景足以解释为什么不能只凭 种子告警 直接定性。",
       "unresolved_items": [
         "当前降级依赖于维护窗口和更新背景；如果后续在相同指示物上出现脱离基线的重复通信，需要重新升级研判。",
         "关联资产出现的同类访问目前更像共享基线，而不是扩散迹象。"
@@ -1651,12 +2092,83 @@
         "关联资产出现的同类访问目前更像共享基线，而不是扩散迹象。"
       ]
     },
+    "delivery_readiness": {
+      "ready_for_delivery": true,
+      "summary": "反证链路和背景解释已经完成交付级核查，可按降级观察交付。",
+      "blocking_items": [],
+      "provisional_conclusion": "降级观察",
+      "delivery_conclusion": "降级观察"
+    },
     "recommendations": {
       "immediate": [],
       "short_term": [],
       "follow_up": [
         "保留当前告警与上下文，作为后续相似行为的基线样本。",
         "结合变更窗口、补丁任务和资产画像确认是否需要做白名单或检测规则收敛。"
+      ]
+    },
+    "reader_report": {
+      "title": "事件调查报告",
+      "judgment_label": "降级观察",
+      "severity": "低危",
+      "confidence": "中（55/100）",
+      "one_sentence_summary": "当前围绕资产 backup-srv-01 的异常更接近背景活动或计划内行为，尚不足以按已成立入侵事件处置。",
+      "judgment_text": "当前更适合按背景活动中的弱信号处理，并保留后续复核。",
+      "boundary_text": "当前影响范围主要收敛在 backup-srv-01，同时还存在待复核关联资产 backup-srv-02；核心外部指示物为 203.0.113.210、backup.vendor.example。",
+      "primary_action": "保留当前告警与上下文，作为后续相似行为的基线样本。",
+      "event_progression": [
+        "在 2026-05-26 01:12:00 UTC，资产 `backup-srv-01` 命中了以 203.0.113.210 / backup.vendor.example / JA4 t13d1516h2_9f7710a0ab12_0011ab22cd33 为核心的种子告警。（观测引用：obs-001, obs-002, obs-003）",
+        "另有一条更接近计划内维护或更新背景的通信发生在 2026-05-26 01:05:00 UTC，提示同时间窗内存在可解释为正常运维的活动。（观测引用：obs-001, obs-002, obs-003）"
+      ],
+      "supporting_blocks": [
+        {
+          "title": "重复外联与回连形态",
+          "facts": [
+            "在 2026-05-26 01:12:00 UTC，资产 `backup-srv-01` 命中了以 203.0.113.210 / backup.vendor.example / JA4 t13d1516h2_9f7710a0ab12_0011ab22cd33 为核心的种子告警。"
+          ],
+          "judgment": "它为整个事件链提供了明确锚点，让后续调查可以围绕同一批指示物继续收敛。",
+          "boundary": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
+          "observation_ids": [
+            "obs-001",
+            "obs-002",
+            "obs-003"
+          ]
+        }
+      ],
+      "counter_block": {
+        "title": "反证与替代解释",
+        "facts": [
+          "另有一条更接近计划内维护或更新背景的通信发生在 2026-05-26 01:05:00 UTC，提示同时间窗内存在可解释为正常运维的活动。",
+          "另有一条更接近计划内维护或更新背景的通信发生在 2026-05-26 01:08:00 UTC，目标为 backup.vendor.example / DNS answers 203.0.113.210。"
+        ],
+        "judgment": "这条观测更支持背景解释或替代解释，而不是继续放大当前主假设。",
+        "boundary": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002",
+          "obs-003",
+          "obs-004"
+        ]
+      },
+      "scope_lines": [
+        "时间窗口：2026-05-26 01:05:00 UTC 至 2026-05-26 01:18:40 UTC",
+        "种子资产：backup-srv-01",
+        "当前已确认范围：backup-srv-01",
+        "核心外部指示物：203.0.113.210、backup.vendor.example",
+        "当前攻击阶段：尚未稳定识别",
+        "当前边界：当前更倾向于把这起告警解释为计划内活动中的弱信号，而不是已经成立的入侵事件。"
+      ],
+      "actions": {
+        "immediate": [],
+        "short_term": [],
+        "follow_up": [
+          "保留当前告警与上下文，作为后续相似行为的基线样本。",
+          "结合变更窗口、补丁任务和资产画像确认是否需要做白名单或检测规则收敛。"
+        ]
+      },
+      "open_questions": [
+        "当前降级依赖于维护窗口和更新背景；如果后续在相同指示物上出现脱离基线的重复通信，需要重新升级研判。",
+        "关联资产出现的同类访问目前更像共享基线，而不是扩散迹象。"
       ]
     },
     "appendix": {
@@ -1681,22 +2193,37 @@
         {
           "observation_id": "obs-001",
           "tool_name": "search_seed_context",
+          "source_type": "trace_store.seed_context",
+          "source_ref": "",
           "summary": "检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。"
         },
         {
           "observation_id": "obs-002",
           "tool_name": "search_related_events",
+          "source_type": "trace_store.related_events",
+          "source_ref": "",
           "summary": "检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。"
         },
         {
           "observation_id": "obs-003",
-          "tool_name": "expand_asset_scope",
-          "summary": "检索到 1 条更接近维护、更新或正常基线的事件。"
+          "tool_name": "check_counterevidence",
+          "source_type": "trace_store.asset_context",
+          "source_ref": "",
+          "summary": "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。"
         },
         {
           "observation_id": "obs-004",
+          "tool_name": "expand_asset_scope",
+          "source_type": "trace_store.asset_context",
+          "source_ref": "",
+          "summary": "检索到 1 条更接近维护、更新或正常基线的事件。"
+        },
+        {
+          "observation_id": "obs-005",
           "tool_name": "extract_claim_candidates_from_page",
-          "summary": "从当前事件摘要中抽取出 5 条可直接引用的 claim。"
+          "source_type": "internal_digest",
+          "source_ref": "",
+          "summary": "从内部调查摘要中整理出 5 条 claim，用于结构化报告而不是新增外部证据。"
         }
       ]
     }

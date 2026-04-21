@@ -56,6 +56,8 @@ def _run_one_incident_agent(alert: Dict[str, Any], out_dir: Path, *, fixture_dir
     trace = result.get("investigation_trace") or []
     topology = result.get("topology") or {}
     report_markdown = str(result.get("report_markdown") or "")
+    report_polished_markdown = str(result.get("report_polished_markdown") or "")
+    report_appendix_markdown = str(result.get("report_appendix_markdown") or "")
     report_outline = result.get("report_outline") or {}
 
     save_json(out_dir / "incident.json", incident)
@@ -63,9 +65,12 @@ def _run_one_incident_agent(alert: Dict[str, Any], out_dir: Path, *, fixture_dir
     save_json(out_dir / "topology.json", topology)
     save_json(out_dir / "report_outline.json", report_outline)
     save_text(out_dir / "report.md", report_markdown)
+    save_text(out_dir / "report_appendix.md", report_appendix_markdown)
+    if report_polished_markdown.strip():
+        save_text(out_dir / "report_polished.md", report_polished_markdown)
     topology_html_path = draw_graph_pyvis(topology, str(out_dir / "topology.html"))
 
-    return {
+    response = {
         "ok": True,
         "out_dir": str(out_dir),
         "incident_json_path": str((out_dir / "incident.json").resolve()),
@@ -74,8 +79,12 @@ def _run_one_incident_agent(alert: Dict[str, Any], out_dir: Path, *, fixture_dir
         "topology_html_path": topology_html_path,
         "report_outline_path": str((out_dir / "report_outline.json").resolve()),
         "report_path": str((out_dir / "report.md").resolve()),
+        "report_appendix_path": str((out_dir / "report_appendix.md").resolve()),
         "result": result,
     }
+    if report_polished_markdown.strip():
+        response["report_polished_path"] = str((out_dir / "report_polished.md").resolve())
+    return response
 
 
 def run(alert_path: Path, out_dir: Path, *, mode: str = "incident-agent", fixture_dir: Path | None = None) -> Dict[str, Any]:

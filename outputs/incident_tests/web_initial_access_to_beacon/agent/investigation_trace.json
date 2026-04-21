@@ -77,6 +77,24 @@
     ],
     "state_updates": {
       "verdict": {
+        "status": "needs_review",
+        "status_label": "待人工复核",
+        "confidence": 68,
+        "severity": "中危",
+        "rationale": [
+          "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
+          "seed alert 自带家族/工具提示：Possible web-shell beacon。",
+          "交付门槛尚未满足：尚未执行显式反证检查。；仍缺少情报或结构化整理动作，报告材料尚未收束。"
+        ],
+        "delivery_ready": false,
+        "blocked_by": [
+          "counterevidence_checked",
+          "supplemental_context_reviewed"
+        ],
+        "provisional_status": "confirmed_incident",
+        "provisional_status_label": "确认事件"
+      },
+      "provisional_verdict": {
         "status": "confirmed_incident",
         "status_label": "确认事件",
         "confidence": 94,
@@ -84,6 +102,77 @@
         "rationale": [
           "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
           "seed alert 自带家族/工具提示：Possible web-shell beacon。"
+        ]
+      },
+      "delivery_verdict": {
+        "status": "needs_review",
+        "status_label": "待人工复核",
+        "confidence": 68,
+        "severity": "中危",
+        "rationale": [
+          "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
+          "seed alert 自带家族/工具提示：Possible web-shell beacon。",
+          "交付门槛尚未满足：尚未执行显式反证检查。；仍缺少情报或结构化整理动作，报告材料尚未收束。"
+        ],
+        "delivery_ready": false,
+        "blocked_by": [
+          "counterevidence_checked",
+          "supplemental_context_reviewed"
+        ],
+        "provisional_status": "confirmed_incident",
+        "provisional_status_label": "确认事件"
+      },
+      "readiness": {
+        "ready_for_delivery": false,
+        "summary": "交付门槛尚未满足：尚未执行显式反证检查。；仍缺少情报或结构化整理动作，报告材料尚未收束。",
+        "checks": [
+          {
+            "id": "context_built",
+            "ok": true,
+            "reason": "已围绕 seed alert 建立最小上下文。"
+          },
+          {
+            "id": "cluster_built",
+            "ok": true,
+            "reason": "事件簇规模已经足以支撑时间线和范围判断。"
+          },
+          {
+            "id": "timeline_built",
+            "ok": true,
+            "reason": "已形成时间线，可解释关键观察的先后关系。"
+          },
+          {
+            "id": "scope_assessed",
+            "ok": true,
+            "reason": "当前事件范围已经落到资产或核心外部指示物上。"
+          },
+          {
+            "id": "evidence_chain_ready",
+            "ok": true,
+            "reason": "确认事件前至少需要重复主支撑信号、执行线索或多资产范围中的一项，目前该条件已满足。"
+          },
+          {
+            "id": "counterevidence_checked",
+            "ok": false,
+            "reason": "尚未执行显式反证检查。"
+          },
+          {
+            "id": "supplemental_context_reviewed",
+            "ok": false,
+            "reason": "仍缺少情报或结构化整理动作，报告材料尚未收束。"
+          }
+        ],
+        "blocking_checks": [
+          {
+            "id": "counterevidence_checked",
+            "ok": false,
+            "reason": "尚未执行显式反证检查。"
+          },
+          {
+            "id": "supplemental_context_reviewed",
+            "ok": false,
+            "reason": "仍缺少情报或结构化整理动作，报告材料尚未收束。"
+          }
         ]
       },
       "report_ready": false,
@@ -159,6 +248,24 @@
     ],
     "state_updates": {
       "verdict": {
+        "status": "needs_review",
+        "status_label": "待人工复核",
+        "confidence": 68,
+        "severity": "中危",
+        "rationale": [
+          "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
+          "seed alert 自带家族/工具提示：Possible web-shell beacon。",
+          "交付门槛尚未满足：尚未执行显式反证检查。；仍缺少情报或结构化整理动作，报告材料尚未收束。"
+        ],
+        "delivery_ready": false,
+        "blocked_by": [
+          "counterevidence_checked",
+          "supplemental_context_reviewed"
+        ],
+        "provisional_status": "confirmed_incident",
+        "provisional_status_label": "确认事件"
+      },
+      "provisional_verdict": {
         "status": "confirmed_incident",
         "status_label": "确认事件",
         "confidence": 94,
@@ -166,6 +273,77 @@
         "rationale": [
           "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
           "seed alert 自带家族/工具提示：Possible web-shell beacon。"
+        ]
+      },
+      "delivery_verdict": {
+        "status": "needs_review",
+        "status_label": "待人工复核",
+        "confidence": 68,
+        "severity": "中危",
+        "rationale": [
+          "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
+          "seed alert 自带家族/工具提示：Possible web-shell beacon。",
+          "交付门槛尚未满足：尚未执行显式反证检查。；仍缺少情报或结构化整理动作，报告材料尚未收束。"
+        ],
+        "delivery_ready": false,
+        "blocked_by": [
+          "counterevidence_checked",
+          "supplemental_context_reviewed"
+        ],
+        "provisional_status": "confirmed_incident",
+        "provisional_status_label": "确认事件"
+      },
+      "readiness": {
+        "ready_for_delivery": false,
+        "summary": "交付门槛尚未满足：尚未执行显式反证检查。；仍缺少情报或结构化整理动作，报告材料尚未收束。",
+        "checks": [
+          {
+            "id": "context_built",
+            "ok": true,
+            "reason": "已围绕 seed alert 建立最小上下文。"
+          },
+          {
+            "id": "cluster_built",
+            "ok": true,
+            "reason": "事件簇规模已经足以支撑时间线和范围判断。"
+          },
+          {
+            "id": "timeline_built",
+            "ok": true,
+            "reason": "已形成时间线，可解释关键观察的先后关系。"
+          },
+          {
+            "id": "scope_assessed",
+            "ok": true,
+            "reason": "当前事件范围已经落到资产或核心外部指示物上。"
+          },
+          {
+            "id": "evidence_chain_ready",
+            "ok": true,
+            "reason": "确认事件前至少需要重复主支撑信号、执行线索或多资产范围中的一项，目前该条件已满足。"
+          },
+          {
+            "id": "counterevidence_checked",
+            "ok": false,
+            "reason": "尚未执行显式反证检查。"
+          },
+          {
+            "id": "supplemental_context_reviewed",
+            "ok": false,
+            "reason": "仍缺少情报或结构化整理动作，报告材料尚未收束。"
+          }
+        ],
+        "blocking_checks": [
+          {
+            "id": "counterevidence_checked",
+            "ok": false,
+            "reason": "尚未执行显式反证检查。"
+          },
+          {
+            "id": "supplemental_context_reviewed",
+            "ok": false,
+            "reason": "仍缺少情报或结构化整理动作，报告材料尚未收束。"
+          }
         ]
       },
       "report_ready": false,
@@ -223,13 +401,15 @@
       }
     ],
     "selected_action": {
-      "tool_name": "extract_claim_candidates_from_page",
-      "question": "从当前事件摘要中抽取可用于报告的关键 claim。",
+      "tool_name": "check_counterevidence",
+      "question": "显式检查维护窗口、补丁、备份或共享基线等反证。",
       "trace_params": {
-        "content_preview": "Seed alert summary:\n- src=10.60.1.14 dst=198.51.100.88 fp=t13d1517h2_91adbe210bc1_7cae1281e991\n- family_hint=Possible web-shell beacon\nCurrent working hypotheses:\n- primary: web-app-01 疑似 Possible web-shell beacon 相关事件 (score=12)\n- secondar",
-        "focus": "Possible web-shell beacon"
+        "asset_ids": [
+          "web-app-01"
+        ],
+        "focus": "maintenance_or_backup"
       },
-      "expected_gain": "把当前调查事实压缩成结构化证据与 TTP 线索。",
+      "expected_gain": "确认当前结论是否存在足以降级或保留为 needs_review 的背景解释。",
       "llm_reason": ""
     },
     "observation_ids": [
@@ -237,6 +417,23 @@
     ],
     "state_updates": {
       "verdict": {
+        "status": "needs_review",
+        "status_label": "待人工复核",
+        "confidence": 68,
+        "severity": "中危",
+        "rationale": [
+          "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
+          "seed alert 自带家族/工具提示：Possible web-shell beacon。",
+          "交付门槛尚未满足：仍缺少情报或结构化整理动作，报告材料尚未收束。"
+        ],
+        "delivery_ready": false,
+        "blocked_by": [
+          "supplemental_context_reviewed"
+        ],
+        "provisional_status": "confirmed_incident",
+        "provisional_status_label": "确认事件"
+      },
+      "provisional_verdict": {
         "status": "confirmed_incident",
         "status_label": "确认事件",
         "confidence": 94,
@@ -246,15 +443,228 @@
           "seed alert 自带家族/工具提示：Possible web-shell beacon。"
         ]
       },
+      "delivery_verdict": {
+        "status": "needs_review",
+        "status_label": "待人工复核",
+        "confidence": 68,
+        "severity": "中危",
+        "rationale": [
+          "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
+          "seed alert 自带家族/工具提示：Possible web-shell beacon。",
+          "交付门槛尚未满足：仍缺少情报或结构化整理动作，报告材料尚未收束。"
+        ],
+        "delivery_ready": false,
+        "blocked_by": [
+          "supplemental_context_reviewed"
+        ],
+        "provisional_status": "confirmed_incident",
+        "provisional_status_label": "确认事件"
+      },
+      "readiness": {
+        "ready_for_delivery": false,
+        "summary": "交付门槛尚未满足：仍缺少情报或结构化整理动作，报告材料尚未收束。",
+        "checks": [
+          {
+            "id": "context_built",
+            "ok": true,
+            "reason": "已围绕 seed alert 建立最小上下文。"
+          },
+          {
+            "id": "cluster_built",
+            "ok": true,
+            "reason": "事件簇规模已经足以支撑时间线和范围判断。"
+          },
+          {
+            "id": "timeline_built",
+            "ok": true,
+            "reason": "已形成时间线，可解释关键观察的先后关系。"
+          },
+          {
+            "id": "scope_assessed",
+            "ok": true,
+            "reason": "当前事件范围已经落到资产或核心外部指示物上。"
+          },
+          {
+            "id": "evidence_chain_ready",
+            "ok": true,
+            "reason": "确认事件前至少需要重复主支撑信号、执行线索或多资产范围中的一项，目前该条件已满足。"
+          },
+          {
+            "id": "counterevidence_checked",
+            "ok": true,
+            "reason": "已执行显式反证检查。"
+          },
+          {
+            "id": "supplemental_context_reviewed",
+            "ok": false,
+            "reason": "仍缺少情报或结构化整理动作，报告材料尚未收束。"
+          }
+        ],
+        "blocking_checks": [
+          {
+            "id": "supplemental_context_reviewed",
+            "ok": false,
+            "reason": "仍缺少情报或结构化整理动作，报告材料尚未收束。"
+          }
+        ]
+      },
+      "report_ready": false,
+      "known_event_count": 5,
+      "supporting_observation_ids": [
+        "obs-001",
+        "obs-002"
+      ],
+      "counter_observation_ids": []
+    },
+    "continue_reason": "continue"
+  },
+  {
+    "step_index": 4,
+    "open_questions": [
+      {
+        "id": "structure_evidence",
+        "priority": "medium",
+        "question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。"
+      }
+    ],
+    "working_hypotheses": [
+      {
+        "id": "primary",
+        "kind": "primary",
+        "title": "web-app-01 疑似 Possible web-shell beacon 相关事件",
+        "score": 12,
+        "status": "leading",
+        "supporting_observation_ids": [
+          "obs-001",
+          "obs-002"
+        ],
+        "counter_observation_ids": []
+      },
+      {
+        "id": "secondary",
+        "kind": "secondary",
+        "title": "共享基础设施上的待复核扩展",
+        "score": 2,
+        "status": "supported",
+        "supporting_observation_ids": [
+          "obs-003"
+        ],
+        "counter_observation_ids": []
+      },
+      {
+        "id": "benign",
+        "kind": "benign",
+        "title": "围绕 198.51.100.88、cdn-auth-check.net 的通信可能存在正常背景解释",
+        "score": 0,
+        "status": "open",
+        "supporting_observation_ids": [],
+        "counter_observation_ids": [
+          "obs-001",
+          "obs-002"
+        ]
+      }
+    ],
+    "selected_action": {
+      "tool_name": "extract_claim_candidates_from_page",
+      "question": "把当前事实整理成可引用的 claim，并区分外部正文和内部摘要。",
+      "trace_params": {
+        "content_preview": "Seed alert summary:\n- src=10.60.1.14 dst=198.51.100.88 fp=t13d1517h2_91adbe210bc1_7cae1281e991\n- family_hint=Possible web-shell beacon\nCurrent working hypotheses:\n- primary: web-app-01 疑似 Possible web-shell beacon 相关事件 (score=12)\n- secondar",
+        "focus": "Possible web-shell beacon",
+        "content_origin": "internal_digest"
+      },
+      "expected_gain": "把当前调查事实压缩成结构化证据与 TTP 线索，并保留来源边界。",
+      "llm_reason": ""
+    },
+    "observation_ids": [
+      "obs-004"
+    ],
+    "state_updates": {
+      "verdict": {
+        "status": "confirmed_incident",
+        "status_label": "确认事件",
+        "confidence": 94,
+        "severity": "高危",
+        "rationale": [
+          "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
+          "seed alert 自带家族/工具提示：Possible web-shell beacon。",
+          "主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。"
+        ],
+        "delivery_ready": true,
+        "blocked_by": []
+      },
+      "provisional_verdict": {
+        "status": "confirmed_incident",
+        "status_label": "确认事件",
+        "confidence": 94,
+        "severity": "高危",
+        "rationale": [
+          "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
+          "seed alert 自带家族/工具提示：Possible web-shell beacon。"
+        ]
+      },
+      "delivery_verdict": {
+        "status": "confirmed_incident",
+        "status_label": "确认事件",
+        "confidence": 94,
+        "severity": "高危",
+        "rationale": [
+          "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
+          "seed alert 自带家族/工具提示：Possible web-shell beacon。",
+          "主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。"
+        ],
+        "delivery_ready": true,
+        "blocked_by": []
+      },
+      "readiness": {
+        "ready_for_delivery": true,
+        "summary": "主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。",
+        "checks": [
+          {
+            "id": "context_built",
+            "ok": true,
+            "reason": "已围绕 seed alert 建立最小上下文。"
+          },
+          {
+            "id": "cluster_built",
+            "ok": true,
+            "reason": "事件簇规模已经足以支撑时间线和范围判断。"
+          },
+          {
+            "id": "timeline_built",
+            "ok": true,
+            "reason": "已形成时间线，可解释关键观察的先后关系。"
+          },
+          {
+            "id": "scope_assessed",
+            "ok": true,
+            "reason": "当前事件范围已经落到资产或核心外部指示物上。"
+          },
+          {
+            "id": "evidence_chain_ready",
+            "ok": true,
+            "reason": "确认事件前至少需要重复主支撑信号、执行线索或多资产范围中的一项，目前该条件已满足。"
+          },
+          {
+            "id": "counterevidence_checked",
+            "ok": true,
+            "reason": "已执行显式反证检查。"
+          },
+          {
+            "id": "supplemental_context_reviewed",
+            "ok": true,
+            "reason": "已执行至少一次情报或结构化整理动作，可支撑 deterministic report 生成。"
+          }
+        ],
+        "blocking_checks": []
+      },
       "report_ready": true,
       "known_event_count": 5,
       "supporting_observation_ids": [
         "obs-001",
-        "obs-002",
-        "obs-003"
+        "obs-002"
       ],
       "counter_observation_ids": []
     },
-    "stop_reason": "report_ready"
+    "stop_reason": "delivery_ready"
   }
 ]

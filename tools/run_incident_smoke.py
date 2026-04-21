@@ -10,7 +10,7 @@ from typing import Any, Dict, List
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_ROOT = ROOT / "fixtures" / "incidents"
 OUTPUT_ROOT = ROOT / "outputs" / "incident_tests"
-EVENT_TOOL_NAMES = {"search_seed_context", "search_related_events", "expand_asset_scope"}
+EVENT_TOOL_NAMES = {"search_seed_context", "search_related_events", "expand_asset_scope", "check_counterevidence"}
 INTEL_OR_PAGE_TOOL_NAMES = {
     "technical_source_search",
     "malware_profile_lookup",
@@ -88,6 +88,8 @@ def _check_agent_acceptance(incident: Dict[str, Any], trace: List[Dict[str, Any]
         issues.append("agent trace missing event tool action")
     if not any(name in INTEL_OR_PAGE_TOOL_NAMES for name in tool_names):
         issues.append("agent trace missing intel/page tool action")
+    if "check_counterevidence" not in tool_names:
+        issues.append("agent trace missing explicit counterevidence check action")
 
     stop_reason = str(((incident.get("session_state") or {}).get("stop_reason")) or "").strip()
     if not stop_reason:
@@ -98,9 +100,26 @@ def _check_agent_acceptance(incident: Dict[str, Any], trace: List[Dict[str, Any]
     if open_questions and not uncertainties:
         issues.append("open_questions present but uncertainties not populated")
 
+    readiness = incident.get("readiness") or ((incident.get("state") or {}).get("readiness") or {})
+    if not isinstance(readiness, dict) or not list(readiness.get("checks") or []):
+        issues.append("missing readiness checks")
+    if not bool(readiness.get("ready_for_delivery")):
+        issues.append("incident-agent did not reach ready_for_delivery")
+
     report_ready = bool(((incident.get("state") or {}).get("report_ready")))
     if not report_ready:
         issues.append("incident-agent did not reach report_ready")
+
+    state = incident.get("state") or {}
+    if not bool(state.get("counterevidence_checked")):
+        issues.append("state.counterevidence_checked is false")
+
+    delivery_verdict = incident.get("delivery_verdict") or {}
+    top_level_verdict = incident.get("verdict") or {}
+    if delivery_verdict and top_level_verdict != delivery_verdict:
+        issues.append("incident.verdict is not aligned with delivery_verdict")
+    if not (incident.get("provisional_verdict") or {}):
+        issues.append("missing provisional_verdict")
 
     return issues
 
@@ -128,6 +147,8 @@ def _run_agent(*, fixture_dir: Path, out_dir: Path) -> Dict[str, Any]:
     item = list(parsed_stdout.get("items") or [{}])[0]
     incident_path = Path(str(item.get("incident_json_path") or out_dir / "incident.json"))
     report_path = Path(str(item.get("report_path") or out_dir / "report.md"))
+    report_appendix_path = Path(str(item.get("report_appendix_path") or out_dir / "report_appendix.md"))
+    report_polished_path = Path(str(item.get("report_polished_path") or "")).resolve() if item.get("report_polished_path") else None
     trace_path = Path(str(item.get("investigation_trace_path") or out_dir / "investigation_trace.json"))
     issues: List[str] = []
 
@@ -137,6 +158,10 @@ def _run_agent(*, fixture_dir: Path, out_dir: Path) -> Dict[str, Any]:
         issues.append("missing incident.json")
     if not report_path.exists():
         issues.append("missing report.md")
+    if not report_appendix_path.exists():
+        issues.append("missing report_appendix.md")
+    if report_polished_path is not None and not report_polished_path.exists():
+        issues.append("reported report_polished.md path does not exist")
     if not trace_path.exists():
         issues.append("missing investigation_trace.json")
 

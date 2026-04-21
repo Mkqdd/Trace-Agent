@@ -8,7 +8,8 @@
     "confidence": 55,
     "headline": "弱信号已被背景流量部分解释",
     "one_sentence_summary": "当前看到的告警与补充背景更接近计划内活动或正常变更，建议继续观察而不是立即定性为入侵。",
-    "primary_action": "保留当前告警与上下文，作为后续相似行为的基线样本。"
+    "primary_action": "保留当前告警与上下文，作为后续相似行为的基线样本。",
+    "delivery_note": "反证链路和背景解释已经完成交付级核查，可按降级观察交付。"
   },
   "scope_and_boundary": {
     "seed_alert": "2026-05-26 01:12:00，backup-srv-01 命中 Backup traffic outlier candidate JA4 规则。",
@@ -61,7 +62,8 @@
       "role": "反证",
       "observation_ids": [
         "obs-001",
-        "obs-002"
+        "obs-002",
+        "obs-003"
       ]
     },
     {
@@ -70,7 +72,8 @@
       "role": "反证",
       "observation_ids": [
         "obs-001",
-        "obs-002"
+        "obs-002",
+        "obs-003"
       ]
     },
     {
@@ -79,7 +82,8 @@
       "role": "种子告警",
       "observation_ids": [
         "obs-001",
-        "obs-002"
+        "obs-002",
+        "obs-003"
       ]
     },
     {
@@ -88,7 +92,8 @@
       "role": "反证",
       "observation_ids": [
         "obs-001",
-        "obs-002"
+        "obs-002",
+        "obs-003"
       ]
     },
     {
@@ -97,7 +102,8 @@
       "role": "反证",
       "observation_ids": [
         "obs-001",
-        "obs-002"
+        "obs-002",
+        "obs-003"
       ]
     },
     {
@@ -118,7 +124,8 @@
         "limitation_text": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       }
     ],
@@ -132,7 +139,8 @@
         "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -144,7 +152,8 @@
         "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -156,7 +165,8 @@
         "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -168,7 +178,8 @@
         "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       }
     ],
@@ -177,8 +188,8 @@
   "analysis": {
     "primary_hypothesis": "backup-srv-01 疑似恶意外联事件",
     "alternative_hypothesis": "围绕 203.0.113.210、backup.vendor.example 的通信可能存在正常背景解释",
-    "why_this_conclusion": "决策主要建立在明确的维护窗口、重复的正常更新流量和可解释的背景证据之上。 唯一的主支撑仍然是 seed alert 本身，它没有得到更多恶意侧信号的放大。 当前证据更容易被维护窗口、补丁、备份或共享基线解释。",
-    "why_not_other_status": "反证主要来自维护窗口、签名更新以及兄弟资产同步访问，这些背景足以解释为什么不能只凭 seed alert 直接定性。",
+    "why_this_conclusion": "决策主要建立在明确的维护窗口、重复的正常更新流量和可解释的背景证据之上。 唯一的主支撑仍然是 种子告警 本身，它没有得到更多恶意侧信号的放大。 当前证据更容易被维护窗口、补丁、备份或共享基线解释。 反证链路和背景解释已经完成交付级核查，可按降级观察交付。",
+    "why_not_other_status": "反证主要来自维护窗口、签名更新以及兄弟资产同步访问，这些背景足以解释为什么不能只凭 种子告警 直接定性。",
     "unresolved_items": [
       "当前降级依赖于维护窗口和更新背景；如果后续在相同指示物上出现脱离基线的重复通信，需要重新升级研判。",
       "关联资产出现的同类访问目前更像共享基线，而不是扩散迹象。"
@@ -188,12 +199,83 @@
       "关联资产出现的同类访问目前更像共享基线，而不是扩散迹象。"
     ]
   },
+  "delivery_readiness": {
+    "ready_for_delivery": true,
+    "summary": "反证链路和背景解释已经完成交付级核查，可按降级观察交付。",
+    "blocking_items": [],
+    "provisional_conclusion": "降级观察",
+    "delivery_conclusion": "降级观察"
+  },
   "recommendations": {
     "immediate": [],
     "short_term": [],
     "follow_up": [
       "保留当前告警与上下文，作为后续相似行为的基线样本。",
       "结合变更窗口、补丁任务和资产画像确认是否需要做白名单或检测规则收敛。"
+    ]
+  },
+  "reader_report": {
+    "title": "事件调查报告",
+    "judgment_label": "降级观察",
+    "severity": "低危",
+    "confidence": "中（55/100）",
+    "one_sentence_summary": "当前围绕资产 backup-srv-01 的异常更接近背景活动或计划内行为，尚不足以按已成立入侵事件处置。",
+    "judgment_text": "当前更适合按背景活动中的弱信号处理，并保留后续复核。",
+    "boundary_text": "当前影响范围主要收敛在 backup-srv-01，同时还存在待复核关联资产 backup-srv-02；核心外部指示物为 203.0.113.210、backup.vendor.example。",
+    "primary_action": "保留当前告警与上下文，作为后续相似行为的基线样本。",
+    "event_progression": [
+      "在 2026-05-26 01:12:00 UTC，资产 `backup-srv-01` 命中了以 203.0.113.210 / backup.vendor.example / JA4 t13d1516h2_9f7710a0ab12_0011ab22cd33 为核心的种子告警。（观测引用：obs-001, obs-002, obs-003）",
+      "另有一条更接近计划内维护或更新背景的通信发生在 2026-05-26 01:05:00 UTC，提示同时间窗内存在可解释为正常运维的活动。（观测引用：obs-001, obs-002, obs-003）"
+    ],
+    "supporting_blocks": [
+      {
+        "title": "重复外联与回连形态",
+        "facts": [
+          "在 2026-05-26 01:12:00 UTC，资产 `backup-srv-01` 命中了以 203.0.113.210 / backup.vendor.example / JA4 t13d1516h2_9f7710a0ab12_0011ab22cd33 为核心的种子告警。"
+        ],
+        "judgment": "它为整个事件链提供了明确锚点，让后续调查可以围绕同一批指示物继续收敛。",
+        "boundary": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002",
+          "obs-003"
+        ]
+      }
+    ],
+    "counter_block": {
+      "title": "反证与替代解释",
+      "facts": [
+        "另有一条更接近计划内维护或更新背景的通信发生在 2026-05-26 01:05:00 UTC，提示同时间窗内存在可解释为正常运维的活动。",
+        "另有一条更接近计划内维护或更新背景的通信发生在 2026-05-26 01:08:00 UTC，目标为 backup.vendor.example / DNS answers 203.0.113.210。"
+      ],
+      "judgment": "这条观测更支持背景解释或替代解释，而不是继续放大当前主假设。",
+      "boundary": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
+      "observation_ids": [
+        "obs-001",
+        "obs-002",
+        "obs-003",
+        "obs-004"
+      ]
+    },
+    "scope_lines": [
+      "时间窗口：2026-05-26 01:05:00 UTC 至 2026-05-26 01:18:40 UTC",
+      "种子资产：backup-srv-01",
+      "当前已确认范围：backup-srv-01",
+      "核心外部指示物：203.0.113.210、backup.vendor.example",
+      "当前攻击阶段：尚未稳定识别",
+      "当前边界：当前更倾向于把这起告警解释为计划内活动中的弱信号，而不是已经成立的入侵事件。"
+    ],
+    "actions": {
+      "immediate": [],
+      "short_term": [],
+      "follow_up": [
+        "保留当前告警与上下文，作为后续相似行为的基线样本。",
+        "结合变更窗口、补丁任务和资产画像确认是否需要做白名单或检测规则收敛。"
+      ]
+    },
+    "open_questions": [
+      "当前降级依赖于维护窗口和更新背景；如果后续在相同指示物上出现脱离基线的重复通信，需要重新升级研判。",
+      "关联资产出现的同类访问目前更像共享基线，而不是扩散迹象。"
     ]
   },
   "appendix": {
@@ -218,22 +300,37 @@
       {
         "observation_id": "obs-001",
         "tool_name": "search_seed_context",
+        "source_type": "trace_store.seed_context",
+        "source_ref": "",
         "summary": "检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。"
       },
       {
         "observation_id": "obs-002",
         "tool_name": "search_related_events",
+        "source_type": "trace_store.related_events",
+        "source_ref": "",
         "summary": "检索到 1 条偏可疑事件，围绕 backup.vendor.example、203.0.113.210 展开。"
       },
       {
         "observation_id": "obs-003",
-        "tool_name": "expand_asset_scope",
-        "summary": "检索到 1 条更接近维护、更新或正常基线的事件。"
+        "tool_name": "check_counterevidence",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。"
       },
       {
         "observation_id": "obs-004",
+        "tool_name": "expand_asset_scope",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "检索到 1 条更接近维护、更新或正常基线的事件。"
+      },
+      {
+        "observation_id": "obs-005",
         "tool_name": "extract_claim_candidates_from_page",
-        "summary": "从当前事件摘要中抽取出 5 条可直接引用的 claim。"
+        "source_type": "internal_digest",
+        "source_ref": "",
+        "summary": "从内部调查摘要中整理出 5 条 claim，用于结构化报告而不是新增外部证据。"
       }
     ]
   }

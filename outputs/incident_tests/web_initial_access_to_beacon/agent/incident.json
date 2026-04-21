@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.2",
+  "schema_version": "0.3",
   "mode": "incident-agent",
   "fixture_case": "web_initial_access_to_beacon",
   "seed": {
@@ -47,29 +47,116 @@
     "scope_assessed": true,
     "intrusion_hypothesis_grounded": true,
     "external_infra_grounded": true,
-    "counterevidence_checked": false,
-    "report_ready": true
+    "counterevidence_checked": true,
+    "provisional_status": "confirmed_incident",
+    "delivery_status": "confirmed_incident",
+    "report_ready": true,
+    "readiness": {
+      "ready_for_delivery": true,
+      "summary": "主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。",
+      "checks": [
+        {
+          "id": "context_built",
+          "ok": true,
+          "reason": "已围绕 seed alert 建立最小上下文。"
+        },
+        {
+          "id": "cluster_built",
+          "ok": true,
+          "reason": "事件簇规模已经足以支撑时间线和范围判断。"
+        },
+        {
+          "id": "timeline_built",
+          "ok": true,
+          "reason": "已形成时间线，可解释关键观察的先后关系。"
+        },
+        {
+          "id": "scope_assessed",
+          "ok": true,
+          "reason": "当前事件范围已经落到资产或核心外部指示物上。"
+        },
+        {
+          "id": "evidence_chain_ready",
+          "ok": true,
+          "reason": "确认事件前至少需要重复主支撑信号、执行线索或多资产范围中的一项，目前该条件已满足。"
+        },
+        {
+          "id": "counterevidence_checked",
+          "ok": true,
+          "reason": "已执行显式反证检查。"
+        },
+        {
+          "id": "supplemental_context_reviewed",
+          "ok": true,
+          "reason": "已执行至少一次情报或结构化整理动作，可支撑 deterministic report 生成。"
+        }
+      ],
+      "blocking_checks": []
+    }
+  },
+  "readiness": {
+    "ready_for_delivery": true,
+    "summary": "主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。",
+    "checks": [
+      {
+        "id": "context_built",
+        "ok": true,
+        "reason": "已围绕 seed alert 建立最小上下文。"
+      },
+      {
+        "id": "cluster_built",
+        "ok": true,
+        "reason": "事件簇规模已经足以支撑时间线和范围判断。"
+      },
+      {
+        "id": "timeline_built",
+        "ok": true,
+        "reason": "已形成时间线，可解释关键观察的先后关系。"
+      },
+      {
+        "id": "scope_assessed",
+        "ok": true,
+        "reason": "当前事件范围已经落到资产或核心外部指示物上。"
+      },
+      {
+        "id": "evidence_chain_ready",
+        "ok": true,
+        "reason": "确认事件前至少需要重复主支撑信号、执行线索或多资产范围中的一项，目前该条件已满足。"
+      },
+      {
+        "id": "counterevidence_checked",
+        "ok": true,
+        "reason": "已执行显式反证检查。"
+      },
+      {
+        "id": "supplemental_context_reviewed",
+        "ok": true,
+        "reason": "已执行至少一次情报或结构化整理动作，可支撑 deterministic report 生成。"
+      }
+    ],
+    "blocking_checks": []
   },
   "session_state": {
     "goal": "围绕 seed alert 10.60.1.14 -> 198.51.100.88 收敛为事件级研判结论。",
     "budgets": {
       "max_steps": 8,
-      "remaining_steps": 5,
+      "remaining_steps": 4,
       "max_tool_calls": 12,
-      "remaining_tool_calls": 9,
+      "remaining_tool_calls": 8,
       "max_event_queries": 8,
-      "remaining_event_queries": 6,
+      "remaining_event_queries": 5,
       "max_intel_queries": 4,
       "remaining_intel_queries": 3,
       "max_runtime_s": 120
     },
-    "step_index": 3,
+    "step_index": 4,
     "tool_history": [
       {
         "step_index": 1,
         "tool_name": "search_seed_context",
         "observation_id": "obs-001",
         "relation": "supporting",
+        "source_type": "trace_store.seed_context",
         "status": "ok"
       },
       {
@@ -77,13 +164,23 @@
         "tool_name": "search_related_events",
         "observation_id": "obs-002",
         "relation": "supporting",
+        "source_type": "trace_store.related_events",
         "status": "ok"
       },
       {
         "step_index": 3,
-        "tool_name": "extract_claim_candidates_from_page",
+        "tool_name": "check_counterevidence",
         "observation_id": "obs-003",
-        "relation": "supporting",
+        "relation": "context",
+        "source_type": "trace_store.asset_context",
+        "status": "ok"
+      },
+      {
+        "step_index": 4,
+        "tool_name": "extract_claim_candidates_from_page",
+        "observation_id": "obs-004",
+        "relation": "context",
+        "source_type": "internal_digest",
         "status": "ok"
       }
     ],
@@ -93,12 +190,11 @@
         "id": "primary",
         "kind": "primary",
         "title": "web-app-01 疑似 Possible web-shell beacon 相关事件",
-        "score": 15,
+        "score": 12,
         "status": "leading",
         "supporting_observation_ids": [
           "obs-001",
-          "obs-002",
-          "obs-003"
+          "obs-002"
         ],
         "counter_observation_ids": []
       },
@@ -106,9 +202,12 @@
         "id": "secondary",
         "kind": "secondary",
         "title": "共享基础设施上的待复核扩展",
-        "score": 0,
-        "status": "open",
-        "supporting_observation_ids": [],
+        "score": 4,
+        "status": "supported",
+        "supporting_observation_ids": [
+          "obs-003",
+          "obs-004"
+        ],
         "counter_observation_ids": []
       },
       {
@@ -120,12 +219,11 @@
         "supporting_observation_ids": [],
         "counter_observation_ids": [
           "obs-001",
-          "obs-002",
-          "obs-003"
+          "obs-002"
         ]
       }
     ],
-    "stop_reason": "report_ready",
+    "stop_reason": "delivery_ready",
     "consecutive_low_value_steps": 0,
     "policy_mode": "heuristic_fallback"
   },
@@ -191,6 +289,7 @@
         "tool_name": "search_seed_context",
         "query": {},
         "source_type": "trace_store.seed_context",
+        "source_ref": "",
         "events": [
           {
             "id": "evt-301",
@@ -299,6 +398,7 @@
         "summary": "检索到 5 条偏可疑事件，围绕 cdn-auth-check.net、198.51.100.88 展开。",
         "note": "seed-context query over fixture trace events",
         "page_candidates": [],
+        "documents": [],
         "status": "ok"
       },
       {
@@ -327,6 +427,7 @@
           "limit": 60
         },
         "source_type": "trace_store.related_events",
+        "source_ref": "",
         "events": [
           {
             "id": "evt-301",
@@ -435,16 +536,139 @@
         "summary": "检索到 5 条偏可疑事件，围绕 cdn-auth-check.net、198.51.100.88 展开。",
         "note": "pivot expansion over fixture trace events",
         "page_candidates": [],
+        "documents": [],
         "status": "ok"
       },
       {
         "observation_id": "obs-003",
+        "tool_name": "check_counterevidence",
+        "query": {
+          "asset_ids": [
+            "web-app-01"
+          ],
+          "window_minutes": 240,
+          "limit": 80
+        },
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "events": [
+          {
+            "id": "evt-301",
+            "ts": "2026-05-11T14:02:00Z",
+            "kind": "alert",
+            "asset_id": "web-app-01",
+            "src_ip": "10.60.1.14",
+            "classification": "suspicious",
+            "tags": [
+              "initial-access"
+            ],
+            "summary": "Public-facing web server received suspicious exploit requests against the login endpoint before external TLS traffic began."
+          },
+          {
+            "id": "evt-302",
+            "ts": "2026-05-11T14:07:30Z",
+            "kind": "dns",
+            "asset_id": "web-app-01",
+            "src_ip": "10.60.1.14",
+            "domain": "cdn-auth-check.net",
+            "answers": [
+              "198.51.100.88"
+            ],
+            "classification": "suspicious",
+            "tags": [
+              "command-and-control"
+            ],
+            "summary": "The web server resolved a rare domain shortly after the exploit attempts."
+          },
+          {
+            "id": "evt-303",
+            "ts": "2026-05-11T14:12:00Z",
+            "kind": "alert",
+            "asset_id": "web-app-01",
+            "src_ip": "10.60.1.14",
+            "dst_ip": "198.51.100.88",
+            "domain": "cdn-auth-check.net",
+            "ja4": "t13d1517h2_91adbe210bc1_7cae1281e991",
+            "classification": "malicious",
+            "tags": [
+              "command-and-control",
+              "beacon"
+            ],
+            "summary": "Seed JA4 alert matched a possible web-shell beacon over TLS."
+          },
+          {
+            "id": "evt-304",
+            "ts": "2026-05-11T14:18:10Z",
+            "kind": "flow",
+            "asset_id": "web-app-01",
+            "src_ip": "10.60.1.14",
+            "dst_ip": "198.51.100.88",
+            "dst_port": 443,
+            "domain": "cdn-auth-check.net",
+            "classification": "suspicious",
+            "tags": [
+              "command-and-control",
+              "beacon"
+            ],
+            "summary": "The same web server reconnected to the same external infrastructure after the seed alert."
+          },
+          {
+            "id": "evt-305",
+            "ts": "2026-05-11T14:23:00Z",
+            "kind": "alert",
+            "asset_id": "web-app-01",
+            "src_ip": "10.60.1.14",
+            "classification": "suspicious",
+            "tags": [
+              "execution"
+            ],
+            "summary": "PowerShell launcher executed under w3wp after suspicious outbound TLS traffic began."
+          }
+        ],
+        "derived_entities": {
+          "asset_ids": [
+            "web-app-01"
+          ],
+          "src_ips": [
+            "10.60.1.14"
+          ],
+          "dst_ips": [
+            "198.51.100.88"
+          ],
+          "domains": [
+            "cdn-auth-check.net"
+          ],
+          "fingerprints": [
+            "t13d1517h2_91adbe210bc1_7cae1281e991"
+          ],
+          "families": []
+        },
+        "claims": [
+          {
+            "text": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。",
+            "kind": "counterevidence_check",
+            "score": 48
+          }
+        ],
+        "confidence": 48,
+        "supports_hypothesis": [],
+        "contradicts_hypothesis": [],
+        "relation": "context",
+        "summary": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。",
+        "note": "asset-context expansion over fixture trace events",
+        "page_candidates": [],
+        "documents": [],
+        "status": "ok"
+      },
+      {
+        "observation_id": "obs-004",
         "tool_name": "extract_claim_candidates_from_page",
         "query": {
-          "content": "Seed alert summary:\n- src=10.60.1.14 dst=198.51.100.88 fp=t13d1517h2_91adbe210bc1_7cae1281e991\n- family_hint=Possible web-shell beacon\nCurrent working hypotheses:\n- primary: web-app-01 疑似 Possible web-shell beacon 相关事件 (score=12)\n- secondary: 共享基础设施上的待复核扩展 (score=0)\n- benign: 围绕 198.51.100.88、cdn-auth-check.net 的通信可能存在正常背景解释 (score=0)\nEvent summaries:\n- Public-facing web server received suspicious exploit requests against the login endpoint before external TLS traffic began.\n- The web server resolved a rare domain shortly after the exploit attempts.\n- Seed JA4 alert matched a possible web-shell beacon over TLS.\n- The same web server reconnected to the same external infrastructure after the seed alert.\n- PowerShell launcher executed under w3wp after suspicious outbound TLS traffic began.\nEvidence ledger:\n- supporting: 检索到 5 条偏可疑事件，围绕 cdn-auth-check.net、198.51.100.88 展开。 [evt-301,evt-302,evt-303,evt-304,evt-305]\n- supporting: 检索到 5 条偏可疑事件，围绕 cdn-auth-check.net、198.51.100.88 展开。 [evt-301,evt-302,evt-303,evt-304,evt-305]",
+          "content": "Seed alert summary:\n- src=10.60.1.14 dst=198.51.100.88 fp=t13d1517h2_91adbe210bc1_7cae1281e991\n- family_hint=Possible web-shell beacon\nCurrent working hypotheses:\n- primary: web-app-01 疑似 Possible web-shell beacon 相关事件 (score=12)\n- secondary: 共享基础设施上的待复核扩展 (score=2)\n- benign: 围绕 198.51.100.88、cdn-auth-check.net 的通信可能存在正常背景解释 (score=0)\nEvent summaries:\n- Public-facing web server received suspicious exploit requests against the login endpoint before external TLS traffic began.\n- The web server resolved a rare domain shortly after the exploit attempts.\n- Seed JA4 alert matched a possible web-shell beacon over TLS.\n- The same web server reconnected to the same external infrastructure after the seed alert.\n- PowerShell launcher executed under w3wp after suspicious outbound TLS traffic began.\nEvidence ledger:\n- supporting: 检索到 5 条偏可疑事件，围绕 cdn-auth-check.net、198.51.100.88 展开。 [evt-301,evt-302,evt-303,evt-304,evt-305]\n- supporting: 检索到 5 条偏可疑事件，围绕 cdn-auth-check.net、198.51.100.88 展开。 [evt-301,evt-302,evt-303,evt-304,evt-305]\n- context: 显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。 [evt-301,evt-302,evt-303,evt-304,evt-305]",
           "focus": "Possible web-shell beacon"
         },
-        "source_type": "page_tool",
+        "source_type": "internal_digest",
+        "source_ref": "",
         "events": [],
         "derived_entities": {
           "asset_ids": [],
@@ -532,17 +756,17 @@
           }
         ],
         "confidence": 70,
-        "supports_hypothesis": [
-          "primary"
-        ],
+        "supports_hypothesis": [],
         "contradicts_hypothesis": [],
-        "relation": "supporting",
-        "summary": "从当前事件摘要中抽取出 7 条可直接引用的 claim。",
+        "relation": "context",
+        "summary": "从内部调查摘要中整理出 7 条 claim，用于结构化报告而不是新增外部证据。",
         "note": "",
         "page_candidates": [],
+        "documents": [],
         "status": "ok"
       }
     ],
+    "page_documents": [],
     "entities": {
       "seed_asset": "web-app-01",
       "assets": [
@@ -661,6 +885,7 @@
         "tool_name": "search_seed_context",
         "relation": "supporting",
         "source_type": "trace_store.seed_context",
+        "source_ref": "",
         "summary": "检索到 5 条偏可疑事件，围绕 cdn-auth-check.net、198.51.100.88 展开。",
         "event_ids": [
           "evt-301",
@@ -683,6 +908,7 @@
         "tool_name": "search_related_events",
         "relation": "supporting",
         "source_type": "trace_store.related_events",
+        "source_ref": "",
         "summary": "检索到 5 条偏可疑事件，围绕 cdn-auth-check.net、198.51.100.88 展开。",
         "event_ids": [
           "evt-301",
@@ -702,10 +928,32 @@
       },
       {
         "observation_id": "obs-003",
+        "tool_name": "check_counterevidence",
+        "relation": "context",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。",
+        "event_ids": [
+          "evt-301",
+          "evt-302",
+          "evt-303",
+          "evt-304",
+          "evt-305"
+        ],
+        "claim_texts": [
+          "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。"
+        ],
+        "confidence": 48,
+        "supports_hypothesis": [],
+        "contradicts_hypothesis": []
+      },
+      {
+        "observation_id": "obs-004",
         "tool_name": "extract_claim_candidates_from_page",
-        "relation": "supporting",
-        "source_type": "page_tool",
-        "summary": "从当前事件摘要中抽取出 7 条可直接引用的 claim。",
+        "relation": "context",
+        "source_type": "internal_digest",
+        "source_ref": "",
+        "summary": "从内部调查摘要中整理出 7 条 claim，用于结构化报告而不是新增外部证据。",
         "event_ids": [],
         "claim_texts": [
           "- primary: web-app-01 疑似 Possible web-shell beacon 相关事件 (score=12)",
@@ -714,14 +962,12 @@
           "- PowerShell launcher executed under w3wp after suspicious outbound TLS traffic began."
         ],
         "confidence": 70,
-        "supports_hypothesis": [
-          "primary"
-        ],
+        "supports_hypothesis": [],
         "contradicts_hypothesis": []
       }
     ],
     "counterevidence": [],
-    "verdict": {
+    "provisional_verdict": {
       "status": "confirmed_incident",
       "status_label": "确认事件",
       "confidence": 94,
@@ -731,8 +977,76 @@
         "seed alert 自带家族/工具提示：Possible web-shell beacon。"
       ]
     },
+    "delivery_verdict": {
+      "status": "confirmed_incident",
+      "status_label": "确认事件",
+      "confidence": 94,
+      "severity": "高危",
+      "rationale": [
+        "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
+        "seed alert 自带家族/工具提示：Possible web-shell beacon。",
+        "主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。"
+      ],
+      "delivery_ready": true,
+      "blocked_by": []
+    },
+    "verdict": {
+      "status": "confirmed_incident",
+      "status_label": "确认事件",
+      "confidence": 94,
+      "severity": "高危",
+      "rationale": [
+        "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
+        "seed alert 自带家族/工具提示：Possible web-shell beacon。",
+        "主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。"
+      ],
+      "delivery_ready": true,
+      "blocked_by": []
+    },
     "confidence": 94,
-    "report_ready": true
+    "report_ready": true,
+    "readiness": {
+      "ready_for_delivery": true,
+      "summary": "主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。",
+      "checks": [
+        {
+          "id": "context_built",
+          "ok": true,
+          "reason": "已围绕 seed alert 建立最小上下文。"
+        },
+        {
+          "id": "cluster_built",
+          "ok": true,
+          "reason": "事件簇规模已经足以支撑时间线和范围判断。"
+        },
+        {
+          "id": "timeline_built",
+          "ok": true,
+          "reason": "已形成时间线，可解释关键观察的先后关系。"
+        },
+        {
+          "id": "scope_assessed",
+          "ok": true,
+          "reason": "当前事件范围已经落到资产或核心外部指示物上。"
+        },
+        {
+          "id": "evidence_chain_ready",
+          "ok": true,
+          "reason": "确认事件前至少需要重复主支撑信号、执行线索或多资产范围中的一项，目前该条件已满足。"
+        },
+        {
+          "id": "counterevidence_checked",
+          "ok": true,
+          "reason": "已执行显式反证检查。"
+        },
+        {
+          "id": "supplemental_context_reviewed",
+          "ok": true,
+          "reason": "已执行至少一次情报或结构化整理动作，可支撑 deterministic report 生成。"
+        }
+      ],
+      "blocking_checks": []
+    }
   },
   "open_questions": [],
   "working_hypotheses": [
@@ -740,12 +1054,11 @@
       "id": "primary",
       "kind": "primary",
       "title": "web-app-01 疑似 Possible web-shell beacon 相关事件",
-      "score": 15,
+      "score": 12,
       "status": "leading",
       "supporting_observation_ids": [
         "obs-001",
-        "obs-002",
-        "obs-003"
+        "obs-002"
       ],
       "counter_observation_ids": []
     },
@@ -753,9 +1066,12 @@
       "id": "secondary",
       "kind": "secondary",
       "title": "共享基础设施上的待复核扩展",
-      "score": 0,
-      "status": "open",
-      "supporting_observation_ids": [],
+      "score": 4,
+      "status": "supported",
+      "supporting_observation_ids": [
+        "obs-003",
+        "obs-004"
+      ],
       "counter_observation_ids": []
     },
     {
@@ -767,12 +1083,11 @@
       "supporting_observation_ids": [],
       "counter_observation_ids": [
         "obs-001",
-        "obs-002",
-        "obs-003"
+        "obs-002"
       ]
     }
   ],
-  "verdict": {
+  "provisional_verdict": {
     "status": "confirmed_incident",
     "status_label": "确认事件",
     "confidence": 94,
@@ -781,6 +1096,32 @@
       "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
       "seed alert 自带家族/工具提示：Possible web-shell beacon。"
     ]
+  },
+  "delivery_verdict": {
+    "status": "confirmed_incident",
+    "status_label": "确认事件",
+    "confidence": 94,
+    "severity": "高危",
+    "rationale": [
+      "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
+      "seed alert 自带家族/工具提示：Possible web-shell beacon。",
+      "主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。"
+    ],
+    "delivery_ready": true,
+    "blocked_by": []
+  },
+  "verdict": {
+    "status": "confirmed_incident",
+    "status_label": "确认事件",
+    "confidence": 94,
+    "severity": "高危",
+    "rationale": [
+      "事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。",
+      "seed alert 自带家族/工具提示：Possible web-shell beacon。",
+      "主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。"
+    ],
+    "delivery_ready": true,
+    "blocked_by": []
   },
   "summary": {
     "headline": "单资产疑似 Possible web-shell beacon 事件",
@@ -821,7 +1162,8 @@
         "why_it_matters": "这是种子命中的直接落点，说明告警并不是孤立的指纹命中。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -841,7 +1183,8 @@
         "why_it_matters": "它给出了可疑外联之前的解析准备动作，说明相关基础设施不是只在告警瞬间出现。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -860,7 +1203,8 @@
         "why_it_matters": "同一资产围绕同一批外部基础设施再次通信，单条告警已经扩展成连续事件链。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -879,7 +1223,8 @@
         "why_it_matters": "它补足了种子告警周围的上下文。",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       }
     ],
@@ -891,8 +1236,7 @@
     "counter_cluster": null,
     "positive_observation_ids": [
       "obs-001",
-      "obs-002",
-      "obs-003"
+      "obs-002"
     ],
     "counter_observation_ids": []
   },
@@ -1144,6 +1488,7 @@
       "tool_name": "search_seed_context",
       "relation": "supporting",
       "source_type": "trace_store.seed_context",
+      "source_ref": "",
       "summary": "检索到 5 条偏可疑事件，围绕 cdn-auth-check.net、198.51.100.88 展开。",
       "event_ids": [
         "evt-301",
@@ -1166,6 +1511,7 @@
       "tool_name": "search_related_events",
       "relation": "supporting",
       "source_type": "trace_store.related_events",
+      "source_ref": "",
       "summary": "检索到 5 条偏可疑事件，围绕 cdn-auth-check.net、198.51.100.88 展开。",
       "event_ids": [
         "evt-301",
@@ -1185,10 +1531,32 @@
     },
     {
       "observation_id": "obs-003",
+      "tool_name": "check_counterevidence",
+      "relation": "context",
+      "source_type": "trace_store.asset_context",
+      "source_ref": "",
+      "summary": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。",
+      "event_ids": [
+        "evt-301",
+        "evt-302",
+        "evt-303",
+        "evt-304",
+        "evt-305"
+      ],
+      "claim_texts": [
+        "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。"
+      ],
+      "confidence": 48,
+      "supports_hypothesis": [],
+      "contradicts_hypothesis": []
+    },
+    {
+      "observation_id": "obs-004",
       "tool_name": "extract_claim_candidates_from_page",
-      "relation": "supporting",
-      "source_type": "page_tool",
-      "summary": "从当前事件摘要中抽取出 7 条可直接引用的 claim。",
+      "relation": "context",
+      "source_type": "internal_digest",
+      "source_ref": "",
+      "summary": "从内部调查摘要中整理出 7 条 claim，用于结构化报告而不是新增外部证据。",
       "event_ids": [],
       "claim_texts": [
         "- primary: web-app-01 疑似 Possible web-shell beacon 相关事件 (score=12)",
@@ -1197,9 +1565,7 @@
         "- PowerShell launcher executed under w3wp after suspicious outbound TLS traffic began."
       ],
       "confidence": 70,
-      "supports_hypothesis": [
-        "primary"
-      ],
+      "supports_hypothesis": [],
       "contradicts_hypothesis": []
     }
   ],
@@ -1251,7 +1617,8 @@
       "confidence": 94,
       "headline": "单资产疑似 Possible web-shell beacon 事件",
       "one_sentence_summary": "最小上下文和扩展事件簇都显示该资产与同一批外部基础设施发生重复通信，已经具备 C2 / beacon 事件特征。",
-      "primary_action": "优先隔离或重点监控资产：web-app-01。"
+      "primary_action": "优先隔离或重点监控资产：web-app-01。",
+      "delivery_note": "主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。"
     },
     "scope_and_boundary": {
       "seed_alert": "2026-05-11 14:12:00，web-app-01 命中 Possible web-shell beacon JA4 规则。",
@@ -1276,9 +1643,9 @@
         "cdn-auth-check.net"
       ],
       "stage_labels": [
-        "initial-access",
-        "command-and-control",
-        "execution"
+        "初始访问",
+        "命令与控制",
+        "执行"
       ],
       "primary_external_indicators": [
         "198.51.100.88",
@@ -1299,7 +1666,8 @@
         "role": "支撑证据",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -1308,7 +1676,8 @@
         "role": "主证据",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -1317,7 +1686,8 @@
         "role": "种子告警",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -1326,7 +1696,8 @@
         "role": "主证据",
         "observation_ids": [
           "obs-001",
-          "obs-002"
+          "obs-002",
+          "obs-003"
         ]
       },
       {
@@ -1347,7 +1718,8 @@
           "limitation_text": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
           "observation_ids": [
             "obs-001",
-            "obs-002"
+            "obs-002",
+            "obs-003"
           ]
         },
         {
@@ -1359,7 +1731,8 @@
           "limitation_text": "仅凭网络侧重复通信仍可能在少数情况下被正常组件、同步组件或运维脚本解释，因此仍需要结合资产背景或主机侧结果。",
           "observation_ids": [
             "obs-001",
-            "obs-002"
+            "obs-002",
+            "obs-003"
           ]
         },
         {
@@ -1371,7 +1744,8 @@
           "limitation_text": "仅凭网络侧重复通信仍可能在少数情况下被正常组件、同步组件或运维脚本解释，因此仍需要结合资产背景或主机侧结果。",
           "observation_ids": [
             "obs-001",
-            "obs-002"
+            "obs-002",
+            "obs-003"
           ]
         },
         {
@@ -1383,27 +1757,36 @@
           "limitation_text": "它解释了事件为何进入高风险状态，但单独仍不能证明漏洞利用已经成功执行。",
           "observation_ids": [
             "obs-001",
-            "obs-002"
+            "obs-002",
+            "obs-003"
           ]
         }
       ],
       "counterevidence": [],
       "family_context": {
         "hint": "Possible web-shell beacon",
-        "summary": "当前可获得的背景提示主要来自 seed 告警自带的家族/工具描述：Possible web-shell beacon。它与本案已经观察到的阶段形态 initial-access、command-and-control、execution 基本一致，更适合作为解释当前事件链的辅助背景。",
+        "summary": "当前可获得的背景提示主要来自 seed 告警自带的家族/工具描述：Possible web-shell beacon。它与本案已经观察到的阶段形态 初始访问、命令与控制、执行 基本一致，更适合作为解释当前事件链的辅助背景。",
         "limits": "这类背景提示的价值在于帮助理解攻击链或工具形态，而不是直接完成家族归因、攻击团伙归因或样本级确认。",
         "observation_ids": [
-          "obs-003"
+          "obs-003",
+          "obs-004"
         ]
       }
     },
     "analysis": {
       "primary_hypothesis": "web-app-01 疑似 Possible web-shell beacon 相关事件",
       "alternative_hypothesis": "围绕 198.51.100.88、cdn-auth-check.net 的通信可能存在正常背景解释",
-      "why_this_conclusion": "决策主要建立在种子告警后的重复外联、同基础设施复现以及后续执行线索之上。 web-app-01 先围绕 198.51.100.88、cdn-auth-check.net 形成重复外联，随后又出现主机侧执行痕迹，因此判断已经超过单点命中。 事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。 seed alert 自带家族/工具提示：Possible web-shell beacon。",
+      "why_this_conclusion": "决策主要建立在种子告警后的重复外联、同基础设施复现以及后续执行线索之上。 web-app-01 先围绕 198.51.100.88、cdn-auth-check.net 形成重复外联，随后又出现主机侧执行痕迹，因此判断已经超过单点命中。 事件簇已经出现连续恶意外联或主机侧异常，足以支撑事件成立。 种子告警 自带家族/工具提示：Possible web-shell beacon。 主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。",
       "why_not_other_status": "当前已经足够升级为确认事件，但还没有证据支持把事件范围直接扩大到明确扩散或明确数据外传。",
       "unresolved_items": [],
       "next_best_evidence": []
+    },
+    "delivery_readiness": {
+      "ready_for_delivery": true,
+      "summary": "主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。",
+      "blocking_items": [],
+      "provisional_conclusion": "确认事件",
+      "delivery_conclusion": "确认事件"
     },
     "recommendations": {
       "immediate": [
@@ -1414,6 +1797,74 @@
         "以 seed 指标和事件簇中的域名 / IP 为 pivot，继续检索同时间窗内的重复通信。"
       ],
       "follow_up": []
+    },
+    "reader_report": {
+      "title": "事件调查报告",
+      "judgment_label": "确认事件",
+      "severity": "高危",
+      "confidence": "高（94/100）",
+      "one_sentence_summary": "资产 web-app-01 围绕 198.51.100.88、cdn-auth-check.net 出现重复可疑外联，并在随后出现执行线索，当前应按已成立安全事件处置。",
+      "judgment_text": "当前证据支持将本案按已成立安全事件处置。",
+      "boundary_text": "当前影响范围主要收敛在 web-app-01，核心外部指示物为 198.51.100.88、cdn-auth-check.net。",
+      "primary_action": "优先隔离或重点监控资产：web-app-01。",
+      "event_progression": [
+        "在 2026-05-11 14:02:00 UTC，资产 `web-app-01` 出现了一条与 相关外部基础设施 相关的关键关联观测。（观测引用：obs-001, obs-002, obs-003）",
+        "在 2026-05-11 14:07:30 UTC，资产 `web-app-01` 先解析了 cdn-auth-check.net / DNS answers 198.51.100.88，说明相关基础设施并非只在告警瞬间出现。（观测引用：obs-001, obs-002, obs-003）",
+        "在 2026-05-11 14:12:00 UTC，资产 `web-app-01` 命中了以 198.51.100.88 / cdn-auth-check.net / JA4 t13d1517h2_91adbe210bc1_7cae1281e991 为核心的种子告警。（观测引用：obs-001, obs-002, obs-003）",
+        "在 2026-05-11 14:18:10 UTC，资产 `web-app-01` 再次与 198.51.100.88 / cdn-auth-check.net 通信，表明该行为具有持续性，而不是孤立命中。（观测引用：obs-001, obs-002, obs-003）",
+        "在 2026-05-11 14:23:00 UTC，同一资产 `web-app-01` 在可疑外联之后出现主机侧执行线索，说明事件已经从网络异常推进到执行阶段。（观测引用：obs-001, obs-002, obs-003）"
+      ],
+      "supporting_blocks": [
+        {
+          "title": "重复外联与回连形态",
+          "facts": [
+            "在 2026-05-11 14:12:00 UTC，资产 `web-app-01` 命中了以 198.51.100.88 / cdn-auth-check.net / JA4 t13d1517h2_91adbe210bc1_7cae1281e991 为核心的种子告警。",
+            "在 2026-05-11 14:18:10 UTC，资产 `web-app-01` 再次与 198.51.100.88 / cdn-auth-check.net 通信，表明该行为具有持续性，而不是孤立命中。"
+          ],
+          "judgment": "同一资产围绕同一基础设施的重复通信，是把单点告警扩展成事件链的关键。",
+          "boundary": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
+          "observation_ids": [
+            "obs-001",
+            "obs-002",
+            "obs-003"
+          ]
+        },
+        {
+          "title": "主机侧执行佐证",
+          "facts": [
+            "在 2026-05-11 14:23:00 UTC，同一资产 `web-app-01` 在可疑外联之后出现主机侧执行线索，说明事件已经从网络异常推进到执行阶段。"
+          ],
+          "judgment": "它把网络侧异常推进到了主机侧异常，对事件定性的权重明显更高。",
+          "boundary": "当前仍缺少更细的命令行、落地文件、持久化或内存证据，因此可以确认存在执行线索，但还不能完整描述具体载荷。",
+          "observation_ids": [
+            "obs-001",
+            "obs-002",
+            "obs-003"
+          ]
+        }
+      ],
+      "counter_block": null,
+      "scope_lines": [
+        "时间窗口：2026-05-11 14:02:00 UTC 至 2026-05-11 14:23:00 UTC",
+        "种子资产：web-app-01",
+        "当前已确认范围：web-app-01",
+        "核心外部指示物：198.51.100.88、cdn-auth-check.net",
+        "当前攻击阶段：初始访问、命令与控制、执行",
+        "当前边界：当前自动化判断把事件边界收敛在 web-app-01 上，已经足以把本案从单条告警提升为已成立事件，但尚未确认存在更大范围扩散。"
+      ],
+      "actions": {
+        "immediate": [
+          "优先隔离或重点监控资产：web-app-01。",
+          "在边界和代理设备上排查并封禁外部基础设施：198.51.100.88、cdn-auth-check.net。"
+        ],
+        "short_term": [
+          "围绕种子告警涉及的域名、IP 和同基础设施指标，继续检索同时间窗内是否存在重复通信。"
+        ],
+        "follow_up": []
+      },
+      "open_questions": [
+        "当前暂无必须额外补充的未决事项。"
+      ]
     },
     "appendix": {
       "ioc_rows": [
@@ -1437,17 +1888,30 @@
         {
           "observation_id": "obs-001",
           "tool_name": "search_seed_context",
+          "source_type": "trace_store.seed_context",
+          "source_ref": "",
           "summary": "检索到 5 条偏可疑事件，围绕 cdn-auth-check.net、198.51.100.88 展开。"
         },
         {
           "observation_id": "obs-002",
           "tool_name": "search_related_events",
+          "source_type": "trace_store.related_events",
+          "source_ref": "",
           "summary": "检索到 5 条偏可疑事件，围绕 cdn-auth-check.net、198.51.100.88 展开。"
         },
         {
           "observation_id": "obs-003",
+          "tool_name": "check_counterevidence",
+          "source_type": "trace_store.asset_context",
+          "source_ref": "",
+          "summary": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。"
+        },
+        {
+          "observation_id": "obs-004",
           "tool_name": "extract_claim_candidates_from_page",
-          "summary": "从当前事件摘要中抽取出 7 条可直接引用的 claim。"
+          "source_type": "internal_digest",
+          "source_ref": "",
+          "summary": "从内部调查摘要中整理出 7 条 claim，用于结构化报告而不是新增外部证据。"
         }
       ]
     }

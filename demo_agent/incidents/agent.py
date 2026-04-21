@@ -43,7 +43,8 @@ DEFAULT_BUDGETS = {
     "max_runtime_s": 120,
 }
 
-EVENT_TOOL_NAMES = {"search_seed_context", "search_related_events", "expand_asset_scope"}
+COUNTEREVIDENCE_TOOL_NAME = "check_counterevidence"
+EVENT_TOOL_NAMES = {"search_seed_context", "search_related_events", "expand_asset_scope", COUNTEREVIDENCE_TOOL_NAME}
 INTEL_TOOL_NAMES = {
     "technical_source_search",
     "malware_profile_lookup",
@@ -53,6 +54,11 @@ INTEL_TOOL_NAMES = {
 }
 PAGE_TOOL_NAMES = {"fetch_page_content", "extract_claim_candidates_from_page", "extract_entities_from_page"}
 ALL_TOOL_NAMES = EVENT_TOOL_NAMES | INTEL_TOOL_NAMES | PAGE_TOOL_NAMES
+STATUS_LABELS = {
+    "confirmed_incident": "确认事件",
+    "needs_review": "待人工复核",
+    "monitor_only": "降级观察",
+}
 
 
 def _meaningful_family_hint(seed_event: Dict[str, Any]) -> str:
@@ -225,6 +231,7 @@ def _initial_incident_state(seed_event: Dict[str, Any]) -> Dict[str, Any]:
         "observations": [],
         "known_events": {},
         "page_candidates": [],
+        "page_documents": [],
         "entities": {
             "seed_asset": seed_asset or None,
             "assets": unique_preserve_order([seed_asset]),
@@ -237,9 +244,17 @@ def _initial_incident_state(seed_event: Dict[str, Any]) -> Dict[str, Any]:
         "scope": {},
         "evidence_ledger": [],
         "counterevidence": [],
-        "verdict": {"status": "needs_review", "status_label": "待人工复核"},
+        "provisional_verdict": {"status": "needs_review", "status_label": STATUS_LABELS["needs_review"]},
+        "delivery_verdict": {"status": "needs_review", "status_label": STATUS_LABELS["needs_review"]},
+        "verdict": {"status": "needs_review", "status_label": STATUS_LABELS["needs_review"]},
         "confidence": 45,
         "report_ready": False,
+        "readiness": {
+            "ready_for_delivery": False,
+            "summary": "尚未完成交付级检查。",
+            "checks": [],
+            "blocking_checks": [],
+        },
         "context_bundle": {"minimal_event_ids": [], "minimal_event_count": 0},
     }
 
@@ -283,6 +298,18 @@ def _page_candidate_urls(incident_state: Dict[str, Any]) -> List[str]:
     return unique_preserve_order(item.get("url") for item in list(incident_state.get("page_candidates") or []))
 
 
+def _latest_page_document(incident_state: Dict[str, Any]) -> Dict[str, Any]:
+    documents = list(incident_state.get("page_documents") or [])
+    for item in reversed(documents):
+        if str(item.get("content") or "").strip():
+            return item
+    return {}
+
+
+def _status_label(status: str) -> str:
+    return STATUS_LABELS.get(str(status or "").strip(), str(status or "").strip())
+
+
 def _action_candidates(seed_event: Dict[str, Any], session_state: Dict[str, Any], incident_state: Dict[str, Any]) -> List[Dict[str, Any]]:
     budgets = session_state.get("budgets") or {}
     remaining_event = int(budgets.get("remaining_event_queries") or 0)
@@ -298,6 +325,10 @@ def _action_candidates(seed_event: Dict[str, Any], session_state: Dict[str, Any]
     )
     digest = _compose_digest(seed_event, incident_state, session_state)
     page_urls = _page_candidate_urls(incident_state)
+    page_document = _latest_page_document(incident_state)
+    seed_assets = unique_preserve_order(
+        [entities.get("seed_asset")] + list(pivots.get("asset_ids") or []) + list(entities.get("assets") or [])
+    )
 
     if not _tool_called(session_state, "search_seed_context") and remaining_event > 0:
         candidates.append(
@@ -331,6 +362,18 @@ def _action_candidates(seed_event: Dict[str, Any], session_state: Dict[str, Any]
                     "domains": pivots.get("domains") or [],
                 },
                 "expected_gain": "确认是否存在同资产重复通信、同域名/同 IP 复现或更多可疑事件。",
+            }
+        )
+
+    if seed_assets and not _tool_called(session_state, COUNTEREVIDENCE_TOOL_NAME) and remaining_event > 0:
+        candidates.append(
+            {
+                "tool_name": COUNTEREVIDENCE_TOOL_NAME,
+                "category": "event",
+                "question": "显式检查维护窗口、补丁、备份或共享基线等反证。",
+                "params": {"asset_ids": seed_assets[:3], "window_minutes": 240, "limit": 80},
+                "trace_params": {"asset_ids": seed_assets[:3], "focus": "maintenance_or_backup"},
+                "expected_gain": "确认当前结论是否存在足以降级或保留为 needs_review 的背景解释。",
             }
         )
 
@@ -385,26 +428,43 @@ def _action_candidates(seed_event: Dict[str, Any], session_state: Dict[str, Any]
         )
 
     if not _tool_called(session_state, "extract_claim_candidates_from_page") and remaining_intel > 0:
+        claim_source = page_document if page_document else {"content": digest, "content_origin": "internal_digest"}
         candidates.append(
             {
                 "tool_name": "extract_claim_candidates_from_page",
                 "category": "page",
-                "question": "从当前事件摘要中抽取可用于报告的关键 claim。",
-                "params": {"content": digest, "focus": family_hint or str(primary_indicator or "")},
-                "trace_params": {"content_preview": digest[:240], "focus": family_hint or str(primary_indicator or "")},
-                "expected_gain": "把当前调查事实压缩成结构化证据与 TTP 线索。",
+                "question": "把当前事实整理成可引用的 claim，并区分外部正文和内部摘要。",
+                "params": {"content": claim_source.get("content") or digest, "focus": family_hint or str(primary_indicator or "")},
+                "meta": {
+                    "content_origin": claim_source.get("content_origin") or "internal_digest",
+                    "source_url": claim_source.get("url") or "",
+                },
+                "trace_params": {
+                    "content_preview": str(claim_source.get("content") or digest)[:240],
+                    "focus": family_hint or str(primary_indicator or ""),
+                    "content_origin": claim_source.get("content_origin") or "internal_digest",
+                },
+                "expected_gain": "把当前调查事实压缩成结构化证据与 TTP 线索，并保留来源边界。",
             }
         )
 
     if not _tool_called(session_state, "extract_entities_from_page") and remaining_intel > 0:
+        entity_source = page_document if page_document else {"content": digest, "content_origin": "internal_digest"}
         candidates.append(
             {
                 "tool_name": "extract_entities_from_page",
                 "category": "page",
-                "question": "从当前事件摘要中抽取域名、IP、家族等实体。",
-                "params": {"content": digest},
-                "trace_params": {"content_preview": digest[:240]},
-                "expected_gain": "补齐 pivot 集合，让后续扩查更像真正的调查循环。",
+                "question": "抽取域名、IP、家族等实体，并明确实体来自正文还是内部整理。",
+                "params": {"content": entity_source.get("content") or digest},
+                "meta": {
+                    "content_origin": entity_source.get("content_origin") or "internal_digest",
+                    "source_url": entity_source.get("url") or "",
+                },
+                "trace_params": {
+                    "content_preview": str(entity_source.get("content") or digest)[:240],
+                    "content_origin": entity_source.get("content_origin") or "internal_digest",
+                },
+                "expected_gain": "补齐 pivot 集合，同时避免把内部摘要误当成外部证据。",
             }
         )
 
@@ -463,7 +523,8 @@ def _format_llm_session_summary(session_state: Dict[str, Any], incident_state: D
         "budgets": session_state.get("budgets") or {},
         "latest_evidence": latest_ledger,
         "entities": incident_state.get("entities") or {},
-        "verdict": incident_state.get("verdict") or {},
+        "provisional_verdict": incident_state.get("provisional_verdict") or {},
+        "delivery_verdict": incident_state.get("delivery_verdict") or incident_state.get("verdict") or {},
     }
 
 
@@ -541,6 +602,7 @@ def _observation_base(tool_name: str, payload: Dict[str, Any], source_type: str,
         "tool_name": tool_name,
         "query": payload,
         "source_type": source_type,
+        "source_ref": "",
         "events": [],
         "derived_entities": {"asset_ids": [], "src_ips": [], "dst_ips": [], "domains": [], "fingerprints": [], "families": []},
         "claims": [],
@@ -551,6 +613,7 @@ def _observation_base(tool_name: str, payload: Dict[str, Any], source_type: str,
         "summary": "",
         "note": "",
         "page_candidates": [],
+        "documents": [],
         "status": "ok",
     }
 
@@ -676,8 +739,74 @@ def _normalize_intel_observation(tool_name: str, payload: Dict[str, Any], raw: D
     return observation
 
 
-def _normalize_page_observation(tool_name: str, payload: Dict[str, Any], raw: Dict[str, Any], observation_id: str) -> Dict[str, Any]:
-    observation = _observation_base(tool_name, payload, "page_tool", observation_id)
+def _normalize_counterevidence_observation(
+    payload: Dict[str, Any],
+    batch_payload: Dict[str, Any],
+    observation_id: str,
+) -> Dict[str, Any]:
+    events = list(batch_payload.get("events") or [])
+    benign_events = [item for item in events if str(item.get("classification") or "").strip().lower() == "benign"]
+    suspicious_events = [
+        item
+        for item in events
+        if str(item.get("classification") or "").strip().lower() in {"malicious", "suspicious", "needs_review"} or infer_stages(item)
+    ]
+    observation = _observation_base(COUNTEREVIDENCE_TOOL_NAME, payload, str(batch_payload.get("source_type") or "trace_store"), observation_id)
+    observation["events"] = events
+    observation["derived_entities"] = {
+        **observation["derived_entities"],
+        **dict(batch_payload.get("derived_entities") or {}),
+    }
+    observation["confidence"] = min(78, 28 + len(events) * 4 + len(benign_events) * 8)
+    if benign_events:
+        observation["relation"] = "counterevidence"
+        observation["supports_hypothesis"] = ["benign"]
+        observation["contradicts_hypothesis"] = ["primary"]
+        observation["summary"] = f"显式反证检查发现 {len(benign_events)} 条更接近维护、更新、补丁或备份背景的事件。"
+        observation["claims"] = [
+            {
+                "text": observation["summary"],
+                "kind": "counterevidence_check",
+                "score": observation["confidence"],
+            }
+        ]
+    elif suspicious_events:
+        observation["relation"] = "context"
+        observation["summary"] = f"显式反证检查覆盖了 {len(events)} 条同资产上下文，未发现足以降级当前判断的明确背景解释。"
+        observation["claims"] = [
+            {
+                "text": observation["summary"],
+                "kind": "counterevidence_check",
+                "score": observation["confidence"],
+            }
+        ]
+    else:
+        observation["relation"] = "context"
+        observation["confidence"] = 24
+        observation["summary"] = "已执行显式反证检查，但未发现足以解释当前异常的明确背景事件。"
+        observation["claims"] = [
+            {
+                "text": observation["summary"],
+                "kind": "counterevidence_check",
+                "score": observation["confidence"],
+            }
+        ]
+    observation["note"] = str(batch_payload.get("note") or "")
+    return observation
+
+
+def _normalize_page_observation(
+    tool_name: str,
+    payload: Dict[str, Any],
+    meta: Dict[str, Any],
+    raw: Dict[str, Any],
+    observation_id: str,
+) -> Dict[str, Any]:
+    default_origin = "page_content" if tool_name == "fetch_page_content" else "internal_digest"
+    content_origin = str(meta.get("content_origin") or default_origin).strip() or default_origin
+    source_type = "page_content" if content_origin == "page_content" else "internal_digest"
+    observation = _observation_base(tool_name, payload, source_type, observation_id)
+    observation["source_ref"] = str(meta.get("source_url") or payload.get("url") or "").strip()
     if tool_name == "fetch_page_content":
         content = str(raw.get("content") or "")
         entities_hint = dict(raw.get("entities_hint") or {})
@@ -692,6 +821,14 @@ def _normalize_page_observation(tool_name: str, payload: Dict[str, Any], raw: Di
             observation["summary"] = "成功读取技术页面正文，可继续抽取 claim 和实体。"
             observation["note"] = content[:500]
             observation["relation"] = "context"
+            observation["source_ref"] = str(payload.get("url") or "").strip()
+            observation["documents"] = [
+                {
+                    "url": str(payload.get("url") or "").strip(),
+                    "content": content,
+                    "content_origin": "page_content",
+                }
+            ]
         else:
             observation["status"] = "empty"
             observation["summary"] = "未读取到可用页面正文。"
@@ -714,15 +851,21 @@ def _normalize_page_observation(tool_name: str, payload: Dict[str, Any], raw: Di
                 if str(item.get("kind") or "") in {"family_or_indicator", "ttp", "ioc"}
             ]
             observation["confidence"] = min(70, 35 + len(primary_claims) * 7 + len(claims) * 2)
-            observation["summary"] = f"从当前事件摘要中抽取出 {len(claims)} 条可直接引用的 claim。"
-            if primary_claims:
+            if content_origin == "page_content":
+                observation["summary"] = f"从外部页面正文中抽取出 {len(claims)} 条可直接引用的 claim。"
+            else:
+                observation["summary"] = f"从内部调查摘要中整理出 {len(claims)} 条 claim，用于结构化报告而不是新增外部证据。"
+            if primary_claims and content_origin == "page_content":
                 observation["relation"] = "supporting"
                 observation["supports_hypothesis"] = ["primary"]
             else:
                 observation["relation"] = "context"
         else:
             observation["status"] = "empty"
-            observation["summary"] = "当前摘要中没有抽取出高价值 claim。"
+            if content_origin == "page_content":
+                observation["summary"] = "当前页面正文中没有抽取出高价值 claim。"
+            else:
+                observation["summary"] = "当前内部摘要中没有整理出高价值 claim。"
         return observation
 
     if tool_name == "extract_entities_from_page":
@@ -734,7 +877,10 @@ def _normalize_page_observation(tool_name: str, payload: Dict[str, Any], raw: Di
             "families": [],
         }
         observation["confidence"] = 36 if any(observation["derived_entities"].values()) else 16
-        observation["summary"] = "从当前事件摘要中抽取了可供扩查的实体集合。"
+        if content_origin == "page_content":
+            observation["summary"] = "从外部页面正文中抽取了可供扩查的实体集合。"
+        else:
+            observation["summary"] = "从内部调查摘要中整理了可供扩查的实体集合。"
         observation["relation"] = "context"
         return observation
 
@@ -752,6 +898,7 @@ def _execute_action(
 ) -> Dict[str, Any]:
     tool_name = str(action.get("tool_name") or "")
     payload = dict(action.get("params") or {})
+    meta = dict(action.get("meta") or {})
     if tool_name == "search_seed_context":
         batch = store.build_seed_context(seed_event)
         return _normalize_event_batch(tool_name, payload, batch.to_payload(), observation_id)
@@ -769,6 +916,13 @@ def _execute_action(
             limit=int(payload.get("limit") or 60),
         )
         return _normalize_event_batch(tool_name, payload, batch.to_payload(), observation_id)
+    if tool_name == COUNTEREVIDENCE_TOOL_NAME:
+        batch = store.get_asset_context(
+            list(payload.get("asset_ids") or []),
+            window_minutes=int(payload.get("window_minutes") or 240),
+            limit=int(payload.get("limit") or 80),
+        )
+        return _normalize_counterevidence_observation(payload, batch.to_payload(), observation_id)
 
     if tool_name == "technical_source_search":
         return _normalize_intel_observation(tool_name, payload, _tool_json(technical_source_search, payload), observation_id)
@@ -781,11 +935,23 @@ def _execute_action(
     if tool_name == "urlhaus_ioc_lookup":
         return _normalize_intel_observation(tool_name, payload, _tool_json(urlhaus_ioc_lookup, payload), observation_id)
     if tool_name == "fetch_page_content":
-        return _normalize_page_observation(tool_name, payload, _tool_json(fetch_page_content, payload), observation_id)
+        return _normalize_page_observation(tool_name, payload, meta, _tool_json(fetch_page_content, payload), observation_id)
     if tool_name == "extract_claim_candidates_from_page":
-        return _normalize_page_observation(tool_name, payload, _tool_json(extract_claim_candidates_from_page, payload), observation_id)
+        return _normalize_page_observation(
+            tool_name,
+            payload,
+            meta,
+            _tool_json(extract_claim_candidates_from_page, payload),
+            observation_id,
+        )
     if tool_name == "extract_entities_from_page":
-        return _normalize_page_observation(tool_name, payload, _tool_json(extract_entities_from_page, payload), observation_id)
+        return _normalize_page_observation(
+            tool_name,
+            payload,
+            meta,
+            _tool_json(extract_entities_from_page, payload),
+            observation_id,
+        )
 
     observation = _observation_base(tool_name, payload, "unknown", observation_id)
     observation["status"] = "error"
@@ -890,7 +1056,7 @@ def _scores_from_events(events: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
 
-def _build_runtime_verdict(
+def _build_provisional_verdict(
     seed_event: Dict[str, Any],
     annotated_events: List[Dict[str, Any]],
     evidence_ledger: List[Dict[str, Any]],
@@ -939,14 +1105,156 @@ def _build_runtime_verdict(
 
     return {
         "status": status,
-        "status_label": {
-            "confirmed_incident": "确认事件",
-            "needs_review": "待人工复核",
-            "monitor_only": "降级观察",
-        }.get(status, status),
+        "status_label": _status_label(status),
         "confidence": int(confidence),
         "severity": severity_from_confidence(int(confidence), status),
         "rationale": unique_preserve_order(reasons),
+    }
+
+
+def _readiness_check(check_id: str, ok: bool, reason: str) -> Dict[str, Any]:
+    return {
+        "id": check_id,
+        "ok": bool(ok),
+        "reason": str(reason or "").strip(),
+    }
+
+
+def _build_readiness(
+    *,
+    session_state: Dict[str, Any],
+    incident_state: Dict[str, Any],
+    annotated_events: List[Dict[str, Any]],
+    entities: Dict[str, Any],
+    timeline: List[Dict[str, Any]],
+    scope: Dict[str, Any],
+    provisional_verdict: Dict[str, Any],
+    decision_basis: Dict[str, Any],
+) -> Dict[str, Any]:
+    tool_history = list(session_state.get("tool_history") or [])
+    context_built = bool(incident_state.get("context_bundle", {}).get("minimal_event_count"))
+    cluster_built = len(annotated_events) >= max(2, int(incident_state.get("context_bundle", {}).get("minimal_event_count") or 0))
+    timeline_built = bool(timeline)
+    scope_assessed = bool(scope.get("affected_assets") or scope.get("external_indicators"))
+    supplemental_review_done = any(
+        str(item.get("tool_name") or "") in (INTEL_TOOL_NAMES | PAGE_TOOL_NAMES)
+        for item in tool_history
+    )
+    counterevidence_checked = _tool_called(session_state, COUNTEREVIDENCE_TOOL_NAME)
+    event_scores = _scores_from_events(annotated_events)
+    positive_signal_count = len(list(decision_basis.get("positive_signals") or []))
+    counter_signal_count = len(list(decision_basis.get("counterevidence") or []))
+    status = str(provisional_verdict.get("status") or "").strip()
+
+    if status == "confirmed_incident":
+        evidence_chain_ok = bool(
+            positive_signal_count >= 2
+            or event_scores["execution_seen"]
+            or len(list(entities.get("suspected_assets") or [])) > 1
+        )
+        evidence_reason = (
+            "确认事件前至少需要重复主支撑信号、执行线索或多资产范围中的一项，目前该条件已满足。"
+            if evidence_chain_ok
+            else "当前内部方向偏向确认事件，但仍缺少足够强的重复主支撑信号、执行线索或多资产范围。"
+        )
+    elif status == "monitor_only":
+        evidence_chain_ok = bool(counter_signal_count >= 1 and counterevidence_checked)
+        evidence_reason = (
+            "存在明确反证并且已经执行显式反证检查，可以把结论稳定降级为观察。"
+            if evidence_chain_ok
+            else "若要稳定降级为观察，仍需要显式反证检查及至少一条可引用的反证。"
+        )
+    else:
+        evidence_chain_ok = bool(positive_signal_count >= 1 and scope.get("external_indicators"))
+        evidence_reason = (
+            "当前已经具备最小支撑证据链，并且事件范围能够落到具体外部指示物。"
+            if evidence_chain_ok
+            else "当前还没有形成最小支撑证据链，或事件范围尚未落到具体外部指示物。"
+        )
+
+    checks = [
+        _readiness_check(
+            "context_built",
+            context_built,
+            "已围绕 seed alert 建立最小上下文。" if context_built else "仍未围绕 seed alert 建立最小上下文。",
+        ),
+        _readiness_check(
+            "cluster_built",
+            cluster_built,
+            "事件簇规模已经足以支撑时间线和范围判断。" if cluster_built else "事件簇仍然过薄，无法支撑稳定交付。",
+        ),
+        _readiness_check(
+            "timeline_built",
+            timeline_built,
+            "已形成时间线，可解释关键观察的先后关系。" if timeline_built else "仍未形成可交付的时间线。",
+        ),
+        _readiness_check(
+            "scope_assessed",
+            scope_assessed,
+            "当前事件范围已经落到资产或核心外部指示物上。" if scope_assessed else "当前还无法清楚说明事件影响范围。",
+        ),
+        _readiness_check("evidence_chain_ready", evidence_chain_ok, evidence_reason),
+        _readiness_check(
+            "counterevidence_checked",
+            counterevidence_checked,
+            "已执行显式反证检查。" if counterevidence_checked else "尚未执行显式反证检查。",
+        ),
+        _readiness_check(
+            "supplemental_context_reviewed",
+            supplemental_review_done,
+            "已执行至少一次情报或结构化整理动作，可支撑 deterministic report 生成。"
+            if supplemental_review_done
+            else "仍缺少情报或结构化整理动作，报告材料尚未收束。",
+        ),
+    ]
+    blocking_checks = [item for item in checks if not item.get("ok")]
+    ready_for_delivery = not blocking_checks
+    if ready_for_delivery:
+        if status == "confirmed_incident":
+            summary = "主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。"
+        elif status == "monitor_only":
+            summary = "反证链路和背景解释已经完成交付级核查，可按降级观察交付。"
+        else:
+            summary = "最小事件链、交付材料和反证检查均已到位，可按待人工复核结论交付。"
+    else:
+        summary = "交付门槛尚未满足：" + "；".join(str(item.get("reason") or "") for item in blocking_checks[:4])
+
+    return {
+        "ready_for_delivery": ready_for_delivery,
+        "summary": summary,
+        "checks": checks,
+        "blocking_checks": blocking_checks,
+    }
+
+
+def _build_delivery_verdict(provisional_verdict: Dict[str, Any], readiness: Dict[str, Any]) -> Dict[str, Any]:
+    if bool(readiness.get("ready_for_delivery")):
+        verdict = dict(provisional_verdict)
+        verdict["status_label"] = _status_label(str(verdict.get("status") or "").strip())
+        verdict["rationale"] = unique_preserve_order(list(verdict.get("rationale") or []) + [str(readiness.get("summary") or "").strip()])
+        verdict["delivery_ready"] = True
+        verdict["blocked_by"] = []
+        return verdict
+
+    confidence = int(provisional_verdict.get("confidence") or 0)
+    if str(provisional_verdict.get("status") or "").strip() != "needs_review":
+        confidence = min(confidence, 68)
+    blockers = [str(item.get("id") or "").strip() for item in list(readiness.get("blocking_checks") or []) if str(item.get("id") or "").strip()]
+    rationale = unique_preserve_order(
+        list(provisional_verdict.get("rationale") or [])
+        + [str(readiness.get("summary") or "").strip()]
+    )
+    status = "needs_review"
+    return {
+        "status": status,
+        "status_label": _status_label(status),
+        "confidence": confidence,
+        "severity": severity_from_confidence(confidence, status),
+        "rationale": rationale,
+        "delivery_ready": False,
+        "blocked_by": blockers,
+        "provisional_status": provisional_verdict.get("status"),
+        "provisional_status_label": provisional_verdict.get("status_label"),
     }
 
 
@@ -1095,6 +1403,8 @@ def _attach_observation(incident_state: Dict[str, Any], observation: Dict[str, A
             incident_state.setdefault("known_events", {})[str(event.get("id") or "")] = event
     for candidate in list(observation.get("page_candidates") or []):
         incident_state.setdefault("page_candidates", []).append(candidate)
+    for document in list(observation.get("documents") or []):
+        incident_state.setdefault("page_documents", []).append(document)
     incident_state["entities"] = _merge_entities_from_observation(incident_state.get("entities") or {}, observation)
     incident_state["pivots"] = _update_pivots_from_events(
         incident_state.get("pivots") or {},
@@ -1114,6 +1424,7 @@ def _evidence_entry_from_observation(observation: Dict[str, Any]) -> Dict[str, A
         "tool_name": observation.get("tool_name"),
         "relation": observation.get("relation") or "context",
         "source_type": observation.get("source_type"),
+        "source_ref": observation.get("source_ref"),
         "summary": summary,
         "event_ids": event_ids,
         "claim_texts": [str(item.get("text") or "").strip() for item in claims[:4] if str(item.get("text") or "").strip()],
@@ -1170,21 +1481,11 @@ def _finalize_runtime_state(seed_event: Dict[str, Any], session_state: Dict[str,
     )
 
     evidence_ledger = list(incident_state.get("evidence_ledger") or [])
-    verdict = _build_runtime_verdict(seed_event, annotated_events, evidence_ledger, entities)
-    working_hypotheses = _update_working_hypotheses(session_state, incident_state, verdict, evidence_ledger)
-    hypothesis = _build_hypothesis(seed_event, verdict, annotated_events, entities)
-    incident_summary = _build_incident_summary(verdict=verdict, entities=entities, scope=scope, hypothesis=hypothesis)
-    incident_state["summary"] = incident_summary
-    session_state["open_questions"] = _open_questions(seed_event, {"entities": entities, "scope": scope, "summary": incident_summary, **incident_state}, verdict)
-    uncertainties = _build_uncertainties(verdict, annotated_events, entities)
-    if session_state["open_questions"]:
-        uncertainties = unique_preserve_order(
-            list(uncertainties)
-            + [str(item.get("question") or "").strip() for item in session_state["open_questions"] if str(item.get("question") or "").strip()]
-        )
-    recommendations = _build_recommendations(verdict, entities, scope)
+    provisional_verdict = _build_provisional_verdict(seed_event, annotated_events, evidence_ledger, entities)
+    working_hypotheses = _update_working_hypotheses(session_state, incident_state, provisional_verdict, evidence_ledger)
+    hypothesis = _build_hypothesis(seed_event, provisional_verdict, annotated_events, entities)
     decision_basis = _build_decision_basis(
-        verdict=verdict,
+        verdict=provisional_verdict,
         events=annotated_events,
         evidence_clusters=evidence_clusters,
         entities=entities,
@@ -1208,11 +1509,35 @@ def _finalize_runtime_state(seed_event: Dict[str, Any], session_state: Dict[str,
         item.get("observation_id") for item in evidence_ledger if item.get("relation") == "counterevidence"
     )
 
-    report_ready = bool(
-        known_events
-        and any(item.get("tool_name") in EVENT_TOOL_NAMES for item in list(session_state.get("tool_history") or []))
-        and any(item.get("tool_name") in (INTEL_TOOL_NAMES | PAGE_TOOL_NAMES) for item in list(session_state.get("tool_history") or []))
-        and verdict.get("status")
+    readiness = _build_readiness(
+        session_state=session_state,
+        incident_state=incident_state,
+        annotated_events=annotated_events,
+        entities=entities,
+        timeline=timeline,
+        scope=scope,
+        provisional_verdict=provisional_verdict,
+        decision_basis=decision_basis,
+    )
+    delivery_verdict = _build_delivery_verdict(provisional_verdict, readiness)
+    incident_summary = _build_incident_summary(verdict=delivery_verdict, entities=entities, scope=scope, hypothesis=hypothesis)
+    incident_state["summary"] = incident_summary
+    session_state["open_questions"] = _open_questions(
+        seed_event,
+        {"entities": entities, "scope": scope, "summary": incident_summary, **incident_state},
+        provisional_verdict,
+    )
+    uncertainties = _build_uncertainties(delivery_verdict, annotated_events, entities)
+    if session_state["open_questions"]:
+        uncertainties = unique_preserve_order(
+            list(uncertainties)
+            + [str(item.get("question") or "").strip() for item in session_state["open_questions"] if str(item.get("question") or "").strip()]
+        )
+    recommendations = _build_recommendations(delivery_verdict, entities, scope)
+    report_ready = bool(readiness.get("ready_for_delivery"))
+    counterevidence_checked = any(
+        str(item.get("id") or "").strip() == "counterevidence_checked" and bool(item.get("ok"))
+        for item in list(readiness.get("checks") or [])
     )
 
     state = {
@@ -1222,19 +1547,25 @@ def _finalize_runtime_state(seed_event: Dict[str, Any], session_state: Dict[str,
         "entities_grounded": any(entities.values()),
         "timeline_built": bool(timeline),
         "scope_assessed": bool(scope.get("affected_assets") or scope.get("external_indicators")),
-        "intrusion_hypothesis_grounded": verdict["status"] == "confirmed_incident",
+        "intrusion_hypothesis_grounded": provisional_verdict["status"] == "confirmed_incident",
         "external_infra_grounded": bool(scope.get("external_indicators")),
-        "counterevidence_checked": bool(counterevidence_events or any(item.get("relation") == "counterevidence" for item in evidence_ledger)),
+        "counterevidence_checked": counterevidence_checked,
+        "provisional_status": provisional_verdict.get("status"),
+        "delivery_status": delivery_verdict.get("status"),
         "report_ready": report_ready,
+        "readiness": readiness,
     }
 
     session_state["working_hypotheses"] = working_hypotheses
     incident_state["entities"] = entities
     incident_state["timeline"] = timeline
     incident_state["scope"] = scope
-    incident_state["verdict"] = verdict
-    incident_state["confidence"] = verdict.get("confidence")
+    incident_state["provisional_verdict"] = provisional_verdict
+    incident_state["delivery_verdict"] = delivery_verdict
+    incident_state["verdict"] = delivery_verdict
+    incident_state["confidence"] = delivery_verdict.get("confidence")
     incident_state["report_ready"] = report_ready
+    incident_state["readiness"] = readiness
 
     return {
         "annotation": annotation,
@@ -1243,13 +1574,16 @@ def _finalize_runtime_state(seed_event: Dict[str, Any], session_state: Dict[str,
         "timeline": timeline,
         "evidence_clusters": evidence_clusters,
         "scope": scope,
-        "verdict": verdict,
+        "provisional_verdict": provisional_verdict,
+        "delivery_verdict": delivery_verdict,
+        "verdict": delivery_verdict,
         "hypothesis": hypothesis,
         "summary": incident_summary,
         "uncertainties": uncertainties,
         "recommendations": recommendations,
         "decision_basis": decision_basis,
         "report_ready": report_ready,
+        "readiness": readiness,
         "state": state,
     }
 
@@ -1262,8 +1596,9 @@ def _stop_decision(
 ) -> Dict[str, Any]:
     budgets = session_state.get("budgets") or {}
     elapsed_s = time.perf_counter() - started_at
-    if finalized.get("report_ready") and int(session_state.get("step_index") or 0) >= 2:
-        return {"stop": True, "reason": "report_ready"}
+    readiness = finalized.get("readiness") or {}
+    if bool(readiness.get("ready_for_delivery")) and int(session_state.get("step_index") or 0) >= 2:
+        return {"stop": True, "reason": "delivery_ready"}
     if int(budgets.get("remaining_steps") or 0) <= 0:
         return {"stop": True, "reason": "step_budget_exhausted"}
     if int(budgets.get("remaining_tool_calls") or 0) <= 0:
@@ -1274,7 +1609,7 @@ def _stop_decision(
         return {"stop": True, "reason": "two_low_value_steps"}
     if (
         not list(session_state.get("open_questions") or [])
-        and bool(finalized.get("report_ready"))
+        and bool(readiness.get("ready_for_delivery"))
         and int(session_state.get("step_index") or 0) >= 2
     ):
         return {"stop": True, "reason": "no_open_questions"}
@@ -1353,6 +1688,7 @@ def run_incident_agent_case(
                 "tool_name": observation.get("tool_name"),
                 "observation_id": observation.get("observation_id"),
                 "relation": observation.get("relation"),
+                "source_type": observation.get("source_type"),
                 "status": observation.get("status"),
             }
         )
@@ -1362,6 +1698,9 @@ def run_incident_agent_case(
         step_trace["observation_ids"] = [observation.get("observation_id")]
         step_trace["state_updates"] = {
             "verdict": finalized["verdict"],
+            "provisional_verdict": finalized["provisional_verdict"],
+            "delivery_verdict": finalized["delivery_verdict"],
+            "readiness": finalized["readiness"],
             "report_ready": finalized["report_ready"],
             "known_event_count": len(finalized["annotated_events"]),
             "supporting_observation_ids": finalized["decision_basis"].get("positive_observation_ids") or [],
@@ -1377,46 +1716,35 @@ def run_incident_agent_case(
             break
 
     finalized = _finalize_runtime_state(seed_event, session_state, incident_state)
-    report_outline = build_incident_report_outline(
-        {
-            "mode": "incident-agent",
-            "seed": seed_event,
-            "verdict": finalized["verdict"],
-            "summary": finalized["summary"],
-            "entities": finalized["entities"],
-            "scope": finalized["scope"],
-            "hypothesis": finalized["hypothesis"],
-            "decision_basis": finalized["decision_basis"],
-            "timeline": finalized["timeline"],
-            "uncertainties": finalized["uncertainties"],
-            "recommendations": finalized["recommendations"],
-            "session_state": session_state,
-            "incident_state": incident_state,
-        }
-    )
-
     incident = {
-        "schema_version": "0.2",
+        "schema_version": "0.3",
         "mode": "incident-agent",
         "fixture_case": getattr(resolved_store, "fixture_dir", Path(fixture_dir)).name,  # type: ignore[name-defined]
         "seed": seed_event,
         "state": finalized["state"],
+        "readiness": finalized["readiness"],
         "session_state": session_state,
         "incident_state": {
             "seed": seed_event,
             "pivots": incident_state.get("pivots") or {},
             "observations": list(incident_state.get("observations") or []),
+            "page_documents": list(incident_state.get("page_documents") or []),
             "entities": finalized["entities"],
             "timeline": finalized["timeline"],
             "scope": finalized["scope"],
             "evidence_ledger": list(incident_state.get("evidence_ledger") or []),
             "counterevidence": list(incident_state.get("counterevidence") or []),
+            "provisional_verdict": finalized["provisional_verdict"],
+            "delivery_verdict": finalized["delivery_verdict"],
             "verdict": finalized["verdict"],
             "confidence": finalized["verdict"].get("confidence"),
             "report_ready": finalized["report_ready"],
+            "readiness": finalized["readiness"],
         },
         "open_questions": list(session_state.get("open_questions") or []),
         "working_hypotheses": list(session_state.get("working_hypotheses") or []),
+        "provisional_verdict": finalized["provisional_verdict"],
+        "delivery_verdict": finalized["delivery_verdict"],
         "verdict": finalized["verdict"],
         "summary": finalized["summary"],
         "decision_basis": finalized["decision_basis"],
@@ -1436,14 +1764,17 @@ def run_incident_agent_case(
         "scope": finalized["scope"],
         "uncertainties": finalized["uncertainties"],
         "recommendations": finalized["recommendations"],
-        "report_outline": report_outline,
     }
-    report_markdown = render_incident_report_with_llm(incident, llm=llm)
+    report_outline = build_incident_report_outline(incident)
+    incident["report_outline"] = report_outline
+    rendered_report = render_incident_report_with_llm(incident, llm=llm)
     topology = build_incident_topology(incident)
     return {
         "incident": incident,
         "investigation_trace": investigation_trace,
-        "report_markdown": report_markdown,
+        "report_markdown": rendered_report.get("report_markdown") or "",
+        "report_polished_markdown": rendered_report.get("report_polished_markdown") or "",
+        "report_appendix_markdown": rendered_report.get("report_appendix_markdown") or "",
         "report_outline": report_outline,
         "topology": topology,
     }
