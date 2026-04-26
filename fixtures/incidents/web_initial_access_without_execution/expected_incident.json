@@ -1,0 +1,16 @@
+{
+  "verdict": "needs_review",
+  "affected_assets": [
+    "web-app-02"
+  ],
+  "external_indicators": [
+    "198.51.100.177",
+    "auth-edge-panel.net",
+    "cdn-auth-edge.net"
+  ],
+  "expected_stages": [
+    "initial-access",
+    "command-and-control"
+  ],
+  "analyst_expectation": "Suspicious exploit attempts plus beacon-style traffic without host execution should remain a review case until execution is corroborated."
+}

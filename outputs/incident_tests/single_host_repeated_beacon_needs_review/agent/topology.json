@@ -1,0 +1,99 @@
+{
+  "version": "2.0",
+  "title": "事件级溯源拓扑",
+  "nodes": [
+    {
+      "id": "fp:ja4:t13d190900_aa11bb22cc33_8899ddeeff00",
+      "label": "JA4 t13d190900_aa11bb22cc33_8899ddeeff00",
+      "type": "fingerprint_ja4"
+    },
+    {
+      "id": "asset:ws-payroll-14",
+      "label": "ws-payroll-14",
+      "type": "internal_host"
+    },
+    {
+      "id": "ip:198.51.100.119",
+      "label": "198.51.100.119",
+      "type": "external_ip"
+    },
+    {
+      "id": "domain:sync-status-edge.net",
+      "label": "sync-status-edge.net",
+      "type": "domain"
+    },
+    {
+      "id": "domain:cdn-sync-status.net",
+      "label": "cdn-sync-status.net",
+      "type": "domain"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:evt-601:asset-fp",
+      "source": "asset:ws-payroll-14",
+      "target": "fp:ja4:t13d190900_aa11bb22cc33_8899ddeeff00",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-602:asset-ip",
+      "source": "asset:ws-payroll-14",
+      "target": "ip:198.51.100.119",
+      "label": "alert"
+    },
+    {
+      "id": "edge:evt-602:ip-domain",
+      "source": "ip:198.51.100.119",
+      "target": "domain:sync-status-edge.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-602:asset-fp",
+      "source": "asset:ws-payroll-14",
+      "target": "fp:ja4:t13d190900_aa11bb22cc33_8899ddeeff00",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-603:asset-ip",
+      "source": "asset:ws-payroll-14",
+      "target": "ip:198.51.100.119",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-603:ip-domain",
+      "source": "ip:198.51.100.119",
+      "target": "domain:sync-status-edge.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-603:asset-fp",
+      "source": "asset:ws-payroll-14",
+      "target": "fp:ja4:t13d190900_aa11bb22cc33_8899ddeeff00",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-604:asset-ip",
+      "source": "asset:ws-payroll-14",
+      "target": "ip:198.51.100.119",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-604:ip-domain",
+      "source": "ip:198.51.100.119",
+      "target": "domain:sync-status-edge.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-604:asset-fp",
+      "source": "asset:ws-payroll-14",
+      "target": "fp:ja4:t13d190900_aa11bb22cc33_8899ddeeff00",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-605:asset-fp",
+      "source": "asset:ws-payroll-14",
+      "target": "fp:ja4:t13d190900_aa11bb22cc33_8899ddeeff00",
+      "label": "seed_indicator"
+    }
+  ]
+}

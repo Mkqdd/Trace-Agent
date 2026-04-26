@@ -1,0 +1,3342 @@
+{
+  "schema_version": "0.3",
+  "mode": "incident-agent",
+  "fixture_case": "benign_patch_window",
+  "decision_mode": {
+    "requested_mode": "heuristic",
+    "effective_mode": "heuristic",
+    "policy_mode": "heuristic_selector"
+  },
+  "seed": {
+    "event_time": "2026-04-02 02:00:00",
+    "simulated": false,
+    "src": {
+      "ip": "10.40.8.10",
+      "port": null
+    },
+    "dst": {
+      "ip": "203.0.113.50",
+      "port": null
+    },
+    "protocol": "TLS",
+    "trigger_fingerprint": {
+      "type": "JA4",
+      "value": "t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+      "matched": true
+    },
+    "enrichment": {
+      "info": "Unknown suspicious TLS fingerprint",
+      "reference": "fixture",
+      "update_time": "2026-04-02 02:00:00"
+    },
+    "raw_alert": {
+      "timestamp": "2026-04-02 02:00:00",
+      "src_ip": "10.40.8.10",
+      "dst_ip": "203.0.113.50",
+      "protocol": "TLS",
+      "trigger_fingerprint": {
+        "type": "JA4",
+        "value": "t13d1516h2_1f8c0d19a111_39bb8eb7d001"
+      },
+      "info": "Unknown suspicious TLS fingerprint",
+      "reference": "fixture",
+      "update_time": "2026-04-02 02:00:00"
+    }
+  },
+  "state": {
+    "context_built": true,
+    "entry_assessed": true,
+    "cluster_built": true,
+    "entities_grounded": true,
+    "timeline_built": true,
+    "scope_assessed": true,
+    "intrusion_hypothesis_grounded": false,
+    "external_infra_grounded": true,
+    "counterevidence_checked": true,
+    "provisional_status": "monitor_only",
+    "delivery_status": "needs_review",
+    "report_ready": false,
+    "readiness": {
+      "ready_for_delivery": false,
+      "summary": "交付门槛尚未满足：若要稳定降级为观察，仍需要显式反证检查及至少一条可引用的反证。",
+      "checks": [
+        {
+          "id": "context_built",
+          "ok": true,
+          "reason": "已围绕 seed alert 建立最小上下文。"
+        },
+        {
+          "id": "cluster_built",
+          "ok": true,
+          "reason": "事件簇规模已经足以支撑时间线和范围判断。"
+        },
+        {
+          "id": "candidate_events_grounded",
+          "ok": true,
+          "reason": "扩线得到的候选事件已经完成独立验证或明确降级为上下文。"
+        },
+        {
+          "id": "timeline_built",
+          "ok": true,
+          "reason": "已形成时间线，可解释关键观察的先后关系。"
+        },
+        {
+          "id": "scope_assessed",
+          "ok": true,
+          "reason": "当前事件范围已经落到资产或核心外部指示物上。"
+        },
+        {
+          "id": "evidence_chain_ready",
+          "ok": false,
+          "reason": "若要稳定降级为观察，仍需要显式反证检查及至少一条可引用的反证。"
+        },
+        {
+          "id": "counterevidence_checked",
+          "ok": true,
+          "reason": "已执行显式反证检查。"
+        },
+        {
+          "id": "supplemental_context_reviewed",
+          "ok": true,
+          "reason": "已执行至少一次情报或结构化整理动作，可支撑 deterministic report 生成。"
+        }
+      ],
+      "blocking_checks": [
+        {
+          "id": "evidence_chain_ready",
+          "ok": false,
+          "reason": "若要稳定降级为观察，仍需要显式反证检查及至少一条可引用的反证。"
+        }
+      ]
+    },
+    "decision_mode": "heuristic",
+    "policy_mode": "heuristic_selector"
+  },
+  "readiness": {
+    "ready_for_delivery": false,
+    "summary": "交付门槛尚未满足：若要稳定降级为观察，仍需要显式反证检查及至少一条可引用的反证。",
+    "checks": [
+      {
+        "id": "context_built",
+        "ok": true,
+        "reason": "已围绕 seed alert 建立最小上下文。"
+      },
+      {
+        "id": "cluster_built",
+        "ok": true,
+        "reason": "事件簇规模已经足以支撑时间线和范围判断。"
+      },
+      {
+        "id": "candidate_events_grounded",
+        "ok": true,
+        "reason": "扩线得到的候选事件已经完成独立验证或明确降级为上下文。"
+      },
+      {
+        "id": "timeline_built",
+        "ok": true,
+        "reason": "已形成时间线，可解释关键观察的先后关系。"
+      },
+      {
+        "id": "scope_assessed",
+        "ok": true,
+        "reason": "当前事件范围已经落到资产或核心外部指示物上。"
+      },
+      {
+        "id": "evidence_chain_ready",
+        "ok": false,
+        "reason": "若要稳定降级为观察，仍需要显式反证检查及至少一条可引用的反证。"
+      },
+      {
+        "id": "counterevidence_checked",
+        "ok": true,
+        "reason": "已执行显式反证检查。"
+      },
+      {
+        "id": "supplemental_context_reviewed",
+        "ok": true,
+        "reason": "已执行至少一次情报或结构化整理动作，可支撑 deterministic report 生成。"
+      }
+    ],
+    "blocking_checks": [
+      {
+        "id": "evidence_chain_ready",
+        "ok": false,
+        "reason": "若要稳定降级为观察，仍需要显式反证检查及至少一条可引用的反证。"
+      }
+    ]
+  },
+  "session_state": {
+    "goal": "围绕 seed alert 10.40.8.10 -> 203.0.113.50 收敛为事件级研判结论。",
+    "budgets": {
+      "max_steps": 8,
+      "remaining_steps": 1,
+      "max_tool_calls": 12,
+      "remaining_tool_calls": 5,
+      "max_event_queries": 8,
+      "remaining_event_queries": 4,
+      "max_intel_queries": 4,
+      "remaining_intel_queries": 1,
+      "max_runtime_s": 120
+    },
+    "step_index": 7,
+    "tool_history": [
+      {
+        "step_index": 1,
+        "tool_name": "search_seed_context",
+        "observation_id": "obs-001",
+        "relation": "supporting",
+        "source_type": "trace_store.seed_context",
+        "status": "ok",
+        "input_fingerprint": "aa071cfa13e3",
+        "output_delta": {
+          "new_event_count": 6,
+          "new_event_ids": [
+            "evt-101",
+            "evt-102",
+            "evt-103",
+            "evt-104",
+            "evt-105",
+            "evt-106"
+          ],
+          "new_asset_count": 2,
+          "new_domain_count": 1,
+          "new_external_ip_count": 0,
+          "new_family_count": 0,
+          "new_claim_count": 1,
+          "new_page_document_count": 0,
+          "closed_candidate_event_count": 0,
+          "closed_candidate_event_ids": [],
+          "closed_gap_count": 5,
+          "closed_gap_ids": [
+            "build_context",
+            "check_counterevidence",
+            "execution_gap",
+            "ground_infra",
+            "identify_assets"
+          ],
+          "readiness_changed": false,
+          "became_ready": false,
+          "verdict_changed": false,
+          "novelty_score": 15,
+          "summary": "新增 6 条事件；新增 2 个资产；新增 1 个外部指示物；新增 1 条 claim；关闭 5 个 gap"
+        }
+      },
+      {
+        "step_index": 2,
+        "tool_name": "search_related_events",
+        "observation_id": "obs-002",
+        "relation": "candidate",
+        "source_type": "trace_store.related_events",
+        "status": "ok",
+        "input_fingerprint": "d909df5303e9",
+        "output_delta": {
+          "new_event_count": 0,
+          "new_event_ids": [],
+          "new_asset_count": 0,
+          "new_domain_count": 0,
+          "new_external_ip_count": 0,
+          "new_family_count": 0,
+          "new_claim_count": 1,
+          "new_page_document_count": 0,
+          "closed_candidate_event_count": 0,
+          "closed_candidate_event_ids": [],
+          "closed_gap_count": 0,
+          "closed_gap_ids": [],
+          "readiness_changed": false,
+          "became_ready": false,
+          "verdict_changed": false,
+          "novelty_score": 1,
+          "summary": "新增 1 条 claim"
+        }
+      },
+      {
+        "step_index": 3,
+        "tool_name": "check_counterevidence",
+        "observation_id": "obs-003",
+        "relation": "counterevidence",
+        "source_type": "trace_store.asset_context",
+        "status": "ok",
+        "input_fingerprint": "a4b0b5c39b29",
+        "output_delta": {
+          "new_event_count": 0,
+          "new_event_ids": [],
+          "new_asset_count": 0,
+          "new_domain_count": 0,
+          "new_external_ip_count": 0,
+          "new_family_count": 0,
+          "new_claim_count": 1,
+          "new_page_document_count": 0,
+          "closed_candidate_event_count": 0,
+          "closed_candidate_event_ids": [],
+          "closed_gap_count": 0,
+          "closed_gap_ids": [],
+          "readiness_changed": false,
+          "became_ready": false,
+          "verdict_changed": false,
+          "novelty_score": 1,
+          "summary": "新增 1 条 claim"
+        }
+      },
+      {
+        "step_index": 4,
+        "tool_name": "expand_asset_scope",
+        "observation_id": "obs-004",
+        "relation": "counterevidence",
+        "source_type": "trace_store.asset_context",
+        "status": "ok",
+        "input_fingerprint": "6e5680387f80",
+        "output_delta": {
+          "new_event_count": 0,
+          "new_event_ids": [],
+          "new_asset_count": 0,
+          "new_domain_count": 0,
+          "new_external_ip_count": 0,
+          "new_family_count": 0,
+          "new_claim_count": 1,
+          "new_page_document_count": 0,
+          "closed_candidate_event_count": 0,
+          "closed_candidate_event_ids": [],
+          "closed_gap_count": 0,
+          "closed_gap_ids": [],
+          "readiness_changed": false,
+          "became_ready": false,
+          "verdict_changed": false,
+          "novelty_score": 1,
+          "summary": "新增 1 条 claim"
+        }
+      },
+      {
+        "step_index": 5,
+        "tool_name": "local_intel_lookup",
+        "observation_id": "obs-005",
+        "relation": "context",
+        "source_type": "intel_tool",
+        "status": "empty",
+        "input_fingerprint": "3671e39448ad",
+        "output_delta": {
+          "new_event_count": 0,
+          "new_event_ids": [],
+          "new_asset_count": 0,
+          "new_domain_count": 0,
+          "new_external_ip_count": 0,
+          "new_family_count": 0,
+          "new_claim_count": 0,
+          "new_page_document_count": 0,
+          "closed_candidate_event_count": 0,
+          "closed_candidate_event_ids": [],
+          "closed_gap_count": 1,
+          "closed_gap_ids": [
+            "structure_evidence"
+          ],
+          "readiness_changed": false,
+          "became_ready": false,
+          "verdict_changed": false,
+          "novelty_score": 1,
+          "summary": "关闭 1 个 gap"
+        }
+      },
+      {
+        "step_index": 6,
+        "tool_name": "vt_enrich_ioc",
+        "observation_id": "obs-006",
+        "relation": "context",
+        "source_type": "intel_tool",
+        "status": "empty",
+        "input_fingerprint": "a9a91d49ed88",
+        "output_delta": {
+          "new_event_count": 0,
+          "new_event_ids": [],
+          "new_asset_count": 0,
+          "new_domain_count": 0,
+          "new_external_ip_count": 0,
+          "new_family_count": 0,
+          "new_claim_count": 0,
+          "new_page_document_count": 0,
+          "closed_candidate_event_count": 0,
+          "closed_candidate_event_ids": [],
+          "closed_gap_count": 0,
+          "closed_gap_ids": [],
+          "readiness_changed": false,
+          "became_ready": false,
+          "verdict_changed": false,
+          "novelty_score": 0,
+          "summary": "没有新增实质信息"
+        }
+      },
+      {
+        "step_index": 7,
+        "tool_name": "abuse_ch_lookup",
+        "observation_id": "obs-007",
+        "relation": "context",
+        "source_type": "intel_tool",
+        "status": "empty",
+        "input_fingerprint": "5174ccf509d4",
+        "output_delta": {
+          "new_event_count": 0,
+          "new_event_ids": [],
+          "new_asset_count": 0,
+          "new_domain_count": 0,
+          "new_external_ip_count": 0,
+          "new_family_count": 0,
+          "new_claim_count": 0,
+          "new_page_document_count": 0,
+          "closed_candidate_event_count": 0,
+          "closed_candidate_event_ids": [],
+          "closed_gap_count": 0,
+          "closed_gap_ids": [],
+          "readiness_changed": false,
+          "became_ready": false,
+          "verdict_changed": false,
+          "novelty_score": 0,
+          "summary": "没有新增实质信息"
+        }
+      }
+    ],
+    "open_questions": [],
+    "working_hypotheses": [
+      {
+        "id": "primary",
+        "kind": "primary",
+        "title": "srv-ops-01 疑似恶意外联事件",
+        "score": 3,
+        "status": "supported",
+        "supporting_observation_ids": [
+          "obs-001"
+        ],
+        "counter_observation_ids": [
+          "obs-003",
+          "obs-004"
+        ]
+      },
+      {
+        "id": "secondary",
+        "kind": "secondary",
+        "title": "srv-ops-02 等资产的关联范围仍待确认",
+        "score": 6,
+        "status": "supported",
+        "supporting_observation_ids": [
+          "obs-005",
+          "obs-006",
+          "obs-007"
+        ],
+        "counter_observation_ids": []
+      },
+      {
+        "id": "benign",
+        "kind": "benign",
+        "title": "围绕 203.0.113.50、updates.vendor.example 的通信可能存在正常背景解释",
+        "score": 11,
+        "status": "leading",
+        "supporting_observation_ids": [
+          "obs-003",
+          "obs-004"
+        ],
+        "counter_observation_ids": [
+          "obs-001"
+        ]
+      }
+    ],
+    "stop_reason": "two_low_value_steps",
+    "consecutive_low_value_steps": 2,
+    "requested_decision_mode": "heuristic",
+    "decision_mode": "heuristic",
+    "selector_llm_available": false,
+    "selector_history": [
+      {
+        "step_index": 1,
+        "requested_mode": "heuristic",
+        "effective_mode": "heuristic",
+        "policy_mode_before": "heuristic_selector",
+        "candidate_tools": [
+          "search_seed_context",
+          "search_related_events",
+          "local_intel_lookup",
+          "vt_enrich_ioc",
+          "abuse_ch_lookup",
+          "threatfox_ioc_lookup",
+          "extract_claim_candidates_from_page",
+          "extract_entities_from_page",
+          "urlhaus_ioc_lookup",
+          "pivot_related_indicators"
+        ],
+        "candidate_count": 10,
+        "chosen_by": "heuristic",
+        "chosen_tool_name": "search_seed_context",
+        "reason": "",
+        "raw_response": "",
+        "fallback_used": false,
+        "fallback_reason": "",
+        "stop_requested": false,
+        "stop_accepted": false,
+        "stop_override_reason": "",
+        "outcome": "selected_action"
+      },
+      {
+        "step_index": 2,
+        "requested_mode": "heuristic",
+        "effective_mode": "heuristic",
+        "policy_mode_before": "heuristic_selector",
+        "candidate_tools": [
+          "search_related_events",
+          "check_counterevidence",
+          "expand_asset_scope",
+          "local_intel_lookup",
+          "vt_enrich_ioc",
+          "abuse_ch_lookup",
+          "threatfox_ioc_lookup",
+          "extract_claim_candidates_from_page",
+          "extract_entities_from_page",
+          "urlhaus_ioc_lookup",
+          "pivot_related_indicators"
+        ],
+        "candidate_count": 11,
+        "chosen_by": "heuristic",
+        "chosen_tool_name": "search_related_events",
+        "reason": "",
+        "raw_response": "",
+        "fallback_used": false,
+        "fallback_reason": "",
+        "stop_requested": false,
+        "stop_accepted": false,
+        "stop_override_reason": "",
+        "outcome": "selected_action"
+      },
+      {
+        "step_index": 3,
+        "requested_mode": "heuristic",
+        "effective_mode": "heuristic",
+        "policy_mode_before": "heuristic_selector",
+        "candidate_tools": [
+          "check_counterevidence",
+          "expand_asset_scope",
+          "local_intel_lookup",
+          "vt_enrich_ioc",
+          "abuse_ch_lookup",
+          "threatfox_ioc_lookup",
+          "extract_claim_candidates_from_page",
+          "extract_entities_from_page",
+          "urlhaus_ioc_lookup",
+          "pivot_related_indicators"
+        ],
+        "candidate_count": 10,
+        "chosen_by": "heuristic",
+        "chosen_tool_name": "check_counterevidence",
+        "reason": "",
+        "raw_response": "",
+        "fallback_used": false,
+        "fallback_reason": "",
+        "stop_requested": false,
+        "stop_accepted": false,
+        "stop_override_reason": "",
+        "outcome": "selected_action"
+      },
+      {
+        "step_index": 4,
+        "requested_mode": "heuristic",
+        "effective_mode": "heuristic",
+        "policy_mode_before": "heuristic_selector",
+        "candidate_tools": [
+          "expand_asset_scope",
+          "local_intel_lookup",
+          "vt_enrich_ioc",
+          "abuse_ch_lookup",
+          "threatfox_ioc_lookup",
+          "extract_claim_candidates_from_page",
+          "extract_entities_from_page",
+          "urlhaus_ioc_lookup",
+          "pivot_related_indicators"
+        ],
+        "candidate_count": 9,
+        "chosen_by": "heuristic",
+        "chosen_tool_name": "expand_asset_scope",
+        "reason": "",
+        "raw_response": "",
+        "fallback_used": false,
+        "fallback_reason": "",
+        "stop_requested": false,
+        "stop_accepted": false,
+        "stop_override_reason": "",
+        "outcome": "selected_action"
+      },
+      {
+        "step_index": 5,
+        "requested_mode": "heuristic",
+        "effective_mode": "heuristic",
+        "policy_mode_before": "heuristic_selector",
+        "candidate_tools": [
+          "local_intel_lookup",
+          "vt_enrich_ioc",
+          "abuse_ch_lookup",
+          "threatfox_ioc_lookup",
+          "extract_claim_candidates_from_page",
+          "extract_entities_from_page",
+          "urlhaus_ioc_lookup",
+          "pivot_related_indicators"
+        ],
+        "candidate_count": 8,
+        "chosen_by": "heuristic",
+        "chosen_tool_name": "local_intel_lookup",
+        "reason": "",
+        "raw_response": "",
+        "fallback_used": false,
+        "fallback_reason": "",
+        "stop_requested": false,
+        "stop_accepted": false,
+        "stop_override_reason": "",
+        "outcome": "selected_action"
+      },
+      {
+        "step_index": 6,
+        "requested_mode": "heuristic",
+        "effective_mode": "heuristic",
+        "policy_mode_before": "heuristic_selector",
+        "candidate_tools": [
+          "vt_enrich_ioc",
+          "abuse_ch_lookup",
+          "threatfox_ioc_lookup",
+          "extract_claim_candidates_from_page",
+          "extract_entities_from_page",
+          "urlhaus_ioc_lookup",
+          "pivot_related_indicators"
+        ],
+        "candidate_count": 7,
+        "chosen_by": "heuristic",
+        "chosen_tool_name": "vt_enrich_ioc",
+        "reason": "",
+        "raw_response": "",
+        "fallback_used": false,
+        "fallback_reason": "",
+        "stop_requested": false,
+        "stop_accepted": false,
+        "stop_override_reason": "",
+        "outcome": "selected_action"
+      },
+      {
+        "step_index": 7,
+        "requested_mode": "heuristic",
+        "effective_mode": "heuristic",
+        "policy_mode_before": "heuristic_selector",
+        "candidate_tools": [
+          "abuse_ch_lookup",
+          "threatfox_ioc_lookup",
+          "extract_claim_candidates_from_page",
+          "extract_entities_from_page",
+          "urlhaus_ioc_lookup",
+          "pivot_related_indicators"
+        ],
+        "candidate_count": 6,
+        "chosen_by": "heuristic",
+        "chosen_tool_name": "abuse_ch_lookup",
+        "reason": "",
+        "raw_response": "",
+        "fallback_used": false,
+        "fallback_reason": "",
+        "stop_requested": false,
+        "stop_accepted": false,
+        "stop_override_reason": "",
+        "outcome": "selected_action"
+      }
+    ],
+    "agent_history": [],
+    "reviewer_history": [],
+    "guardrail_feedback": [],
+    "blocked_finish_attempts": 0,
+    "policy_mode": "heuristic_selector",
+    "selector_state": {
+      "requested_mode": "heuristic",
+      "effective_mode": "heuristic",
+      "llm_available": false,
+      "fallback_reason": "",
+      "last_decision": {
+        "step_index": 7,
+        "requested_mode": "heuristic",
+        "effective_mode": "heuristic",
+        "policy_mode_before": "heuristic_selector",
+        "candidate_tools": [
+          "abuse_ch_lookup",
+          "threatfox_ioc_lookup",
+          "extract_claim_candidates_from_page",
+          "extract_entities_from_page",
+          "urlhaus_ioc_lookup",
+          "pivot_related_indicators"
+        ],
+        "candidate_count": 6,
+        "chosen_by": "heuristic",
+        "chosen_tool_name": "abuse_ch_lookup",
+        "reason": "",
+        "raw_response": "",
+        "fallback_used": false,
+        "fallback_reason": "",
+        "stop_requested": false,
+        "stop_accepted": false,
+        "stop_override_reason": "",
+        "outcome": "selected_action"
+      }
+    },
+    "agent_state": {
+      "last_decision": {}
+    },
+    "reviewer_state": {
+      "last_decision": {}
+    }
+  },
+  "selector_history": [
+    {
+      "step_index": 1,
+      "requested_mode": "heuristic",
+      "effective_mode": "heuristic",
+      "policy_mode_before": "heuristic_selector",
+      "candidate_tools": [
+        "search_seed_context",
+        "search_related_events",
+        "local_intel_lookup",
+        "vt_enrich_ioc",
+        "abuse_ch_lookup",
+        "threatfox_ioc_lookup",
+        "extract_claim_candidates_from_page",
+        "extract_entities_from_page",
+        "urlhaus_ioc_lookup",
+        "pivot_related_indicators"
+      ],
+      "candidate_count": 10,
+      "chosen_by": "heuristic",
+      "chosen_tool_name": "search_seed_context",
+      "reason": "",
+      "raw_response": "",
+      "fallback_used": false,
+      "fallback_reason": "",
+      "stop_requested": false,
+      "stop_accepted": false,
+      "stop_override_reason": "",
+      "outcome": "selected_action"
+    },
+    {
+      "step_index": 2,
+      "requested_mode": "heuristic",
+      "effective_mode": "heuristic",
+      "policy_mode_before": "heuristic_selector",
+      "candidate_tools": [
+        "search_related_events",
+        "check_counterevidence",
+        "expand_asset_scope",
+        "local_intel_lookup",
+        "vt_enrich_ioc",
+        "abuse_ch_lookup",
+        "threatfox_ioc_lookup",
+        "extract_claim_candidates_from_page",
+        "extract_entities_from_page",
+        "urlhaus_ioc_lookup",
+        "pivot_related_indicators"
+      ],
+      "candidate_count": 11,
+      "chosen_by": "heuristic",
+      "chosen_tool_name": "search_related_events",
+      "reason": "",
+      "raw_response": "",
+      "fallback_used": false,
+      "fallback_reason": "",
+      "stop_requested": false,
+      "stop_accepted": false,
+      "stop_override_reason": "",
+      "outcome": "selected_action"
+    },
+    {
+      "step_index": 3,
+      "requested_mode": "heuristic",
+      "effective_mode": "heuristic",
+      "policy_mode_before": "heuristic_selector",
+      "candidate_tools": [
+        "check_counterevidence",
+        "expand_asset_scope",
+        "local_intel_lookup",
+        "vt_enrich_ioc",
+        "abuse_ch_lookup",
+        "threatfox_ioc_lookup",
+        "extract_claim_candidates_from_page",
+        "extract_entities_from_page",
+        "urlhaus_ioc_lookup",
+        "pivot_related_indicators"
+      ],
+      "candidate_count": 10,
+      "chosen_by": "heuristic",
+      "chosen_tool_name": "check_counterevidence",
+      "reason": "",
+      "raw_response": "",
+      "fallback_used": false,
+      "fallback_reason": "",
+      "stop_requested": false,
+      "stop_accepted": false,
+      "stop_override_reason": "",
+      "outcome": "selected_action"
+    },
+    {
+      "step_index": 4,
+      "requested_mode": "heuristic",
+      "effective_mode": "heuristic",
+      "policy_mode_before": "heuristic_selector",
+      "candidate_tools": [
+        "expand_asset_scope",
+        "local_intel_lookup",
+        "vt_enrich_ioc",
+        "abuse_ch_lookup",
+        "threatfox_ioc_lookup",
+        "extract_claim_candidates_from_page",
+        "extract_entities_from_page",
+        "urlhaus_ioc_lookup",
+        "pivot_related_indicators"
+      ],
+      "candidate_count": 9,
+      "chosen_by": "heuristic",
+      "chosen_tool_name": "expand_asset_scope",
+      "reason": "",
+      "raw_response": "",
+      "fallback_used": false,
+      "fallback_reason": "",
+      "stop_requested": false,
+      "stop_accepted": false,
+      "stop_override_reason": "",
+      "outcome": "selected_action"
+    },
+    {
+      "step_index": 5,
+      "requested_mode": "heuristic",
+      "effective_mode": "heuristic",
+      "policy_mode_before": "heuristic_selector",
+      "candidate_tools": [
+        "local_intel_lookup",
+        "vt_enrich_ioc",
+        "abuse_ch_lookup",
+        "threatfox_ioc_lookup",
+        "extract_claim_candidates_from_page",
+        "extract_entities_from_page",
+        "urlhaus_ioc_lookup",
+        "pivot_related_indicators"
+      ],
+      "candidate_count": 8,
+      "chosen_by": "heuristic",
+      "chosen_tool_name": "local_intel_lookup",
+      "reason": "",
+      "raw_response": "",
+      "fallback_used": false,
+      "fallback_reason": "",
+      "stop_requested": false,
+      "stop_accepted": false,
+      "stop_override_reason": "",
+      "outcome": "selected_action"
+    },
+    {
+      "step_index": 6,
+      "requested_mode": "heuristic",
+      "effective_mode": "heuristic",
+      "policy_mode_before": "heuristic_selector",
+      "candidate_tools": [
+        "vt_enrich_ioc",
+        "abuse_ch_lookup",
+        "threatfox_ioc_lookup",
+        "extract_claim_candidates_from_page",
+        "extract_entities_from_page",
+        "urlhaus_ioc_lookup",
+        "pivot_related_indicators"
+      ],
+      "candidate_count": 7,
+      "chosen_by": "heuristic",
+      "chosen_tool_name": "vt_enrich_ioc",
+      "reason": "",
+      "raw_response": "",
+      "fallback_used": false,
+      "fallback_reason": "",
+      "stop_requested": false,
+      "stop_accepted": false,
+      "stop_override_reason": "",
+      "outcome": "selected_action"
+    },
+    {
+      "step_index": 7,
+      "requested_mode": "heuristic",
+      "effective_mode": "heuristic",
+      "policy_mode_before": "heuristic_selector",
+      "candidate_tools": [
+        "abuse_ch_lookup",
+        "threatfox_ioc_lookup",
+        "extract_claim_candidates_from_page",
+        "extract_entities_from_page",
+        "urlhaus_ioc_lookup",
+        "pivot_related_indicators"
+      ],
+      "candidate_count": 6,
+      "chosen_by": "heuristic",
+      "chosen_tool_name": "abuse_ch_lookup",
+      "reason": "",
+      "raw_response": "",
+      "fallback_used": false,
+      "fallback_reason": "",
+      "stop_requested": false,
+      "stop_accepted": false,
+      "stop_override_reason": "",
+      "outcome": "selected_action"
+    }
+  ],
+  "agent_history": [],
+  "reviewer_history": [],
+  "incident_state": {
+    "seed": {
+      "event_time": "2026-04-02 02:00:00",
+      "simulated": false,
+      "src": {
+        "ip": "10.40.8.10",
+        "port": null
+      },
+      "dst": {
+        "ip": "203.0.113.50",
+        "port": null
+      },
+      "protocol": "TLS",
+      "trigger_fingerprint": {
+        "type": "JA4",
+        "value": "t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+        "matched": true
+      },
+      "enrichment": {
+        "info": "Unknown suspicious TLS fingerprint",
+        "reference": "fixture",
+        "update_time": "2026-04-02 02:00:00"
+      },
+      "raw_alert": {
+        "timestamp": "2026-04-02 02:00:00",
+        "src_ip": "10.40.8.10",
+        "dst_ip": "203.0.113.50",
+        "protocol": "TLS",
+        "trigger_fingerprint": {
+          "type": "JA4",
+          "value": "t13d1516h2_1f8c0d19a111_39bb8eb7d001"
+        },
+        "info": "Unknown suspicious TLS fingerprint",
+        "reference": "fixture",
+        "update_time": "2026-04-02 02:00:00"
+      }
+    },
+    "pivots": {
+      "seed_ts": "2026-04-02 02:00:00",
+      "asset_ids": [
+        "srv-ops-01",
+        "srv-ops-02"
+      ],
+      "src_ips": [
+        "10.40.8.10",
+        "10.40.8.11"
+      ],
+      "dst_ips": [
+        "203.0.113.50"
+      ],
+      "domains": [
+        "updates.vendor.example"
+      ],
+      "fingerprints": [
+        "t13d1516h2_1f8c0d19a111_39bb8eb7d001"
+      ]
+    },
+    "observations": [
+      {
+        "observation_id": "obs-001",
+        "tool_name": "search_seed_context",
+        "query": {},
+        "source_type": "trace_store.seed_context",
+        "source_ref": "",
+        "events": [
+          {
+            "id": "evt-101",
+            "ts": "2026-04-02T01:55:00Z",
+            "kind": "asset_context",
+            "asset_id": "srv-ops-01",
+            "src_ip": "10.40.8.10",
+            "classification": "benign",
+            "tags": [
+              "maintenance"
+            ],
+            "summary": "Host entered the scheduled monthly patch window controlled by the operations team."
+          },
+          {
+            "id": "evt-102",
+            "ts": "2026-04-02T01:57:10Z",
+            "kind": "dns",
+            "asset_id": "srv-ops-01",
+            "src_ip": "10.40.8.10",
+            "domain": "updates.vendor.example",
+            "answers": [
+              "203.0.113.50"
+            ],
+            "classification": "benign",
+            "tags": [
+              "patching"
+            ],
+            "summary": "DNS query resolved the vendor update endpoint used during the patch window."
+          },
+          {
+            "id": "evt-103",
+            "ts": "2026-04-02T02:00:00Z",
+            "kind": "alert",
+            "asset_id": "srv-ops-01",
+            "src_ip": "10.40.8.10",
+            "dst_ip": "203.0.113.50",
+            "domain": "updates.vendor.example",
+            "ja4": "t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+            "classification": "needs_review",
+            "tags": [
+              "outlier"
+            ],
+            "summary": "Seed heuristic JA4 alert fired on update traffic during the patch window."
+          },
+          {
+            "id": "evt-104",
+            "ts": "2026-04-02T02:01:30Z",
+            "kind": "http",
+            "asset_id": "srv-ops-01",
+            "src_ip": "10.40.8.10",
+            "dst_ip": "203.0.113.50",
+            "domain": "updates.vendor.example",
+            "classification": "benign",
+            "tags": [
+              "patching"
+            ],
+            "summary": "Host downloaded a signed package manifest from the same vendor endpoint."
+          },
+          {
+            "id": "evt-105",
+            "ts": "2026-04-02T02:05:00Z",
+            "kind": "flow",
+            "asset_id": "srv-ops-01",
+            "src_ip": "10.40.8.10",
+            "dst_ip": "203.0.113.50",
+            "dst_port": 443,
+            "domain": "updates.vendor.example",
+            "classification": "benign",
+            "tags": [
+              "patching"
+            ],
+            "summary": "Follow-up TLS session transferred the expected patch package."
+          },
+          {
+            "id": "evt-106",
+            "ts": "2026-04-02T02:06:20Z",
+            "kind": "flow",
+            "asset_id": "srv-ops-02",
+            "src_ip": "10.40.8.11",
+            "dst_ip": "203.0.113.50",
+            "dst_port": 443,
+            "domain": "updates.vendor.example",
+            "classification": "benign",
+            "tags": [
+              "patching"
+            ],
+            "summary": "A sibling server contacted the same update endpoint in the same maintenance window."
+          }
+        ],
+        "derived_entities": {
+          "asset_ids": [
+            "srv-ops-01",
+            "srv-ops-02"
+          ],
+          "src_ips": [
+            "10.40.8.10",
+            "10.40.8.11"
+          ],
+          "dst_ips": [
+            "203.0.113.50"
+          ],
+          "domains": [
+            "updates.vendor.example"
+          ],
+          "fingerprints": [
+            "t13d1516h2_1f8c0d19a111_39bb8eb7d001"
+          ],
+          "families": []
+        },
+        "claims": [
+          {
+            "text": "检索到 1 条偏可疑事件，围绕 updates.vendor.example、203.0.113.50 展开。",
+            "kind": "event_batch",
+            "score": 75
+          }
+        ],
+        "confidence": 75,
+        "supports_hypothesis": [
+          "primary"
+        ],
+        "contradicts_hypothesis": [],
+        "relation": "supporting",
+        "summary": "检索到 1 条偏可疑事件，围绕 updates.vendor.example、203.0.113.50 展开。",
+        "note": "seed-context query over fixture trace events",
+        "page_candidates": [],
+        "documents": [],
+        "status": "ok",
+        "output_delta": {
+          "new_event_count": 6,
+          "new_event_ids": [
+            "evt-101",
+            "evt-102",
+            "evt-103",
+            "evt-104",
+            "evt-105",
+            "evt-106"
+          ],
+          "new_asset_count": 2,
+          "new_domain_count": 1,
+          "new_external_ip_count": 0,
+          "new_family_count": 0,
+          "new_claim_count": 1,
+          "new_page_document_count": 0,
+          "closed_candidate_event_count": 0,
+          "closed_candidate_event_ids": [],
+          "closed_gap_count": 5,
+          "closed_gap_ids": [
+            "build_context",
+            "check_counterevidence",
+            "execution_gap",
+            "ground_infra",
+            "identify_assets"
+          ],
+          "readiness_changed": false,
+          "became_ready": false,
+          "verdict_changed": false,
+          "novelty_score": 15,
+          "summary": "新增 6 条事件；新增 2 个资产；新增 1 个外部指示物；新增 1 条 claim；关闭 5 个 gap"
+        }
+      },
+      {
+        "observation_id": "obs-002",
+        "tool_name": "search_related_events",
+        "query": {
+          "pivots": {
+            "seed_ts": "2026-04-02 02:00:00",
+            "asset_ids": [
+              "srv-ops-01",
+              "srv-ops-02"
+            ],
+            "src_ips": [
+              "10.40.8.10",
+              "10.40.8.11"
+            ],
+            "dst_ips": [
+              "203.0.113.50"
+            ],
+            "domains": [
+              "updates.vendor.example"
+            ],
+            "fingerprints": [
+              "t13d1516h2_1f8c0d19a111_39bb8eb7d001"
+            ]
+          },
+          "window_minutes": 120,
+          "limit": 60
+        },
+        "source_type": "trace_store.related_events",
+        "source_ref": "",
+        "events": [
+          {
+            "id": "evt-101",
+            "ts": "2026-04-02T01:55:00Z",
+            "kind": "asset_context",
+            "asset_id": "srv-ops-01",
+            "src_ip": "10.40.8.10",
+            "classification": "benign",
+            "tags": [
+              "maintenance"
+            ],
+            "summary": "Host entered the scheduled monthly patch window controlled by the operations team."
+          },
+          {
+            "id": "evt-102",
+            "ts": "2026-04-02T01:57:10Z",
+            "kind": "dns",
+            "asset_id": "srv-ops-01",
+            "src_ip": "10.40.8.10",
+            "domain": "updates.vendor.example",
+            "answers": [
+              "203.0.113.50"
+            ],
+            "classification": "benign",
+            "tags": [
+              "patching"
+            ],
+            "summary": "DNS query resolved the vendor update endpoint used during the patch window."
+          },
+          {
+            "id": "evt-103",
+            "ts": "2026-04-02T02:00:00Z",
+            "kind": "alert",
+            "asset_id": "srv-ops-01",
+            "src_ip": "10.40.8.10",
+            "dst_ip": "203.0.113.50",
+            "domain": "updates.vendor.example",
+            "ja4": "t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+            "classification": "needs_review",
+            "tags": [
+              "outlier"
+            ],
+            "summary": "Seed heuristic JA4 alert fired on update traffic during the patch window."
+          },
+          {
+            "id": "evt-104",
+            "ts": "2026-04-02T02:01:30Z",
+            "kind": "http",
+            "asset_id": "srv-ops-01",
+            "src_ip": "10.40.8.10",
+            "dst_ip": "203.0.113.50",
+            "domain": "updates.vendor.example",
+            "classification": "benign",
+            "tags": [
+              "patching"
+            ],
+            "summary": "Host downloaded a signed package manifest from the same vendor endpoint."
+          },
+          {
+            "id": "evt-105",
+            "ts": "2026-04-02T02:05:00Z",
+            "kind": "flow",
+            "asset_id": "srv-ops-01",
+            "src_ip": "10.40.8.10",
+            "dst_ip": "203.0.113.50",
+            "dst_port": 443,
+            "domain": "updates.vendor.example",
+            "classification": "benign",
+            "tags": [
+              "patching"
+            ],
+            "summary": "Follow-up TLS session transferred the expected patch package."
+          },
+          {
+            "id": "evt-106",
+            "ts": "2026-04-02T02:06:20Z",
+            "kind": "flow",
+            "asset_id": "srv-ops-02",
+            "src_ip": "10.40.8.11",
+            "dst_ip": "203.0.113.50",
+            "dst_port": 443,
+            "domain": "updates.vendor.example",
+            "classification": "benign",
+            "tags": [
+              "patching"
+            ],
+            "summary": "A sibling server contacted the same update endpoint in the same maintenance window."
+          }
+        ],
+        "derived_entities": {
+          "asset_ids": [
+            "srv-ops-01",
+            "srv-ops-02"
+          ],
+          "src_ips": [
+            "10.40.8.10",
+            "10.40.8.11"
+          ],
+          "dst_ips": [
+            "203.0.113.50"
+          ],
+          "domains": [
+            "updates.vendor.example"
+          ],
+          "fingerprints": [
+            "t13d1516h2_1f8c0d19a111_39bb8eb7d001"
+          ],
+          "families": []
+        },
+        "claims": [
+          {
+            "text": "扩线检索到 1 条可疑关联事件，围绕 updates.vendor.example、203.0.113.50 展开；当前先作为待验证候选线索。",
+            "kind": "candidate_event_batch",
+            "score": 75
+          }
+        ],
+        "confidence": 75,
+        "supports_hypothesis": [
+          "secondary"
+        ],
+        "contradicts_hypothesis": [],
+        "relation": "candidate",
+        "summary": "扩线检索到 1 条可疑关联事件，围绕 updates.vendor.example、203.0.113.50 展开；当前先作为待验证候选线索。",
+        "note": "pivot expansion over fixture trace events",
+        "page_candidates": [],
+        "documents": [],
+        "status": "ok",
+        "output_delta": {
+          "new_event_count": 0,
+          "new_event_ids": [],
+          "new_asset_count": 0,
+          "new_domain_count": 0,
+          "new_external_ip_count": 0,
+          "new_family_count": 0,
+          "new_claim_count": 1,
+          "new_page_document_count": 0,
+          "closed_candidate_event_count": 0,
+          "closed_candidate_event_ids": [],
+          "closed_gap_count": 0,
+          "closed_gap_ids": [],
+          "readiness_changed": false,
+          "became_ready": false,
+          "verdict_changed": false,
+          "novelty_score": 1,
+          "summary": "新增 1 条 claim"
+        }
+      },
+      {
+        "observation_id": "obs-003",
+        "tool_name": "check_counterevidence",
+        "query": {
+          "asset_ids": [
+            "srv-ops-01",
+            "srv-ops-02"
+          ],
+          "window_minutes": 240,
+          "limit": 80
+        },
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "events": [
+          {
+            "id": "evt-101",
+            "ts": "2026-04-02T01:55:00Z",
+            "kind": "asset_context",
+            "asset_id": "srv-ops-01",
+            "src_ip": "10.40.8.10",
+            "classification": "benign",
+            "tags": [
+              "maintenance"
+            ],
+            "summary": "Host entered the scheduled monthly patch window controlled by the operations team."
+          },
+          {
+            "id": "evt-102",
+            "ts": "2026-04-02T01:57:10Z",
+            "kind": "dns",
+            "asset_id": "srv-ops-01",
+            "src_ip": "10.40.8.10",
+            "domain": "updates.vendor.example",
+            "answers": [
+              "203.0.113.50"
+            ],
+            "classification": "benign",
+            "tags": [
+              "patching"
+            ],
+            "summary": "DNS query resolved the vendor update endpoint used during the patch window."
+          },
+          {
+            "id": "evt-103",
+            "ts": "2026-04-02T02:00:00Z",
+            "kind": "alert",
+            "asset_id": "srv-ops-01",
+            "src_ip": "10.40.8.10",
+            "dst_ip": "203.0.113.50",
+            "domain": "updates.vendor.example",
+            "ja4": "t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+            "classification": "needs_review",
+            "tags": [
+              "outlier"
+            ],
+            "summary": "Seed heuristic JA4 alert fired on update traffic during the patch window."
+          },
+          {
+            "id": "evt-104",
+            "ts": "2026-04-02T02:01:30Z",
+            "kind": "http",
+            "asset_id": "srv-ops-01",
+            "src_ip": "10.40.8.10",
+            "dst_ip": "203.0.113.50",
+            "domain": "updates.vendor.example",
+            "classification": "benign",
+            "tags": [
+              "patching"
+            ],
+            "summary": "Host downloaded a signed package manifest from the same vendor endpoint."
+          },
+          {
+            "id": "evt-105",
+            "ts": "2026-04-02T02:05:00Z",
+            "kind": "flow",
+            "asset_id": "srv-ops-01",
+            "src_ip": "10.40.8.10",
+            "dst_ip": "203.0.113.50",
+            "dst_port": 443,
+            "domain": "updates.vendor.example",
+            "classification": "benign",
+            "tags": [
+              "patching"
+            ],
+            "summary": "Follow-up TLS session transferred the expected patch package."
+          },
+          {
+            "id": "evt-106",
+            "ts": "2026-04-02T02:06:20Z",
+            "kind": "flow",
+            "asset_id": "srv-ops-02",
+            "src_ip": "10.40.8.11",
+            "dst_ip": "203.0.113.50",
+            "dst_port": 443,
+            "domain": "updates.vendor.example",
+            "classification": "benign",
+            "tags": [
+              "patching"
+            ],
+            "summary": "A sibling server contacted the same update endpoint in the same maintenance window."
+          }
+        ],
+        "derived_entities": {
+          "asset_ids": [
+            "srv-ops-01",
+            "srv-ops-02"
+          ],
+          "src_ips": [
+            "10.40.8.10",
+            "10.40.8.11"
+          ],
+          "dst_ips": [
+            "203.0.113.50"
+          ],
+          "domains": [
+            "updates.vendor.example"
+          ],
+          "fingerprints": [
+            "t13d1516h2_1f8c0d19a111_39bb8eb7d001"
+          ],
+          "families": []
+        },
+        "claims": [
+          {
+            "text": "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。",
+            "kind": "counterevidence_check",
+            "score": 78
+          }
+        ],
+        "confidence": 78,
+        "supports_hypothesis": [
+          "benign"
+        ],
+        "contradicts_hypothesis": [
+          "primary"
+        ],
+        "relation": "counterevidence",
+        "summary": "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。",
+        "note": "asset-context expansion over fixture trace events",
+        "page_candidates": [],
+        "documents": [],
+        "status": "ok",
+        "output_delta": {
+          "new_event_count": 0,
+          "new_event_ids": [],
+          "new_asset_count": 0,
+          "new_domain_count": 0,
+          "new_external_ip_count": 0,
+          "new_family_count": 0,
+          "new_claim_count": 1,
+          "new_page_document_count": 0,
+          "closed_candidate_event_count": 0,
+          "closed_candidate_event_ids": [],
+          "closed_gap_count": 0,
+          "closed_gap_ids": [],
+          "readiness_changed": false,
+          "became_ready": false,
+          "verdict_changed": false,
+          "novelty_score": 1,
+          "summary": "新增 1 条 claim"
+        }
+      },
+      {
+        "observation_id": "obs-004",
+        "tool_name": "expand_asset_scope",
+        "query": {
+          "asset_ids": [
+            "srv-ops-02"
+          ],
+          "window_minutes": 180,
+          "limit": 60
+        },
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "events": [
+          {
+            "id": "evt-106",
+            "ts": "2026-04-02T02:06:20Z",
+            "kind": "flow",
+            "asset_id": "srv-ops-02",
+            "src_ip": "10.40.8.11",
+            "dst_ip": "203.0.113.50",
+            "dst_port": 443,
+            "domain": "updates.vendor.example",
+            "classification": "benign",
+            "tags": [
+              "patching"
+            ],
+            "summary": "A sibling server contacted the same update endpoint in the same maintenance window."
+          }
+        ],
+        "derived_entities": {
+          "asset_ids": [
+            "srv-ops-02"
+          ],
+          "src_ips": [
+            "10.40.8.11"
+          ],
+          "dst_ips": [
+            "203.0.113.50"
+          ],
+          "domains": [
+            "updates.vendor.example"
+          ],
+          "fingerprints": [],
+          "families": []
+        },
+        "claims": [
+          {
+            "text": "检索到 1 条更接近维护、更新或正常基线的事件。",
+            "kind": "event_batch",
+            "score": 35
+          }
+        ],
+        "confidence": 35,
+        "supports_hypothesis": [
+          "benign"
+        ],
+        "contradicts_hypothesis": [
+          "primary"
+        ],
+        "relation": "counterevidence",
+        "summary": "检索到 1 条更接近维护、更新或正常基线的事件。",
+        "note": "asset-context expansion over fixture trace events",
+        "page_candidates": [],
+        "documents": [],
+        "status": "ok",
+        "output_delta": {
+          "new_event_count": 0,
+          "new_event_ids": [],
+          "new_asset_count": 0,
+          "new_domain_count": 0,
+          "new_external_ip_count": 0,
+          "new_family_count": 0,
+          "new_claim_count": 1,
+          "new_page_document_count": 0,
+          "closed_candidate_event_count": 0,
+          "closed_candidate_event_ids": [],
+          "closed_gap_count": 0,
+          "closed_gap_ids": [],
+          "readiness_changed": false,
+          "became_ready": false,
+          "verdict_changed": false,
+          "novelty_score": 1,
+          "summary": "新增 1 条 claim"
+        }
+      },
+      {
+        "observation_id": "obs-005",
+        "tool_name": "local_intel_lookup",
+        "query": {
+          "indicator_value": "203.0.113.50",
+          "indicator_type": "IP"
+        },
+        "source_type": "intel_tool",
+        "source_ref": "",
+        "events": [],
+        "derived_entities": {
+          "asset_ids": [],
+          "src_ips": [],
+          "dst_ips": [],
+          "domains": [],
+          "fingerprints": [],
+          "families": []
+        },
+        "claims": [],
+        "confidence": 18,
+        "supports_hypothesis": [],
+        "contradicts_hypothesis": [],
+        "relation": "context",
+        "summary": "本地情报库未命中该指示物。",
+        "note": "",
+        "page_candidates": [],
+        "documents": [],
+        "status": "empty",
+        "output_delta": {
+          "new_event_count": 0,
+          "new_event_ids": [],
+          "new_asset_count": 0,
+          "new_domain_count": 0,
+          "new_external_ip_count": 0,
+          "new_family_count": 0,
+          "new_claim_count": 0,
+          "new_page_document_count": 0,
+          "closed_candidate_event_count": 0,
+          "closed_candidate_event_ids": [],
+          "closed_gap_count": 1,
+          "closed_gap_ids": [
+            "structure_evidence"
+          ],
+          "readiness_changed": false,
+          "became_ready": false,
+          "verdict_changed": false,
+          "novelty_score": 1,
+          "summary": "关闭 1 个 gap"
+        }
+      },
+      {
+        "observation_id": "obs-006",
+        "tool_name": "vt_enrich_ioc",
+        "query": {
+          "indicator_value": "203.0.113.50",
+          "indicator_type": "IP"
+        },
+        "source_type": "intel_tool",
+        "source_ref": "",
+        "events": [],
+        "derived_entities": {
+          "asset_ids": [],
+          "src_ips": [],
+          "dst_ips": [],
+          "domains": [],
+          "fingerprints": [],
+          "families": []
+        },
+        "claims": [],
+        "confidence": 18,
+        "supports_hypothesis": [],
+        "contradicts_hypothesis": [],
+        "relation": "context",
+        "summary": "VirusTotal 已查询该外部 IP，但未返回正向恶意检测。",
+        "note": "",
+        "page_candidates": [],
+        "documents": [],
+        "status": "empty",
+        "output_delta": {
+          "new_event_count": 0,
+          "new_event_ids": [],
+          "new_asset_count": 0,
+          "new_domain_count": 0,
+          "new_external_ip_count": 0,
+          "new_family_count": 0,
+          "new_claim_count": 0,
+          "new_page_document_count": 0,
+          "closed_candidate_event_count": 0,
+          "closed_candidate_event_ids": [],
+          "closed_gap_count": 0,
+          "closed_gap_ids": [],
+          "readiness_changed": false,
+          "became_ready": false,
+          "verdict_changed": false,
+          "novelty_score": 0,
+          "summary": "没有新增实质信息"
+        }
+      },
+      {
+        "observation_id": "obs-007",
+        "tool_name": "abuse_ch_lookup",
+        "query": {
+          "indicator_value": "203.0.113.50",
+          "indicator_type": "IP",
+          "max_results": 5
+        },
+        "source_type": "intel_tool",
+        "source_ref": "",
+        "events": [],
+        "derived_entities": {
+          "asset_ids": [],
+          "src_ips": [],
+          "dst_ips": [],
+          "domains": [],
+          "fingerprints": [],
+          "families": []
+        },
+        "claims": [],
+        "confidence": 18,
+        "supports_hypothesis": [],
+        "contradicts_hypothesis": [],
+        "relation": "context",
+        "summary": "abuse.ch 聚合查询未命中结构化情报。",
+        "note": "",
+        "page_candidates": [],
+        "documents": [],
+        "status": "empty",
+        "output_delta": {
+          "new_event_count": 0,
+          "new_event_ids": [],
+          "new_asset_count": 0,
+          "new_domain_count": 0,
+          "new_external_ip_count": 0,
+          "new_family_count": 0,
+          "new_claim_count": 0,
+          "new_page_document_count": 0,
+          "closed_candidate_event_count": 0,
+          "closed_candidate_event_ids": [],
+          "closed_gap_count": 0,
+          "closed_gap_ids": [],
+          "readiness_changed": false,
+          "became_ready": false,
+          "verdict_changed": false,
+          "novelty_score": 0,
+          "summary": "没有新增实质信息"
+        }
+      }
+    ],
+    "page_documents": [],
+    "entities": {
+      "seed_asset": "srv-ops-01",
+      "assets": [
+        "srv-ops-01",
+        "srv-ops-02"
+      ],
+      "observed_assets": [
+        "srv-ops-01",
+        "srv-ops-02"
+      ],
+      "suspected_assets": [
+        "srv-ops-01"
+      ],
+      "related_assets": [
+        "srv-ops-02"
+      ],
+      "internal_ips": [
+        "10.40.8.10",
+        "10.40.8.11"
+      ],
+      "external_ips": [
+        "203.0.113.50"
+      ],
+      "primary_external_ips": [
+        "203.0.113.50"
+      ],
+      "contextual_external_ips": [],
+      "domains": [
+        "updates.vendor.example"
+      ],
+      "primary_domains": [
+        "updates.vendor.example"
+      ],
+      "contextual_domains": [],
+      "users": []
+    },
+    "timeline": [
+      {
+        "event_id": "evt-101",
+        "ts": "2026-04-02T01:55:00Z",
+        "kind": "asset_context",
+        "classification": "benign",
+        "role": "supporting",
+        "stages": [],
+        "summary": "Host entered the scheduled monthly patch window controlled by the operations team."
+      },
+      {
+        "event_id": "evt-102",
+        "ts": "2026-04-02T01:57:10Z",
+        "kind": "dns",
+        "classification": "benign",
+        "role": "supporting",
+        "stages": [],
+        "summary": "DNS query resolved the vendor update endpoint used during the patch window."
+      },
+      {
+        "event_id": "evt-103",
+        "ts": "2026-04-02T02:00:00Z",
+        "kind": "alert",
+        "classification": "needs_review",
+        "role": "seed",
+        "stages": [],
+        "summary": "Seed heuristic JA4 alert fired on update traffic during the patch window."
+      },
+      {
+        "event_id": "evt-104",
+        "ts": "2026-04-02T02:01:30Z",
+        "kind": "http",
+        "classification": "benign",
+        "role": "supporting",
+        "stages": [],
+        "summary": "Host downloaded a signed package manifest from the same vendor endpoint."
+      },
+      {
+        "event_id": "evt-105",
+        "ts": "2026-04-02T02:05:00Z",
+        "kind": "flow",
+        "classification": "benign",
+        "role": "supporting",
+        "stages": [],
+        "summary": "Follow-up TLS session transferred the expected patch package."
+      },
+      {
+        "event_id": "evt-106",
+        "ts": "2026-04-02T02:06:20Z",
+        "kind": "flow",
+        "classification": "benign",
+        "role": "supporting",
+        "stages": [],
+        "summary": "A sibling server contacted the same update endpoint in the same maintenance window."
+      }
+    ],
+    "scope": {
+      "event_count": 6,
+      "primary_event_count": 6,
+      "candidate_event_count": 0,
+      "context_event_count": 0,
+      "counterevidence_count": 0,
+      "time_window": {
+        "start": "2026-04-02T01:55:00Z",
+        "end": "2026-04-02T02:06:20Z"
+      },
+      "affected_assets": [
+        "srv-ops-01"
+      ],
+      "related_assets": [
+        "srv-ops-02"
+      ],
+      "primary_external_indicators": [
+        "203.0.113.50",
+        "updates.vendor.example"
+      ],
+      "contextual_external_indicators": [],
+      "external_indicators": [
+        "203.0.113.50",
+        "updates.vendor.example"
+      ]
+    },
+    "evidence_ledger": [
+      {
+        "observation_id": "obs-001",
+        "tool_name": "search_seed_context",
+        "relation": "supporting",
+        "source_type": "trace_store.seed_context",
+        "source_ref": "",
+        "summary": "检索到 1 条偏可疑事件，围绕 updates.vendor.example、203.0.113.50 展开。",
+        "event_ids": [
+          "evt-101",
+          "evt-102",
+          "evt-103",
+          "evt-104",
+          "evt-105",
+          "evt-106"
+        ],
+        "claim_texts": [
+          "检索到 1 条偏可疑事件，围绕 updates.vendor.example、203.0.113.50 展开。"
+        ],
+        "confidence": 75,
+        "supports_hypothesis": [
+          "primary"
+        ],
+        "contradicts_hypothesis": []
+      },
+      {
+        "observation_id": "obs-002",
+        "tool_name": "search_related_events",
+        "relation": "candidate",
+        "source_type": "trace_store.related_events",
+        "source_ref": "",
+        "summary": "扩线检索到 1 条可疑关联事件，围绕 updates.vendor.example、203.0.113.50 展开；当前先作为待验证候选线索。",
+        "event_ids": [
+          "evt-101",
+          "evt-102",
+          "evt-103",
+          "evt-104",
+          "evt-105",
+          "evt-106"
+        ],
+        "claim_texts": [
+          "扩线检索到 1 条可疑关联事件，围绕 updates.vendor.example、203.0.113.50 展开；当前先作为待验证候选线索。"
+        ],
+        "confidence": 75,
+        "supports_hypothesis": [
+          "secondary"
+        ],
+        "contradicts_hypothesis": []
+      },
+      {
+        "observation_id": "obs-003",
+        "tool_name": "check_counterevidence",
+        "relation": "counterevidence",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。",
+        "event_ids": [
+          "evt-101",
+          "evt-102",
+          "evt-103",
+          "evt-104",
+          "evt-105",
+          "evt-106"
+        ],
+        "claim_texts": [
+          "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。"
+        ],
+        "confidence": 78,
+        "supports_hypothesis": [
+          "benign"
+        ],
+        "contradicts_hypothesis": [
+          "primary"
+        ]
+      },
+      {
+        "observation_id": "obs-004",
+        "tool_name": "expand_asset_scope",
+        "relation": "counterevidence",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "检索到 1 条更接近维护、更新或正常基线的事件。",
+        "event_ids": [
+          "evt-106"
+        ],
+        "claim_texts": [
+          "检索到 1 条更接近维护、更新或正常基线的事件。"
+        ],
+        "confidence": 35,
+        "supports_hypothesis": [
+          "benign"
+        ],
+        "contradicts_hypothesis": [
+          "primary"
+        ]
+      },
+      {
+        "observation_id": "obs-005",
+        "tool_name": "local_intel_lookup",
+        "relation": "context",
+        "source_type": "intel_tool",
+        "source_ref": "",
+        "summary": "本地情报库未命中该指示物。",
+        "event_ids": [],
+        "claim_texts": [],
+        "confidence": 18,
+        "supports_hypothesis": [],
+        "contradicts_hypothesis": []
+      },
+      {
+        "observation_id": "obs-006",
+        "tool_name": "vt_enrich_ioc",
+        "relation": "context",
+        "source_type": "intel_tool",
+        "source_ref": "",
+        "summary": "VirusTotal 已查询该外部 IP，但未返回正向恶意检测。",
+        "event_ids": [],
+        "claim_texts": [],
+        "confidence": 18,
+        "supports_hypothesis": [],
+        "contradicts_hypothesis": []
+      },
+      {
+        "observation_id": "obs-007",
+        "tool_name": "abuse_ch_lookup",
+        "relation": "context",
+        "source_type": "intel_tool",
+        "source_ref": "",
+        "summary": "abuse.ch 聚合查询未命中结构化情报。",
+        "event_ids": [],
+        "claim_texts": [],
+        "confidence": 18,
+        "supports_hypothesis": [],
+        "contradicts_hypothesis": []
+      }
+    ],
+    "gap_ledger": [
+      {
+        "id": "structure_evidence",
+        "priority": "medium",
+        "question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+        "gap_type": "report_structuring",
+        "materiality": "delivery_blocking",
+        "tool_capability_hints": [
+          "evidence_structuring",
+          "entity_structuring",
+          "source_retrieval"
+        ],
+        "delivery_blocking": true,
+        "reportable_if_unresolved": false,
+        "closure_criteria": [
+          "至少完成一次结构化沉淀",
+          "报告可直接引用当前事实"
+        ],
+        "attempt_count": 0,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 0,
+        "zero_delta_attempt_count": 0,
+        "last_attempt_step": 0,
+        "last_attempt_tool": "",
+        "recent_attempts": [],
+        "addressable_tools": [],
+        "actionable_tools": [],
+        "status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 open questions 中。",
+        "actionable_now": false,
+        "first_seen_step": 1,
+        "last_seen_step": 7,
+        "closed_step": 5
+      },
+      {
+        "id": "build_context",
+        "priority": "high",
+        "question": "仍需围绕 seed alert 补足最小上下文。",
+        "gap_type": "context",
+        "materiality": "delivery_blocking",
+        "tool_capability_hints": [
+          "context_building",
+          "timeline"
+        ],
+        "delivery_blocking": true,
+        "reportable_if_unresolved": false,
+        "closure_criteria": [
+          "补齐最小事件窗",
+          "确认告警不是孤立命中"
+        ],
+        "attempt_count": 0,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 0,
+        "zero_delta_attempt_count": 0,
+        "last_attempt_step": 0,
+        "last_attempt_tool": "",
+        "recent_attempts": [],
+        "addressable_tools": [],
+        "actionable_tools": [],
+        "status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 open questions 中。",
+        "actionable_now": false,
+        "first_seen_step": 1,
+        "last_seen_step": 7,
+        "closed_step": 1
+      },
+      {
+        "id": "identify_assets",
+        "priority": "high",
+        "question": "仍需确认事件涉及的关键资产。",
+        "gap_type": "asset_identity",
+        "materiality": "delivery_blocking",
+        "tool_capability_hints": [
+          "context_building",
+          "asset_scope"
+        ],
+        "delivery_blocking": true,
+        "reportable_if_unresolved": false,
+        "closure_criteria": [
+          "确认关键资产身份",
+          "避免影响范围仍为空"
+        ],
+        "attempt_count": 0,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 0,
+        "zero_delta_attempt_count": 0,
+        "last_attempt_step": 0,
+        "last_attempt_tool": "",
+        "recent_attempts": [],
+        "addressable_tools": [],
+        "actionable_tools": [],
+        "status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 open questions 中。",
+        "actionable_now": false,
+        "first_seen_step": 1,
+        "last_seen_step": 7,
+        "closed_step": 1
+      },
+      {
+        "id": "execution_gap",
+        "priority": "medium",
+        "question": "是否存在主机侧执行、持久化或横向移动证据？",
+        "gap_type": "host_confirmation",
+        "materiality": "confidence_supporting",
+        "tool_capability_hints": [
+          "host_confirmation"
+        ],
+        "delivery_blocking": false,
+        "reportable_if_unresolved": true,
+        "closure_criteria": [
+          "确认是否存在主机侧执行线索",
+          "或保留为主机侧待确认事项"
+        ],
+        "attempt_count": 0,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 0,
+        "zero_delta_attempt_count": 0,
+        "last_attempt_step": 0,
+        "last_attempt_tool": "",
+        "recent_attempts": [],
+        "addressable_tools": [],
+        "actionable_tools": [],
+        "status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 open questions 中。",
+        "actionable_now": false,
+        "first_seen_step": 1,
+        "last_seen_step": 7,
+        "closed_step": 1
+      },
+      {
+        "id": "ground_infra",
+        "priority": "medium",
+        "question": "仍需补足外部基础设施、域名或家族背景。",
+        "gap_type": "external_context",
+        "materiality": "delivery_blocking",
+        "tool_capability_hints": [
+          "infra_context",
+          "external_intel"
+        ],
+        "delivery_blocking": true,
+        "reportable_if_unresolved": false,
+        "closure_criteria": [
+          "补足外部基础设施背景",
+          "支持当前结论的可解释性"
+        ],
+        "attempt_count": 0,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 0,
+        "zero_delta_attempt_count": 0,
+        "last_attempt_step": 0,
+        "last_attempt_tool": "",
+        "recent_attempts": [],
+        "addressable_tools": [],
+        "actionable_tools": [],
+        "status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 open questions 中。",
+        "actionable_now": false,
+        "first_seen_step": 1,
+        "last_seen_step": 7,
+        "closed_step": 1
+      },
+      {
+        "id": "check_counterevidence",
+        "priority": "medium",
+        "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+        "gap_type": "counterevidence",
+        "materiality": "delivery_blocking",
+        "tool_capability_hints": [
+          "counterevidence",
+          "background_validation"
+        ],
+        "delivery_blocking": true,
+        "reportable_if_unresolved": false,
+        "closure_criteria": [
+          "完成显式反证检查",
+          "明确是否存在降级解释"
+        ],
+        "attempt_count": 0,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 0,
+        "zero_delta_attempt_count": 0,
+        "last_attempt_step": 0,
+        "last_attempt_tool": "",
+        "recent_attempts": [],
+        "addressable_tools": [],
+        "actionable_tools": [],
+        "status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 open questions 中。",
+        "actionable_now": false,
+        "first_seen_step": 1,
+        "last_seen_step": 7,
+        "closed_step": 1
+      }
+    ],
+    "counterevidence": [
+      {
+        "observation_id": "obs-003",
+        "tool_name": "check_counterevidence",
+        "relation": "counterevidence",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。",
+        "event_ids": [
+          "evt-101",
+          "evt-102",
+          "evt-103",
+          "evt-104",
+          "evt-105",
+          "evt-106"
+        ],
+        "claim_texts": [
+          "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。"
+        ],
+        "confidence": 78,
+        "supports_hypothesis": [
+          "benign"
+        ],
+        "contradicts_hypothesis": [
+          "primary"
+        ]
+      },
+      {
+        "observation_id": "obs-004",
+        "tool_name": "expand_asset_scope",
+        "relation": "counterevidence",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "检索到 1 条更接近维护、更新或正常基线的事件。",
+        "event_ids": [
+          "evt-106"
+        ],
+        "claim_texts": [
+          "检索到 1 条更接近维护、更新或正常基线的事件。"
+        ],
+        "confidence": 35,
+        "supports_hypothesis": [
+          "benign"
+        ],
+        "contradicts_hypothesis": [
+          "primary"
+        ]
+      }
+    ],
+    "analysis_verdict": {
+      "status": "monitor_only",
+      "status_label": "降级观察",
+      "confidence": 55,
+      "severity": "低危",
+      "rationale": [
+        "当前证据更容易被维护窗口、补丁、备份或共享基线解释。"
+      ]
+    },
+    "provisional_verdict": {
+      "status": "monitor_only",
+      "status_label": "降级观察",
+      "confidence": 55,
+      "severity": "低危",
+      "rationale": [
+        "当前证据更容易被维护窗口、补丁、备份或共享基线解释。"
+      ]
+    },
+    "delivery_verdict": {
+      "status": "needs_review",
+      "status_label": "待人工复核",
+      "confidence": 55,
+      "severity": "中危",
+      "rationale": [
+        "当前证据更容易被维护窗口、补丁、备份或共享基线解释。",
+        "交付门槛尚未满足：若要稳定降级为观察，仍需要显式反证检查及至少一条可引用的反证。"
+      ],
+      "delivery_ready": false,
+      "blocked_by": [
+        "evidence_chain_ready"
+      ],
+      "provisional_status": "monitor_only",
+      "provisional_status_label": "降级观察"
+    },
+    "verdict": {
+      "status": "needs_review",
+      "status_label": "待人工复核",
+      "confidence": 55,
+      "severity": "中危",
+      "rationale": [
+        "当前证据更容易被维护窗口、补丁、备份或共享基线解释。",
+        "交付门槛尚未满足：若要稳定降级为观察，仍需要显式反证检查及至少一条可引用的反证。"
+      ],
+      "delivery_ready": false,
+      "blocked_by": [
+        "evidence_chain_ready"
+      ],
+      "provisional_status": "monitor_only",
+      "provisional_status_label": "降级观察"
+    },
+    "confidence": 55,
+    "report_ready": false,
+    "readiness": {
+      "ready_for_delivery": false,
+      "summary": "交付门槛尚未满足：若要稳定降级为观察，仍需要显式反证检查及至少一条可引用的反证。",
+      "checks": [
+        {
+          "id": "context_built",
+          "ok": true,
+          "reason": "已围绕 seed alert 建立最小上下文。"
+        },
+        {
+          "id": "cluster_built",
+          "ok": true,
+          "reason": "事件簇规模已经足以支撑时间线和范围判断。"
+        },
+        {
+          "id": "candidate_events_grounded",
+          "ok": true,
+          "reason": "扩线得到的候选事件已经完成独立验证或明确降级为上下文。"
+        },
+        {
+          "id": "timeline_built",
+          "ok": true,
+          "reason": "已形成时间线，可解释关键观察的先后关系。"
+        },
+        {
+          "id": "scope_assessed",
+          "ok": true,
+          "reason": "当前事件范围已经落到资产或核心外部指示物上。"
+        },
+        {
+          "id": "evidence_chain_ready",
+          "ok": false,
+          "reason": "若要稳定降级为观察，仍需要显式反证检查及至少一条可引用的反证。"
+        },
+        {
+          "id": "counterevidence_checked",
+          "ok": true,
+          "reason": "已执行显式反证检查。"
+        },
+        {
+          "id": "supplemental_context_reviewed",
+          "ok": true,
+          "reason": "已执行至少一次情报或结构化整理动作，可支撑 deterministic report 生成。"
+        }
+      ],
+      "blocking_checks": [
+        {
+          "id": "evidence_chain_ready",
+          "ok": false,
+          "reason": "若要稳定降级为观察，仍需要显式反证检查及至少一条可引用的反证。"
+        }
+      ]
+    }
+  },
+  "open_questions": [],
+  "working_hypotheses": [
+    {
+      "id": "primary",
+      "kind": "primary",
+      "title": "srv-ops-01 疑似恶意外联事件",
+      "score": 3,
+      "status": "supported",
+      "supporting_observation_ids": [
+        "obs-001"
+      ],
+      "counter_observation_ids": [
+        "obs-003",
+        "obs-004"
+      ]
+    },
+    {
+      "id": "secondary",
+      "kind": "secondary",
+      "title": "srv-ops-02 等资产的关联范围仍待确认",
+      "score": 6,
+      "status": "supported",
+      "supporting_observation_ids": [
+        "obs-005",
+        "obs-006",
+        "obs-007"
+      ],
+      "counter_observation_ids": []
+    },
+    {
+      "id": "benign",
+      "kind": "benign",
+      "title": "围绕 203.0.113.50、updates.vendor.example 的通信可能存在正常背景解释",
+      "score": 11,
+      "status": "leading",
+      "supporting_observation_ids": [
+        "obs-003",
+        "obs-004"
+      ],
+      "counter_observation_ids": [
+        "obs-001"
+      ]
+    }
+  ],
+  "analysis_verdict": {
+    "status": "monitor_only",
+    "status_label": "降级观察",
+    "confidence": 55,
+    "severity": "低危",
+    "rationale": [
+      "当前证据更容易被维护窗口、补丁、备份或共享基线解释。"
+    ]
+  },
+  "provisional_verdict": {
+    "status": "monitor_only",
+    "status_label": "降级观察",
+    "confidence": 55,
+    "severity": "低危",
+    "rationale": [
+      "当前证据更容易被维护窗口、补丁、备份或共享基线解释。"
+    ]
+  },
+  "delivery_verdict": {
+    "status": "needs_review",
+    "status_label": "待人工复核",
+    "confidence": 55,
+    "severity": "中危",
+    "rationale": [
+      "当前证据更容易被维护窗口、补丁、备份或共享基线解释。",
+      "交付门槛尚未满足：若要稳定降级为观察，仍需要显式反证检查及至少一条可引用的反证。"
+    ],
+    "delivery_ready": false,
+    "blocked_by": [
+      "evidence_chain_ready"
+    ],
+    "provisional_status": "monitor_only",
+    "provisional_status_label": "降级观察"
+  },
+  "verdict": {
+    "status": "needs_review",
+    "status_label": "待人工复核",
+    "confidence": 55,
+    "severity": "中危",
+    "rationale": [
+      "当前证据更容易被维护窗口、补丁、备份或共享基线解释。",
+      "交付门槛尚未满足：若要稳定降级为观察，仍需要显式反证检查及至少一条可引用的反证。"
+    ],
+    "delivery_ready": false,
+    "blocked_by": [
+      "evidence_chain_ready"
+    ],
+    "provisional_status": "monitor_only",
+    "provisional_status_label": "降级观察"
+  },
+  "summary": {
+    "headline": "弱信号已被背景流量部分解释",
+    "verdict": "待人工复核",
+    "confidence": 55,
+    "seed_asset": "srv-ops-01",
+    "suspected_asset_count": 1,
+    "primary_indicator_count": 2,
+    "time_window": {
+      "start": "2026-04-02T01:55:00Z",
+      "end": "2026-04-02T02:06:20Z"
+    },
+    "stage_labels": []
+  },
+  "decision_basis": {
+    "narrative": "决策主要建立在明确的维护窗口、重复的正常更新流量和可解释的背景证据之上。",
+    "focus_statement": "虽然 seed alert 命中了 203.0.113.50、updates.vendor.example，但同时间窗内的整体证据更符合维护或更新背景。",
+    "positive_summary": "唯一的主支撑仍然是 seed alert 本身，它没有得到更多恶意侧信号的放大。",
+    "counter_summary": "",
+    "positive_signals": [
+      {
+        "event_id": "evt-103",
+        "summary": "Seed heuristic JA4 alert fired on update traffic during the patch window.",
+        "kind": "alert",
+        "role": "seed",
+        "ts": "2026-04-02T02:00:00Z",
+        "asset_id": "srv-ops-01",
+        "classification": "needs_review",
+        "stages": [],
+        "indicator_text": "203.0.113.50 / updates.vendor.example / JA4 t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+        "detail": "srv-ops-01 -> 203.0.113.50 / updates.vendor.example: Seed heuristic JA4 alert fired on update traffic during the patch window.",
+        "why_it_matters": "这是种子命中的直接落点，说明告警并不是孤立的指纹命中。",
+        "observation_ids": [
+          "obs-001",
+          "obs-002",
+          "obs-003"
+        ]
+      }
+    ],
+    "counterevidence": [],
+    "supporting_cluster": null,
+    "counter_cluster": {
+      "title": "反证 / 基线解释",
+      "summary": "这些事件提供了计划内活动或正常运维背景。"
+    },
+    "positive_observation_ids": [
+      "obs-001"
+    ],
+    "counter_observation_ids": [
+      "obs-003",
+      "obs-004"
+    ]
+  },
+  "context_bundle": {
+    "minimal_event_ids": [
+      "evt-101",
+      "evt-102",
+      "evt-103",
+      "evt-104",
+      "evt-105",
+      "evt-106"
+    ],
+    "minimal_event_count": 6
+  },
+  "cluster": {
+    "seed_event_id": "evt-103",
+    "supporting_event_ids": [
+      "evt-101",
+      "evt-102",
+      "evt-103",
+      "evt-104",
+      "evt-105",
+      "evt-106"
+    ],
+    "counterevidence_event_ids": [],
+    "candidate_event_ids": [],
+    "events": [
+      {
+        "id": "evt-101",
+        "ts": "2026-04-02T01:55:00Z",
+        "kind": "asset_context",
+        "asset_id": "srv-ops-01",
+        "src_ip": "10.40.8.10",
+        "classification": "benign",
+        "tags": [
+          "maintenance"
+        ],
+        "summary": "Host entered the scheduled monthly patch window controlled by the operations team.",
+        "role": "supporting",
+        "stages": []
+      },
+      {
+        "id": "evt-102",
+        "ts": "2026-04-02T01:57:10Z",
+        "kind": "dns",
+        "asset_id": "srv-ops-01",
+        "src_ip": "10.40.8.10",
+        "domain": "updates.vendor.example",
+        "answers": [
+          "203.0.113.50"
+        ],
+        "classification": "benign",
+        "tags": [
+          "patching"
+        ],
+        "summary": "DNS query resolved the vendor update endpoint used during the patch window.",
+        "role": "supporting",
+        "stages": []
+      },
+      {
+        "id": "evt-103",
+        "ts": "2026-04-02T02:00:00Z",
+        "kind": "alert",
+        "asset_id": "srv-ops-01",
+        "src_ip": "10.40.8.10",
+        "dst_ip": "203.0.113.50",
+        "domain": "updates.vendor.example",
+        "ja4": "t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+        "classification": "needs_review",
+        "tags": [
+          "outlier"
+        ],
+        "summary": "Seed heuristic JA4 alert fired on update traffic during the patch window.",
+        "role": "seed",
+        "stages": []
+      },
+      {
+        "id": "evt-104",
+        "ts": "2026-04-02T02:01:30Z",
+        "kind": "http",
+        "asset_id": "srv-ops-01",
+        "src_ip": "10.40.8.10",
+        "dst_ip": "203.0.113.50",
+        "domain": "updates.vendor.example",
+        "classification": "benign",
+        "tags": [
+          "patching"
+        ],
+        "summary": "Host downloaded a signed package manifest from the same vendor endpoint.",
+        "role": "supporting",
+        "stages": []
+      },
+      {
+        "id": "evt-105",
+        "ts": "2026-04-02T02:05:00Z",
+        "kind": "flow",
+        "asset_id": "srv-ops-01",
+        "src_ip": "10.40.8.10",
+        "dst_ip": "203.0.113.50",
+        "dst_port": 443,
+        "domain": "updates.vendor.example",
+        "classification": "benign",
+        "tags": [
+          "patching"
+        ],
+        "summary": "Follow-up TLS session transferred the expected patch package.",
+        "role": "supporting",
+        "stages": []
+      },
+      {
+        "id": "evt-106",
+        "ts": "2026-04-02T02:06:20Z",
+        "kind": "flow",
+        "asset_id": "srv-ops-02",
+        "src_ip": "10.40.8.11",
+        "dst_ip": "203.0.113.50",
+        "dst_port": 443,
+        "domain": "updates.vendor.example",
+        "classification": "benign",
+        "tags": [
+          "patching"
+        ],
+        "summary": "A sibling server contacted the same update endpoint in the same maintenance window.",
+        "role": "supporting",
+        "stages": []
+      }
+    ],
+    "event_count": 6
+  },
+  "entities": {
+    "seed_asset": "srv-ops-01",
+    "assets": [
+      "srv-ops-01",
+      "srv-ops-02"
+    ],
+    "observed_assets": [
+      "srv-ops-01",
+      "srv-ops-02"
+    ],
+    "suspected_assets": [
+      "srv-ops-01"
+    ],
+    "related_assets": [
+      "srv-ops-02"
+    ],
+    "internal_ips": [
+      "10.40.8.10",
+      "10.40.8.11"
+    ],
+    "external_ips": [
+      "203.0.113.50"
+    ],
+    "primary_external_ips": [
+      "203.0.113.50"
+    ],
+    "contextual_external_ips": [],
+    "domains": [
+      "updates.vendor.example"
+    ],
+    "primary_domains": [
+      "updates.vendor.example"
+    ],
+    "contextual_domains": [],
+    "users": []
+  },
+  "timeline": [
+    {
+      "event_id": "evt-101",
+      "ts": "2026-04-02T01:55:00Z",
+      "kind": "asset_context",
+      "classification": "benign",
+      "role": "supporting",
+      "stages": [],
+      "summary": "Host entered the scheduled monthly patch window controlled by the operations team."
+    },
+    {
+      "event_id": "evt-102",
+      "ts": "2026-04-02T01:57:10Z",
+      "kind": "dns",
+      "classification": "benign",
+      "role": "supporting",
+      "stages": [],
+      "summary": "DNS query resolved the vendor update endpoint used during the patch window."
+    },
+    {
+      "event_id": "evt-103",
+      "ts": "2026-04-02T02:00:00Z",
+      "kind": "alert",
+      "classification": "needs_review",
+      "role": "seed",
+      "stages": [],
+      "summary": "Seed heuristic JA4 alert fired on update traffic during the patch window."
+    },
+    {
+      "event_id": "evt-104",
+      "ts": "2026-04-02T02:01:30Z",
+      "kind": "http",
+      "classification": "benign",
+      "role": "supporting",
+      "stages": [],
+      "summary": "Host downloaded a signed package manifest from the same vendor endpoint."
+    },
+    {
+      "event_id": "evt-105",
+      "ts": "2026-04-02T02:05:00Z",
+      "kind": "flow",
+      "classification": "benign",
+      "role": "supporting",
+      "stages": [],
+      "summary": "Follow-up TLS session transferred the expected patch package."
+    },
+    {
+      "event_id": "evt-106",
+      "ts": "2026-04-02T02:06:20Z",
+      "kind": "flow",
+      "classification": "benign",
+      "role": "supporting",
+      "stages": [],
+      "summary": "A sibling server contacted the same update endpoint in the same maintenance window."
+    }
+  ],
+  "evidence_clusters": [
+    {
+      "title": "反证 / 基线解释",
+      "summary": "这些事件提供了计划内活动或正常运维背景。",
+      "event_ids": [
+        "evt-101",
+        "evt-102",
+        "evt-104",
+        "evt-105",
+        "evt-106"
+      ],
+      "details": [
+        "srv-ops-01: Host entered the scheduled monthly patch window controlled by the operations team.",
+        "srv-ops-01 -> updates.vendor.example: DNS query resolved the vendor update endpoint used during the patch window.",
+        "srv-ops-01 -> 203.0.113.50 / updates.vendor.example: Host downloaded a signed package manifest from the same vendor endpoint.",
+        "srv-ops-01 -> 203.0.113.50 / updates.vendor.example: Follow-up TLS session transferred the expected patch package.",
+        "srv-ops-02 -> 203.0.113.50 / updates.vendor.example: A sibling server contacted the same update endpoint in the same maintenance window."
+      ]
+    },
+    {
+      "title": "支撑性上下文",
+      "summary": "这些事件补足了 seed alert 的上下文。",
+      "event_ids": [
+        "evt-103"
+      ],
+      "details": [
+        "srv-ops-01 -> 203.0.113.50 / updates.vendor.example: Seed heuristic JA4 alert fired on update traffic during the patch window."
+      ]
+    }
+  ],
+  "evidence_ledger": [
+    {
+      "observation_id": "obs-001",
+      "tool_name": "search_seed_context",
+      "relation": "supporting",
+      "source_type": "trace_store.seed_context",
+      "source_ref": "",
+      "summary": "检索到 1 条偏可疑事件，围绕 updates.vendor.example、203.0.113.50 展开。",
+      "event_ids": [
+        "evt-101",
+        "evt-102",
+        "evt-103",
+        "evt-104",
+        "evt-105",
+        "evt-106"
+      ],
+      "claim_texts": [
+        "检索到 1 条偏可疑事件，围绕 updates.vendor.example、203.0.113.50 展开。"
+      ],
+      "confidence": 75,
+      "supports_hypothesis": [
+        "primary"
+      ],
+      "contradicts_hypothesis": []
+    },
+    {
+      "observation_id": "obs-002",
+      "tool_name": "search_related_events",
+      "relation": "candidate",
+      "source_type": "trace_store.related_events",
+      "source_ref": "",
+      "summary": "扩线检索到 1 条可疑关联事件，围绕 updates.vendor.example、203.0.113.50 展开；当前先作为待验证候选线索。",
+      "event_ids": [
+        "evt-101",
+        "evt-102",
+        "evt-103",
+        "evt-104",
+        "evt-105",
+        "evt-106"
+      ],
+      "claim_texts": [
+        "扩线检索到 1 条可疑关联事件，围绕 updates.vendor.example、203.0.113.50 展开；当前先作为待验证候选线索。"
+      ],
+      "confidence": 75,
+      "supports_hypothesis": [
+        "secondary"
+      ],
+      "contradicts_hypothesis": []
+    },
+    {
+      "observation_id": "obs-003",
+      "tool_name": "check_counterevidence",
+      "relation": "counterevidence",
+      "source_type": "trace_store.asset_context",
+      "source_ref": "",
+      "summary": "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。",
+      "event_ids": [
+        "evt-101",
+        "evt-102",
+        "evt-103",
+        "evt-104",
+        "evt-105",
+        "evt-106"
+      ],
+      "claim_texts": [
+        "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。"
+      ],
+      "confidence": 78,
+      "supports_hypothesis": [
+        "benign"
+      ],
+      "contradicts_hypothesis": [
+        "primary"
+      ]
+    },
+    {
+      "observation_id": "obs-004",
+      "tool_name": "expand_asset_scope",
+      "relation": "counterevidence",
+      "source_type": "trace_store.asset_context",
+      "source_ref": "",
+      "summary": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "event_ids": [
+        "evt-106"
+      ],
+      "claim_texts": [
+        "检索到 1 条更接近维护、更新或正常基线的事件。"
+      ],
+      "confidence": 35,
+      "supports_hypothesis": [
+        "benign"
+      ],
+      "contradicts_hypothesis": [
+        "primary"
+      ]
+    },
+    {
+      "observation_id": "obs-005",
+      "tool_name": "local_intel_lookup",
+      "relation": "context",
+      "source_type": "intel_tool",
+      "source_ref": "",
+      "summary": "本地情报库未命中该指示物。",
+      "event_ids": [],
+      "claim_texts": [],
+      "confidence": 18,
+      "supports_hypothesis": [],
+      "contradicts_hypothesis": []
+    },
+    {
+      "observation_id": "obs-006",
+      "tool_name": "vt_enrich_ioc",
+      "relation": "context",
+      "source_type": "intel_tool",
+      "source_ref": "",
+      "summary": "VirusTotal 已查询该外部 IP，但未返回正向恶意检测。",
+      "event_ids": [],
+      "claim_texts": [],
+      "confidence": 18,
+      "supports_hypothesis": [],
+      "contradicts_hypothesis": []
+    },
+    {
+      "observation_id": "obs-007",
+      "tool_name": "abuse_ch_lookup",
+      "relation": "context",
+      "source_type": "intel_tool",
+      "source_ref": "",
+      "summary": "abuse.ch 聚合查询未命中结构化情报。",
+      "event_ids": [],
+      "claim_texts": [],
+      "confidence": 18,
+      "supports_hypothesis": [],
+      "contradicts_hypothesis": []
+    }
+  ],
+  "gap_ledger": [
+    {
+      "id": "structure_evidence",
+      "priority": "medium",
+      "question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+      "gap_type": "report_structuring",
+      "materiality": "delivery_blocking",
+      "tool_capability_hints": [
+        "evidence_structuring",
+        "entity_structuring",
+        "source_retrieval"
+      ],
+      "delivery_blocking": true,
+      "reportable_if_unresolved": false,
+      "closure_criteria": [
+        "至少完成一次结构化沉淀",
+        "报告可直接引用当前事实"
+      ],
+      "attempt_count": 0,
+      "material_attempt_count": 0,
+      "editorial_only_attempt_count": 0,
+      "zero_delta_attempt_count": 0,
+      "last_attempt_step": 0,
+      "last_attempt_tool": "",
+      "recent_attempts": [],
+      "addressable_tools": [],
+      "actionable_tools": [],
+      "status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 open questions 中。",
+      "actionable_now": false,
+      "first_seen_step": 1,
+      "last_seen_step": 7,
+      "closed_step": 5
+    },
+    {
+      "id": "build_context",
+      "priority": "high",
+      "question": "仍需围绕 seed alert 补足最小上下文。",
+      "gap_type": "context",
+      "materiality": "delivery_blocking",
+      "tool_capability_hints": [
+        "context_building",
+        "timeline"
+      ],
+      "delivery_blocking": true,
+      "reportable_if_unresolved": false,
+      "closure_criteria": [
+        "补齐最小事件窗",
+        "确认告警不是孤立命中"
+      ],
+      "attempt_count": 0,
+      "material_attempt_count": 0,
+      "editorial_only_attempt_count": 0,
+      "zero_delta_attempt_count": 0,
+      "last_attempt_step": 0,
+      "last_attempt_tool": "",
+      "recent_attempts": [],
+      "addressable_tools": [],
+      "actionable_tools": [],
+      "status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 open questions 中。",
+      "actionable_now": false,
+      "first_seen_step": 1,
+      "last_seen_step": 7,
+      "closed_step": 1
+    },
+    {
+      "id": "identify_assets",
+      "priority": "high",
+      "question": "仍需确认事件涉及的关键资产。",
+      "gap_type": "asset_identity",
+      "materiality": "delivery_blocking",
+      "tool_capability_hints": [
+        "context_building",
+        "asset_scope"
+      ],
+      "delivery_blocking": true,
+      "reportable_if_unresolved": false,
+      "closure_criteria": [
+        "确认关键资产身份",
+        "避免影响范围仍为空"
+      ],
+      "attempt_count": 0,
+      "material_attempt_count": 0,
+      "editorial_only_attempt_count": 0,
+      "zero_delta_attempt_count": 0,
+      "last_attempt_step": 0,
+      "last_attempt_tool": "",
+      "recent_attempts": [],
+      "addressable_tools": [],
+      "actionable_tools": [],
+      "status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 open questions 中。",
+      "actionable_now": false,
+      "first_seen_step": 1,
+      "last_seen_step": 7,
+      "closed_step": 1
+    },
+    {
+      "id": "execution_gap",
+      "priority": "medium",
+      "question": "是否存在主机侧执行、持久化或横向移动证据？",
+      "gap_type": "host_confirmation",
+      "materiality": "confidence_supporting",
+      "tool_capability_hints": [
+        "host_confirmation"
+      ],
+      "delivery_blocking": false,
+      "reportable_if_unresolved": true,
+      "closure_criteria": [
+        "确认是否存在主机侧执行线索",
+        "或保留为主机侧待确认事项"
+      ],
+      "attempt_count": 0,
+      "material_attempt_count": 0,
+      "editorial_only_attempt_count": 0,
+      "zero_delta_attempt_count": 0,
+      "last_attempt_step": 0,
+      "last_attempt_tool": "",
+      "recent_attempts": [],
+      "addressable_tools": [],
+      "actionable_tools": [],
+      "status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 open questions 中。",
+      "actionable_now": false,
+      "first_seen_step": 1,
+      "last_seen_step": 7,
+      "closed_step": 1
+    },
+    {
+      "id": "ground_infra",
+      "priority": "medium",
+      "question": "仍需补足外部基础设施、域名或家族背景。",
+      "gap_type": "external_context",
+      "materiality": "delivery_blocking",
+      "tool_capability_hints": [
+        "infra_context",
+        "external_intel"
+      ],
+      "delivery_blocking": true,
+      "reportable_if_unresolved": false,
+      "closure_criteria": [
+        "补足外部基础设施背景",
+        "支持当前结论的可解释性"
+      ],
+      "attempt_count": 0,
+      "material_attempt_count": 0,
+      "editorial_only_attempt_count": 0,
+      "zero_delta_attempt_count": 0,
+      "last_attempt_step": 0,
+      "last_attempt_tool": "",
+      "recent_attempts": [],
+      "addressable_tools": [],
+      "actionable_tools": [],
+      "status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 open questions 中。",
+      "actionable_now": false,
+      "first_seen_step": 1,
+      "last_seen_step": 7,
+      "closed_step": 1
+    },
+    {
+      "id": "check_counterevidence",
+      "priority": "medium",
+      "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "gap_type": "counterevidence",
+      "materiality": "delivery_blocking",
+      "tool_capability_hints": [
+        "counterevidence",
+        "background_validation"
+      ],
+      "delivery_blocking": true,
+      "reportable_if_unresolved": false,
+      "closure_criteria": [
+        "完成显式反证检查",
+        "明确是否存在降级解释"
+      ],
+      "attempt_count": 0,
+      "material_attempt_count": 0,
+      "editorial_only_attempt_count": 0,
+      "zero_delta_attempt_count": 0,
+      "last_attempt_step": 0,
+      "last_attempt_tool": "",
+      "recent_attempts": [],
+      "addressable_tools": [],
+      "actionable_tools": [],
+      "status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 open questions 中。",
+      "actionable_now": false,
+      "first_seen_step": 1,
+      "last_seen_step": 7,
+      "closed_step": 1
+    }
+  ],
+  "hypothesis": {
+    "title": "弱信号已被背景流量部分解释",
+    "narrative": "当前看到的告警与补充背景更接近计划内活动或正常变更，建议继续观察而不是立即定性为入侵。",
+    "stages": []
+  },
+  "scope": {
+    "event_count": 6,
+    "primary_event_count": 6,
+    "candidate_event_count": 0,
+    "context_event_count": 0,
+    "counterevidence_count": 0,
+    "time_window": {
+      "start": "2026-04-02T01:55:00Z",
+      "end": "2026-04-02T02:06:20Z"
+    },
+    "affected_assets": [
+      "srv-ops-01"
+    ],
+    "related_assets": [
+      "srv-ops-02"
+    ],
+    "primary_external_indicators": [
+      "203.0.113.50",
+      "updates.vendor.example"
+    ],
+    "contextual_external_indicators": [],
+    "external_indicators": [
+      "203.0.113.50",
+      "updates.vendor.example"
+    ]
+  },
+  "uncertainties": [
+    "当前仍缺少足够强的主机侧执行或扩散证据，自动结论需要结合人工复核。",
+    "主支撑信号目前仍集中在单个重点资产上，尚未确认存在更大范围扩散。",
+    "其他关联资产目前更多体现为共享基础设施上的弱关联，仍需逐台确认是否真正受影响。",
+    "事件簇中尚未观测到稳定的执行阶段证据。"
+  ],
+  "recommendations": [
+    "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。",
+    "继续围绕同域名 / 同 dst_ip / 同 JA4 搜索更宽时间窗内的关联事件。",
+    "把关联资产 srv-ops-02 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。"
+  ],
+  "report_outline": {
+    "title": "事件级溯源报告",
+    "template_version": "incident-agent-v2",
+    "executive_summary": {
+      "event_conclusion": "可疑事件，建议继续复核",
+      "status_code": "needs_review",
+      "analysis_conclusion": "背景活动，建议持续观察",
+      "analysis_status_code": "monitor_only",
+      "analysis_delivery_split": true,
+      "severity": "中危",
+      "confidence": 55,
+      "headline": "当前更像背景活动，但仍需继续复核",
+      "one_sentence_summary": "当前围绕资产 srv-ops-01 的异常更接近计划内背景活动，但由于关键背景链路仍需进一步核实，本次仍建议继续复核。",
+      "primary_action": "补充能够直接支撑当前判断的关键核查结果。",
+      "delivery_note": "现有迹象更接近计划内背景活动，但由于关键背景链路仍需进一步核实，当前仍建议按可疑事件继续复核。"
+    },
+    "scope_and_boundary": {
+      "seed_alert": "2026-04-02 02:00:00，srv-ops-01 命中 Unknown suspicious TLS fingerprint JA4 规则。",
+      "time_window": {
+        "start": "2026-04-02T01:55:00Z",
+        "end": "2026-04-02T02:06:20Z"
+      },
+      "seed_asset": "srv-ops-01",
+      "suspected_label": "重点观察资产",
+      "suspected_assets": [
+        "srv-ops-01"
+      ],
+      "related_label": "待排查关联资产",
+      "related_assets": [
+        "srv-ops-02"
+      ],
+      "internal_ips": [
+        "10.40.8.10",
+        "10.40.8.11"
+      ],
+      "external_ips": [
+        "203.0.113.50"
+      ],
+      "domains": [
+        "updates.vendor.example"
+      ],
+      "stage_labels": [],
+      "primary_external_indicators": [
+        "203.0.113.50",
+        "updates.vendor.example"
+      ],
+      "contextual_external_indicators": [],
+      "event_count": 6,
+      "primary_event_count": 6,
+      "context_event_count": 0,
+      "counterevidence_count": 0,
+      "current_boundary": "目前更倾向于把这起异常解释为计划内活动中的弱信号，而不是已成立入侵事件。",
+      "unresolved_scope": [
+        "当前仍缺少足够强的主机侧执行或扩散证据，自动结论需要结合人工复核。",
+        "主支撑信号目前仍集中在单个重点资产上，尚未确认存在更大范围扩散。",
+        "其他关联资产目前更多体现为共享基础设施上的弱关联，仍需逐台确认是否真正受影响。",
+        "事件簇中尚未观测到稳定的执行阶段证据。"
+      ]
+    },
+    "timeline": [
+      {
+        "ts": "2026-04-02T01:55:00Z",
+        "summary": "Host entered the scheduled monthly patch window controlled by the operations team.",
+        "role": "支撑证据",
+        "observation_ids": []
+      },
+      {
+        "ts": "2026-04-02T01:57:10Z",
+        "summary": "DNS query resolved the vendor update endpoint used during the patch window.",
+        "role": "支撑证据",
+        "observation_ids": []
+      },
+      {
+        "ts": "2026-04-02T02:00:00Z",
+        "summary": "Seed heuristic JA4 alert fired on update traffic during the patch window.",
+        "role": "种子告警",
+        "observation_ids": [
+          "obs-001",
+          "obs-002",
+          "obs-003"
+        ]
+      },
+      {
+        "ts": "2026-04-02T02:01:30Z",
+        "summary": "Host downloaded a signed package manifest from the same vendor endpoint.",
+        "role": "支撑证据",
+        "observation_ids": []
+      },
+      {
+        "ts": "2026-04-02T02:05:00Z",
+        "summary": "Follow-up TLS session transferred the expected patch package.",
+        "role": "支撑证据",
+        "observation_ids": []
+      },
+      {
+        "ts": "2026-04-02T02:06:20Z",
+        "summary": "A sibling server contacted the same update endpoint in the same maintenance window.",
+        "role": "支撑证据",
+        "observation_ids": []
+      }
+    ],
+    "evidence_chain": {
+      "supporting": [
+        {
+          "id": "E-01",
+          "category": "网络",
+          "strength": "高",
+          "fact_description": "在 2026-04-02 02:00:00 UTC，资产 `srv-ops-01` 出现了一条告警观测，关联的核心指示物为 203.0.113.50 / updates.vendor.example / JA4 t13d1516h2_1f8c0d19a111_39bb8eb7d001。 原始摘要显示：Seed heuristic JA4 alert fired on update traffic during the patch window.",
+          "reason_text": "这是种子命中的直接落点，说明告警并不是孤立的指纹命中。",
+          "limitation_text": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
+          "observation_ids": [
+            "obs-001",
+            "obs-002",
+            "obs-003"
+          ]
+        }
+      ],
+      "counterevidence": [],
+      "family_context": null
+    },
+    "analysis": {
+      "primary_hypothesis": "srv-ops-01 疑似恶意外联事件",
+      "alternative_hypothesis": "围绕 203.0.113.50、updates.vendor.example 的通信可能存在正常背景解释",
+      "why_this_conclusion": "决策主要建立在明确的维护窗口、重复的正常更新流量和可解释的背景证据之上。 唯一的主支撑仍然是 种子告警 本身，它没有得到更多恶意侧信号的放大。 当前证据更容易被维护窗口、补丁、备份或共享基线解释。",
+      "why_not_other_status": "当前反证和背景解释足以让我们把告警降级为观察对象，而不是直接按入侵事件处置。",
+      "unresolved_items": [
+        "当前仍缺少足够强的主机侧执行或扩散证据，当前结论需要结合人工复核。",
+        "主要支撑迹象目前仍集中在单个重点资产上，尚未确认存在更大范围扩散。",
+        "其他关联资产目前更多体现为共享基础设施上的弱关联，仍需逐台确认是否真正受影响。",
+        "当前关联事件中尚未观测到稳定的执行阶段证据。"
+      ],
+      "next_best_evidence": [
+        "当前仍缺少足够强的主机侧执行或扩散证据，自动结论需要结合人工复核。",
+        "主支撑信号目前仍集中在单个重点资产上，尚未确认存在更大范围扩散。",
+        "其他关联资产目前更多体现为共享基础设施上的弱关联，仍需逐台确认是否真正受影响。"
+      ]
+    },
+    "delivery_readiness": {
+      "ready_for_delivery": false,
+      "summary": "现有迹象更接近计划内背景活动，但由于关键背景链路仍需进一步核实，当前仍建议按可疑事件继续复核。",
+      "blocking_items": [
+        "若要稳定降级为观察，仍需要显式反证检查及至少一条可引用的反证。"
+      ],
+      "provisional_conclusion": "降级观察",
+      "delivery_conclusion": "待人工复核"
+    },
+    "recommendations": {
+      "immediate": [
+        "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。"
+      ],
+      "short_term": [
+        "继续围绕同域名 / 同 dst_ip / 同 JA4 搜索更宽时间窗内的关联事件。",
+        "把关联资产 srv-ops-02 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。"
+      ],
+      "follow_up": []
+    },
+    "reader_report": {
+      "title": "事件调查报告",
+      "judgment_label": "可疑事件，建议继续复核",
+      "severity": "中危",
+      "confidence": "中",
+      "one_sentence_summary": "当前围绕资产 srv-ops-01 的异常更接近计划内背景活动，但由于关键背景链路仍需进一步核实，本次仍建议继续复核。",
+      "judgment_text": "当前异常与计划内维护或更新活动高度重合，但关键背景链路仍缺少直接核验，因此本次仍建议继续复核。",
+      "boundary_text": "目前影响范围主要收敛在 srv-ops-01，另外还有需要继续核实的关联资产 srv-ops-02；关键对外通信对象为 203.0.113.50、updates.vendor.example。",
+      "primary_action": "补充能够直接支撑当前判断的关键核查结果。",
+      "event_progression": [
+        "在 2026-04-02 01:55:00 UTC，资产 `srv-ops-01` 出现了一条关键关联观测。",
+        "在 2026-04-02 01:57:10 UTC，资产 `srv-ops-01` 已经提前与 updates.vendor.example 建立了解析或访问准备。",
+        "在 2026-04-02 02:00:00 UTC，最先在资产 `srv-ops-01` 上发现与 updates.vendor.example / 203.0.113.50 相关的异常通信。"
+      ],
+      "supporting_blocks": [
+        {
+          "title": "为什么认为这是异常通信",
+          "facts": [
+            "在 2026-04-02 02:00:00 UTC，最先在资产 `srv-ops-01` 上发现与 updates.vendor.example / 203.0.113.50 相关的异常通信。"
+          ],
+          "judgment": "它为整个事件链提供了明确锚点，让后续调查可以围绕同一批指示物继续收敛。",
+          "boundary": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
+          "observation_ids": [
+            "obs-001",
+            "obs-002",
+            "obs-003"
+          ]
+        },
+        {
+          "title": "异常发生前后的关联迹象",
+          "facts": [
+            "在 2026-04-02 01:57:10 UTC，资产 `srv-ops-01` 已经提前与 updates.vendor.example 建立了解析或访问准备。"
+          ],
+          "judgment": "这条观测为当前主假设提供了补充支撑，但需要和其他上下文结合理解。",
+          "boundary": "这条观测本身更适合用来补足上下文，而不是单独承担最终结论。",
+          "observation_ids": [
+            "obs-001",
+            "obs-002",
+            "obs-003"
+          ]
+        }
+      ],
+      "counter_block": null,
+      "scope_lines": [
+        "时间范围：2026-04-02 01:55:00 UTC 至 2026-04-02 02:06:20 UTC",
+        "最先发现异常的资产：srv-ops-01",
+        "目前涉及的主要资产：srv-ops-01",
+        "关键对外通信对象：203.0.113.50、updates.vendor.example",
+        "已观察到的行为阶段：目前尚未发现明确执行或扩散迹象",
+        "当前范围说明：目前更倾向于把这起异常解释为计划内活动中的弱信号，而不是已成立入侵事件。"
+      ],
+      "actions": {
+        "immediate": [
+          "补充能够直接支撑当前判断的关键核查结果。",
+          "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。"
+        ],
+        "short_term": [
+          "继续围绕相同域名、目标 IP 和相似通信特征，在更宽时间窗内搜索关联事件。",
+          "把关联资产 srv-ops-02 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。"
+        ],
+        "follow_up": []
+      },
+      "open_questions": [
+        "当前仍缺少足够强的主机侧执行或扩散证据，因此本次结论仍需要结合人工复核。",
+        "主要支撑迹象目前仍集中在单个重点资产上，尚未确认存在更大范围扩散。",
+        "其他关联资产目前更像共享基础设施带来的弱关联，仍需逐台确认是否真正受影响。",
+        "目前尚未看到足以确认执行阶段的稳定证据。"
+      ]
+    },
+    "appendix": {
+      "ioc_rows": [
+        {
+          "type": "IP",
+          "value": "203.0.113.50",
+          "relation": "事件中的核心外部基础设施"
+        },
+        {
+          "type": "域名",
+          "value": "updates.vendor.example",
+          "relation": "种子告警前后持续出现的关联域名"
+        },
+        {
+          "type": "JA4",
+          "value": "t13d1516h2_1f8c0d19a111_39bb8eb7d001",
+          "relation": "种子告警命中的关键指纹"
+        }
+      ],
+      "observation_rows": [
+        {
+          "observation_id": "obs-001",
+          "tool_name": "search_seed_context",
+          "source_type": "trace_store.seed_context",
+          "source_ref": "",
+          "summary": "检索到 1 条偏可疑事件，围绕 updates.vendor.example、203.0.113.50 展开。"
+        },
+        {
+          "observation_id": "obs-002",
+          "tool_name": "search_related_events",
+          "source_type": "trace_store.related_events",
+          "source_ref": "",
+          "summary": "扩线检索到 1 条可疑关联事件，围绕 updates.vendor.example、203.0.113.50 展开；当前先作为待验证候选线索。"
+        },
+        {
+          "observation_id": "obs-003",
+          "tool_name": "check_counterevidence",
+          "source_type": "trace_store.asset_context",
+          "source_ref": "",
+          "summary": "显式反证检查发现 5 条更接近维护、更新、补丁或备份背景的事件。"
+        },
+        {
+          "observation_id": "obs-004",
+          "tool_name": "expand_asset_scope",
+          "source_type": "trace_store.asset_context",
+          "source_ref": "",
+          "summary": "检索到 1 条更接近维护、更新或正常基线的事件。"
+        },
+        {
+          "observation_id": "obs-005",
+          "tool_name": "local_intel_lookup",
+          "source_type": "intel_tool",
+          "source_ref": "",
+          "summary": "本地情报库未命中该指示物。"
+        },
+        {
+          "observation_id": "obs-006",
+          "tool_name": "vt_enrich_ioc",
+          "source_type": "intel_tool",
+          "source_ref": "",
+          "summary": "VirusTotal 已查询该外部 IP，但未返回正向恶意检测。"
+        },
+        {
+          "observation_id": "obs-007",
+          "tool_name": "abuse_ch_lookup",
+          "source_type": "intel_tool",
+          "source_ref": "",
+          "summary": "abuse.ch 聚合查询未命中结构化情报。"
+        }
+      ]
+    }
+  }
+}

@@ -6,13 +6,19 @@ from urllib.parse import urlparse
 
 try:
     from dotenv import load_dotenv
-except Exception:  # pragma: no cover - keep env loading optional at runtime
+    DOTENV_AVAILABLE = True
+    DOTENV_IMPORT_ERROR = ""
+except Exception as exc:  # pragma: no cover - keep env loading optional at runtime
+    DOTENV_AVAILABLE = False
+    DOTENV_IMPORT_ERROR = f"{type(exc).__name__}: {exc}"
+
     def load_dotenv(*args, **kwargs):  # type: ignore[no-redef]
         return False
 
 
 ROOT = Path(__file__).resolve().parent
-load_dotenv(ROOT / ".env", override=False)
+ENV_FILE = ROOT / ".env"
+DOTENV_LOADED = bool(load_dotenv(ENV_FILE, override=False))
 
 
 @dataclass(frozen=True)

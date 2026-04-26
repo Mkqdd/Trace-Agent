@@ -1,0 +1,5 @@
+{
+  "fixture_case": "multi_host_confirmed_spread_plus",
+  "expected_status": "confirmed_incident",
+  "expected_asset_count": 3
+}

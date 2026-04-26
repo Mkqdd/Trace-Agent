@@ -1,0 +1,18 @@
+{
+  "verdict": "needs_review",
+  "affected_assets": [
+    "ws-legal-03"
+  ],
+  "related_assets": [
+    "ws-legal-09"
+  ],
+  "external_indicators": [
+    "198.51.100.131",
+    "auth-queue-sync.net",
+    "cdn-auth-queue.net"
+  ],
+  "expected_stages": [
+    "command-and-control"
+  ],
+  "analyst_expectation": "A second asset touching the same suspicious infrastructure through one weak signal should stay in related scope, not auto-upgrade the case to confirmed spread."
+}

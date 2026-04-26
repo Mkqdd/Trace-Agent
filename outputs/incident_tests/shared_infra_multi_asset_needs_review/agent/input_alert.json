@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-06-20 10:12:00",
+  "src_ip": "10.44.1.18",
+  "dst_ip": "198.51.100.131",
+  "protocol": "TLS",
+  "trigger_fingerprint": {
+    "type": "JA4",
+    "value": "t13d190900_7711aa22bb33_9911ccddee77"
+  },
+  "info": "Suspicious shared-infra beacon candidate",
+  "reference": "fixture",
+  "update_time": "2026-06-20 10:12:00"
+}

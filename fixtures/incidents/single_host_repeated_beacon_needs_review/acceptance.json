@@ -1,0 +1,36 @@
+{
+  "verdict_status": "needs_review",
+  "min_event_count": 5,
+  "must_include_assets": [
+    "ws-payroll-14"
+  ],
+  "must_include_domains": [
+    "sync-status-edge.net",
+    "cdn-sync-status.net"
+  ],
+  "must_include_stages": [
+    "command-and-control"
+  ],
+  "must_not_include_stages": [
+    "execution",
+    "lateral-movement",
+    "exfiltration"
+  ],
+  "max_suspected_asset_count": 1,
+  "min_positive_signal_count": 2,
+  "open_questions_contains": [
+    "执行、持久化或横向移动证据"
+  ],
+  "report_contains": [
+    "待人工复核",
+    "尚未观测到稳定的执行阶段证据"
+  ],
+  "report_not_contains": [
+    "按已成立安全事件处置"
+  ],
+  "timeline_contains": [
+    "rare DNS lookup",
+    "same rare external infrastructure",
+    "sibling domain"
+  ]
+}

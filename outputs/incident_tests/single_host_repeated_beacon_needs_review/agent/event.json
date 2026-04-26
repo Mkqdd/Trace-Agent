@@ -1,0 +1,36 @@
+{
+  "event_time": "2026-06-14 08:33:00",
+  "simulated": false,
+  "src": {
+    "ip": "10.33.7.14",
+    "port": null
+  },
+  "dst": {
+    "ip": "198.51.100.119",
+    "port": null
+  },
+  "protocol": "TLS",
+  "trigger_fingerprint": {
+    "type": "JA4",
+    "value": "t13d190900_aa11bb22cc33_8899ddeeff00",
+    "matched": true
+  },
+  "enrichment": {
+    "info": "Unknown suspicious TLS fingerprint",
+    "reference": "fixture",
+    "update_time": "2026-06-14 08:33:00"
+  },
+  "raw_alert": {
+    "timestamp": "2026-06-14 08:33:00",
+    "src_ip": "10.33.7.14",
+    "dst_ip": "198.51.100.119",
+    "protocol": "TLS",
+    "trigger_fingerprint": {
+      "type": "JA4",
+      "value": "t13d190900_aa11bb22cc33_8899ddeeff00"
+    },
+    "info": "Unknown suspicious TLS fingerprint",
+    "reference": "fixture",
+    "update_time": "2026-06-14 08:33:00"
+  }
+}

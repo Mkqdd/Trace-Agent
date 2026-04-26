@@ -109,11 +109,20 @@ def _event_evidence_note(event: Dict[str, Any], *, status: str, seed_asset: str)
     return "它补足了种子告警周围的上下文。"
 
 
-def _annotate_events(seed_event: Dict[str, Any], events: List[Dict[str, Any]]) -> Dict[str, Any]:
+def _annotate_events(
+    seed_event: Dict[str, Any],
+    events: List[Dict[str, Any]],
+    event_relation_hints: Dict[str, str] | None = None,
+) -> Dict[str, Any]:
     seed_src = str(((seed_event.get("src") or {}).get("ip")) or "").strip()
     seed_dst = str(((seed_event.get("dst") or {}).get("ip")) or "").strip()
     seed_fp = str((((seed_event.get("trigger_fingerprint") or {}).get("value")) or "")).strip()
     seed_ts = parse_timestamp(seed_event.get("event_time"))
+    relation_hints = {
+        str(key or "").strip(): str(value or "").strip()
+        for key, value in dict(event_relation_hints or {}).items()
+        if str(key or "").strip() and str(value or "").strip()
+    }
 
     best_seed_id = ""
     best_seed_score = -1
@@ -136,15 +145,40 @@ def _annotate_events(seed_event: Dict[str, Any], events: List[Dict[str, Any]]) -
             best_seed_delta = delta
             best_seed_id = str(event.get("id") or "")
 
+    seed_asset_id = ""
+    for event in events:
+        if str(event.get("id") or "") == best_seed_id:
+            seed_asset_id = str(event.get("asset_id") or "").strip()
+            break
+
     annotated_events: List[Dict[str, Any]] = []
     supporting_ids: List[str] = []
     counterevidence_ids: List[str] = []
+    candidate_ids: List[str] = []
     for event in events:
         stages = infer_stages(event)
         classification = str(event.get("classification") or "unknown").strip().lower()
+        event_id = str(event.get("id") or "")
+        explicit_relation = relation_hints.get(event_id, "")
+        asset_id = str(event.get("asset_id") or "").strip()
+        suspicious_classification = classification in {"malicious", "suspicious", "needs_review"}
+        high_risk_progression = bool(
+            set(stages) & {"initial-access", "execution", "lateral-movement", "exfiltration", "credential-access", "persistence"}
+        )
         role = "context"
-        if str(event.get("id") or "") == best_seed_id:
+        if event_id == best_seed_id:
             role = "seed"
+        elif explicit_relation == "counterevidence":
+            role = "counterevidence"
+        elif explicit_relation == "supporting":
+            role = "supporting"
+        elif explicit_relation == "candidate":
+            role = "candidate"
+        elif explicit_relation in {"context", "alternative"}:
+            if suspicious_classification and high_risk_progression and asset_id and asset_id == seed_asset_id:
+                role = "supporting"
+            else:
+                role = "context"
         elif classification == "benign":
             role = "counterevidence"
         elif classification in {"malicious", "suspicious", "needs_review"} or stages:
@@ -159,12 +193,15 @@ def _annotate_events(seed_event: Dict[str, Any], events: List[Dict[str, Any]]) -
             supporting_ids.append(event_copy["id"])
         if role == "counterevidence":
             counterevidence_ids.append(event_copy["id"])
+        if role == "candidate":
+            candidate_ids.append(event_copy["id"])
 
     return {
         "seed_event_id": best_seed_id,
         "events": annotated_events,
         "supporting_event_ids": supporting_ids,
         "counterevidence_event_ids": counterevidence_ids,
+        "candidate_event_ids": candidate_ids,
     }
 
 
@@ -220,17 +257,59 @@ def _extract_entities(seed_event: Dict[str, Any], events: List[Dict[str, Any]], 
     seed_src = ((seed_event.get("src") or {}).get("ip")) or ""
     seed_dst = ((seed_event.get("dst") or {}).get("ip")) or ""
     seed_asset = ""
-    suspected_assets = unique_preserve_order(
-        item.get("asset_id") for item in events if str(item.get("role") or "") in {"seed", "supporting"}
-    )
     observed_assets = unique_preserve_order(item.get("asset_id") for item in events)
     for item in events:
         if str(item.get("id") or "") == seed_event_id:
             seed_asset = str(item.get("asset_id") or "").strip()
             break
+    supporting_by_asset: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+    lateral_target_ips = {
+        str(item.get("dst_ip") or "").strip()
+        for item in events
+        if "lateral-movement" in infer_stages(item) and str(item.get("dst_ip") or "").strip()
+    }
+    for item in events:
+        asset_id = str(item.get("asset_id") or "").strip()
+        if asset_id and str(item.get("role") or "") in {"seed", "supporting"}:
+            supporting_by_asset[asset_id].append(item)
+
+    suspected_assets: List[str] = []
+    candidate_seed_asset = seed_asset or (observed_assets[0] if observed_assets else "")
+    for asset_id, asset_events in supporting_by_asset.items():
+        if asset_id == candidate_seed_asset:
+            suspected_assets.append(asset_id)
+            continue
+        stage_labels = {
+            stage
+            for item in asset_events
+            for stage in infer_stages(item)
+        }
+        asset_src_ips = {
+            str(item.get("src_ip") or "").strip()
+            for item in asset_events
+            if str(item.get("src_ip") or "").strip()
+        }
+        high_risk_stage = bool(stage_labels & {"initial-access", "execution", "lateral-movement", "exfiltration"})
+        repeated_support = len(asset_events) >= 2
+        lateral_targeted = any(ip in lateral_target_ips for ip in asset_src_ips)
+        if high_risk_stage or repeated_support or lateral_targeted:
+            suspected_assets.append(asset_id)
+
+    suspected_assets = unique_preserve_order(suspected_assets)
     if not seed_asset and suspected_assets:
         seed_asset = suspected_assets[0]
-    related_assets = [asset for asset in observed_assets if asset not in suspected_assets]
+    context_or_candidate_assets = {
+        str(item.get("asset_id") or "").strip()
+        for item in events
+        if str(item.get("asset_id") or "").strip()
+        and str(item.get("role") or "").strip() in {"context", "candidate"}
+    }
+    related_assets = [
+        asset
+        for asset in observed_assets
+        if asset not in suspected_assets and asset in context_or_candidate_assets
+    ]
+    incident_assets = unique_preserve_order(([seed_asset] if seed_asset else []) + suspected_assets + related_assets)
 
     primary_external_ips = unique_preserve_order(
         [seed_dst] + [item.get("dst_ip") for item in events if str(item.get("role") or "") in {"seed", "supporting"}]
@@ -247,7 +326,7 @@ def _extract_entities(seed_event: Dict[str, Any], events: List[Dict[str, Any]], 
 
     return {
         "seed_asset": seed_asset or None,
-        "assets": observed_assets,
+        "assets": incident_assets,
         "observed_assets": observed_assets,
         "suspected_assets": suspected_assets,
         "related_assets": related_assets,
@@ -282,7 +361,12 @@ def _build_evidence_clusters(events: List[Dict[str, Any]]) -> List[Dict[str, Any
     for event in events:
         stages = infer_stages(event)
         classification = str(event.get("classification") or "unknown").strip().lower()
-        if "command-and-control" in stages:
+        role = str(event.get("role") or "").strip()
+        if role == "candidate":
+            key = "candidate"
+            buckets[key]["title"] = "待验证关联线索"
+            buckets[key]["summary"] = "这些事件是通过共享 pivot 扩展出来的关联线索，但尚未完成独立验证。"
+        elif "command-and-control" in stages:
             key = "c2"
             buckets[key]["title"] = "C2 / Beacon 证据簇"
             buckets[key]["summary"] = "多条事件指向同一批外联基础设施，并表现出重复 beacon 特征。"
@@ -355,6 +439,8 @@ def _build_positive_summary(
         if repeated_flows:
             return "唯一的主支撑仍然是 seed alert 本身，它没有得到更多恶意侧信号的放大。"
         return "当前缺少能独立支撑入侵结论的正向证据。"
+    if execution_events:
+        return f"目前最强的支撑来自 {asset_text} 围绕 {indicator_text} 的重复通信以及后续主机侧执行线索；但执行细节、载荷或影响范围仍不足以直接推进为确认事件。"
     if len(repeated_flows) >= 2:
         return f"目前最强的支撑来自 {asset_text} 围绕 {indicator_text} 的重复通信，但这条链还没有延伸到执行或扩散层。"
     return "当前只有有限的正向异常信号，证据链还不够长。"
@@ -425,7 +511,7 @@ def _build_decision_basis(
             "detail": _event_details(item),
             "why_it_matters": _event_evidence_note(item, status=status, seed_asset=seed_asset),
         }
-        for item in positive_events[:4]
+        for item in positive_events[:6]
     ]
     counters = [
         {
@@ -520,7 +606,14 @@ def _build_hypothesis(seed_event: Dict[str, Any], verdict: Dict[str, Any], event
         narrative = "当前看到的告警与补充背景更接近计划内活动或正常变更，建议继续观察而不是立即定性为入侵。"
     else:
         title = "上下文已形成，但仍需人工复核"
-        narrative = "自动聚合已经找到可关联的上下文，不过现阶段仍缺少足够强的执行或持续控制证据。"
+        if "execution" in all_stages and "exfiltration" in all_stages:
+            narrative = "自动聚合已经找到可疑外联、执行线索和数据外传迹象，但关键细节或影响范围仍需人工复核。"
+        elif "execution" in all_stages:
+            narrative = "自动聚合已经找到可疑外联和执行线索，但执行细节、载荷或后续影响仍需人工复核。"
+        elif "initial-access" in all_stages:
+            narrative = "自动聚合已经找到初始访问和可疑外联上下文，但尚未看到足以确认执行成功的证据。"
+        else:
+            narrative = "自动聚合已经找到可关联的上下文，不过现阶段仍缺少足够强的执行或持续控制证据。"
     return {
         "title": title,
         "narrative": narrative,
@@ -534,6 +627,7 @@ def _build_uncertainties(verdict: Dict[str, Any], events: List[Dict[str, Any]], 
     related_assets = list(entities.get("related_assets") or [])
     suspected_assets = list(entities.get("suspected_assets") or [])
     has_execution = any("execution" in infer_stages(event) for event in events)
+    candidate_events = [event for event in events if str(event.get("role") or "").strip() == "candidate"]
 
     if status == "monitor_only":
         items.append("当前降级依赖于维护窗口和更新背景；如果后续在相同指示物上出现脱离基线的重复通信，需要重新升级研判。")
@@ -544,31 +638,42 @@ def _build_uncertainties(verdict: Dict[str, Any], events: List[Dict[str, Any]], 
     if status == "confirmed_incident":
         if related_assets:
             items.append("虽然已经看到关联资产，但尚未确认这些资产是否与主事件属于同一次扩散。")
+        if candidate_events:
+            items.append(f"仍有 {len(candidate_events)} 条扩展事件只是通过共享指示物被关联进来，尚未完成独立验证。")
         if not any("initial-access" in infer_stages(event) for event in events):
             items.append("当前事件链主要从外联和执行阶段收敛，初始入侵入口仍未识别。")
         return unique_preserve_order(items)
 
-    items.append("当前仍缺少足够强的主机侧执行或扩散证据，自动结论需要结合人工复核。")
+    if has_execution:
+        items.append("虽然已经看到主机侧执行线索，但当前仍缺少更细的命令行、落地文件、持久化或完整影响范围证据。")
+    else:
+        items.append("当前仍缺少足够强的主机侧执行或扩散证据，自动结论需要结合人工复核。")
     if len(suspected_assets) <= 1:
         items.append("主支撑信号目前仍集中在单个重点资产上，尚未确认存在更大范围扩散。")
     if related_assets:
         items.append("其他关联资产目前更多体现为共享基础设施上的弱关联，仍需逐台确认是否真正受影响。")
+    if candidate_events:
+        items.append(f"当前仍有 {len(candidate_events)} 条扩展出来的关联线索缺少独立命中或情报支撑。")
     if not has_execution:
         items.append("事件簇中尚未观测到稳定的执行阶段证据。")
     return unique_preserve_order(items)
 
 
-def _build_recommendations(verdict: Dict[str, Any], entities: Dict[str, Any], scope: Dict[str, Any]) -> List[str]:
+def _build_recommendations(verdict: Dict[str, Any], entities: Dict[str, Any], scope: Dict[str, Any], events: List[Dict[str, Any]]) -> List[str]:
     status = verdict.get("status")
     assets = entities.get("suspected_assets") or entities.get("observed_assets") or []
     related_assets = entities.get("related_assets") or []
     externals = scope.get("primary_external_indicators") or scope.get("external_indicators") or []
+    candidate_events = [event for event in events if str(event.get("role") or "").strip() == "candidate"]
     if status == "confirmed_incident":
-        return [
+        recommendations = [
             f"优先隔离或重点监控资产：{'、'.join(assets) if assets else '相关主机'}。",
             f"在边界和代理设备上排查并封禁外部基础设施：{'、'.join(externals) if externals else 'seed 命中目标'}。",
-            "以 seed 指标和事件簇中的域名 / IP 为 pivot，继续检索同时间窗内的重复通信。",
         ]
+        if candidate_events:
+            recommendations.append("对扩线得到的关联事件逐条补做独立验证，确认它们是否也命中本地指纹、IOC 或外部情报。")
+        recommendations.append("以 seed 指标和事件簇中的域名 / IP 为 pivot，继续检索同时间窗内的重复通信。")
+        return recommendations
     if status == "monitor_only":
         return [
             "保留当前告警与上下文，作为后续相似行为的基线样本。",
@@ -578,6 +683,8 @@ def _build_recommendations(verdict: Dict[str, Any], entities: Dict[str, Any], sc
         "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。",
         "继续围绕同域名 / 同 dst_ip / 同 JA4 搜索更宽时间窗内的关联事件。",
     ]
+    if candidate_events:
+        recommendations.append("优先核验新扩出的关联事件是否存在独立命中，不要只因为共享基础设施就直接并入主证据链。")
     if related_assets:
         recommendations.append(f"把关联资产 {'、'.join(related_assets)} 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。")
     return recommendations

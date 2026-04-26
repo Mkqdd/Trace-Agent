@@ -1,0 +1,94 @@
+{
+  "schema_version": "delivery-decision-v1",
+  "approved": true,
+  "delivery_status": "monitor_only",
+  "delivery_status_label": "背景活动，建议持续观察",
+  "confidence_band": "中",
+  "confirmed_scope": [],
+  "candidate_scope": [],
+  "blocking_gaps": [],
+  "non_blocking_gaps": [],
+  "next_best_questions": [],
+  "reviewer_rationale": "反证链路和背景解释已经完成交付级核查，可按降级观察交付。",
+  "insufficient_progress_signals": [
+    "当前还没有形成稳定的已确认影响范围。"
+  ],
+  "delivery_verdict": {
+    "status": "monitor_only",
+    "status_label": "背景活动，建议持续观察",
+    "confidence": 55,
+    "severity": "低危",
+    "rationale": [
+      "当前证据更容易被维护窗口、补丁、备份或共享基线解释。",
+      "反证链路和背景解释已经完成交付级核查，可按降级观察交付。"
+    ],
+    "delivery_ready": true,
+    "blocked_by": [],
+    "provisional_status": "monitor_only",
+    "provisional_status_label": "降级观察"
+  },
+  "analysis_verdict": {
+    "status": "monitor_only",
+    "status_label": "降级观察",
+    "confidence": 55,
+    "severity": "低危",
+    "rationale": [
+      "当前证据更容易被维护窗口、补丁、备份或共享基线解释。"
+    ]
+  },
+  "readiness": {
+    "ready_for_delivery": true,
+    "summary": "反证链路和背景解释已经完成交付级核查，可按降级观察交付。",
+    "checks": [
+      {
+        "id": "context_built",
+        "ok": true,
+        "reason": "已围绕 seed alert 建立最小上下文。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "cluster_built",
+        "ok": true,
+        "reason": "事件簇规模已经足以支撑时间线和范围判断。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "candidate_events_grounded",
+        "ok": true,
+        "reason": "当前没有仍待单独 grounding 的候选事件。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "timeline_built",
+        "ok": true,
+        "reason": "已形成时间线，可解释关键观察的先后关系。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "scope_assessed",
+        "ok": true,
+        "reason": "当前事件范围已经落到资产或核心外部指示物上。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "evidence_chain_ready",
+        "ok": true,
+        "reason": "存在明确反证并且已经执行显式反证检查，可以把结论稳定降级为观察。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "counterevidence_checked",
+        "ok": true,
+        "reason": "已执行显式反证检查。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "supplemental_context_reviewed",
+        "ok": true,
+        "reason": "已执行至少一次情报或结构化整理动作，可支撑 deterministic report 生成。",
+        "delivery_blocking": true
+      }
+    ],
+    "blocking_checks": []
+  }
+}

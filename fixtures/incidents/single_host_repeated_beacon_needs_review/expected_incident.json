@@ -1,0 +1,15 @@
+{
+  "verdict": "needs_review",
+  "affected_assets": [
+    "ws-payroll-14"
+  ],
+  "external_indicators": [
+    "198.51.100.119",
+    "sync-status-edge.net",
+    "cdn-sync-status.net"
+  ],
+  "expected_stages": [
+    "command-and-control"
+  ],
+  "analyst_expectation": "Repeated single-host beacon-like traffic without execution should remain a review case instead of auto-confirming as an incident."
+}

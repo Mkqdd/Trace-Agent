@@ -1,0 +1,45 @@
+{
+  "verdict_status": "confirmed_incident",
+  "min_event_count": 13,
+  "must_include_assets": [
+    "ws-eng-02",
+    "ws-eng-05"
+  ],
+  "must_include_related_assets": [
+    "ws-eng-09"
+  ],
+  "must_not_include_assets": [
+    "ws-lab-02"
+  ],
+  "must_not_include_related_assets": [
+    "ws-lab-02"
+  ],
+  "must_include_domains": [
+    "sync-cdn-notify.net",
+    "cdn-notify-edge.net"
+  ],
+  "must_include_stages": [
+    "command-and-control",
+    "execution",
+    "lateral-movement"
+  ],
+  "min_counterevidence_count": 2,
+  "min_positive_signal_count": 6,
+  "timeline_contains": [
+    "PsExec remote service creation",
+    "second external IP",
+    "third workstation contacted the secondary infrastructure"
+  ],
+  "report_contains": [
+    "cdn-notify-edge.net",
+    "初始入侵入口"
+  ],
+  "report_not_contains": [
+    "当前没有阻塞交付的关键缺口"
+  ],
+  "appendix_contains": [
+    "ws-eng-09",
+    "ws-lab-02",
+    "telemetry-collector.example"
+  ]
+}

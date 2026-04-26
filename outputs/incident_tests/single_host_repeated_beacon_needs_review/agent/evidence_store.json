@@ -1,0 +1,1811 @@
+{
+  "schema_version": "evidence-store-v1",
+  "observations": [
+    {
+      "id": "obs-001",
+      "observation_id": "obs-001",
+      "tool_name": "search_seed_context",
+      "relation": "supporting",
+      "grounding_status": "",
+      "source_type": "trace_store.seed_context",
+      "source_ref": "",
+      "summary": "检索到 4 条偏可疑事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开。",
+      "status": "ok",
+      "raw_status": "ok",
+      "provenance": "local_observation",
+      "event_ids": [
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "checked_event_ids": [
+        "evt-601",
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "boundary_event_ids": [],
+      "derived_entities": {
+        "asset_ids": [
+          "ws-payroll-14"
+        ],
+        "src_ips": [
+          "10.33.7.14"
+        ],
+        "dst_ips": [
+          "198.51.100.119"
+        ],
+        "domains": [
+          "sync-status-edge.net",
+          "cdn-sync-status.net"
+        ],
+        "fingerprints": [
+          "t13d190900_aa11bb22cc33_8899ddeeff00"
+        ]
+      },
+      "claim_texts": [
+        "检索到 4 条偏可疑事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开。"
+      ],
+      "confidence": 77
+    },
+    {
+      "id": "obs-002",
+      "observation_id": "obs-002",
+      "tool_name": "expand_asset_scope",
+      "relation": "candidate",
+      "grounding_status": "",
+      "source_type": "trace_store.asset_context",
+      "source_ref": "",
+      "summary": "扩线检索到 4 条可疑关联事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开；当前先作为待验证候选线索。",
+      "status": "ok",
+      "raw_status": "ok",
+      "provenance": "local_observation",
+      "event_ids": [
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "checked_event_ids": [
+        "evt-601",
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "boundary_event_ids": [],
+      "derived_entities": {
+        "asset_ids": [
+          "ws-payroll-14"
+        ],
+        "src_ips": [
+          "10.33.7.14"
+        ],
+        "dst_ips": [
+          "198.51.100.119"
+        ],
+        "domains": [
+          "sync-status-edge.net",
+          "cdn-sync-status.net"
+        ],
+        "fingerprints": [
+          "t13d190900_aa11bb22cc33_8899ddeeff00"
+        ]
+      },
+      "claim_texts": [
+        "扩线检索到 4 条可疑关联事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开；当前先作为待验证候选线索。"
+      ],
+      "confidence": 77
+    },
+    {
+      "id": "obs-003",
+      "observation_id": "obs-003",
+      "tool_name": "search_related_events",
+      "relation": "candidate",
+      "grounding_status": "",
+      "source_type": "trace_store.related_events",
+      "source_ref": "",
+      "summary": "扩线检索到 4 条可疑关联事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开；当前先作为待验证候选线索。",
+      "status": "ok",
+      "raw_status": "ok",
+      "provenance": "local_observation",
+      "event_ids": [
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "checked_event_ids": [
+        "evt-601",
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "boundary_event_ids": [],
+      "derived_entities": {
+        "asset_ids": [
+          "ws-payroll-14"
+        ],
+        "src_ips": [
+          "10.33.7.14"
+        ],
+        "dst_ips": [
+          "198.51.100.119"
+        ],
+        "domains": [
+          "sync-status-edge.net",
+          "cdn-sync-status.net"
+        ],
+        "fingerprints": [
+          "t13d190900_aa11bb22cc33_8899ddeeff00"
+        ]
+      },
+      "claim_texts": [
+        "扩线检索到 4 条可疑关联事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开；当前先作为待验证候选线索。"
+      ],
+      "confidence": 77
+    },
+    {
+      "id": "obs-004",
+      "observation_id": "obs-004",
+      "tool_name": "check_counterevidence",
+      "relation": "context",
+      "grounding_status": "",
+      "source_type": "trace_store.asset_context",
+      "source_ref": "",
+      "summary": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。",
+      "status": "ok",
+      "raw_status": "ok",
+      "provenance": "counterevidence",
+      "event_ids": [
+        "evt-601",
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "checked_event_ids": [
+        "evt-601",
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "boundary_event_ids": [],
+      "derived_entities": {
+        "asset_ids": [
+          "ws-payroll-14"
+        ],
+        "src_ips": [
+          "10.33.7.14"
+        ],
+        "dst_ips": [
+          "198.51.100.119"
+        ],
+        "domains": [
+          "sync-status-edge.net",
+          "cdn-sync-status.net"
+        ],
+        "fingerprints": [
+          "t13d190900_aa11bb22cc33_8899ddeeff00"
+        ]
+      },
+      "claim_texts": [
+        "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。"
+      ],
+      "confidence": 48
+    },
+    {
+      "id": "obs-005",
+      "observation_id": "obs-005",
+      "tool_name": "extract_claim_candidates_from_page",
+      "relation": "context",
+      "grounding_status": "",
+      "source_type": "internal_digest",
+      "source_ref": "",
+      "summary": "从内部调查摘要中整理出 6 条 claim，用于结构化报告而不是新增外部证据。",
+      "status": "ok",
+      "raw_status": "ok",
+      "provenance": "analyst_note",
+      "event_ids": [],
+      "checked_event_ids": [],
+      "boundary_event_ids": [],
+      "derived_entities": {
+        "dst_ips": [
+          "10.33.7.14",
+          "198.51.100.119"
+        ],
+        "domains": [
+          "cdn-sync-status.net",
+          "sync-status-edge.net"
+        ],
+        "families": [
+          "198.51.100.119"
+        ]
+      },
+      "claim_texts": [
+        "- candidate: 扩线检索到 4 条可疑关联事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开；当前先作为待验证候选线索。",
+        "- supporting: 检索到 4 条偏可疑事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开。",
+        "- src=10.33.7.14 dst=198.51.100.119 fp=t13d190900_aa11bb22cc33_8899ddeeff00",
+        "- benign: 围绕 198.51.100.119、sync-status-edge.net 的通信可能存在正常背景解释 (score=0)",
+        "- A second outbound TLS session to the same infrastructure kept a beacon-like cadence.",
+        "从内部调查摘要中整理出 6 条 claim，用于结构化报告而不是新增外部证据。"
+      ],
+      "confidence": 70
+    }
+  ],
+  "objects": [
+    {
+      "value": "ws-payroll-14",
+      "object_type": "asset",
+      "type_label": "资产",
+      "current_role": "seed_asset",
+      "role_label": "种子资产",
+      "roles": [
+        "seed_asset",
+        "affected_asset",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "种子告警首先落在该资产上。",
+        "当前已纳入主证据链的资产。",
+        "事件中出现过的资产对象。",
+        "当前 pivot 里出现的扩线候选资产。"
+      ],
+      "object_id": "OBJ-01"
+    },
+    {
+      "value": "198.51.100.119",
+      "object_type": "IP",
+      "type_label": "IP",
+      "current_role": "core_external_indicator",
+      "role_label": "核心外部基础设施",
+      "roles": [
+        "core_external_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "当前主证据链中反复出现的关键对象。",
+        "当前 pivot 里出现的扩线候选地址。"
+      ],
+      "object_id": "OBJ-02"
+    },
+    {
+      "value": "cdn-sync-status.net",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "core_external_indicator",
+      "role_label": "核心外部基础设施",
+      "roles": [
+        "core_external_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "当前主证据链中反复出现的关键对象。",
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-03"
+    },
+    {
+      "value": "sync-status-edge.net",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "core_external_indicator",
+      "role_label": "核心外部基础设施",
+      "roles": [
+        "core_external_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "当前主证据链中反复出现的关键对象。",
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-04"
+    },
+    {
+      "value": "t13d190900_aa11bb22cc33_8899ddeeff00",
+      "object_type": "JA4",
+      "type_label": "JA4",
+      "current_role": "seed_fingerprint",
+      "role_label": "种子命中指纹",
+      "roles": [
+        "seed_fingerprint"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "种子告警命中的关键通信指纹。"
+      ],
+      "object_id": "OBJ-05"
+    },
+    {
+      "value": "10.33.7.14",
+      "object_type": "internal_ip",
+      "type_label": "内网 IP",
+      "current_role": "related_internal_address",
+      "role_label": "关联内部地址",
+      "roles": [
+        "related_internal_address"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "事件链中出现的内部地址。",
+        "当前 pivot 里出现的扩线候选地址。"
+      ],
+      "object_id": "OBJ-06"
+    },
+    {
+      "value": "t13d190900_aa11bb22cc33_8899ddeeff00",
+      "object_type": "fingerprint",
+      "type_label": "指纹",
+      "current_role": "expansion_candidate",
+      "role_label": "扩展查询候选",
+      "roles": [
+        "expansion_candidate"
+      ],
+      "status": "待确认",
+      "in_evidence_chain": false,
+      "notes": [
+        "当前 pivot 里出现的扩线候选指纹。"
+      ],
+      "object_id": "OBJ-07"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "CL-01",
+      "text": "检索到 4 条偏可疑事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开。",
+      "relation": "supporting",
+      "provenance": "local_observation",
+      "observation_ids": [
+        "obs-001"
+      ],
+      "event_ids": [
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "source_refs": [],
+      "confidence": 77
+    },
+    {
+      "claim_id": "CL-02",
+      "text": "扩线检索到 4 条可疑关联事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开；当前先作为待验证候选线索。",
+      "relation": "candidate",
+      "provenance": "local_observation",
+      "observation_ids": [
+        "obs-002"
+      ],
+      "event_ids": [
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "source_refs": [],
+      "confidence": 77
+    },
+    {
+      "claim_id": "CL-03",
+      "text": "扩线检索到 4 条可疑关联事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开；当前先作为待验证候选线索。",
+      "relation": "candidate",
+      "provenance": "local_observation",
+      "observation_ids": [
+        "obs-003"
+      ],
+      "event_ids": [
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "source_refs": [],
+      "confidence": 77
+    },
+    {
+      "claim_id": "CL-04",
+      "text": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。",
+      "relation": "context",
+      "provenance": "counterevidence",
+      "observation_ids": [
+        "obs-004"
+      ],
+      "event_ids": [
+        "evt-601",
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "source_refs": [],
+      "confidence": 48
+    },
+    {
+      "claim_id": "CL-05",
+      "text": "- candidate: 扩线检索到 4 条可疑关联事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开；当前先作为待验证候选线索。",
+      "relation": "context",
+      "provenance": "analyst_note",
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "confidence": 70
+    },
+    {
+      "claim_id": "CL-06",
+      "text": "- supporting: 检索到 4 条偏可疑事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开。",
+      "relation": "context",
+      "provenance": "analyst_note",
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "confidence": 70
+    },
+    {
+      "claim_id": "CL-07",
+      "text": "- src=10.33.7.14 dst=198.51.100.119 fp=t13d190900_aa11bb22cc33_8899ddeeff00",
+      "relation": "context",
+      "provenance": "analyst_note",
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "confidence": 70
+    },
+    {
+      "claim_id": "CL-08",
+      "text": "- benign: 围绕 198.51.100.119、sync-status-edge.net 的通信可能存在正常背景解释 (score=0)",
+      "relation": "context",
+      "provenance": "analyst_note",
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "confidence": 70
+    },
+    {
+      "claim_id": "CL-09",
+      "text": "- A second outbound TLS session to the same infrastructure kept a beacon-like cadence.",
+      "relation": "context",
+      "provenance": "analyst_note",
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "confidence": 70
+    },
+    {
+      "claim_id": "CL-10",
+      "text": "从内部调查摘要中整理出 6 条 claim，用于结构化报告而不是新增外部证据。",
+      "relation": "context",
+      "provenance": "analyst_note",
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "confidence": 70
+    }
+  ],
+  "hypotheses": {
+    "stages": [
+      "command-and-control"
+    ],
+    "primary": "当前主支撑信号主要来自 ws-payroll-14 围绕 198.51.100.119、sync-status-edge.net、cdn-sync-status.net 的重复通信，但还缺少足够强的后续证据。",
+    "positive_summary": "目前最强的支撑来自 ws-payroll-14 围绕 198.51.100.119、sync-status-edge.net、cdn-sync-status.net 的重复通信，但这条链还没有延伸到执行或扩散层。",
+    "negative_summary": ""
+  },
+  "gaps": [
+    {
+      "gap_id": "execution_gap",
+      "question": "是否存在主机侧执行、持久化或横向移动证据？",
+      "gap_type": "host_confirmation",
+      "priority": "medium",
+      "status": "unresolved_but_deliverable",
+      "status_label": "可交付但未完全闭合",
+      "legacy_status": "reportable_unresolved",
+      "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+      "materiality": "confidence_supporting",
+      "delivery_blocking": false,
+      "actionable_now": false,
+      "actionable_tools": [
+        "search_related_events",
+        "host_confirmation"
+      ],
+      "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+    },
+    {
+      "gap_id": "expand_cluster_scope",
+      "question": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "gap_type": "cluster_scope",
+      "priority": "high",
+      "status": "unresolved_but_deliverable",
+      "status_label": "可交付但未完全闭合",
+      "legacy_status": "reportable_unresolved",
+      "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+      "materiality": "delivery_blocking",
+      "delivery_blocking": true,
+      "actionable_now": false,
+      "actionable_tools": [
+        "search_related_events",
+        "cluster_expand",
+        "scope"
+      ],
+      "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+    },
+    {
+      "gap_id": "structure_evidence",
+      "question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+      "gap_type": "report_structuring",
+      "priority": "medium",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+      "materiality": "delivery_blocking",
+      "delivery_blocking": true,
+      "actionable_now": false,
+      "actionable_tools": [
+        "evidence_structuring",
+        "entity_structuring",
+        "source_retrieval"
+      ],
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
+    },
+    {
+      "gap_id": "check_counterevidence",
+      "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "gap_type": "counterevidence",
+      "priority": "medium",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+      "materiality": "delivery_blocking",
+      "delivery_blocking": true,
+      "actionable_now": false,
+      "actionable_tools": [
+        "counterevidence",
+        "background_validation"
+      ],
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
+    },
+    {
+      "gap_id": "build_context",
+      "question": "仍需围绕 seed alert 补足最小上下文。",
+      "gap_type": "context",
+      "priority": "high",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+      "materiality": "delivery_blocking",
+      "delivery_blocking": true,
+      "actionable_now": false,
+      "actionable_tools": [
+        "context_building",
+        "timeline"
+      ],
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
+    },
+    {
+      "gap_id": "identify_assets",
+      "question": "仍需确认事件涉及的关键资产。",
+      "gap_type": "asset_identity",
+      "priority": "high",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+      "materiality": "delivery_blocking",
+      "delivery_blocking": true,
+      "actionable_now": false,
+      "actionable_tools": [
+        "context_building",
+        "asset_scope"
+      ],
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
+    },
+    {
+      "gap_id": "ground_infra",
+      "question": "仍需补足外部基础设施、域名或家族背景。",
+      "gap_type": "external_context",
+      "priority": "medium",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+      "materiality": "delivery_blocking",
+      "delivery_blocking": true,
+      "actionable_now": false,
+      "actionable_tools": [
+        "infra_context",
+        "external_intel"
+      ],
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
+    }
+  ],
+  "coverage": {
+    "seed_asset": "ws-payroll-14",
+    "suspected_assets": [
+      "ws-payroll-14"
+    ],
+    "related_assets": [],
+    "primary_external_indicators": [
+      "198.51.100.119",
+      "sync-status-edge.net",
+      "cdn-sync-status.net"
+    ],
+    "contextual_external_indicators": [],
+    "event_count": 5,
+    "time_window": {
+      "start": "2026-06-14T08:29:20Z",
+      "end": "2026-06-14T08:45:30Z"
+    },
+    "current_boundary": ""
+  },
+  "candidate_events": [],
+  "confirmed_events": [
+    {
+      "id": "evt-601",
+      "role": "context",
+      "asset_id": "ws-payroll-14",
+      "kind": "dns",
+      "ts": "2026-06-14T08:29:20Z",
+      "summary": "Rare DNS lookup for a domain later reused by the seed alert.",
+      "domain": "sync-status-edge.net",
+      "dst_ip": "",
+      "stages": [],
+      "tags": [
+        "rare"
+      ],
+      "classification": "unknown"
+    },
+    {
+      "id": "evt-602",
+      "role": "seed",
+      "asset_id": "ws-payroll-14",
+      "kind": "alert",
+      "ts": "2026-06-14T08:33:00Z",
+      "summary": "Seed JA4 alert matched repeated TLS traffic to the same rare external infrastructure.",
+      "domain": "sync-status-edge.net",
+      "dst_ip": "198.51.100.119",
+      "stages": [
+        "command-and-control"
+      ],
+      "tags": [
+        "command-and-control",
+        "beacon"
+      ],
+      "classification": "needs_review"
+    },
+    {
+      "id": "evt-603",
+      "role": "supporting",
+      "asset_id": "ws-payroll-14",
+      "kind": "flow",
+      "ts": "2026-06-14T08:37:10Z",
+      "summary": "The same workstation reconnected to the same rare external infrastructure after the seed alert.",
+      "domain": "sync-status-edge.net",
+      "dst_ip": "198.51.100.119",
+      "stages": [
+        "command-and-control"
+      ],
+      "tags": [
+        "command-and-control",
+        "beacon"
+      ],
+      "classification": "suspicious"
+    },
+    {
+      "id": "evt-604",
+      "role": "supporting",
+      "asset_id": "ws-payroll-14",
+      "kind": "flow",
+      "ts": "2026-06-14T08:41:40Z",
+      "summary": "A second outbound TLS session to the same infrastructure kept a beacon-like cadence.",
+      "domain": "sync-status-edge.net",
+      "dst_ip": "198.51.100.119",
+      "stages": [
+        "command-and-control"
+      ],
+      "tags": [
+        "command-and-control",
+        "beacon"
+      ],
+      "classification": "suspicious"
+    },
+    {
+      "id": "evt-605",
+      "role": "supporting",
+      "asset_id": "ws-payroll-14",
+      "kind": "dns",
+      "ts": "2026-06-14T08:45:30Z",
+      "summary": "The workstation resolved a sibling domain on the same infrastructure during the same burst.",
+      "domain": "cdn-sync-status.net",
+      "dst_ip": "",
+      "stages": [
+        "command-and-control"
+      ],
+      "tags": [
+        "command-and-control"
+      ],
+      "classification": "suspicious"
+    }
+  ],
+  "provenance_index": {
+    "CL-01": {
+      "observation_ids": [
+        "obs-001"
+      ],
+      "event_ids": [
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "source_refs": [],
+      "provenance": "local_observation"
+    },
+    "CL-02": {
+      "observation_ids": [
+        "obs-002"
+      ],
+      "event_ids": [
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "source_refs": [],
+      "provenance": "local_observation"
+    },
+    "CL-03": {
+      "observation_ids": [
+        "obs-003"
+      ],
+      "event_ids": [
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "source_refs": [],
+      "provenance": "local_observation"
+    },
+    "CL-04": {
+      "observation_ids": [
+        "obs-004"
+      ],
+      "event_ids": [
+        "evt-601",
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "source_refs": [],
+      "provenance": "counterevidence"
+    },
+    "CL-05": {
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "provenance": "analyst_note"
+    },
+    "CL-06": {
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "provenance": "analyst_note"
+    },
+    "CL-07": {
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "provenance": "analyst_note"
+    },
+    "CL-08": {
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "provenance": "analyst_note"
+    },
+    "CL-09": {
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "provenance": "analyst_note"
+    },
+    "CL-10": {
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "provenance": "analyst_note"
+    }
+  },
+  "version": "runtime-v1",
+  "object_registry": [
+    {
+      "value": "ws-payroll-14",
+      "object_type": "asset",
+      "type_label": "资产",
+      "current_role": "seed_asset",
+      "role_label": "种子资产",
+      "roles": [
+        "seed_asset",
+        "affected_asset",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "种子告警首先落在该资产上。",
+        "当前已纳入主证据链的资产。",
+        "事件中出现过的资产对象。",
+        "当前 pivot 里出现的扩线候选资产。"
+      ],
+      "object_id": "OBJ-01"
+    },
+    {
+      "value": "198.51.100.119",
+      "object_type": "IP",
+      "type_label": "IP",
+      "current_role": "core_external_indicator",
+      "role_label": "核心外部基础设施",
+      "roles": [
+        "core_external_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "当前主证据链中反复出现的关键对象。",
+        "当前 pivot 里出现的扩线候选地址。"
+      ],
+      "object_id": "OBJ-02"
+    },
+    {
+      "value": "cdn-sync-status.net",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "core_external_indicator",
+      "role_label": "核心外部基础设施",
+      "roles": [
+        "core_external_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "当前主证据链中反复出现的关键对象。",
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-03"
+    },
+    {
+      "value": "sync-status-edge.net",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "core_external_indicator",
+      "role_label": "核心外部基础设施",
+      "roles": [
+        "core_external_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "当前主证据链中反复出现的关键对象。",
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-04"
+    },
+    {
+      "value": "t13d190900_aa11bb22cc33_8899ddeeff00",
+      "object_type": "JA4",
+      "type_label": "JA4",
+      "current_role": "seed_fingerprint",
+      "role_label": "种子命中指纹",
+      "roles": [
+        "seed_fingerprint"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "种子告警命中的关键通信指纹。"
+      ],
+      "object_id": "OBJ-05"
+    },
+    {
+      "value": "10.33.7.14",
+      "object_type": "internal_ip",
+      "type_label": "内网 IP",
+      "current_role": "related_internal_address",
+      "role_label": "关联内部地址",
+      "roles": [
+        "related_internal_address"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "事件链中出现的内部地址。",
+        "当前 pivot 里出现的扩线候选地址。"
+      ],
+      "object_id": "OBJ-06"
+    },
+    {
+      "value": "t13d190900_aa11bb22cc33_8899ddeeff00",
+      "object_type": "fingerprint",
+      "type_label": "指纹",
+      "current_role": "expansion_candidate",
+      "role_label": "扩展查询候选",
+      "roles": [
+        "expansion_candidate"
+      ],
+      "status": "待确认",
+      "in_evidence_chain": false,
+      "notes": [
+        "当前 pivot 里出现的扩线候选指纹。"
+      ],
+      "object_id": "OBJ-07"
+    }
+  ],
+  "evidence_gaps": [
+    {
+      "gap_id": "execution_gap",
+      "question": "是否存在主机侧执行、持久化或横向移动证据？",
+      "gap_type": "host_confirmation",
+      "priority": "medium",
+      "status": "unresolved_but_deliverable",
+      "status_label": "可交付但未完全闭合",
+      "legacy_status": "reportable_unresolved",
+      "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+      "materiality": "confidence_supporting",
+      "delivery_blocking": false,
+      "actionable_now": false,
+      "actionable_tools": [
+        "search_related_events",
+        "host_confirmation"
+      ],
+      "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+    },
+    {
+      "gap_id": "expand_cluster_scope",
+      "question": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "gap_type": "cluster_scope",
+      "priority": "high",
+      "status": "unresolved_but_deliverable",
+      "status_label": "可交付但未完全闭合",
+      "legacy_status": "reportable_unresolved",
+      "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+      "materiality": "delivery_blocking",
+      "delivery_blocking": true,
+      "actionable_now": false,
+      "actionable_tools": [
+        "search_related_events",
+        "cluster_expand",
+        "scope"
+      ],
+      "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+    },
+    {
+      "gap_id": "structure_evidence",
+      "question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+      "gap_type": "report_structuring",
+      "priority": "medium",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+      "materiality": "delivery_blocking",
+      "delivery_blocking": true,
+      "actionable_now": false,
+      "actionable_tools": [
+        "evidence_structuring",
+        "entity_structuring",
+        "source_retrieval"
+      ],
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
+    },
+    {
+      "gap_id": "check_counterevidence",
+      "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "gap_type": "counterevidence",
+      "priority": "medium",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+      "materiality": "delivery_blocking",
+      "delivery_blocking": true,
+      "actionable_now": false,
+      "actionable_tools": [
+        "counterevidence",
+        "background_validation"
+      ],
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
+    },
+    {
+      "gap_id": "build_context",
+      "question": "仍需围绕 seed alert 补足最小上下文。",
+      "gap_type": "context",
+      "priority": "high",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+      "materiality": "delivery_blocking",
+      "delivery_blocking": true,
+      "actionable_now": false,
+      "actionable_tools": [
+        "context_building",
+        "timeline"
+      ],
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
+    },
+    {
+      "gap_id": "identify_assets",
+      "question": "仍需确认事件涉及的关键资产。",
+      "gap_type": "asset_identity",
+      "priority": "high",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+      "materiality": "delivery_blocking",
+      "delivery_blocking": true,
+      "actionable_now": false,
+      "actionable_tools": [
+        "context_building",
+        "asset_scope"
+      ],
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
+    },
+    {
+      "gap_id": "ground_infra",
+      "question": "仍需补足外部基础设施、域名或家族背景。",
+      "gap_type": "external_context",
+      "priority": "medium",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+      "materiality": "delivery_blocking",
+      "delivery_blocking": true,
+      "actionable_now": false,
+      "actionable_tools": [
+        "infra_context",
+        "external_intel"
+      ],
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
+    }
+  ],
+  "citation_map": {
+    "CL-01": {
+      "observation_ids": [
+        "obs-001"
+      ],
+      "event_ids": [
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "source_refs": [],
+      "provenance": "local_observation"
+    },
+    "CL-02": {
+      "observation_ids": [
+        "obs-002"
+      ],
+      "event_ids": [
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "source_refs": [],
+      "provenance": "local_observation"
+    },
+    "CL-03": {
+      "observation_ids": [
+        "obs-003"
+      ],
+      "event_ids": [
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "source_refs": [],
+      "provenance": "local_observation"
+    },
+    "CL-04": {
+      "observation_ids": [
+        "obs-004"
+      ],
+      "event_ids": [
+        "evt-601",
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "source_refs": [],
+      "provenance": "counterevidence"
+    },
+    "CL-05": {
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "provenance": "analyst_note"
+    },
+    "CL-06": {
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "provenance": "analyst_note"
+    },
+    "CL-07": {
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "provenance": "analyst_note"
+    },
+    "CL-08": {
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "provenance": "analyst_note"
+    },
+    "CL-09": {
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "provenance": "analyst_note"
+    },
+    "CL-10": {
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "provenance": "analyst_note"
+    }
+  },
+  "pivots": {
+    "seed_ts": "2026-06-14 08:33:00",
+    "asset_ids": [
+      "ws-payroll-14"
+    ],
+    "src_ips": [
+      "10.33.7.14"
+    ],
+    "dst_ips": [
+      "198.51.100.119",
+      "10.33.7.14"
+    ],
+    "domains": [
+      "sync-status-edge.net",
+      "cdn-sync-status.net"
+    ],
+    "fingerprints": [
+      "t13d190900_aa11bb22cc33_8899ddeeff00"
+    ]
+  },
+  "counterevidence": [],
+  "runtime_snapshot": {
+    "known_events": [
+      {
+        "id": "evt-601",
+        "ts": "2026-06-14T08:29:20Z",
+        "kind": "dns",
+        "asset_id": "ws-payroll-14",
+        "src_ip": "10.33.7.14",
+        "domain": "sync-status-edge.net",
+        "answers": [
+          "198.51.100.119"
+        ],
+        "classification": "unknown",
+        "tags": [
+          "rare"
+        ],
+        "summary": "Rare DNS lookup for a domain later reused by the seed alert."
+      },
+      {
+        "id": "evt-602",
+        "ts": "2026-06-14T08:33:00Z",
+        "kind": "alert",
+        "asset_id": "ws-payroll-14",
+        "src_ip": "10.33.7.14",
+        "dst_ip": "198.51.100.119",
+        "domain": "sync-status-edge.net",
+        "ja4": "t13d190900_aa11bb22cc33_8899ddeeff00",
+        "classification": "needs_review",
+        "tags": [
+          "command-and-control",
+          "beacon"
+        ],
+        "summary": "Seed JA4 alert matched repeated TLS traffic to the same rare external infrastructure."
+      },
+      {
+        "id": "evt-603",
+        "ts": "2026-06-14T08:37:10Z",
+        "kind": "flow",
+        "asset_id": "ws-payroll-14",
+        "src_ip": "10.33.7.14",
+        "dst_ip": "198.51.100.119",
+        "dst_port": 443,
+        "domain": "sync-status-edge.net",
+        "classification": "suspicious",
+        "tags": [
+          "command-and-control",
+          "beacon"
+        ],
+        "summary": "The same workstation reconnected to the same rare external infrastructure after the seed alert."
+      },
+      {
+        "id": "evt-604",
+        "ts": "2026-06-14T08:41:40Z",
+        "kind": "flow",
+        "asset_id": "ws-payroll-14",
+        "src_ip": "10.33.7.14",
+        "dst_ip": "198.51.100.119",
+        "dst_port": 443,
+        "domain": "sync-status-edge.net",
+        "classification": "suspicious",
+        "tags": [
+          "command-and-control",
+          "beacon"
+        ],
+        "summary": "A second outbound TLS session to the same infrastructure kept a beacon-like cadence."
+      },
+      {
+        "id": "evt-605",
+        "ts": "2026-06-14T08:45:30Z",
+        "kind": "dns",
+        "asset_id": "ws-payroll-14",
+        "src_ip": "10.33.7.14",
+        "domain": "cdn-sync-status.net",
+        "answers": [
+          "198.51.100.119"
+        ],
+        "classification": "suspicious",
+        "tags": [
+          "command-and-control"
+        ],
+        "summary": "The workstation resolved a sibling domain on the same infrastructure during the same burst."
+      }
+    ],
+    "evidence_ledger": [
+      {
+        "observation_id": "obs-001",
+        "tool_name": "search_seed_context",
+        "relation": "supporting",
+        "grounding_status": "",
+        "source_type": "trace_store.seed_context",
+        "source_ref": "",
+        "summary": "检索到 4 条偏可疑事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开。",
+        "event_ids": [
+          "evt-602",
+          "evt-603",
+          "evt-604",
+          "evt-605"
+        ],
+        "checked_event_ids": [
+          "evt-601",
+          "evt-602",
+          "evt-603",
+          "evt-604",
+          "evt-605"
+        ],
+        "boundary_event_ids": [],
+        "claim_texts": [
+          "检索到 4 条偏可疑事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开。"
+        ],
+        "confidence": 77,
+        "supports_hypothesis": [
+          "primary"
+        ],
+        "contradicts_hypothesis": []
+      },
+      {
+        "observation_id": "obs-002",
+        "tool_name": "expand_asset_scope",
+        "relation": "candidate",
+        "grounding_status": "",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "扩线检索到 4 条可疑关联事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开；当前先作为待验证候选线索。",
+        "event_ids": [
+          "evt-602",
+          "evt-603",
+          "evt-604",
+          "evt-605"
+        ],
+        "checked_event_ids": [
+          "evt-601",
+          "evt-602",
+          "evt-603",
+          "evt-604",
+          "evt-605"
+        ],
+        "boundary_event_ids": [],
+        "claim_texts": [
+          "扩线检索到 4 条可疑关联事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开；当前先作为待验证候选线索。"
+        ],
+        "confidence": 77,
+        "supports_hypothesis": [
+          "secondary"
+        ],
+        "contradicts_hypothesis": []
+      },
+      {
+        "observation_id": "obs-003",
+        "tool_name": "search_related_events",
+        "relation": "candidate",
+        "grounding_status": "",
+        "source_type": "trace_store.related_events",
+        "source_ref": "",
+        "summary": "扩线检索到 4 条可疑关联事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开；当前先作为待验证候选线索。",
+        "event_ids": [
+          "evt-602",
+          "evt-603",
+          "evt-604",
+          "evt-605"
+        ],
+        "checked_event_ids": [
+          "evt-601",
+          "evt-602",
+          "evt-603",
+          "evt-604",
+          "evt-605"
+        ],
+        "boundary_event_ids": [],
+        "claim_texts": [
+          "扩线检索到 4 条可疑关联事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开；当前先作为待验证候选线索。"
+        ],
+        "confidence": 77,
+        "supports_hypothesis": [
+          "secondary"
+        ],
+        "contradicts_hypothesis": []
+      },
+      {
+        "observation_id": "obs-004",
+        "tool_name": "check_counterevidence",
+        "relation": "context",
+        "grounding_status": "",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。",
+        "event_ids": [
+          "evt-601",
+          "evt-602",
+          "evt-603",
+          "evt-604",
+          "evt-605"
+        ],
+        "checked_event_ids": [
+          "evt-601",
+          "evt-602",
+          "evt-603",
+          "evt-604",
+          "evt-605"
+        ],
+        "boundary_event_ids": [],
+        "claim_texts": [
+          "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。"
+        ],
+        "confidence": 48,
+        "supports_hypothesis": [],
+        "contradicts_hypothesis": []
+      },
+      {
+        "observation_id": "obs-005",
+        "tool_name": "extract_claim_candidates_from_page",
+        "relation": "context",
+        "grounding_status": "",
+        "source_type": "internal_digest",
+        "source_ref": "",
+        "summary": "从内部调查摘要中整理出 6 条 claim，用于结构化报告而不是新增外部证据。",
+        "event_ids": [],
+        "checked_event_ids": [],
+        "boundary_event_ids": [],
+        "claim_texts": [
+          "- candidate: 扩线检索到 4 条可疑关联事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开；当前先作为待验证候选线索。",
+          "- supporting: 检索到 4 条偏可疑事件，围绕 sync-status-edge.net、cdn-sync-status.net、198.51.100.119 展开。",
+          "- src=10.33.7.14 dst=198.51.100.119 fp=t13d190900_aa11bb22cc33_8899ddeeff00",
+          "- benign: 围绕 198.51.100.119、sync-status-edge.net 的通信可能存在正常背景解释 (score=0)"
+        ],
+        "confidence": 70,
+        "supports_hypothesis": [],
+        "contradicts_hypothesis": []
+      }
+    ],
+    "context_bundle": {
+      "minimal_event_ids": [
+        "evt-601",
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605"
+      ],
+      "minimal_event_count": 5
+    },
+    "entity_hints": {
+      "seed_asset": "ws-payroll-14",
+      "assets": [
+        "ws-payroll-14"
+      ],
+      "observed_assets": [
+        "ws-payroll-14"
+      ],
+      "suspected_assets": [
+        "ws-payroll-14"
+      ],
+      "related_assets": [],
+      "internal_ips": [
+        "10.33.7.14"
+      ],
+      "external_ips": [
+        "198.51.100.119"
+      ],
+      "primary_external_ips": [
+        "198.51.100.119"
+      ],
+      "contextual_external_ips": [],
+      "domains": [
+        "sync-status-edge.net",
+        "cdn-sync-status.net"
+      ],
+      "primary_domains": [
+        "sync-status-edge.net",
+        "cdn-sync-status.net"
+      ],
+      "contextual_domains": [],
+      "users": []
+    },
+    "gap_ledger": [
+      {
+        "id": "execution_gap",
+        "priority": "medium",
+        "question": "是否存在主机侧执行、持久化或横向移动证据？",
+        "gap_type": "host_confirmation",
+        "materiality": "confidence_supporting",
+        "tool_capability_hints": [
+          "host_confirmation"
+        ],
+        "delivery_blocking": false,
+        "reportable_if_unresolved": true,
+        "closure_criteria": [
+          "确认是否存在主机侧执行线索",
+          "或保留为主机侧待确认事项"
+        ],
+        "attempt_count": 2,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 1,
+        "zero_delta_attempt_count": 1,
+        "last_attempt_step": 3,
+        "last_attempt_tool": "search_related_events",
+        "recent_attempts": [
+          {
+            "step_index": 2,
+            "tool_name": "expand_asset_scope",
+            "material_score": 0,
+            "editorial_score": 1,
+            "summary": "新增 1 条 claim"
+          },
+          {
+            "step_index": 3,
+            "tool_name": "search_related_events",
+            "material_score": 0,
+            "editorial_score": 0,
+            "summary": "没有新增实质信息"
+          }
+        ],
+        "addressable_tools": [
+          "search_related_events"
+        ],
+        "actionable_tools": [],
+        "status": "reportable_unresolved",
+        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+        "actionable_now": false,
+        "first_seen_step": 1,
+        "last_seen_step": 5,
+        "closed_step": null
+      },
+      {
+        "id": "expand_cluster_scope",
+        "priority": "high",
+        "question": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+        "gap_type": "cluster_scope",
+        "materiality": "delivery_blocking",
+        "tool_capability_hints": [
+          "cluster_expand",
+          "scope"
+        ],
+        "delivery_blocking": true,
+        "reportable_if_unresolved": true,
+        "closure_criteria": [
+          "至少完成一次基于当前 pivot 的扩线搜索",
+          "确认是否存在更多同指标复现或明确当前范围已经收敛"
+        ],
+        "attempt_count": 2,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 1,
+        "zero_delta_attempt_count": 1,
+        "last_attempt_step": 3,
+        "last_attempt_tool": "search_related_events",
+        "recent_attempts": [
+          {
+            "step_index": 2,
+            "tool_name": "expand_asset_scope",
+            "material_score": 0,
+            "editorial_score": 1,
+            "summary": "新增 1 条 claim"
+          },
+          {
+            "step_index": 3,
+            "tool_name": "search_related_events",
+            "material_score": 0,
+            "editorial_score": 0,
+            "summary": "没有新增实质信息"
+          }
+        ],
+        "addressable_tools": [
+          "search_related_events"
+        ],
+        "actionable_tools": [],
+        "status": "reportable_unresolved",
+        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+        "actionable_now": false,
+        "first_seen_step": 1,
+        "last_seen_step": 5,
+        "closed_step": null
+      },
+      {
+        "id": "structure_evidence",
+        "priority": "medium",
+        "question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+        "gap_type": "report_structuring",
+        "materiality": "delivery_blocking",
+        "tool_capability_hints": [
+          "evidence_structuring",
+          "entity_structuring",
+          "source_retrieval"
+        ],
+        "delivery_blocking": true,
+        "reportable_if_unresolved": false,
+        "closure_criteria": [
+          "至少完成一次结构化沉淀",
+          "报告可直接引用当前事实"
+        ],
+        "attempt_count": 0,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 0,
+        "zero_delta_attempt_count": 0,
+        "last_attempt_step": 0,
+        "last_attempt_tool": "",
+        "recent_attempts": [],
+        "addressable_tools": [],
+        "actionable_tools": [],
+        "status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+        "actionable_now": false,
+        "first_seen_step": 1,
+        "last_seen_step": 5,
+        "closed_step": 5
+      },
+      {
+        "id": "check_counterevidence",
+        "priority": "medium",
+        "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+        "gap_type": "counterevidence",
+        "materiality": "delivery_blocking",
+        "tool_capability_hints": [
+          "counterevidence",
+          "background_validation"
+        ],
+        "delivery_blocking": true,
+        "reportable_if_unresolved": false,
+        "closure_criteria": [
+          "完成显式反证检查",
+          "明确是否存在降级解释"
+        ],
+        "attempt_count": 0,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 0,
+        "zero_delta_attempt_count": 0,
+        "last_attempt_step": 0,
+        "last_attempt_tool": "",
+        "recent_attempts": [],
+        "addressable_tools": [],
+        "actionable_tools": [],
+        "status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+        "actionable_now": false,
+        "first_seen_step": 1,
+        "last_seen_step": 5,
+        "closed_step": 4
+      },
+      {
+        "id": "build_context",
+        "priority": "high",
+        "question": "仍需围绕 seed alert 补足最小上下文。",
+        "gap_type": "context",
+        "materiality": "delivery_blocking",
+        "tool_capability_hints": [
+          "context_building",
+          "timeline"
+        ],
+        "delivery_blocking": true,
+        "reportable_if_unresolved": false,
+        "closure_criteria": [
+          "补齐最小事件窗",
+          "确认告警不是孤立命中"
+        ],
+        "attempt_count": 0,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 0,
+        "zero_delta_attempt_count": 0,
+        "last_attempt_step": 0,
+        "last_attempt_tool": "",
+        "recent_attempts": [],
+        "addressable_tools": [],
+        "actionable_tools": [],
+        "status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+        "actionable_now": false,
+        "first_seen_step": 1,
+        "last_seen_step": 5,
+        "closed_step": 1
+      },
+      {
+        "id": "identify_assets",
+        "priority": "high",
+        "question": "仍需确认事件涉及的关键资产。",
+        "gap_type": "asset_identity",
+        "materiality": "delivery_blocking",
+        "tool_capability_hints": [
+          "context_building",
+          "asset_scope"
+        ],
+        "delivery_blocking": true,
+        "reportable_if_unresolved": false,
+        "closure_criteria": [
+          "确认关键资产身份",
+          "避免影响范围仍为空"
+        ],
+        "attempt_count": 0,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 0,
+        "zero_delta_attempt_count": 0,
+        "last_attempt_step": 0,
+        "last_attempt_tool": "",
+        "recent_attempts": [],
+        "addressable_tools": [],
+        "actionable_tools": [],
+        "status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+        "actionable_now": false,
+        "first_seen_step": 1,
+        "last_seen_step": 5,
+        "closed_step": 1
+      },
+      {
+        "id": "ground_infra",
+        "priority": "medium",
+        "question": "仍需补足外部基础设施、域名或家族背景。",
+        "gap_type": "external_context",
+        "materiality": "delivery_blocking",
+        "tool_capability_hints": [
+          "infra_context",
+          "external_intel"
+        ],
+        "delivery_blocking": true,
+        "reportable_if_unresolved": false,
+        "closure_criteria": [
+          "补足外部基础设施背景",
+          "支持当前结论的可解释性"
+        ],
+        "attempt_count": 0,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 0,
+        "zero_delta_attempt_count": 0,
+        "last_attempt_step": 0,
+        "last_attempt_tool": "",
+        "recent_attempts": [],
+        "addressable_tools": [],
+        "actionable_tools": [],
+        "status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+        "actionable_now": false,
+        "first_seen_step": 1,
+        "last_seen_step": 5,
+        "closed_step": 1
+      }
+    ],
+    "pivots": {
+      "seed_ts": "2026-06-14 08:33:00",
+      "asset_ids": [
+        "ws-payroll-14"
+      ],
+      "src_ips": [
+        "10.33.7.14"
+      ],
+      "dst_ips": [
+        "198.51.100.119",
+        "10.33.7.14"
+      ],
+      "domains": [
+        "sync-status-edge.net",
+        "cdn-sync-status.net"
+      ],
+      "fingerprints": [
+        "t13d190900_aa11bb22cc33_8899ddeeff00"
+      ]
+    },
+    "analysis_verdict": {
+      "status": "needs_review",
+      "status_label": "待人工复核",
+      "confidence": 76,
+      "severity": "中危",
+      "rationale": [
+        "当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。"
+      ]
+    },
+    "provisional_verdict": {
+      "status": "needs_review",
+      "status_label": "待人工复核",
+      "confidence": 76,
+      "severity": "中危",
+      "rationale": [
+        "当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。"
+      ]
+    },
+    "source_contract": "runtime_snapshot_v1"
+  }
+}

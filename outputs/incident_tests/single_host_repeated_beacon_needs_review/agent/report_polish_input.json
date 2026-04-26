@@ -1,0 +1,179 @@
+{
+  "schema_version": "report-polish-input-v1",
+  "audience": "运维人员与安全运营协同对象",
+  "goal": "在不引入新事实的前提下，把结构化调查结果写成更像分析师交付给运维的中文 Markdown 报告。",
+  "headline": {
+    "title": "ws-payroll-14 异常通信调查报告",
+    "analysis_window": "2026-06-14 08:29:20 UTC 至 2026-06-14 08:45:30 UTC",
+    "status": "可疑事件，建议继续复核",
+    "severity": "中危",
+    "confidence": "较高",
+    "confirmed_scope": "当前未确认受影响资产",
+    "one_sentence_summary": "ws-payroll-14 围绕 198.51.100.119、sync-status-edge.net 已出现连续异常迹象，但由于 是否存在主机侧执行、持久化或横向移动证据？，当前仍按待人工复核事件交付。",
+    "strongest_evidence": "在 2026-06-14 08:37:10 UTC，资产 `ws-payroll-14` 再次与 198.51.100.119 / sync-status-edge.net 通信，说明同一基础设施上的异常仍在持续，同一资产围绕同一基础设施的重复通信，是把单点告警扩展成事件链的关键。",
+    "key_gap": "仍需围绕当前 枢纽 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+    "immediate_action": "优先隔离或重点监控资产：ws-payroll-14。"
+  },
+  "background": {
+    "seed_alert": "2026-06-14 08:33:00 UTC，最先在 `ws-payroll-14` 相关的 alert观测上触发调查，当时关联对象为 sync-status-edge.net、198.51.100.119。",
+    "initial_hits": [
+      "命中了种子通信指纹：t13d190900_aa11bb22cc33_8899ddeeff00。",
+      "当前已知关键对象包括 198.51.100.119、sync-status-edge.net、cdn-sync-status.net。",
+      "Seed 通信指纹 alert matched repeated TLS traffic to the same rare external infrastructure."
+    ],
+    "upstream_context": "当前没有额外上游背景被纳入主报告。",
+    "investigation_focus": "在 2026-06-14 08:37:10 UTC，资产 `ws-payroll-14` 再次与 198.51.100.119 / sync-status-edge.net 通信，说明同一基础设施上的异常仍在持续，同一资产围绕同一基础设施的重复通信，是把单点告警扩展成事件链的关键。"
+  },
+  "scope_and_hypothesis": {
+    "investigation_scope": "本轮调查覆盖 2026-06-14 08:29:20 UTC 至 2026-06-14 08:45:30 UTC 内围绕 ws-payroll-14 与 198.51.100.119、cdn-sync-status.net、sync-status-edge.net 的关键事件窗。",
+    "primary_hypothesis": "围绕 ws-payroll-14 与 198.51.100.119、cdn-sync-status.net、sync-status-edge.net 的异常通信及后续高风险迹象，当前应按“可疑事件，建议继续复核”收敛交付。",
+    "alternative_hypothesis": "当前暂无比现有主链更强的稳定替代解释。",
+    "out_of_scope": "本轮不把未经过独立验证的候选对象 当前无 直接写成已确认范围，也不把背景情报直接写成已确认事实。",
+    "hypothesis_requirements": "当前主假设至少需要同时满足：种子告警需要能够对应到明确异常起点；同一基础设施的异常通信需要在同资产或关联资产上被再次观察到；事件链需要推进到执行或横向动作，而不只是停留在单点外联；未独立验证的候选对象只能作为边界线索保留，不能直接写成确认影响范围。",
+    "hypothesis_failure_conditions": "如果后续出现更强的背景解释并且主链无法持续复现，当前结论需要重新收敛。",
+    "confirmed_assets": "当前未确认受影响资产",
+    "related_assets": "当前没有额外待确认关联资产",
+    "core_external_indicators": "198.51.100.119、cdn-sync-status.net、sync-status-edge.net",
+    "key_indicators": "198.51.100.119、cdn-sync-status.net、sync-status-edge.net、t13d190900_aa11bb22cc33_8899ddeeff00",
+    "coverage_boundary": "当前调查重点仍围绕 `ws-payroll-14` 收敛，但还没有资产可以写成已确认受影响范围；候选对象 当前无 继续作为边界线索保留。"
+  },
+  "mechanism": {
+    "trigger_or_start": "在 2026-06-14 08:33:00 UTC，资产 `ws-payroll-14` 围绕 198.51.100.119 / sync-status-edge.net 的异常通信触发了种子告警。",
+    "main_chain": "事件链以资产 `ws-payroll-14` 围绕 198.51.100.119 / sync-status-edge.net 的异常通信触发了种子告警 为起点。 随后，资产 `ws-payroll-14` 再次与 198.51.100.119 / sync-status-edge.net 通信，说明同一基础设施上的异常仍在持续。",
+    "amplifier": "当前主链已经超过单点告警，影响判断不再只依赖种子资产本身。",
+    "unconfirmed_links": [
+      "仍需围绕当前 枢纽 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "是否存在主机侧执行、持久化或横向移动证据？",
+      "当前仍缺少对“仍需围绕当前 枢纽 做一次显式扩线，确认是否存在同指标的更大范围复现。”的直接补证。",
+      "当前尚未观测到稳定的执行阶段证据，因此还不能确认主机侧执行、持久化或横向移动是否已经成立。"
+    ]
+  },
+  "key_evidence": {
+    "supporting": [
+      {
+        "id": "E-01",
+        "category": "调查触发证据（网络）",
+        "strength": "高",
+        "fact": "在 2026-06-14 08:33:00 UTC，资产 `ws-payroll-14` 围绕 198.51.100.119 / sync-status-edge.net 的异常通信触发了种子告警。",
+        "why_it_matters": "这是种子命中的直接落点，说明调查起点并不是孤立的指纹命中。",
+        "limitation": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。"
+      },
+      {
+        "id": "E-02",
+        "category": "连续性支撑证据（网络）",
+        "strength": "高",
+        "fact": "在 2026-06-14 08:45:30 UTC，资产 `ws-payroll-14` 先解析了域名 `cdn-sync-status.net`，为后续与同一基础设施的通信提供了准备。",
+        "why_it_matters": "同一基础设施在种子资产或关联资产上再次出现，使单点告警扩展成可复核的连续事件链。",
+        "limitation": "仅凭网络侧重复通信仍可能在少数情况下被正常组件、同步组件或运维脚本解释，因此仍需要结合资产背景或主机侧结果。"
+      },
+      {
+        "id": "E-03",
+        "category": "连续性支撑证据（网络）",
+        "strength": "高",
+        "fact": "在 2026-06-14 08:41:40 UTC，资产 `ws-payroll-14` 再次与 198.51.100.119 / sync-status-edge.net 通信，说明同一基础设施上的异常仍在持续。",
+        "why_it_matters": "同一基础设施在种子资产或关联资产上再次出现，使单点告警扩展成可复核的连续事件链。",
+        "limitation": "仅凭网络侧重复通信仍可能在少数情况下被正常组件、同步组件或运维脚本解释，因此仍需要结合资产背景或主机侧结果。"
+      },
+      {
+        "id": "E-04",
+        "category": "风险升级证据（网络）",
+        "strength": "高",
+        "fact": "在 2026-06-14 08:37:10 UTC，资产 `ws-payroll-14` 再次与 198.51.100.119 / sync-status-edge.net 通信，说明同一基础设施上的异常仍在持续。",
+        "why_it_matters": "同一资产围绕同一基础设施的重复通信，是把单点告警扩展成事件链的关键。",
+        "limitation": "仅凭网络侧重复通信仍可能在少数情况下被正常组件、同步组件或运维脚本解释，因此仍需要结合资产背景或主机侧结果。"
+      }
+    ]
+  },
+  "timeline": {
+    "patterns": [
+      "当前尚未识别明确的初始入侵入口，现有证据主要从异常外联及后续行为开始收敛。",
+      "告警前后已经出现了解析或访问准备动作，说明异常不是完全孤立的单点命中。",
+      "告警后存在复现或持续性通信，说明相关行为具有连续性。",
+      "事件链已经从单纯通信异常推进到更高风险的后续动作，风险等级明显上升。"
+    ],
+    "key_events": [
+      {
+        "time": "2026-06-14T08:29:20Z",
+        "role": "背景观测",
+        "event": "资产 `ws-payroll-14`：Rare DNS lookup for a domain later reused by the 种子告警."
+      },
+      {
+        "time": "2026-06-14T08:33:00Z",
+        "role": "调查起点",
+        "event": "资产 `ws-payroll-14`：Seed 通信指纹 alert matched repeated TLS traffic to the same rare external infrastructure."
+      },
+      {
+        "time": "2026-06-14T08:37:10Z",
+        "role": "主证据",
+        "event": "资产 `ws-payroll-14`：The same workstation reconnected to the same rare external infrastructure after the 种子告警."
+      },
+      {
+        "time": "2026-06-14T08:41:40Z",
+        "role": "主证据",
+        "event": "资产 `ws-payroll-14`：A second outbound TLS session to the same infrastructure kept a beacon-like cadence."
+      },
+      {
+        "time": "2026-06-14T08:45:30Z",
+        "role": "主证据",
+        "event": "资产 `ws-payroll-14`：The workstation resolved a sibling domain on the same infrastructure during the same burst."
+      }
+    ]
+  },
+  "relationships": {
+    "pivots": "sync-status-edge.net、cdn-sync-status.net、198.51.100.119、10.33.7.14、t13d190900_aa11bb22cc33_8899ddeeff00",
+    "confirmed_relationships": [
+      "当前调查一共纳入了 5 条关键事件，当前调查重点仍围绕 `ws-payroll-14`。"
+    ],
+    "candidate_relationships": [
+      "仍需围绕当前 枢纽 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "是否存在主机侧执行、持久化或横向移动证据？"
+    ],
+    "unverified_objects": "当前没有额外未完成独立验证的对象",
+    "relationship_boundary": "当前还没有可写入已确认影响范围的资产；调查重点仍围绕 `ws-payroll-14`，其余候选对象保持待确认状态。"
+  },
+  "impact": {
+    "confirmed_impact": "当前已确认的事实主要收敛在 ws-payroll-14 与 198.51.100.119、cdn-sync-status.net、sync-status-edge.net 之间的异常通信及后续高风险迹象。",
+    "suspected_impact": "当前没有额外进入主报告的待确认受影响对象。",
+    "time_range": "2026-06-14 08:29:20 UTC 至 2026-06-14 08:45:30 UTC",
+    "asset_range": "ws-payroll-14",
+    "external_range": "198.51.100.119、cdn-sync-status.net、sync-status-edge.net",
+    "attack_stage": "命令与控制",
+    "unresolved_impact": [
+      "当前仍缺少对“仍需围绕当前 枢纽 做一次显式扩线，确认是否存在同指标的更大范围复现。”的直接补证。",
+      "当前尚未观测到稳定的执行阶段证据，因此还不能确认主机侧执行、持久化或横向移动是否已经成立。"
+    ]
+  },
+  "gaps_and_limits": {
+    "judgment_basis": "种子告警已经和明确异常起点对齐；同一基础设施的连续通信已在同资产或关联资产上被复现；事件链已经推进到更高风险的主机动作。",
+    "strongest_evidence": "在 2026-06-14 08:37:10 UTC，资产 `ws-payroll-14` 再次与 198.51.100.119 / sync-status-edge.net 通信，说明同一基础设施上的异常仍在持续，同一资产围绕同一基础设施的重复通信，是把单点告警扩展成事件链的关键。",
+    "key_gap": "仍需围绕当前 枢纽 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+    "judgment_ceiling": "当前最多适合稳定交付为 `待人工复核`，尚不足以直接升级为 `确认事件`。",
+    "cannot_conclude": [
+      "当前仍缺少对“仍需围绕当前 枢纽 做一次显式扩线，确认是否存在同指标的更大范围复现。”的直接补证。",
+      "当前尚未观测到稳定的执行阶段证据，因此还不能确认主机侧执行、持久化或横向移动是否已经成立。"
+    ],
+    "next_best_evidence": [
+      "该 gap 已经过多轮相关尝试但没有 新的有效信息，更适合作为报告未决事项。"
+    ]
+  },
+  "recommended_actions": {
+    "current_conclusion": "可疑事件，建议继续复核",
+    "current_status": "待人工复核",
+    "severity": "中危",
+    "confidence": "较高",
+    "one_sentence_summary": "ws-payroll-14 围绕 198.51.100.119、sync-status-edge.net 已出现连续异常迹象，但由于 是否存在主机侧执行、持久化或横向移动证据？，当前仍按待人工复核事件交付。",
+    "why_current_conclusion": "当前已经形成：种子告警已经和明确异常起点对齐；同一基础设施的连续通信已在同资产或关联资产上被复现；事件链已经推进到更高风险的主机动作；但由于 仍需围绕当前 枢纽 做一次显式扩线，确认是否存在同指标的更大范围复现。，本案仍需要按待人工复核结论交付。",
+    "why_not_other_status": "当前主链已经超过单点命中，但 仍需围绕当前 枢纽 做一次显式扩线，确认是否存在同指标的更大范围复现。，因此暂不直接升级为确认事件。",
+    "immediate_actions": [
+      "优先隔离或重点监控资产：ws-payroll-14。",
+      "在边界和代理设备上排查并封禁外部基础设施：198.51.100.119、sync-status-edge.net、cdn-sync-status.net。"
+    ],
+    "short_term_actions": [
+      "优先补查：是否存在主机侧执行、持久化或横向移动证据？。"
+    ],
+    "next_best_evidence": [
+      "该 gap 已经过多轮相关尝试但没有 新的有效信息，更适合作为报告未决事项。"
+    ]
+  },
+  "appendix_note": "技术细节、完整 IOC/IOA、关键对象清单、观测对照与引用来源请放到技术附录，不要在主报告中铺开。"
+}
