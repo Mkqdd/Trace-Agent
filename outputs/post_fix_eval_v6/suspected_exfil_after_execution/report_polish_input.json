@@ -1,0 +1,180 @@
+{
+  "schema_version": "report-polish-input-v1",
+  "audience": "运维人员与安全运营协同对象",
+  "goal": "在不引入新事实的前提下，把结构化调查结果写成更像分析师交付给运维的中文 Markdown 报告。",
+  "report_brief": {
+    "title": "ws-rnd-04 Possible cloud-storage exfil candidate 调查报告",
+    "analysis_window": "2026-06-03 16:34:00 UTC 至 2026-06-03 17:05:00 UTC",
+    "final_verdict": "可疑事件，建议继续复核",
+    "severity": "中",
+    "confidence": "中",
+    "confirmed_scope": "当前尚无已确认受影响资产",
+    "suspected_scope": "仍需继续核实的对象包括 ws-rnd-09。",
+    "executive_summary": "ws-rnd-04 围绕 198.51.100.144、files-sync-share.net 已出现连续异常迹象，但由于仍需围绕当前关键关联指标开展一轮扩线核查，确认是否存在同指标的更大范围复现，当前仍按待人工复核事件交付。",
+    "strongest_evidence": "在 2026-06-03 16:44:00 UTC，资产 `ws-rnd-04` 出现了高风险主机侧动作，说明异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
+    "key_gap": "仍需围绕当前关键关联指标开展一轮扩线核查，确认是否存在同指标的更大范围复现。",
+    "why_current_conclusion": "当前已经形成：种子告警已经和明确异常起点对齐；事件链已经推进到更高风险的主机动作；异常范围已经不再局限于种子资产；但由于仍需围绕当前关键关联指标开展一轮扩线核查，确认是否存在同指标的更大范围复现，本案仍需要按待人工复核结论交付。",
+    "why_not_other_status": "当前主链已经超过单点命中，但仍需围绕当前关键关联指标开展一轮扩线核查，确认是否存在同指标的更大范围复现，因此暂不直接升级为确认事件。",
+    "immediate_actions": [
+      "优先隔离或重点监控资产：ws-rnd-04。",
+      "在边界和代理设备上排查并封禁外部基础设施：198.51.100.144、files-sync-share.net。"
+    ],
+    "short_term_actions": [
+      "继续核实待复核关联资产 ws-rnd-09。",
+      "优先补查：仍需围绕当前关键关联指标开展一轮扩线核查，确认是否存在同指标的更大范围复现。。"
+    ]
+  },
+  "evidence_pack": {
+    "background": {
+      "seed_alert": "2026-06-03 16:40:00 UTC，最先在 `ws-rnd-04` 的告警中触发调查，当时关联对象为 files-sync-share.net、198.51.100.144。",
+      "initial_hits": [
+        "命中了种子通信指纹：t13d190900_44ac2200b3c1_ab11cd22ee44",
+        "当前已有家族/工具背景提示：Possible cloud-storage exfil candidate",
+        "当前已知关键对象包括 198.51.100.144、files-sync-share.net",
+        "种子事件直接表现为：Seed 通信指纹 alert observed a suspicious TLS session to a rare storage edge."
+      ],
+      "upstream_context": "当前可获得的背景提示主要来自家族/工具线索：Possible cloud-storage exfil candidate，与当前观察到的阶段形态 执行、数据外传 基本一致。",
+      "investigation_focus": "在 2026-06-03 16:44:00 UTC，资产 `ws-rnd-04` 出现了高风险主机侧动作，说明异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。"
+    },
+    "scope_snapshot": {
+      "investigation_scope": "本轮调查覆盖 2026-06-03 16:34:00 UTC 至 2026-06-03 17:05:00 UTC 内围绕 ws-rnd-04 与 198.51.100.144、files-sync-share.net 的关键事件窗。",
+      "primary_hypothesis": "围绕 ws-rnd-04 与 198.51.100.144、files-sync-share.net 的异常通信及后续高风险迹象，当前应按“可疑事件，建议继续复核”收敛交付。",
+      "alternative_hypothesis": "当前暂无比现有主链更强的稳定替代解释。",
+      "out_of_scope": "本轮不把未经过独立验证的候选对象 ws-rnd-09 直接写成已确认范围，也不把背景情报直接写成已确认事实。",
+      "hypothesis_requirements": "当前主假设至少需要同时满足：种子告警需要能够对应到明确异常起点；事件链需要推进到执行或横向动作，而不只是停留在单点外联；未独立验证的候选对象只能作为边界线索保留，不能直接写成确认影响范围。",
+      "hypothesis_failure_conditions": "如果后续出现更强的背景解释并且主链无法持续复现，当前结论需要重新收敛。",
+      "related_assets": "ws-rnd-09",
+      "core_external_indicators": "198.51.100.144、files-sync-share.net",
+      "key_indicators": "198.51.100.144、files-sync-share.net、t13d190900_44ac2200b3c1_ab11cd22ee44",
+      "coverage_boundary": "当前调查重点仍围绕 `ws-rnd-04` 收敛，但还没有资产可以写成已确认受影响范围；候选对象 ws-rnd-09 继续作为边界线索保留。"
+    },
+    "mechanism_summary": {
+      "trigger_or_start": "在 2026-06-03 16:40:00 UTC，资产 `ws-rnd-04` 出现了一条与 198.51.100.144 / files-sync-share.net 相关的关键观测。",
+      "main_chain": "事件链以资产 `ws-rnd-04` 出现了一条与 198.51.100.144 / files-sync-share.net 相关的关键观测 为起点。 随后，资产 `ws-rnd-04` 出现了高风险主机侧动作。 其后，资产 `ws-rnd-09` 出现了一条与 198.51.100.144 / files-sync-share.net 相关的关键观测，说明相同基础设施上的异常已经扩展到其他资产。",
+      "amplifier": "同一基础设施上的异常已经出现在 ws-rnd-09 等资产上，说明当前结论不再局限于单点告警。",
+      "unconfirmed_links": [
+        "仍需围绕当前关键关联指标开展一轮扩线核查，确认是否存在同指标的更大范围复现。",
+        "关联资产 ws-rnd-09 是否真正受影响？",
+        "seed 自带的家族提示 Possible cloud-storage exfil candidate 是否有更多外部证据支撑？"
+      ]
+    },
+    "supporting_evidence": [
+      {
+        "id": "E-01",
+        "category": "调查触发证据（网络）",
+        "strength": "高",
+        "fact": "在 2026-06-03 16:40:00 UTC，资产 `ws-rnd-04` 出现了一条与 198.51.100.144 / files-sync-share.net 相关的关键观测。",
+        "why_it_matters": "这是种子命中的直接落点，说明调查起点并不是孤立的指纹命中。",
+        "limitation": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。"
+      },
+      {
+        "id": "E-02",
+        "category": "风险升级证据（主机）",
+        "strength": "高",
+        "fact": "在 2026-06-03 16:44:00 UTC，资产 `ws-rnd-04` 出现了高风险主机侧动作。",
+        "why_it_matters": "它把异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
+        "limitation": "当前仍缺少更细的命令行、落地文件、持久化或内存证据，因此可以确认存在执行线索，但还不能完整描述具体载荷。"
+      },
+      {
+        "id": "E-04",
+        "category": "范围确认依据（网络）",
+        "strength": "中",
+        "fact": "在 2026-06-03 17:05:00 UTC，资产 `ws-rnd-09` 出现了一条与 198.51.100.144 / files-sync-share.net 相关的关键观测。",
+        "why_it_matters": "它把事件范围从种子资产推进到其他资产，使当前结论不再只停留在单点异常。",
+        "limitation": "这条观测本身更适合用来补足上下文，而不是单独承担最终结论。"
+      },
+      {
+        "id": "E-03",
+        "category": "风险升级证据（网络）",
+        "strength": "中",
+        "fact": "在 2026-06-03 16:47:00 UTC，资产 `ws-rnd-04` 出现了一条与 198.51.100.144 / files-sync-share.net 相关的关键观测。",
+        "why_it_matters": "它把异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
+        "limitation": "这条观测本身更适合用来补足上下文，而不是单独承担最终结论。"
+      }
+    ],
+    "background_context": {
+      "hint": "Possible cloud-storage exfil candidate",
+      "summary": "当前可获得的背景提示主要来自家族/工具线索：Possible cloud-storage exfil candidate，与当前观察到的阶段形态 执行、数据外传 基本一致。",
+      "limits": "这类背景提示更适合帮助理解攻击链或工具形态，不应直接当作样本级确认或强归因结论。"
+    },
+    "timeline_highlights": {
+      "patterns": [
+        "当前尚未识别明确的初始入侵入口，现有证据主要从异常外联及后续行为开始收敛。",
+        "事件链已经从单纯通信异常推进到更高风险的后续动作，风险等级明显上升。"
+      ],
+      "key_events": [
+        {
+          "time": "2026-06-03 16:40:00 UTC",
+          "role": "调查起点",
+          "event": "在 2026-06-03 16:40:00 UTC，资产 `ws-rnd-04` 出现了一条与 198.51.100.144 / files-sync-share.net 相关的关键观测。"
+        },
+        {
+          "time": "2026-06-03 16:44:00 UTC",
+          "role": "风险升级",
+          "event": "在 2026-06-03 16:44:00 UTC，资产 `ws-rnd-04` 出现了高风险主机侧动作。"
+        },
+        {
+          "time": "2026-06-03 16:47:00 UTC",
+          "role": "风险升级",
+          "event": "在 2026-06-03 16:47:00 UTC，资产 `ws-rnd-04` 出现了一条与 198.51.100.144 / files-sync-share.net 相关的关键观测。"
+        },
+        {
+          "time": "2026-06-03 17:05:00 UTC",
+          "role": "范围扩展",
+          "event": "在 2026-06-03 17:05:00 UTC，资产 `ws-rnd-09` 出现了一条与 198.51.100.144 / files-sync-share.net 相关的关键观测。"
+        }
+      ]
+    },
+    "relationship_findings": {
+      "pivots": "files-sync-share.net、198.51.100.144、10.90.2.44、t13d190900_44ac2200b3c1_ab11cd22ee44",
+      "confirmed_relationships": [
+        "在 2026-06-03 17:05:00 UTC，资产 `ws-rnd-09` 出现了一条与 198.51.100.144 / files-sync-share.net 相关的关键观测。",
+        "当前调查一共纳入了 5 条关键事件，当前调查重点仍围绕 `ws-rnd-04`。"
+      ],
+      "candidate_relationships": [
+        "仍需围绕当前关键关联指标开展一轮扩线核查，确认是否存在同指标的更大范围复现。",
+        "关联资产 ws-rnd-09 是否真正受影响？",
+        "seed 自带的家族提示 Possible cloud-storage exfil candidate 是否有更多外部证据支撑？"
+      ],
+      "unverified_objects": "ws-rnd-09",
+      "relationship_boundary": "当前还没有可写入已确认影响范围的资产；调查重点仍围绕 `ws-rnd-04`，其余候选对象保持待确认状态。"
+    },
+    "impact_summary": {
+      "confirmed_impact": "当前已确认的事实主要收敛在 ws-rnd-04 与 198.51.100.144、files-sync-share.net 之间的异常通信及后续高风险迹象。",
+      "suspected_impact": "仍需继续核实的对象包括 ws-rnd-09。",
+      "time_range": "2026-06-03 16:34:00 UTC 至 2026-06-03 17:05:00 UTC",
+      "asset_range": "ws-rnd-04",
+      "external_range": "198.51.100.144、files-sync-share.net",
+      "attack_stage": "执行、数据外传",
+      "unresolved_impact": [
+        "当前仍缺少对“仍需围绕当前关键关联指标开展一轮扩线核查，确认是否存在同指标的更大范围复现。”的直接补证。",
+        "当前仍缺少对“关联资产 ws-rnd-09 是否真正受影响？”的直接补证。",
+        "当前仍缺少对“seed 自带的家族提示 Possible cloud-storage exfil candidate 是否有更多外部证据支撑？”的直接补证。"
+      ]
+    },
+    "open_limits": {
+      "judgment_basis": "种子告警已经和明确异常起点对齐；事件链已经推进到更高风险的主机动作；异常范围已经不再局限于种子资产。",
+      "judgment_ceiling": "当前最多适合稳定交付为 `可疑事件，建议继续复核`，尚不足以直接升级为 `确认安全事件`。",
+      "boundary_findings": [
+        "仍需围绕当前关键关联指标开展一轮扩线核查，确认是否存在同指标的更大范围复现。",
+        "关联资产 ws-rnd-09 是否真正受影响？",
+        "seed 自带的家族提示 Possible cloud-storage exfil candidate 是否有更多外部证据支撑？"
+      ],
+      "next_best_evidence": [
+        "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。",
+        "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。"
+      ]
+    }
+  },
+  "output_requirements": {
+    "must_keep_single_report": true,
+    "technical_appendix_will_be_appended": true,
+    "appendix_note": "系统会在正文后自动追加完整技术附录；正文只需在第11节提示读者重点关注哪些技术明细。",
+    "writer_style": [
+      "优先写清楚为什么判断成立，而不是逐字段复述材料。",
+      "相近证据要归并叙述，避免对重复网络复现逐条使用同样解释。",
+      "如果材料中出现英文事件描述，请改写成自然中文运维表述。",
+      "不要引入新事实，不要暴露内部实现术语。"
+    ]
+  }
+}

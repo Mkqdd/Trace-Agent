@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import ipaddress
+import re
 from typing import Any, Dict, List
 
 
@@ -91,6 +93,70 @@ def _format_stage_list(stages: List[Any]) -> str:
     return "、".join(labels) if labels else "未识别"
 
 
+def _normalize_report_text(value: Any) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    replacements = {
+        "alert观测": "告警",
+        "seed alert": "种子告警",
+        "Seed alert": "种子告警",
+        "needs_review": "可疑事件，建议继续复核",
+        "confirmed_incident": "确认安全事件",
+        "monitor_only": "背景活动，建议持续观察",
+        "material delta": "新的有效信息",
+        "gap": "缺口",
+    }
+    for source, target in replacements.items():
+        text = text.replace(source, target)
+    text = re.sub(r"\bpivot\b", "关键关联指标", text, flags=re.IGNORECASE)
+    text = re.sub(r"当前\s+关键关联指标", "当前关键关联指标", text)
+    text = text.replace("仍需围绕当前关键关联指标做一次扩线核查", "仍需围绕当前关键关联指标开展一轮扩线核查")
+    text = re.sub(r"围绕当前关键关联指标\s*做一次\s*扩线核查", "围绕当前关键关联指标开展一轮扩线核查", text)
+    text = text.replace("该 gap 已经过多轮相关尝试但没有 新的有效信息，更适合作为报告未决事项。", "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。")
+    text = text.replace("当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。", "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。")
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+
+def _gap_clause_text(value: Any) -> str:
+    text = _normalize_report_text(value)
+    text = re.sub(r"[？?。]+$", "", text)
+    if text == "是否存在主机侧执行、持久化或横向移动证据":
+        return "还需要进一步确认主机侧是否已经出现能够直接支撑执行、持久化或横向移动的证据"
+    text = re.sub(r"^(.*)，是否", r"\1，仍需确认是否", text)
+    if text.startswith("是否"):
+        return f"还需要进一步确认{text[2:]}"
+    return text
+
+
+def _is_internal_ip_text(value: Any) -> bool:
+    text = str(value or "").strip()
+    if not text:
+        return False
+    try:
+        ip_obj = ipaddress.ip_address(text)
+    except ValueError:
+        return False
+    private_networks = (
+        ipaddress.ip_network("10.0.0.0/8"),
+        ipaddress.ip_network("172.16.0.0/12"),
+        ipaddress.ip_network("192.168.0.0/16"),
+        ipaddress.ip_network("127.0.0.0/8"),
+        ipaddress.ip_network("169.254.0.0/16"),
+        ipaddress.ip_network("fc00::/7"),
+    )
+    return any(ip_obj in network for network in private_networks)
+
+
+def _sanitize_external_indicators(values: List[Any]) -> List[str]:
+    return _dedupe_text(
+        value
+        for value in list(values or [])
+        if str(value or "").strip() and not _is_internal_ip_text(value)
+    )
+
+
 def _evidence_objects(evidence_store: Dict[str, Any]) -> List[Dict[str, Any]]:
     return list(evidence_store.get("objects") or evidence_store.get("object_registry") or [])
 
@@ -112,7 +178,15 @@ def _candidate_events(evidence_store: Dict[str, Any]) -> List[Dict[str, Any]]:
 
 
 def _coverage(evidence_store: Dict[str, Any]) -> Dict[str, Any]:
-    return dict(evidence_store.get("coverage") or {})
+    coverage = dict(evidence_store.get("coverage") or {})
+    primary_external = _sanitize_external_indicators(list(coverage.get("primary_external_indicators") or []))
+    contextual_external = _sanitize_external_indicators(list(coverage.get("contextual_external_indicators") or []))
+    coverage["primary_external_indicators"] = primary_external
+    coverage["contextual_external_indicators"] = contextual_external
+    coverage["external_indicators"] = _sanitize_external_indicators(
+        list(coverage.get("external_indicators") or []) + primary_external + contextual_external
+    )
+    return coverage
 
 
 def _hypotheses(evidence_store: Dict[str, Any]) -> Dict[str, Any]:
@@ -197,6 +271,88 @@ def _event_indicator_text(event: Dict[str, Any]) -> str:
     )
 
 
+def _background_summary_text(summary: Any) -> str:
+    text = str(summary or "").strip()
+    lowered = text.lower()
+    if not lowered:
+        return ""
+    if "approved" in lowered and any(token in lowered for token in ["patch", "maintenance", "sccm"]):
+        return "同时间窗存在已批准的补丁或维护活动，可解释部分日常管理行为"
+    if "windows update" in lowered or "approved microsoft endpoint" in lowered:
+        return "访问了已批准的微软更新端点，更接近计划内更新流量"
+    if "qa telemetry" in lowered and "shared infrastructure" in lowered:
+        return "另有 QA 遥测任务通过其他供应商域名访问了同一托管 IP，说明该次级 IP 更可能属于共享基础设施"
+    if "degraded process telemetry" in lowered or "cannot be reconstructed" in lowered:
+        return "该主机的进程遥测不完整，导致后续执行链暂时无法完整重建"
+    return ""
+
+
+def _timeline_event_summary(event: Dict[str, Any]) -> str:
+    kind = str(event.get("kind") or "").strip().lower()
+    role = str(event.get("role") or "").strip()
+    stages = {str(stage or "").strip() for stage in list(event.get("stages") or [])}
+    tags = {str(tag or "").strip().lower() for tag in list(event.get("tags") or [])}
+    summary = str(event.get("summary") or "").strip()
+    summary_lower = summary.lower()
+    domain = str(event.get("domain") or "").strip()
+    dst_ip = str(event.get("dst_ip") or "").strip()
+    answers = [str(answer or "").strip() for answer in list(event.get("answers") or []) if str(answer or "").strip()]
+    indicator_text = _event_indicator_text(event)
+    background_summary = _background_summary_text(summary)
+
+    if "exploit" in summary_lower and any(token in summary_lower for token in ["request", "requests", "portal", "admin", "post"]):
+        return "对外服务入口出现可疑利用请求"
+    if background_summary:
+        return background_summary
+
+    if "lateral-movement" in stages:
+        target_text = dst_ip or indicator_text or "关联内部主机"
+        if "wmi" in summary_lower:
+            return f"出现指向 `{target_text}` 的 WMI 远程进程创建"
+        if "psexec" in summary_lower or "remote service creation" in summary_lower:
+            return f"出现指向 `{target_text}` 的 PsExec 远程服务创建"
+        return f"出现指向 `{target_text}` 的横向操作告警"
+
+    if "initial-access" in stages:
+        if "exploit" in summary_lower and any(token in summary_lower for token in ["request", "requests", "portal", "admin"]):
+            return "对外服务入口出现可疑利用请求"
+        if "exploit" in summary_lower:
+            return "出现疑似利用相关访问"
+        return "出现疑似初始访问相关活动"
+
+    if kind == "dns":
+        if domain and ("rare domain" in summary_lower or "rare" in tags):
+            body = f"先解析了少见域名 `{domain}`"
+        elif domain:
+            body = f"先解析了域名 `{domain}`"
+        else:
+            body = "先出现了可疑域名解析"
+        if answers:
+            body += f"，返回 `{answers[0]}`"
+        if "command-and-control" in stages or role in {"seed", "supporting"}:
+            body += "，为后续与同一基础设施的通信提供了准备"
+        return body
+
+    if kind in {"alert", "flow", "http"} and "command-and-control" in stages:
+        if role == "seed":
+            return f"围绕 {indicator_text} 的异常通信触发了种子告警"
+        if any(token in summary_lower for token in ["reconnect", "reconnected", "contacted", "same beacon", "same c2", "same infrastructure"]):
+            return f"再次与 {indicator_text} 通信，说明同一基础设施上的异常仍在持续"
+        return f"与 {indicator_text} 建立了可疑通信"
+
+    if kind == "process" or ("execution" in stages and kind not in {"alert", "flow", "dns", "http", "asset_context"}):
+        process_match = re.search(r"\b([A-Za-z0-9_.-]+\.exe)\b", summary)
+        if process_match:
+            body = f"出现 `{process_match.group(1)}` 可疑启动"
+        else:
+            body = "出现可疑进程执行"
+        if "dll" in summary_lower:
+            body += "，伴随 DLL 加载"
+        return body
+
+    return _normalize_report_text(summary) or "出现关键观测"
+
+
 def _timeline_role_label(event: Dict[str, Any]) -> str:
     role = str(event.get("role") or "").strip()
     stages = {str(stage or "").strip() for stage in list(event.get("stages") or [])}
@@ -204,12 +360,12 @@ def _timeline_role_label(event: Dict[str, Any]) -> str:
         return "调查起点"
     if role == "counterevidence":
         return "反证检查"
+    if stages.intersection({"execution", "lateral-movement", "exfiltration", "persistence", "credential-access"}):
+        return "风险升级"
     if role == "context":
         return "背景观测"
     if role == "candidate":
         return "待确认扩展"
-    if stages.intersection({"execution", "lateral-movement", "exfiltration", "persistence", "credential-access"}):
-        return "风险升级"
     return "主证据"
 
 
@@ -219,7 +375,7 @@ def _timeline_entries(evidence_store: Dict[str, Any]) -> List[Dict[str, Any]]:
     entries: List[Dict[str, Any]] = []
     for event in sorted(events, key=lambda item: (str(item.get("ts") or ""), str(item.get("id") or ""))):
         asset_id = str(event.get("asset_id") or "").strip()
-        summary = str(event.get("summary") or "").strip() or "无摘要"
+        summary = _timeline_event_summary(event)
         event_summary = f"资产 `{asset_id}`：{summary}" if asset_id else summary
         event_id = str(event.get("id") or "").strip()
         entries.append(
@@ -266,10 +422,16 @@ def _seed_alert_text(evidence_store: Dict[str, Any]) -> str:
     seed_asset = str(coverage.get("seed_asset") or "").strip() or "相关资产"
     event = _seed_event(evidence_store)
     indicator_text = _event_indicator_text(event)
-    kind = str(event.get("kind") or "").strip() or "网络"
-    return (
-        f"{_format_time(event.get('ts'))}，最先在 `{seed_asset}` 相关的 {kind}观测上触发调查，"
-        f"当时关联对象为 {indicator_text}。"
+    kind = str(event.get("kind") or "").strip().lower()
+    kind_label = {
+        "alert": "告警",
+        "flow": "网络通信",
+        "dns": "DNS 解析",
+        "http": "HTTP 访问",
+        "process": "主机进程活动",
+    }.get(kind, "相关观测")
+    return _normalize_report_text(
+        f"{_format_time(event.get('ts'))}，最先在 `{seed_asset}` 的{kind_label}中触发调查，当时关联对象为 {indicator_text}。"
     )
 
 
@@ -277,17 +439,17 @@ def _initial_hits(evidence_store: Dict[str, Any]) -> List[str]:
     hits: List[str] = []
     seed_fingerprints = _object_values(evidence_store, ["seed_fingerprint"])
     if seed_fingerprints:
-        hits.append(f"命中了种子通信指纹：{_join_or_fallback(seed_fingerprints)}。")
+        hits.append(f"命中了种子通信指纹：{_join_or_fallback(seed_fingerprints)}")
     family_hint = str((_family_context(evidence_store).get("hint")) or "").strip()
     if family_hint:
-        hits.append(f"当前已有家族/工具背景提示：{family_hint}。")
+        hits.append(f"当前已有家族/工具背景提示：{family_hint}")
     primary_external = list((_coverage(evidence_store).get("primary_external_indicators")) or [])
     if primary_external:
-        hits.append(f"当前已知关键对象包括 {_join_or_fallback(primary_external[:3])}。")
-    seed_summary = str((_seed_event(evidence_store).get("summary")) or "").strip()
+        hits.append(f"当前已知关键对象包括 {_join_or_fallback(primary_external[:3])}")
+    seed_summary = _timeline_event_summary(_seed_event(evidence_store))
     if seed_summary:
-        hits.append(seed_summary)
-    return _dedupe_text(hits)
+        hits.append(f"种子事件直接表现为：{seed_summary}")
+    return _dedupe_text(_normalize_report_text(item) for item in hits if _normalize_report_text(item))
 
 
 def _upstream_context(evidence_store: Dict[str, Any]) -> str:
@@ -361,16 +523,16 @@ def _analysis_summary(evidence_store: Dict[str, Any], delivery_decision: Dict[st
     elif delivery_status == "monitor_only":
         why_not_other_status = "当前更强的解释仍是背景活动或低确定性异常，因此不适合把本案直接上升为确认事件。"
     elif blocking_gaps:
-        why_not_other_status = f"当前仍存在阻塞交付的关键缺口，例如：{str((blocking_gaps[0] or {}).get('question') or '').strip()}。"
+        why_not_other_status = f"当前仍存在阻塞交付的关键缺口，例如：{_gap_clause_text((blocking_gaps[0] or {}).get('question'))}。"
     else:
         why_not_other_status = "当前已形成可疑事件链，但关键交付核验尚未完全闭合，因此暂不直接升级为确认事件。"
     return {
-        "primary_hypothesis": str(hypotheses.get("primary") or "").strip(),
-        "alternative_hypothesis": str(hypotheses.get("negative_summary") or "暂无稳定替代解释").strip(),
-        "why_this_conclusion": why_this_conclusion,
-        "why_not_other_status": why_not_other_status,
-        "unresolved_items": _dedupe_text(unresolved_items),
-        "next_best_evidence": _dedupe_text(next_best_questions)[:3],
+        "primary_hypothesis": _normalize_report_text(hypotheses.get("primary")),
+        "alternative_hypothesis": _normalize_report_text(hypotheses.get("negative_summary") or "暂无稳定替代解释"),
+        "why_this_conclusion": _normalize_report_text(why_this_conclusion),
+        "why_not_other_status": _normalize_report_text(why_not_other_status),
+        "unresolved_items": _dedupe_text(_normalize_report_text(item) for item in unresolved_items if _normalize_report_text(item)),
+        "next_best_evidence": _dedupe_text(_normalize_report_text(item) for item in next_best_questions if _normalize_report_text(item))[:3],
     }
 
 
@@ -533,10 +695,10 @@ def _recommendations(evidence_store: Dict[str, Any], delivery_decision: Dict[str
     if candidate_scope:
         recommendations.append(f"继续核实待复核关联资产 {_join_or_fallback(candidate_scope[:4])}。")
     if next_best_questions:
-        recommendations.append(f"优先补查：{next_best_questions[0]}。")
+        recommendations.append(f"优先补查：{_normalize_report_text(next_best_questions[0])}。")
     if not recommendations:
         recommendations.append("结合当前事件边界和关键证据，围绕种子资产与核心外部指示物继续收敛处置。")
-    return _dedupe_text(recommendations)
+    return _dedupe_text(_normalize_report_text(item) for item in recommendations if _normalize_report_text(item))
 
 
 def _bucket_recommendations(recommendations: List[str]) -> Dict[str, List[str]]:
@@ -563,7 +725,7 @@ def _one_sentence_summary(evidence_store: Dict[str, Any], delivery_decision: Dic
         return f"当前围绕 {seed_asset} 的异常更接近背景活动或计划内行为，建议持续观察并保留后续复核。"
     next_best = list(delivery_decision.get("next_best_questions") or [])
     if next_best:
-        return f"{seed_asset} 围绕 {indicator_text} 已出现连续异常迹象，但由于 {next_best[0]}，当前仍按待人工复核事件交付。"
+        return f"{seed_asset} 围绕 {indicator_text} 已出现连续异常迹象，但由于{_gap_clause_text(next_best[0])}，当前仍按待人工复核事件交付。"
     return f"{seed_asset} 围绕 {indicator_text} 已形成需要继续收敛的异常事件链，当前仍按待人工复核事件交付。"
 
 

@@ -777,6 +777,14 @@ def _is_internal_ip(value: str) -> bool:
         return False
 
 
+def _sanitize_external_indicators(values: List[Any]) -> List[str]:
+    return unique_preserve_order(
+        value
+        for value in list(values or [])
+        if str(value or "").strip() and not _is_internal_ip(str(value or "").strip())
+    )
+
+
 def _seed_asset_hint(seed_event: Dict[str, Any]) -> str:
     raw_alert = seed_event.get("raw_alert") or {}
     return str(raw_alert.get("asset_id") or raw_alert.get("hostname") or raw_alert.get("host") or "").strip()
@@ -5502,17 +5510,17 @@ def _finalize_runtime_state(seed_event: Dict[str, Any], session_state: Dict[str,
         },
         "affected_assets": entities.get("suspected_assets") or [],
         "related_assets": entities.get("related_assets") or [],
-        "primary_external_indicators": unique_preserve_order(
+        "primary_external_indicators": _sanitize_external_indicators(
             [item.get("dst_ip") for item in suspicious_scope_events]
             + [item.get("domain") for item in suspicious_scope_events]
             + list(observation_entities.get("families") or [])
         ),
-        "contextual_external_indicators": unique_preserve_order(
+        "contextual_external_indicators": _sanitize_external_indicators(
             [item.get("dst_ip") for item in counterevidence_events]
             + [item.get("domain") for item in counterevidence_events]
         ),
     }
-    scope["external_indicators"] = unique_preserve_order(
+    scope["external_indicators"] = _sanitize_external_indicators(
         list(scope.get("primary_external_indicators") or []) + list(scope.get("contextual_external_indicators") or [])
     )
 

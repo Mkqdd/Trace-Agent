@@ -139,7 +139,7 @@ def _reader_confidence_level(value: Any) -> str:
     if score >= 85:
         level = "高"
     elif score >= 70:
-        level = "较高"
+        level = "高"
     elif score >= 50:
         level = "中"
     else:
@@ -169,13 +169,21 @@ def _reader_severity_text(value: Any) -> str:
     if not text:
         return "未评估"
     mapping = {
-        "critical": "紧急",
-        "high": "高危",
-        "medium": "中危",
-        "low": "低危",
-        "info": "提示",
+        "critical": "高",
+        "high": "高",
+        "medium": "中",
+        "low": "低",
+        "info": "低",
+        "紧急": "高",
+        "高危": "高",
+        "中危": "中",
+        "低危": "低",
+        "高": "高",
+        "中": "中",
+        "低": "低",
+        "提示": "低",
     }
-    return mapping.get(text.lower(), text)
+    return mapping.get(text.lower(), mapping.get(text, text))
 
 
 def _reader_clean_text(value: Any) -> str:
@@ -185,9 +193,9 @@ def _reader_clean_text(value: Any) -> str:
     replacements = {
         "command-and-control": "命令与控制",
         "initial-access": "初始访问",
-        "monitor_only": "持续观察",
-        "needs_review": "待人工复核",
-        "confirmed_incident": "确认事件",
+        "monitor_only": "背景活动，建议持续观察",
+        "needs_review": "可疑事件，建议继续复核",
+        "confirmed_incident": "确认安全事件",
         "seed alert": "种子告警",
         "seed 指标": "种子告警涉及的指标",
         "dst_ip": "目标 IP",
@@ -196,10 +204,43 @@ def _reader_clean_text(value: Any) -> str:
         "事件簇": "当前关联事件",
         "自动结论": "当前结论",
         "主支撑信号": "主要支撑迹象",
+        "枢纽": "关键关联指标",
+        "显式扩线": "扩线核查",
+        "material delta": "新的有效信息",
     }
     for source, target in replacements.items():
         text = text.replace(source, target)
-    text = re.sub(r"\bpivot\b", "枢纽", text)
+    text = re.sub(r"\bpivot\b", "关键关联指标", text, flags=re.IGNORECASE)
+    text = re.sub(r"当前\s+关键关联指标", "当前关键关联指标", text)
+    text = text.replace("仍需围绕当前关键关联指标做一次扩线核查", "仍需围绕当前关键关联指标开展一轮扩线核查")
+    text = re.sub(r"围绕当前关键关联指标\s*做一次\s*扩线核查", "围绕当前关键关联指标开展一轮扩线核查", text)
+    text = re.sub(r"做一次\s+扩线核查", "开展扩线核查", text)
+    text = text.replace("该 gap 已经过多轮相关尝试但没有 新的有效信息，更适合作为报告未决事项。", "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。")
+    text = text.replace("当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。", "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。")
+    text = re.sub(
+        r"Approved .*patch staging began on ([A-Za-z0-9_.-]+) in the same hour and could explain some routine admin activity\.?",
+        r"资产 `\1` 同时间窗存在已批准的补丁或维护活动，可解释部分日常管理行为。",
+        text,
+        flags=re.IGNORECASE,
+    )
+    text = re.sub(
+        r"Windows update content was downloaded from an approved Microsoft endpoint during the maintenance window\.?",
+        "该访问更接近维护窗口内的计划内 Windows 更新流量。",
+        text,
+        flags=re.IGNORECASE,
+    )
+    text = re.sub(
+        r"A QA telemetry job also touched the same hosting IP through a different vendor domain, indicating the secondary IP is shared infrastructure\.?",
+        "另有 QA 遥测任务通过其他供应商域名访问了同一托管 IP，说明该次级 IP 更可能属于共享基础设施。",
+        text,
+        flags=re.IGNORECASE,
+    )
+    text = re.sub(
+        r"The EDR sensor on ([A-Za-z0-9_.-]+) reported degraded process telemetry, so the execution lineage behind the second beacon cannot be reconstructed\.?",
+        r"资产 `\1` 的 EDR 进程遥测出现降级，因此第二条 beacon 背后的执行链暂时无法完整重建。",
+        text,
+        flags=re.IGNORECASE,
+    )
     return text
 
 
@@ -233,6 +274,17 @@ def _reader_open_question_text(value: Any) -> str:
         text = text.replace(source, target)
     if text == "是否存在主机侧执行、持久化或横向移动证据？":
         return "还需要进一步确认主机侧是否已经掌握能够直接支撑执行、持久化或横向移动的证据。"
+    return text
+
+
+def _reader_gap_clause_text(value: Any) -> str:
+    text = _reader_open_question_text(value)
+    if not text:
+        return ""
+    text = re.sub(r"^(.*)，是否", r"\1，仍需确认是否", text)
+    text = re.sub(r"[？?。]+$", "", text).strip()
+    if text.startswith("是否"):
+        return f"还需要进一步确认{text[2:]}"
     return text
 
 
@@ -662,11 +714,12 @@ def _timeline_entries(incident: Dict[str, Any]) -> List[Dict[str, Any]]:
                 summary = _reader_clean_text(f"资产 `{asset_id}` {body}。")
             elif body:
                 summary = _reader_clean_text(f"{body}。")
+        summary = _reader_clean_text(summary)
         entries.append(
             {
                 "ts": item.get("ts"),
                 "summary": summary,
-                "role": "待确认扩展" if event_id in boundary_event_ids else _timeline_role_label(item),
+                "role": "待确认扩展" if event_id in boundary_event_ids else _timeline_role_label(source_event or item),
                 "observation_ids": observation_map.get(event_id, []),
             }
         )
@@ -1402,6 +1455,20 @@ def _is_internal_ip_text(value: str) -> bool:
     return bool(ip in ipaddress.ip_network("fc00::/7"))
 
 
+def _sanitize_external_indicator_values(values: List[Any]) -> List[str]:
+    return _dedupe_text(
+        value
+        for value in list(values or [])
+        if str(value or "").strip() and not _is_internal_ip_text(str(value or "").strip())
+    )
+
+
+def _confirmed_asset_list_text(*, delivery_status: str, confirmed_assets: List[str]) -> str:
+    if delivery_status != "confirmed_incident":
+        return ""
+    return _join_or_fallback(confirmed_assets, "")
+
+
 def _indicator_type_from_value(value: str) -> str:
     text = str(value or "").strip()
     if not text:
@@ -1727,11 +1794,18 @@ def _report_fact_body_from_signal(item: Dict[str, Any], *, role: str, relation: 
     domain = str(item.get("domain") or "").strip()
     dst_ip = str(item.get("dst_ip") or "").strip()
     answers = [str(answer or "").strip() for answer in list(item.get("answers") or []) if str(answer or "").strip()]
-    indicator_text = _signal_indicator_text(item) or "相关基础设施"
+    indicator_text = _signal_indicator_text(item)
+
+    if "exploit" in summary_lower and any(token in summary_lower for token in ["request", "requests", "portal", "admin", "post"]):
+        return "对外服务入口出现可疑利用请求"
 
     if relation == "counterevidence":
         if kind == "asset_context":
             return "同时间窗存在已批准的补丁/维护活动，可解释部分日常管理行为"
+        if _summary_has_any(summary, ["windows update", "approved microsoft endpoint"]):
+            return "与已批准的微软更新端点通信，更接近计划内更新流量"
+        if _summary_has_any(summary, ["qa telemetry", "shared infrastructure"]):
+            return "另有 QA 遥测任务通过其他供应商域名访问了同一托管 IP，说明该次级 IP 更可能属于共享基础设施"
         if indicator_text:
             return f"与 {indicator_text} 的访问更接近计划内更新、维护或共享基础设施背景"
         return "同时间窗存在更接近计划内活动的背景线索"
@@ -1779,10 +1853,16 @@ def _report_fact_body_from_signal(item: Dict[str, Any], *, role: str, relation: 
 
     if kind in {"alert", "flow", "http"} and "command-and-control" in stages:
         if role == "trigger_evidence" or str(item.get("role") or "").strip() == "seed":
-            return f"围绕 {indicator_text} 的异常通信触发了种子告警"
+            if indicator_text:
+                return f"围绕 {indicator_text} 的异常通信触发了种子告警"
+            return "异常通信触发了种子告警"
         if kind == "flow" or _summary_has_any(summary, ["reconnect", "reconnected", "contacted", "same beacon", "same c2", "same infrastructure"]):
-            return f"再次与 {indicator_text} 通信，说明同一基础设施上的异常仍在持续"
-        return f"与 {indicator_text} 建立了可疑通信"
+            if indicator_text:
+                return f"再次与 {indicator_text} 通信，说明同一基础设施上的异常仍在持续"
+            return "再次出现异常通信，说明相关行为仍在持续"
+        if indicator_text:
+            return f"与 {indicator_text} 建立了可疑通信"
+        return "建立了可疑通信"
 
     if "execution" in stages:
         return "出现了高风险主机侧动作"
@@ -2333,12 +2413,13 @@ def _main_one_sentence_summary(
     asset_text = _join_or_fallback(confirmed_assets, seed_asset or "相关资产")
     indicator_text = _join_or_fallback(core_indicators[:2], "当前关键通信对象")
     strongest_reason = _reader_clean_text(str(strongest_entry.get("why_selected") or "").strip())
+    key_gap_clause = _reader_gap_clause_text(key_gap)
     if delivery_status == "confirmed_incident":
         return f"{asset_text} 围绕 {indicator_text} 已形成可以稳定交付的异常链，当前应按安全事件处置。"
     if delivery_status == "monitor_only":
         return f"当前围绕 {asset_text} 的异常更接近背景活动或计划内行为，建议持续观察并保留后续复核。"
-    if key_gap:
-        return f"{asset_text} 围绕 {indicator_text} 已出现连续高风险迹象，但由于 {key_gap}，当前仍按待人工复核事件交付。"
+    if key_gap_clause:
+        return f"{asset_text} 围绕 {indicator_text} 已出现连续高风险迹象，但由于{key_gap_clause}，当前仍按待人工复核事件交付。"
     if strongest_reason:
         return f"{asset_text} 围绕 {indicator_text} 已形成连续异常链，但关键核验仍未完全闭合，因此当前仍按待人工复核事件交付。"
     return f"{asset_text} 已形成需要继续收敛的异常事件链，当前仍按待人工复核事件交付。"
@@ -2347,7 +2428,9 @@ def _main_one_sentence_summary(
 def _confirmed_scope_text(*, delivery_status: str, confirmed_assets: List[str], seed_asset: str) -> str:
     if delivery_status == "confirmed_incident":
         return _join_or_fallback(confirmed_assets, seed_asset or "相关资产")
-    return "当前未确认受影响资产"
+    if delivery_status == "monitor_only":
+        return "当前无已确认受影响资产"
+    return "当前尚无已确认受影响资产"
 
 
 def _scope_focus_text(*, delivery_status: str, confirmed_assets: List[str], seed_asset: str) -> str:
@@ -2382,6 +2465,7 @@ def _main_current_conclusion_text(
 ) -> str:
     basis_text = "；".join(_dedupe_text(list(basis_clauses or [])))
     strongest_reason = _reader_clean_text(str(strongest_entry.get("why_selected") or "").strip())
+    key_gap_clause = _reader_gap_clause_text(key_gap)
     if delivery_status == "confirmed_incident":
         if basis_text:
             return _reader_clean_text(f"当前同时满足：{basis_text}，因此本案可以按确认安全事件交付。")
@@ -2390,10 +2474,10 @@ def _main_current_conclusion_text(
         if basis_text:
             return _reader_clean_text(f"当前判断主要基于：{basis_text}；但现有证据仍更接近背景活动或低确定性异常。")
         return _reader_clean_text(f"{delivery_summary} {strongest_reason}".strip()) if strongest_reason else delivery_summary
-    if key_gap:
+    if key_gap_clause:
         if basis_text:
-            return _reader_clean_text(f"当前已经形成：{basis_text}；但由于 {key_gap}，本案仍需要按待人工复核结论交付。")
-        return _reader_clean_text(f"{strongest_reason} 但由于 {key_gap}，当前仍需要按待人工复核结论交付。".strip())
+            return _reader_clean_text(f"当前已经形成：{basis_text}；但由于{key_gap_clause}，本案仍需要按待人工复核结论交付。")
+        return _reader_clean_text(f"{strongest_reason} 但由于{key_gap_clause}，当前仍需要按待人工复核结论交付。".strip())
     return _reader_clean_text(f"{strongest_reason} {delivery_summary}".strip()) if strongest_reason else delivery_summary
 
 
@@ -2412,7 +2496,8 @@ def _main_not_other_status_text(
             return _reader_clean_text(f"{counter_entries[0].get('reason_text') or '当前更强的背景解释占优'}，因此不适合把本案直接上升为确认事件。")
         return "当前没有形成足以支撑事件成立的连续高风险证据链，因此不适合把本案直接上升为确认事件。"
     if boundary_entries:
-        return _reader_clean_text(f"当前主链已经超过单点命中，但 {boundary_entries[0].get('reader_fact') or '关键交付缺口仍未闭合'}，因此暂不直接升级为确认事件。")
+        boundary_clause = _reader_gap_clause_text(boundary_entries[0].get("reader_fact")) or "关键交付缺口仍未闭合"
+        return _reader_clean_text(f"当前主链已经超过单点命中，但{boundary_clause}，因此暂不直接升级为确认事件。")
     if counter_entries:
         return _reader_clean_text(f"当前也存在需要谨慎对待的替代解释，例如：{counter_entries[0].get('reason_text') or counter_entries[0].get('fact_text')}")
     return "当前虽然已经形成可疑事件链，但交付级核验仍未完全闭合，因此暂不直接升级为确认事件。"
@@ -2444,7 +2529,7 @@ def _build_main_report_contract(
 
     confirmed_assets = list(delivery_decision.get("confirmed_scope") or _registry_values(evidence_store, ["seed_asset", "affected_asset"]))
     related_assets = list(delivery_decision.get("candidate_scope") or _registry_values(evidence_store, ["related_asset"]))
-    core_indicators = _registry_values(evidence_store, ["core_external_indicator"])
+    core_indicators = _sanitize_external_indicator_values(_registry_values(evidence_store, ["core_external_indicator"]))
     context_indicators = _registry_values(evidence_store, ["contextual_indicator", "related_internal_address"])
     seed_fingerprints = _registry_values(evidence_store, ["seed_fingerprint"])
     expansion_candidates = _registry_current_values(evidence_store, ["expansion_candidate"])
@@ -2469,6 +2554,10 @@ def _build_main_report_contract(
         delivery_status=delivery_status,
         confirmed_assets=confirmed_assets,
         seed_asset=seed_asset,
+    )
+    confirmed_asset_text = _confirmed_asset_list_text(
+        delivery_status=delivery_status,
+        confirmed_assets=confirmed_assets,
     )
     scope_focus_text = _scope_focus_text(
         delivery_status=delivery_status,
@@ -2541,11 +2630,11 @@ def _build_main_report_contract(
     ) or ["当前没有额外必须单列的影响边界限制。"]
 
     if delivery_status == "confirmed_incident":
-        judgment_ceiling = "当前证据已经足以稳定交付为 `confirmed_incident`，但仍不宜把未独立验证的候选对象直接写成已受影响范围。"
+        judgment_ceiling = "当前证据已经足以稳定交付为 `确认安全事件`，但仍不宜把未独立验证的候选对象直接写成已受影响范围。"
     elif delivery_status == "monitor_only":
-        judgment_ceiling = "当前最多适合稳定交付为 `monitor_only`，仍不应把本案写成已成立安全事件。"
+        judgment_ceiling = "当前最多适合稳定交付为 `背景活动，建议持续观察`，仍不应把本案写成已成立安全事件。"
     else:
-        judgment_ceiling = "当前最多适合稳定交付为 `needs_review`，尚不足以直接升级为 `confirmed_incident`。"
+        judgment_ceiling = "当前最多适合稳定交付为 `可疑事件，建议继续复核`，尚不足以直接升级为 `确认安全事件`。"
 
     basis_clauses = _main_conclusion_basis_clauses(evidence_roles, counter_entries)
     judgment_basis = _reader_clean_text("；".join(basis_clauses) + "。") if basis_clauses else strongest_evidence
@@ -2607,7 +2696,7 @@ def _build_main_report_contract(
             "comparison_objects": _join_or_fallback(_dedupe_text(context_indicators[:6]), "当前未单列横向对比对象"),
             "expansion_candidates": _join_or_fallback(_dedupe_text(related_assets + expansion_candidates), "当前没有额外扩展候选"),
             "seed_asset": seed_asset,
-            "confirmed_assets": confirmed_scope_text,
+            "confirmed_assets": confirmed_asset_text,
             "related_assets": _join_or_fallback(related_assets, "当前没有额外待确认关联资产"),
             "core_external_indicators": _join_or_fallback(core_indicators, "当前未单列核心外部基础设施"),
             "key_indicators": _join_or_fallback(_dedupe_text(core_indicators + seed_fingerprints), "当前未单列关键指示物"),
@@ -2622,10 +2711,11 @@ def _build_main_report_contract(
             "trigger_or_start": (evidence_roles.get("trigger_evidence") or [{}])[0].get("reader_fact") or seed_alert_text,
             "main_chain": _main_chain_text(evidence_roles, seed_asset),
             "amplifier": _main_amplifier_text(evidence_roles, seed_asset),
-            "unconfirmed_links": _dedupe_text(
-                [str(item.get("reader_fact") or "").strip() for item in boundary_entries if str(item.get("reader_fact") or "").strip()]
-                + [str(item.get("why_selected") or "").strip() for item in boundary_entries if str(item.get("why_selected") or "").strip()]
-            ) or ["当前没有必须单独展开的未确认机制环节。"],
+            "unconfirmed_links": (
+                _dedupe_text([str(item.get("reader_fact") or "").strip() for item in boundary_entries if str(item.get("reader_fact") or "").strip()])
+                or _dedupe_text([str(item.get("why_selected") or "").strip() for item in boundary_entries if str(item.get("why_selected") or "").strip()])
+                or ["当前没有必须单独展开的未确认机制环节。"]
+            ),
             "source_text": _main_role_source_text(
                 evidence_store,
                 list(evidence_roles.get("trigger_evidence") or [])
@@ -3097,6 +3187,23 @@ def _report_polish_evidence_rows(entries: List[Dict[str, Any]], *, limit: int) -
     return rows
 
 
+def _select_polish_boundary_findings(
+    relationships: Dict[str, Any],
+    gaps: Dict[str, Any],
+) -> List[str]:
+    direct_items = _polish_input_list(list(relationships.get("candidate_relationships") or []), limit=3)
+    if direct_items:
+        return direct_items
+    constrained_items = [
+        item
+        for item in _polish_input_list(list(gaps.get("cannot_conclude") or []))
+        if not item.startswith("当前仍缺少对“")
+    ]
+    if constrained_items:
+        return constrained_items[:3]
+    return _polish_input_list(list(gaps.get("next_best_evidence") or []), limit=2)
+
+
 def build_report_polish_input(outline: Dict[str, Any]) -> Dict[str, Any]:
     outline = dict(outline or {})
     main_report = dict(outline.get("ops_report_contract") or outline.get("main_report_contract") or {})
@@ -3114,12 +3221,7 @@ def build_report_polish_input(outline: Dict[str, Any]) -> Dict[str, Any]:
     supporting = _select_polish_supporting_entries(list(evidence_blocks.get("supporting") or []), limit=5)
     counterevidence = list(evidence_blocks.get("counterevidence") or [])[:2]
     background_context = dict(evidence_blocks.get("background") or {})
-    boundary_findings = _polish_input_list(
-        list(relationships.get("candidate_relationships") or [])
-        + list(gaps.get("cannot_conclude") or [])
-        + list(gaps.get("next_best_evidence") or []),
-        limit=4,
-    )
+    boundary_findings = _select_polish_boundary_findings(relationships, gaps)
     relationship_findings = _polish_input_list(list(relationships.get("confirmed_relationships") or []), limit=4)
 
     polish_input = {
@@ -3494,50 +3596,83 @@ def render_incident_report_with_llm(
 
         system_prompt = (
             "你是网络安全事件分析师。请仅基于 report_writer_brief 生成一份面向运维人员和安全运营协同对象的中文 Markdown 报告。\n"
-            "主报告必须使用以下固定结构：首页摘要、1.事件背景与已知线索、2.范围界定与调查假设、3.对象覆盖策略与关键实体、4.事件机制分解、5.关键证据与异常事实、6.时序特征与行为模式、7.传播与关联分析、8.影响分析、9.证据链摘要与观测缺口、10.结论与后续建议、11.技术附录提示。\n"
             "技术附录会由系统在正文后自动追加；你现在只需要写正文，不要把 IOC 表、对象表、观测引用表整段重复写进正文。\n"
             "正文必须像分析师写给运维的调查报告，优先解释判断为什么成立、哪些证据最关键、哪些边界仍未闭合，而不是按 JSON 键名逐条转述。\n"
-            "正文以分析叙述为主，尽量不用表格；全文控制在约 1500 到 2500 中文字，避免为了凑章节而重复表述。\n"
+            "正文以分析叙述为主，尽量不用表格；全文目标约 1800 到 3000 中文字，避免为了压缩篇幅而把章节写成只有标题没有信息的空壳。\n"
             "每一节只保留最关键的判断、依据和边界；技术细目统一留给系统自动追加的附录。\n"
             "绝不引入输入中不存在的新 IOC、新结论、新阶段或新资产。\n"
             "如果 analysis_conclusion 与 event_conclusion 不一致，只能使用读者能理解的外部表述，不要写内部方向、交付门槛、readiness、selector、reviewer 等内部术语。\n"
-            "不要暴露 tool 名、source_type、internal_digest、observation_id、证据编号、精确置信度分数、工作流细节。\n"
+            "不要暴露 tool 名、source_type、internal_digest、observation_id、证据编号、精确置信度分数、工作流细节，也不要直接使用 pivot、枢纽 这类内部工作词。\n"
+            "如果 brief 本身含有 pivot、枢纽、readiness、reviewer、selector 这类内部词，也必须改写成读者能理解的外部表达，不能原样回写。\n"
             "除非直接影响处置动作，否则不要在主报告中展开 JA3、JA4、DNS answers 等过细技术字段；这些内容应留在附录。\n"
             "如果时间线或事件摘要里有英文，请改写成自然的中文运维表述。\n"
-            "如果某项信息不足，就保守描述，不要补写。\n"
             "如果 brief 里的一句话结论、已确认范围或动作建议把不同角色的对象并列写在一起，你必须先按对象角色重组后再写，不能照抄原句。\n"
+            "当规则冲突时，优先级如下：1. 不新增事实；2. 对象角色规则；3. 固定章节结构与固定枚举；4. 各章节写作任务；5. 风格与篇幅要求。\n"
             "最终只返回 Markdown 正文，不要返回 JSON、额外说明或实现解释。\n"
+        )
+
+        writer_prompt = (
+            "请严格使用以下 Markdown 标题模板，不得改名、增删或调整标题层级：\n"
+            "# 首页摘要\n"
+            "## 1. 事件背景与已知线索\n"
+            "## 2. 范围界定与调查假设\n"
+            "## 3. 对象覆盖策略与关键实体\n"
+            "## 4. 事件机制分解\n"
+            "## 5. 关键证据与异常事实\n"
+            "## 6. 时序特征与行为模式\n"
+            "## 7. 传播与关联分析\n"
+            "## 8. 影响分析\n"
+            "## 9. 证据链摘要与观测缺口\n"
+            "## 10. 结论与后续建议\n"
+            "## 11. 技术附录提示\n"
             "\n"
-            "写作前请先自行完成这三个整理动作，但不要把整理过程写出来：\n"
-            "1. 先判断本案为什么已经可以交付，最强的正证据和最强的反证分别是什么。\n"
-            "2. 再把事件链压缩成 4 到 6 个决定性环节，而不是逐条重放所有时间点。\n"
-            "3. 最后划清边界：哪些对象已经确认，哪些只是疑似，哪些明确不能写成已确认范围。\n"
+            "首页摘要必须固定为以下 6 行，每行都保留且按顺序输出：\n"
+            "- **结论**：\n"
+            "- **严重度**：\n"
+            "- **研判把握**：\n"
+            "- **已确认范围**：\n"
+            "- **一句话结论**：\n"
+            "- **立即动作**：\n"
+            "首页摘要视为格式校验点：不要额外添加报告总标题、案例标题、导语、空行说明或第 7 行摘要。\n"
+            "\n"
+            "固定枚举要求：\n"
+            "1. 严重度只能写：高 / 中 / 低。\n"
+            "2. 研判把握只能写：高 / 中 / 低。\n"
+            "3. 严重度和研判把握必须严格等于枚举值本身，不得写成 高危 / 中危 / 低危 / 较高 / 中高 / 偏高 这类带修饰或带后缀的变体。\n"
+            "4. 正文中描述对象状态时，优先使用：已确认 / 待确认 / 背景指标 这三类标准表述，不要写成 中高、较高、基本确认、偏可疑 这类漂移说法。\n"
+            "\n"
+            "缺信息时的保守写法：\n"
+            "1. 若 brief 未提供支撑某节所需的信息，请保留该节标题，并用 1 到 2 句说明“当前证据不足以支持进一步确认”或“当前仅能保守收敛到以下范围”，不得为了补齐章节而补写新事实。\n"
+            "2. 若不存在足够反证，只说明“目前未见足以推翻主判断的反向证据”，不要为了满足结构制造反证段落。\n"
+            "3. 若 brief 同时包含已确认对象与候选对象，必须先写已确认范围，再单独写待确认对象，禁止混写。\n"
+            "4. 若 brief 中直接出现内部工作词，必须先改写成读者向表达再落文；例如把内部扩线话术改写为“围绕当前关键关联指标继续核查”，而不是保留原词。\n"
             "\n"
             "对象角色规则：\n"
             "1. 核心外部基础设施或外部基础设施范围，只能写进外联异常判断、边界封禁或出口侧排查动作。\n"
             "2. 关联内部地址、横向目标、内网 IP，只能写进横向移动、内网核查或主机侧排查动作，不能写成需要边界封禁的外部基础设施。\n"
             "3. 待确认对象、候选对象、背景指标，必须和已确认对象分开表述，不能并入已确认范围。\n"
             "4. 如果同一节里同时出现外部基础设施和内部横向目标，必须明确说明二者在事件链中的角色不同。\n"
+            "5. 如果 brief 中明确给出了核心外部基础设施，正文必须点名这些域名或 IP，并说明它们为什么被视为当前事件链的核心可疑基础设施，而不只是普通背景流量。\n"
             "\n"
             "各章节的写作任务如下：\n"
-            "首页摘要：给出结论、严重度、把握度、已确认范围、一句话结论和立即动作，不要在首页塞太多技术细节。\n"
+            "首页摘要：只放结论、严重度、把握度、已确认范围、一句话结论和立即动作，不要塞附录型对象清单。\n"
             "第1节：说明这起事件最初为什么进入调查，初始异常是什么，核心外部基础设施是什么。\n"
-            "第2节：说明本轮调查试图回答什么问题，当前结论覆盖到哪里，不覆盖到哪里。\n"
+            "第2节：说明本轮调查试图回答什么问题，当前结论覆盖到哪里，不覆盖到哪里；若边界未闭合，要明确写出保守边界。\n"
             "第3节：只写真正影响判断的关键对象，明确区分已确认资产、待确认对象、核心外部基础设施和背景指标。\n"
-            "第4节：把事件写成因果链，突出从网络异常到主机执行再到范围扩展的推进关系。\n"
-            "第5节：不要机械照抄所有锚点；只选最关键的 3 到 4 组证据，按“事实 -> 为什么它改变判断 -> 它的边界”来写，并至少交代一组反证为何不足以下调结论；优先覆盖异常起点、持续复现、主机或横向升级、反证不足四类内容。\n"
-            "第6节：总结时序模式，只保留决定性时间节点，不要把这一节写成流水账。\n"
-            "第7节：说明传播和关联是如何被确认的，哪些扩线结果仍只是候选，为什么它们暂时不能并入主范围。\n"
-            "第8节：说明已经确认的影响是什么，疑似影响是什么，以及为什么边界外对象仍保持待确认。\n"
+            "第4节：把事件写成因果链，突出从网络异常到主机执行再到范围扩展的推进关系，不要逐条重放全部时间点。\n"
+            "第5节：只选最关键的 3 到 4 组证据，按“事实 -> 为什么它改变判断 -> 它的边界”来写；优先覆盖异常起点、持续复现、主机或横向升级、反证不足这几类内容。\n"
+            "第6节：总结时序模式，只保留 3 到 4 个决定性时间节点，并写清这些节点对判断意味着什么。\n"
+            "第7节：说明传播和关联是如何被确认的，哪些扩线结果仍只是候选，为什么它们暂时不能并入主范围；若目标仍待确认，只能写成“出现关联命中”或“需要继续核实”，不能直接写成“已确认扩散到该资产”。\n"
+            "第8节：说明已经确认的影响是什么，疑似影响是什么，以及这些影响对运维处置意味着什么。\n"
             "第9节：明确指出当前还能做出的判断上限，以及剩余缺口限制了哪些更强结论，但不要把缺口写成否定当前主结论。\n"
-            "第10节：动作建议必须分清优先级，并尽量让每类动作都能回扣到前文证据或边界判断；外部封禁、受影响主机处置、内部横向排查三类动作要分开写，不要混成一条 IOC 清单。\n"
+            "第10节：动作建议必须分清优先级，并尽量回扣前文证据或边界判断；只分成“立即处置 / 短期核查 / 持续复核”三组，不要扩成更细的 checklist。\n"
             "第11节：只提示读者附录里能看到什么技术明细，不要在这一节重复附录内容。\n"
             "\n"
             "成文形式要求：\n"
-            "1. 第1、2、4、5、7、8、9节默认写成连续短段落，每节 2 到 5 句，不要写成 1.2.3. 的清单。\n"
+            "1. 第1、2、4、5、7、8、9节默认写成连续短段落，每节 2 到 5 句，不要写成编号清单。\n"
             "2. 第3节可以用少量项目符号，但更推荐用短段落把对象按角色分组解释清楚。\n"
-            "3. 第6节可以按时间顺序概括 3 到 4 个关键节点，但每个节点都要带出它对判断的意义。\n"
-            "4. 第10节最多分成“立即处置 / 短期核查 / 持续复核”三组，每组用一句到两句分析性建议，不要写成机械 checklist。\n"
+            "3. 第6节允许按时间顺序列 3 到 4 个关键节点，但每个节点都要带出它对判断的意义。\n"
+            "4. 第10节使用 3 个分组项目符号即可，每组 1 到 2 句分析性建议，不要写成机械 checklist。\n"
             "\n"
             "务必避免以下坏写法：\n"
             "- 把内部横向目标和外部可疑基础设施混写成同一类对象。\n"
@@ -3545,9 +3680,9 @@ def render_incident_report_with_llm(
             "- 只说“异常仍在持续”而不说明为什么它重要。\n"
             "- 只写存在维护窗口或背景流量，但不解释为什么这些反证不足以推翻主结论。\n"
             "- 把疑似对象直接写成已确认受影响范围。\n"
+            "- 把待确认关联资产写成已确认传播终点，例如“已确认异常从 A 扩散到了 B”。\n"
             "- 直接照抄 brief 里的动作句或一句话结论，导致对象角色混乱。\n"
-            "\n"
-            "如果 brief 中明确给出了核心外部基础设施，正文必须点名这些域名或 IP，并说明它们为什么被视为当前事件链的核心可疑基础设施，而不只是普通背景流量。"
+            "- 把附录型对象清单改写成正文枚举，导致主体段落失去分析性。\n"
         )
 
         prompt = ChatPromptTemplate.from_messages(
@@ -3556,7 +3691,11 @@ def render_incident_report_with_llm(
                     "system",
                     system_prompt,
                 ),
-                ("user", "report_writer_brief:\n{report_polish_brief}"),
+                (
+                    "system",
+                    writer_prompt,
+                ),
+                ("user", "仅基于以下 report_writer_brief 生成正文，不要使用 brief 之外的事实：\n{report_polish_brief}"),
             ]
         )
         report_writer = llm.bind(max_tokens=2400) if hasattr(llm, "bind") else llm

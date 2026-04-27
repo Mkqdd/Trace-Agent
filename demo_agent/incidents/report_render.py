@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Any, Dict, List
 
 
@@ -13,6 +14,49 @@ def _format_time(value: Any) -> str:
 def _join_or_fallback(values: List[str], fallback: str = "当前未获取") -> str:
     cleaned = [str(value or "").strip() for value in values if str(value or "").strip()]
     return "、".join(cleaned) if cleaned else fallback
+
+
+def _render_inline_text(value: Any) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    replacements = {
+        "alert观测": "告警",
+        "needs_review": "可疑事件，建议继续复核",
+        "confirmed_incident": "确认安全事件",
+        "monitor_only": "背景活动，建议持续观察",
+        "扩线 pivot": "关联扩查主轴",
+        "该 gap 已经过多轮相关尝试但没有 新的有效信息，更适合作为报告未决事项。": "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。",
+        "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。": "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。",
+    }
+    for source, target in replacements.items():
+        text = text.replace(source, target)
+    text = re.sub(r"\bpivot\b", "关键关联指标", text, flags=re.IGNORECASE)
+    text = re.sub(r"当前\s+关键关联指标", "当前关键关联指标", text)
+    text = text.replace("仍需围绕当前关键关联指标做一次扩线核查", "仍需围绕当前关键关联指标开展一轮扩线核查")
+    text = re.sub(r"围绕当前关键关联指标\s*做一次\s*扩线核查", "围绕当前关键关联指标开展一轮扩线核查", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+
+def _render_text(value: Any) -> str:
+    raw = str(value or "")
+    if not raw.strip():
+        return ""
+    lines: List[str] = []
+    for line in raw.splitlines():
+        if not line.strip():
+            lines.append("")
+            continue
+        lines.append(_render_inline_text(line))
+    return "\n".join(lines).strip()
+
+
+def _optional_bullet(label: str, value: Any) -> str | None:
+    text = _render_inline_text(value)
+    if not text:
+        return None
+    return f"- **{label}**：{text}"
 
 
 def _format_obs_refs(observation_ids: List[str]) -> str:
@@ -119,30 +163,31 @@ def render_ops_report(ops_report_contract: Dict[str, Any]) -> str:
     impact = main_report.get("impact_assessment") or {}
     gap_summary = main_report.get("evidence_gap_summary") or {}
     recommended = main_report.get("recommended_actions") or {}
+    confirmed_assets_line = _optional_bullet("已确认受影响资产", coverage_plan.get("confirmed_assets"))
 
     lines: List[str] = [
         "# 事件调查报告",
         "",
         "## 首页摘要",
-        f"- **事件标题**：{header.get('event_title')}",
-        f"- **分析窗口**：{header.get('analysis_window')}",
-        f"- **当前状态**：`{header.get('current_status')}` / {header.get('current_status_label')}",
-        f"- **严重度**：{header.get('severity')}",
-        f"- **研判把握**：{header.get('confidence')}",
-        f"- **已确认影响范围**：{header.get('confirmed_scope')}",
-        f"- **当前最强证据**：{header.get('strongest_evidence')}",
-        f"- **当前最关键缺口**：{header.get('key_gap')}",
-        f"- **建议立即动作**：{header.get('immediate_action')}",
-        f"- **一句话结论**：{header.get('one_sentence_summary')}",
+        f"- **事件标题**：{_render_text(header.get('event_title'))}",
+        f"- **分析窗口**：{_render_text(header.get('analysis_window'))}",
+        f"- **当前状态**：{_render_text(header.get('current_status_label') or header.get('current_status'))}",
+        f"- **严重度**：{_render_text(header.get('severity'))}",
+        f"- **研判把握**：{_render_text(header.get('confidence'))}",
+        f"- **已确认影响范围**：{_render_text(header.get('confirmed_scope'))}",
+        f"- **当前最强证据**：{_render_text(header.get('strongest_evidence'))}",
+        f"- **当前最关键缺口**：{_render_text(header.get('key_gap'))}",
+        f"- **建议立即动作**：{_render_text(header.get('immediate_action'))}",
+        f"- **一句话结论**：{_render_text(header.get('one_sentence_summary'))}",
         "",
         "## 1. 事件背景与已知线索",
-        f"- **事件标题**：{background.get('event_title')}",
-        f"- **分析窗口**：{background.get('analysis_window')}",
-        f"- **Seed alert / 调查起点**：{background.get('seed_alert')}",
-        f"- **初始命中线索（规则 / 指纹 / 模型）**：{_join_or_fallback(list(background.get('initial_hits') or []), '当前未单列初始命中线索')}",
-        f"- **上游检测或已知背景**：{background.get('upstream_context')}",
-        f"- **本次调查关注点**：{background.get('investigation_focus')}",
-        f"- **本节主要依据来源**：{background.get('source_text')}",
+        f"- **事件标题**：{_render_text(background.get('event_title'))}",
+        f"- **分析窗口**：{_render_text(background.get('analysis_window'))}",
+        f"- **调查起点**：{_render_text(background.get('seed_alert'))}",
+        f"- **初始命中线索（规则 / 指纹 / 模型）**：{_render_text(_join_or_fallback(list(background.get('initial_hits') or []), '当前未单列初始命中线索'))}",
+        f"- **上游检测或已知背景**：{_render_text(background.get('upstream_context'))}",
+        f"- **本次调查关注点**：{_render_text(background.get('investigation_focus'))}",
+        f"- **本节主要依据来源**：{_render_text(background.get('source_text'))}",
         "",
         "## 2. 范围界定与调查假设",
         f"- **本次调查范围**：{scope_definition.get('investigation_scope')}",
@@ -159,7 +204,6 @@ def render_ops_report(ops_report_contract: Dict[str, Any]) -> str:
         f"- **横向对比对象**：{coverage_plan.get('comparison_objects')}",
         f"- **扩展查询候选**：{coverage_plan.get('expansion_candidates')}",
         f"- **种子资产**：{coverage_plan.get('seed_asset')}",
-        f"- **已确认受影响资产**：{coverage_plan.get('confirmed_assets')}",
         f"- **待确认关联资产**：{coverage_plan.get('related_assets')}",
         f"- **核心外部基础设施**：{coverage_plan.get('core_external_indicators')}",
         f"- **关键指示物**：{coverage_plan.get('key_indicators')}",
@@ -177,6 +221,8 @@ def render_ops_report(ops_report_contract: Dict[str, Any]) -> str:
         "",
         "### 5.1 主支撑证据",
     ]
+    if confirmed_assets_line:
+        lines.insert(lines.index(f"- **待确认关联资产**：{coverage_plan.get('related_assets')}"), confirmed_assets_line)
 
     supporting = list((evidence_blocks.get("supporting") or []))
     if not supporting:
@@ -238,10 +284,10 @@ def render_ops_report(ops_report_contract: Dict[str, Any]) -> str:
     timeline_entries = list(timeline.get("entries") or [])
     for entry in timeline_entries:
         lines.append(
-            f"| {_format_time(entry.get('ts'))} | {str(entry.get('summary') or '').replace('|', '/')} | `{str(entry.get('role') or '').replace('|', '/')}` |"
+            f"| {_format_time(entry.get('ts'))} | {_render_text(str(entry.get('summary') or '').replace('|', '/'))} | {_render_text(str(entry.get('role') or '').replace('|', '/'))} |"
         )
     if not timeline_entries:
-        lines.append("| 当前未获取 | 当前没有足够时间线事实 | `context` |")
+        lines.append("| 当前未获取 | 当前没有足够时间线事实 | 背景观测 |")
 
     lines.extend(["", "### 6.2 模式总结"])
     for item in list(timeline.get("pattern_lines") or []):
@@ -254,12 +300,12 @@ def render_ops_report(ops_report_contract: Dict[str, Any]) -> str:
         [
             "",
             "## 7. 传播与关联分析",
-            f"- **扩线 pivot**：{relationship.get('pivot_text')}",
-            f"- **已确认关联**：{_join_or_fallback(list(relationship.get('confirmed_relationships') or []), '当前没有单列的已确认关联')}",
-            f"- **候选关联**：{_join_or_fallback(list(relationship.get('candidate_relationships') or []), '当前没有额外候选关联')}",
-            f"- **未完成独立验证的对象**：{relationship.get('unverified_objects')}",
-            f"- **当前关联边界**：{relationship.get('relationship_boundary')}",
-            f"- **本节主要依据来源**：{relationship.get('source_text')}",
+            f"- **关联扩查主轴**：{_render_text(relationship.get('pivot_text'))}",
+            f"- **已确认关联**：{_render_text(_join_or_fallback(list(relationship.get('confirmed_relationships') or []), '当前没有单列的已确认关联'))}",
+            f"- **候选关联**：{_render_text(_join_or_fallback(list(relationship.get('candidate_relationships') or []), '当前没有额外候选关联'))}",
+            f"- **未完成独立验证的对象**：{_render_text(relationship.get('unverified_objects'))}",
+            f"- **当前关联边界**：{_render_text(relationship.get('relationship_boundary'))}",
+            f"- **本节主要依据来源**：{_render_text(relationship.get('source_text'))}",
             "",
             "## 8. 影响分析",
             f"- **当前已确认影响**：{impact.get('confirmed_impact')}",
@@ -281,13 +327,13 @@ def render_ops_report(ops_report_contract: Dict[str, Any]) -> str:
             f"- **本节主要依据来源**：{gap_summary.get('source_text')}",
             "",
             "## 10. 结论与后续建议",
-            f"- **当前结论**：{recommended.get('current_conclusion')}",
-            f"- **当前状态**：`{recommended.get('current_status')}`",
-            f"- **严重度**：{recommended.get('severity')}",
-            f"- **研判把握**：{recommended.get('confidence')}",
-            f"- **一句话概括**：{recommended.get('one_sentence_summary')}",
-            f"- **为什么当前结论成立**：{recommended.get('why_current_conclusion')}",
-            f"- **为什么不是相邻状态**：{recommended.get('why_not_other_status')}",
+            f"- **当前结论**：{_render_text(recommended.get('current_conclusion'))}",
+            f"- **当前状态**：{_render_text(recommended.get('current_conclusion') or recommended.get('current_status'))}",
+            f"- **严重度**：{_render_text(recommended.get('severity'))}",
+            f"- **研判把握**：{_render_text(recommended.get('confidence'))}",
+            f"- **一句话概括**：{_render_text(recommended.get('one_sentence_summary'))}",
+            f"- **为什么当前结论成立**：{_render_text(recommended.get('why_current_conclusion'))}",
+            f"- **为什么不是相邻状态**：{_render_text(recommended.get('why_not_other_status'))}",
         ]
     )
 
@@ -325,4 +371,4 @@ def render_ops_report(ops_report_contract: Dict[str, Any]) -> str:
         ]
     )
 
-    return "\n".join(lines).strip() + "\n"
+    return _render_text("\n".join(lines).strip()) + "\n"

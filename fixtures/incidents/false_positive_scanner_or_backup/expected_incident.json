@@ -1,5 +1,0 @@
-{
-  "fixture_case": "false_positive_scanner_or_backup",
-  "expected_status": "monitor_only",
-  "expected_headline": "弱信号已被背景流量部分解释"
-}
