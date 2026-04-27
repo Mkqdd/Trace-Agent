@@ -190,7 +190,6 @@ def _reader_clean_text(value: Any) -> str:
         "confirmed_incident": "确认事件",
         "seed alert": "种子告警",
         "seed 指标": "种子告警涉及的指标",
-        "pivot": "枢纽",
         "dst_ip": "目标 IP",
         "JA4": "通信指纹",
         "JA3": "通信指纹",
@@ -200,6 +199,7 @@ def _reader_clean_text(value: Any) -> str:
     }
     for source, target in replacements.items():
         text = text.replace(source, target)
+    text = re.sub(r"\bpivot\b", "枢纽", text)
     return text
 
 
@@ -2990,16 +2990,94 @@ def _polish_input_list(values: List[Any], *, limit: int | None = None) -> List[s
     return items[:limit]
 
 
-def _report_polish_timeline_rows(timeline_entries: List[Dict[str, Any]], *, limit: int = 10) -> List[Dict[str, Any]]:
+def _extract_fact_time(text: Any) -> str:
+    match = re.search(r"在\s+(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} UTC)", str(text or ""))
+    return str(match.group(1) or "").strip() if match else ""
+
+
+def _polish_signal_role(category: Any, *, is_counter: bool = False) -> str:
+    text = str(category or "").strip()
+    if is_counter:
+        return "反证检查"
+    if "调查触发" in text:
+        return "调查起点"
+    if "连续性支撑" in text:
+        return "持续通信"
+    if "风险升级" in text:
+        return "风险升级"
+    if "范围确认" in text:
+        return "范围扩展"
+    return _polish_input_text(text) or "关键观察"
+
+
+def _select_polish_supporting_entries(entries: List[Dict[str, Any]], *, limit: int = 5) -> List[Dict[str, Any]]:
+    ordered: List[Dict[str, Any]] = []
+    seen_ids: set[str] = set()
+    category_priority = ["调查触发", "连续性支撑", "风险升级", "范围确认"]
+    for category_keyword in category_priority:
+        for entry in list(entries or []):
+            entry_id = str(entry.get("id") or "").strip()
+            if not entry_id or entry_id in seen_ids:
+                continue
+            if category_keyword in str(entry.get("category") or ""):
+                ordered.append(entry)
+                seen_ids.add(entry_id)
+                break
+    for entry in list(entries or []):
+        entry_id = str(entry.get("id") or "").strip()
+        if not entry_id or entry_id in seen_ids:
+            continue
+        ordered.append(entry)
+        seen_ids.add(entry_id)
+    return ordered[:limit]
+
+
+def _report_polish_timeline_rows_from_evidence(
+    supporting_entries: List[Dict[str, Any]],
+    counter_entries: List[Dict[str, Any]],
+    *,
+    limit: int = 6,
+) -> List[Dict[str, Any]]:
     rows: List[Dict[str, Any]] = []
-    for entry in list(timeline_entries or [])[:limit]:
-        rows.append(
+    candidates: List[Dict[str, Any]] = []
+    for entry in list(supporting_entries or []):
+        fact = _polish_input_text(entry.get("fact_text"))
+        if not fact:
+            continue
+        candidates.append(
             {
-                "time": str(entry.get("ts") or "").strip(),
-                "role": _polish_input_text(entry.get("role")),
-                "event": _polish_input_text(entry.get("summary")),
+                "time": _extract_fact_time(fact),
+                "role": _polish_signal_role(entry.get("category")),
+                "event": fact,
             }
         )
+    for entry in list(counter_entries or []):
+        fact = _polish_input_text(entry.get("fact_text"))
+        if not fact:
+            continue
+        candidates.append(
+            {
+                "time": _extract_fact_time(fact),
+                "role": _polish_signal_role(entry.get("category"), is_counter=True),
+                "event": fact,
+            }
+        )
+
+    seen: set[tuple[str, str, str]] = set()
+    for entry in sorted(candidates, key=lambda item: (str(item.get("time") or ""), str(item.get("role") or ""), str(item.get("event") or ""))):
+        key = (str(entry.get("time") or ""), str(entry.get("role") or ""), str(entry.get("event") or ""))
+        if key in seen:
+            continue
+        seen.add(key)
+        rows.append(
+            {
+                "time": str(entry.get("time") or "").strip(),
+                "role": str(entry.get("role") or "").strip(),
+                "event": str(entry.get("event") or "").strip(),
+            }
+        )
+        if len(rows) >= limit:
+            break
     return rows
 
 
@@ -3033,104 +3111,329 @@ def build_report_polish_input(outline: Dict[str, Any]) -> Dict[str, Any]:
     impact = dict(main_report.get("impact_assessment") or {})
     gaps = dict(main_report.get("evidence_gap_summary") or {})
     actions = dict(main_report.get("recommended_actions") or {})
-    supporting = list(evidence_blocks.get("supporting") or [])
-    counterevidence = list(evidence_blocks.get("counterevidence") or [])
+    supporting = _select_polish_supporting_entries(list(evidence_blocks.get("supporting") or []), limit=5)
+    counterevidence = list(evidence_blocks.get("counterevidence") or [])[:2]
     background_context = dict(evidence_blocks.get("background") or {})
+    boundary_findings = _polish_input_list(
+        list(relationships.get("candidate_relationships") or [])
+        + list(gaps.get("cannot_conclude") or [])
+        + list(gaps.get("next_best_evidence") or []),
+        limit=4,
+    )
+    relationship_findings = _polish_input_list(list(relationships.get("confirmed_relationships") or []), limit=4)
 
     polish_input = {
         "schema_version": "report-polish-input-v1",
         "audience": "运维人员与安全运营协同对象",
         "goal": "在不引入新事实的前提下，把结构化调查结果写成更像分析师交付给运维的中文 Markdown 报告。",
-        "headline": {
+        "report_brief": {
             "title": _polish_input_text(main_report.get("title") or report_header.get("event_title")),
             "analysis_window": _polish_input_text(report_header.get("analysis_window")),
-            "status": _polish_input_text(report_header.get("current_status_label") or report_header.get("current_status")),
+            "final_verdict": _polish_input_text(report_header.get("current_status_label") or report_header.get("current_status")),
             "severity": _polish_input_text(report_header.get("severity")),
             "confidence": _polish_input_text(report_header.get("confidence")),
             "confirmed_scope": _polish_input_text(report_header.get("confirmed_scope")),
-            "one_sentence_summary": _polish_input_text(report_header.get("one_sentence_summary")),
+            "suspected_scope": _polish_input_text(impact.get("suspected_impact")),
+            "executive_summary": _polish_input_text(report_header.get("one_sentence_summary")),
             "strongest_evidence": _polish_input_text(report_header.get("strongest_evidence")),
             "key_gap": _polish_input_text(report_header.get("key_gap")),
-            "immediate_action": _polish_input_text(report_header.get("immediate_action")),
-        },
-        "background": {
-            "seed_alert": _polish_input_text(background.get("seed_alert")),
-            "initial_hits": _polish_input_list(list(background.get("initial_hits") or []), limit=6),
-            "upstream_context": _polish_input_text(background.get("upstream_context")),
-            "investigation_focus": _polish_input_text(background.get("investigation_focus")),
-        },
-        "scope_and_hypothesis": {
-            "investigation_scope": _polish_input_text(scope.get("investigation_scope")),
-            "primary_hypothesis": _polish_input_text(scope.get("primary_hypothesis")),
-            "alternative_hypothesis": _polish_input_text(scope.get("alternative_hypothesis")),
-            "out_of_scope": _polish_input_text(scope.get("out_of_scope")),
-            "hypothesis_requirements": _polish_input_text(scope.get("primary_hypothesis_requirements")),
-            "hypothesis_failure_conditions": _polish_input_text(scope.get("primary_hypothesis_failure_conditions")),
-            "confirmed_assets": _polish_input_text(coverage.get("confirmed_assets")),
-            "related_assets": _polish_input_text(coverage.get("related_assets")),
-            "core_external_indicators": _polish_input_text(coverage.get("core_external_indicators")),
-            "key_indicators": _polish_input_text(coverage.get("key_indicators")),
-            "coverage_boundary": _polish_input_text(coverage.get("coverage_boundary")),
-        },
-        "mechanism": {
-            "trigger_or_start": _polish_input_text(mechanism.get("trigger_or_start")),
-            "main_chain": _polish_input_text(mechanism.get("main_chain")),
-            "amplifier": _polish_input_text(mechanism.get("amplifier")),
-            "unconfirmed_links": _polish_input_list(list(mechanism.get("unconfirmed_links") or []), limit=4),
-        },
-        "key_evidence": {
-            "supporting": _report_polish_evidence_rows(supporting, limit=5),
-            "counterevidence": _report_polish_evidence_rows(counterevidence, limit=3),
-            "background_context": {
-                "hint": _polish_input_text(background_context.get("hint")),
-                "summary": _polish_input_text(background_context.get("summary")),
-                "limits": _polish_input_text(background_context.get("limits")),
-            },
-        },
-        "timeline": {
-            "patterns": _polish_input_list(list(timeline.get("pattern_lines") or []), limit=6),
-            "key_events": _report_polish_timeline_rows(list(timeline.get("entries") or []), limit=10),
-        },
-        "relationships": {
-            "pivots": _polish_input_text(relationships.get("pivot_text")),
-            "confirmed_relationships": _polish_input_list(list(relationships.get("confirmed_relationships") or []), limit=5),
-            "candidate_relationships": _polish_input_list(list(relationships.get("candidate_relationships") or []), limit=4),
-            "unverified_objects": _polish_input_text(relationships.get("unverified_objects")),
-            "relationship_boundary": _polish_input_text(relationships.get("relationship_boundary")),
-        },
-        "impact": {
-            "confirmed_impact": _polish_input_text(impact.get("confirmed_impact")),
-            "suspected_impact": _polish_input_text(impact.get("suspected_impact")),
-            "time_range": _polish_input_text(impact.get("time_range")),
-            "asset_range": _polish_input_text(impact.get("asset_range")),
-            "external_range": _polish_input_text(impact.get("external_range")),
-            "attack_stage": _polish_input_text(impact.get("attack_stage")),
-            "unresolved_impact": _polish_input_list(list(impact.get("unresolved_impact") or []), limit=4),
-        },
-        "gaps_and_limits": {
-            "judgment_basis": _polish_input_text(gaps.get("judgment_basis")),
-            "strongest_evidence": _polish_input_text(gaps.get("strongest_evidence")),
-            "key_gap": _polish_input_text(gaps.get("key_gap")),
-            "judgment_ceiling": _polish_input_text(gaps.get("judgment_ceiling")),
-            "cannot_conclude": _polish_input_list(list(gaps.get("cannot_conclude") or []), limit=4),
-            "next_best_evidence": _polish_input_list(list(gaps.get("next_best_evidence") or []), limit=4),
-        },
-        "recommended_actions": {
-            "current_conclusion": _polish_input_text(actions.get("current_conclusion")),
-            "current_status": _polish_input_text(actions.get("current_status")),
-            "severity": _polish_input_text(actions.get("severity")),
-            "confidence": _polish_input_text(actions.get("confidence")),
-            "one_sentence_summary": _polish_input_text(actions.get("one_sentence_summary")),
             "why_current_conclusion": _polish_input_text(actions.get("why_current_conclusion")),
             "why_not_other_status": _polish_input_text(actions.get("why_not_other_status")),
             "immediate_actions": _polish_input_list(list(actions.get("immediate_actions") or []), limit=5),
             "short_term_actions": _polish_input_list(list(actions.get("short_term_actions") or []), limit=5),
             "follow_up_actions": _polish_input_list(list(actions.get("follow_up_actions") or []), limit=5),
-            "next_best_evidence": _polish_input_list(list(actions.get("next_best_evidence") or []), limit=4),
         },
-        "appendix_note": "技术细节、完整 IOC/IOA、关键对象清单、观测对照与引用来源请放到技术附录，不要在主报告中铺开。",
+        "evidence_pack": {
+            "background": {
+            "seed_alert": _polish_input_text(background.get("seed_alert")),
+            "initial_hits": _polish_input_list(list(background.get("initial_hits") or []), limit=6),
+            "upstream_context": _polish_input_text(background.get("upstream_context")),
+            "investigation_focus": _polish_input_text(background.get("investigation_focus")),
+            },
+            "scope_snapshot": {
+                "investigation_scope": _polish_input_text(scope.get("investigation_scope")),
+                "primary_hypothesis": _polish_input_text(scope.get("primary_hypothesis")),
+                "alternative_hypothesis": _polish_input_text(scope.get("alternative_hypothesis")),
+                "out_of_scope": _polish_input_text(scope.get("out_of_scope")),
+                "hypothesis_requirements": _polish_input_text(scope.get("primary_hypothesis_requirements")),
+                "hypothesis_failure_conditions": _polish_input_text(scope.get("primary_hypothesis_failure_conditions")),
+                "confirmed_assets": _polish_input_text(coverage.get("confirmed_assets")),
+                "related_assets": _polish_input_text(coverage.get("related_assets")),
+                "core_external_indicators": _polish_input_text(coverage.get("core_external_indicators")),
+                "key_indicators": _polish_input_text(coverage.get("key_indicators")),
+                "coverage_boundary": _polish_input_text(coverage.get("coverage_boundary")),
+            },
+            "mechanism_summary": {
+                "trigger_or_start": _polish_input_text(mechanism.get("trigger_or_start")),
+                "main_chain": _polish_input_text(mechanism.get("main_chain")),
+                "amplifier": _polish_input_text(mechanism.get("amplifier")),
+                "unconfirmed_links": _polish_input_list(list(mechanism.get("unconfirmed_links") or []), limit=3),
+            },
+            "supporting_evidence": _report_polish_evidence_rows(supporting, limit=5),
+            "counterevidence": _report_polish_evidence_rows(counterevidence, limit=2),
+            "background_context": {
+                "hint": _polish_input_text(background_context.get("hint")),
+                "summary": _polish_input_text(background_context.get("summary")),
+                "limits": _polish_input_text(background_context.get("limits")),
+            },
+            "timeline_highlights": {
+                "patterns": _polish_input_list(list(timeline.get("pattern_lines") or []), limit=5),
+                "key_events": _report_polish_timeline_rows_from_evidence(supporting, counterevidence, limit=6),
+            },
+            "relationship_findings": {
+                "pivots": _polish_input_text(relationships.get("pivot_text")),
+                "confirmed_relationships": relationship_findings,
+                "candidate_relationships": _polish_input_list(list(relationships.get("candidate_relationships") or []), limit=3),
+                "unverified_objects": _polish_input_text(relationships.get("unverified_objects")),
+                "relationship_boundary": _polish_input_text(relationships.get("relationship_boundary")),
+            },
+            "impact_summary": {
+                "confirmed_impact": _polish_input_text(impact.get("confirmed_impact")),
+                "suspected_impact": _polish_input_text(impact.get("suspected_impact")),
+                "time_range": _polish_input_text(impact.get("time_range")),
+                "asset_range": _polish_input_text(impact.get("asset_range")),
+                "external_range": _polish_input_text(impact.get("external_range")),
+                "attack_stage": _polish_input_text(impact.get("attack_stage")),
+                "unresolved_impact": _polish_input_list(list(impact.get("unresolved_impact") or []), limit=3),
+            },
+            "open_limits": {
+                "judgment_basis": _polish_input_text(gaps.get("judgment_basis")),
+                "judgment_ceiling": _polish_input_text(gaps.get("judgment_ceiling")),
+                "boundary_findings": boundary_findings,
+                "next_best_evidence": _polish_input_list(list(actions.get("next_best_evidence") or []), limit=3),
+            },
+        },
+        "output_requirements": {
+            "must_keep_single_report": True,
+            "technical_appendix_will_be_appended": True,
+            "appendix_note": "系统会在正文后自动追加完整技术附录；正文只需在第11节提示读者重点关注哪些技术明细。",
+            "writer_style": [
+                "优先写清楚为什么判断成立，而不是逐字段复述材料。",
+                "相近证据要归并叙述，避免对重复网络复现逐条使用同样解释。",
+                "如果材料中出现英文事件描述，请改写成自然中文运维表述。",
+                "不要引入新事实，不要暴露内部实现术语。",
+            ],
+        },
     }
     return _prune_empty_structure(polish_input)
+
+
+def _append_polish_brief_line(lines: List[str], label: str, value: Any) -> None:
+    text = _polish_input_text(value)
+    if text:
+        lines.append(f"- {label}：{text}")
+
+
+def _append_polish_brief_list(lines: List[str], label: str, values: List[Any]) -> None:
+    items = _polish_input_list(list(values or []))
+    if items:
+        lines.append(f"- {label}：{'；'.join(items)}")
+
+
+def _brief_entry_matches(entry: Dict[str, Any], keyword: str) -> bool:
+    text = " ".join(
+        [
+            _polish_input_text(entry.get("category")),
+            _polish_input_text(entry.get("fact")),
+            _polish_input_text(entry.get("why_it_matters")),
+        ]
+    ).lower()
+    return keyword.lower() in text
+
+
+def _brief_find_entry(
+    entries: List[Dict[str, Any]],
+    *,
+    keywords: List[str],
+    used_ids: set[str] | None = None,
+) -> Dict[str, Any] | None:
+    seen = used_ids if used_ids is not None else set()
+    for entry in list(entries or []):
+        entry_id = str(entry.get("id") or "").strip()
+        if entry_id and entry_id in seen:
+            continue
+        if any(_brief_entry_matches(entry, keyword) for keyword in keywords):
+            if entry_id:
+                seen.add(entry_id)
+            return entry
+    return None
+
+
+def _brief_entry_fact(entry: Dict[str, Any] | None) -> str:
+    if not entry:
+        return ""
+    return _polish_input_text(entry.get("fact"))
+
+
+def _brief_entry_reason(entry: Dict[str, Any] | None) -> str:
+    if not entry:
+        return ""
+    return _polish_input_text(entry.get("why_it_matters"))
+
+
+def _brief_entry_limit(entry: Dict[str, Any] | None) -> str:
+    if not entry:
+        return ""
+    return _polish_input_text(entry.get("limitation"))
+
+
+def _brief_anchor_packets(
+    supporting_evidence: List[Dict[str, Any]],
+    counterevidence: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    used_ids: set[str] = set()
+    anchors: List[Dict[str, Any]] = []
+    anchor_specs = [
+        ("触发锚点", ["调查触发"]),
+        ("持续性锚点", ["连续性支撑"]),
+        ("升级锚点", ["风险升级"]),
+        ("范围锚点", ["范围确认"]),
+    ]
+    for label, keywords in anchor_specs:
+        entry = _brief_find_entry(supporting_evidence, keywords=keywords, used_ids=used_ids)
+        if entry:
+            anchors.append({"label": label, "entry": entry, "is_counter": False})
+    if counterevidence:
+        anchors.append({"label": "反证锚点", "entry": dict(counterevidence[0]), "is_counter": True})
+    return anchors
+
+
+def _brief_story_spine(
+    supporting_evidence: List[Dict[str, Any]],
+    relationship_findings: Dict[str, Any],
+    open_limits: Dict[str, Any],
+    report_brief: Dict[str, Any],
+) -> List[str]:
+    used_ids: set[str] = set()
+    trigger = _brief_find_entry(supporting_evidence, keywords=["调查触发"], used_ids=used_ids)
+    continuity = _brief_find_entry(supporting_evidence, keywords=["连续性支撑"], used_ids=used_ids)
+    escalation = _brief_find_entry(supporting_evidence, keywords=["风险升级"], used_ids=used_ids)
+    scope = _brief_find_entry(supporting_evidence, keywords=["范围确认"], used_ids=used_ids)
+
+    steps: List[str] = []
+    if trigger:
+        steps.append(f"异常起点：{_brief_entry_fact(trigger)}")
+    if continuity:
+        steps.append(f"持续性确认：{_brief_entry_fact(continuity)}")
+    if escalation:
+        steps.append(f"风险升级：{_brief_entry_fact(escalation)}")
+    if scope:
+        steps.append(f"范围扩展：{_brief_entry_fact(scope)}")
+
+    boundary = _polish_input_text(report_brief.get("key_gap"))
+    if not boundary:
+        boundary = _polish_input_text(relationship_findings.get("relationship_boundary"))
+    if not boundary:
+        boundary_items = _polish_input_list(list(open_limits.get("boundary_findings") or []), limit=1)
+        boundary = boundary_items[0] if boundary_items else ""
+    if boundary:
+        steps.append(f"交付边界：{boundary}")
+    return steps[:5]
+
+
+def _append_polish_brief_heading(lines: List[str], heading: str) -> None:
+    lines.extend(["", heading])
+
+
+def build_report_polish_brief(polish_input: Dict[str, Any]) -> str:
+    report_brief = dict(polish_input.get("report_brief") or {})
+    evidence_pack = dict(polish_input.get("evidence_pack") or {})
+    background = dict(evidence_pack.get("background") or {})
+    scope_snapshot = dict(evidence_pack.get("scope_snapshot") or {})
+    background_context = dict(evidence_pack.get("background_context") or {})
+    relationship_findings = dict(evidence_pack.get("relationship_findings") or {})
+    impact_summary = dict(evidence_pack.get("impact_summary") or {})
+    open_limits = dict(evidence_pack.get("open_limits") or {})
+    supporting_evidence = list(evidence_pack.get("supporting_evidence") or [])
+    counterevidence = list(evidence_pack.get("counterevidence") or [])
+    anchor_packets = _brief_anchor_packets(supporting_evidence, counterevidence)
+    story_spine = _brief_story_spine(supporting_evidence, relationship_findings, open_limits, report_brief)
+
+    lines: List[str] = ["# Report Writer Brief", ""]
+
+    lines.append("## Writing Task")
+    lines.append("- 目标读者：运维人员与安全运营协同对象。")
+    lines.append("- 正文只负责解释判断、范围和动作；完整技术细节会在正文后自动追加，不要在正文重复 IOC 表、对象表和观测映射表。")
+    lines.append("- 正文必须优先回答三个问题：为什么这起告警已经可以按事件交付、当前确认范围到哪里、运维现在最该做什么。")
+
+    _append_polish_brief_heading(lines, "## Judgment Packet")
+    _append_polish_brief_line(lines, "事件标题", report_brief.get("title"))
+    _append_polish_brief_line(lines, "分析窗口", report_brief.get("analysis_window"))
+    _append_polish_brief_line(lines, "最终结论", report_brief.get("final_verdict"))
+    _append_polish_brief_line(lines, "严重度", report_brief.get("severity"))
+    _append_polish_brief_line(lines, "研判把握", report_brief.get("confidence"))
+    _append_polish_brief_line(lines, "一句话结论", report_brief.get("executive_summary"))
+    _append_polish_brief_line(lines, "当前最强证据", report_brief.get("strongest_evidence"))
+    _append_polish_brief_line(lines, "为什么当前结论成立", report_brief.get("why_current_conclusion"))
+    _append_polish_brief_line(lines, "为什么不是相邻状态", report_brief.get("why_not_other_status"))
+    _append_polish_brief_line(lines, "本案当前关键缺口", report_brief.get("key_gap"))
+    _append_polish_brief_line(lines, "背景提示只能怎么用", background_context.get("limits"))
+
+    _append_polish_brief_heading(lines, "## Narrative Spine")
+    for index, step in enumerate(story_spine, start=1):
+        lines.append(f"{index}. {step}")
+
+    _append_polish_brief_heading(lines, "## Evidence Anchors")
+    for packet in anchor_packets:
+        entry = dict(packet.get("entry") or {})
+        lines.append(f"### {packet.get('label')}")
+        _append_polish_brief_line(lines, "证据类别", entry.get("category"))
+        _append_polish_brief_line(lines, "事实", _brief_entry_fact(entry))
+        if packet.get("is_counter"):
+            _append_polish_brief_line(lines, "正文要表达的判断", _brief_entry_reason(entry))
+        else:
+            _append_polish_brief_line(lines, "正文要表达的判断", _brief_entry_reason(entry))
+        _append_polish_brief_line(lines, "边界", _brief_entry_limit(entry))
+
+    _append_polish_brief_heading(lines, "## Scope Packet")
+    _append_polish_brief_line(lines, "种子告警", background.get("seed_alert"))
+    _append_polish_brief_line(lines, "上游背景", background.get("upstream_context"))
+    _append_polish_brief_line(lines, "本次调查范围", scope_snapshot.get("investigation_scope"))
+    _append_polish_brief_line(lines, "主假设", scope_snapshot.get("primary_hypothesis"))
+    _append_polish_brief_line(lines, "备选解释", scope_snapshot.get("alternative_hypothesis"))
+    _append_polish_brief_line(lines, "已确认影响范围", report_brief.get("confirmed_scope"))
+    _append_polish_brief_line(lines, "疑似影响范围", report_brief.get("suspected_scope"))
+    _append_polish_brief_line(lines, "已确认资产", scope_snapshot.get("confirmed_assets"))
+    _append_polish_brief_line(lines, "待确认关联资产", scope_snapshot.get("related_assets"))
+    _append_polish_brief_line(lines, "核心外部基础设施", scope_snapshot.get("core_external_indicators"))
+    _append_polish_brief_line(lines, "关键指示物", scope_snapshot.get("key_indicators"))
+    _append_polish_brief_line(lines, "不要直接写成已确认范围的对象", scope_snapshot.get("out_of_scope"))
+    _append_polish_brief_line(lines, "当前关联边界", relationship_findings.get("relationship_boundary"))
+    _append_polish_brief_line(lines, "未独立验证的对象", relationship_findings.get("unverified_objects"))
+    _append_polish_brief_list(lines, "边界保留事项", list(open_limits.get("boundary_findings") or []))
+
+    _append_polish_brief_heading(lines, "## Ops Packet")
+    _append_polish_brief_line(lines, "已确认影响", impact_summary.get("confirmed_impact"))
+    _append_polish_brief_line(lines, "仍需核实的影响", impact_summary.get("suspected_impact"))
+    _append_polish_brief_line(lines, "时间范围", impact_summary.get("time_range"))
+    _append_polish_brief_line(lines, "资产范围", impact_summary.get("asset_range"))
+    _append_polish_brief_line(lines, "外部基础设施范围", impact_summary.get("external_range"))
+    _append_polish_brief_line(lines, "当前攻击阶段", impact_summary.get("attack_stage"))
+    _append_polish_brief_line(lines, "本次调查关注点", background.get("investigation_focus"))
+    _append_polish_brief_list(lines, "建议立即动作", list(report_brief.get("immediate_actions") or []))
+    _append_polish_brief_list(lines, "短期排查动作", list(report_brief.get("short_term_actions") or []))
+    _append_polish_brief_list(lines, "持续监控或复核动作", list(report_brief.get("follow_up_actions") or []))
+    _append_polish_brief_list(lines, "下一轮最值得补的证据", list(open_limits.get("next_best_evidence") or []))
+
+    _append_polish_brief_heading(lines, "## Writing Priorities")
+    lines.append("- 第 1、2、4、7、8、9、10 节优先写成短段落，不要主要依赖 bullet 罗列。")
+    lines.append("- 正文必须明确点名核心外部基础设施，并说清它当前是核心可疑基础设施还是仅作为背景指标出现。")
+    lines.append("- 反证要写出“为什么它不足以推翻主结论”，不能只写存在维护窗口。")
+    lines.append("- 影响分析要写清已经确认影响到哪里，以及为什么还不能把边界外对象写成已确认受影响。")
+
+    return "\n".join(lines).strip() + "\n"
+
+
+def _compose_polished_report(body_markdown: str, appendix_markdown: str) -> str:
+    body = str(body_markdown or "").strip()
+    appendix = str(appendix_markdown or "").strip()
+    if not body:
+        return ""
+    if not appendix:
+        return body + "\n"
+    if "事件调查技术附录" in body:
+        return body + ("\n" if body.endswith("\n") else "\n")
+    return f"{body}\n\n---\n\n{appendix}\n"
 
 
 def build_incident_report_outline(incident: Dict[str, Any]) -> Dict[str, Any]:
@@ -3175,51 +3478,113 @@ def render_incident_report_with_llm(
     appendix = render_incident_report_appendix(incident, outline=resolved_outline)
     outline = resolved_outline
     polish_input = build_report_polish_input(outline)
+    polish_brief = build_report_polish_brief(polish_input)
     if llm is None:
         return {
             "report_markdown": deterministic,
             "report_polished_markdown": "",
             "report_appendix_markdown": appendix,
             "report_polish_input": polish_input,
+            "report_polish_brief": polish_brief,
             "report_polish_error": "",
         }
 
     try:
         from langchain_core.prompts import ChatPromptTemplate
 
+        system_prompt = (
+            "你是网络安全事件分析师。请仅基于 report_writer_brief 生成一份面向运维人员和安全运营协同对象的中文 Markdown 报告。\n"
+            "主报告必须使用以下固定结构：首页摘要、1.事件背景与已知线索、2.范围界定与调查假设、3.对象覆盖策略与关键实体、4.事件机制分解、5.关键证据与异常事实、6.时序特征与行为模式、7.传播与关联分析、8.影响分析、9.证据链摘要与观测缺口、10.结论与后续建议、11.技术附录提示。\n"
+            "技术附录会由系统在正文后自动追加；你现在只需要写正文，不要把 IOC 表、对象表、观测引用表整段重复写进正文。\n"
+            "正文必须像分析师写给运维的调查报告，优先解释判断为什么成立、哪些证据最关键、哪些边界仍未闭合，而不是按 JSON 键名逐条转述。\n"
+            "正文以分析叙述为主，尽量不用表格；全文控制在约 1500 到 2500 中文字，避免为了凑章节而重复表述。\n"
+            "每一节只保留最关键的判断、依据和边界；技术细目统一留给系统自动追加的附录。\n"
+            "绝不引入输入中不存在的新 IOC、新结论、新阶段或新资产。\n"
+            "如果 analysis_conclusion 与 event_conclusion 不一致，只能使用读者能理解的外部表述，不要写内部方向、交付门槛、readiness、selector、reviewer 等内部术语。\n"
+            "不要暴露 tool 名、source_type、internal_digest、observation_id、证据编号、精确置信度分数、工作流细节。\n"
+            "除非直接影响处置动作，否则不要在主报告中展开 JA3、JA4、DNS answers 等过细技术字段；这些内容应留在附录。\n"
+            "如果时间线或事件摘要里有英文，请改写成自然的中文运维表述。\n"
+            "如果某项信息不足，就保守描述，不要补写。\n"
+            "如果 brief 里的一句话结论、已确认范围或动作建议把不同角色的对象并列写在一起，你必须先按对象角色重组后再写，不能照抄原句。\n"
+            "最终只返回 Markdown 正文，不要返回 JSON、额外说明或实现解释。\n"
+            "\n"
+            "写作前请先自行完成这三个整理动作，但不要把整理过程写出来：\n"
+            "1. 先判断本案为什么已经可以交付，最强的正证据和最强的反证分别是什么。\n"
+            "2. 再把事件链压缩成 4 到 6 个决定性环节，而不是逐条重放所有时间点。\n"
+            "3. 最后划清边界：哪些对象已经确认，哪些只是疑似，哪些明确不能写成已确认范围。\n"
+            "\n"
+            "对象角色规则：\n"
+            "1. 核心外部基础设施或外部基础设施范围，只能写进外联异常判断、边界封禁或出口侧排查动作。\n"
+            "2. 关联内部地址、横向目标、内网 IP，只能写进横向移动、内网核查或主机侧排查动作，不能写成需要边界封禁的外部基础设施。\n"
+            "3. 待确认对象、候选对象、背景指标，必须和已确认对象分开表述，不能并入已确认范围。\n"
+            "4. 如果同一节里同时出现外部基础设施和内部横向目标，必须明确说明二者在事件链中的角色不同。\n"
+            "\n"
+            "各章节的写作任务如下：\n"
+            "首页摘要：给出结论、严重度、把握度、已确认范围、一句话结论和立即动作，不要在首页塞太多技术细节。\n"
+            "第1节：说明这起事件最初为什么进入调查，初始异常是什么，核心外部基础设施是什么。\n"
+            "第2节：说明本轮调查试图回答什么问题，当前结论覆盖到哪里，不覆盖到哪里。\n"
+            "第3节：只写真正影响判断的关键对象，明确区分已确认资产、待确认对象、核心外部基础设施和背景指标。\n"
+            "第4节：把事件写成因果链，突出从网络异常到主机执行再到范围扩展的推进关系。\n"
+            "第5节：不要机械照抄所有锚点；只选最关键的 3 到 4 组证据，按“事实 -> 为什么它改变判断 -> 它的边界”来写，并至少交代一组反证为何不足以下调结论；优先覆盖异常起点、持续复现、主机或横向升级、反证不足四类内容。\n"
+            "第6节：总结时序模式，只保留决定性时间节点，不要把这一节写成流水账。\n"
+            "第7节：说明传播和关联是如何被确认的，哪些扩线结果仍只是候选，为什么它们暂时不能并入主范围。\n"
+            "第8节：说明已经确认的影响是什么，疑似影响是什么，以及为什么边界外对象仍保持待确认。\n"
+            "第9节：明确指出当前还能做出的判断上限，以及剩余缺口限制了哪些更强结论，但不要把缺口写成否定当前主结论。\n"
+            "第10节：动作建议必须分清优先级，并尽量让每类动作都能回扣到前文证据或边界判断；外部封禁、受影响主机处置、内部横向排查三类动作要分开写，不要混成一条 IOC 清单。\n"
+            "第11节：只提示读者附录里能看到什么技术明细，不要在这一节重复附录内容。\n"
+            "\n"
+            "成文形式要求：\n"
+            "1. 第1、2、4、5、7、8、9节默认写成连续短段落，每节 2 到 5 句，不要写成 1.2.3. 的清单。\n"
+            "2. 第3节可以用少量项目符号，但更推荐用短段落把对象按角色分组解释清楚。\n"
+            "3. 第6节可以按时间顺序概括 3 到 4 个关键节点，但每个节点都要带出它对判断的意义。\n"
+            "4. 第10节最多分成“立即处置 / 短期核查 / 持续复核”三组，每组用一句到两句分析性建议，不要写成机械 checklist。\n"
+            "\n"
+            "务必避免以下坏写法：\n"
+            "- 把内部横向目标和外部可疑基础设施混写成同一类对象。\n"
+            "- 同一句话在多个章节重复出现，只是换个标题。\n"
+            "- 只说“异常仍在持续”而不说明为什么它重要。\n"
+            "- 只写存在维护窗口或背景流量，但不解释为什么这些反证不足以推翻主结论。\n"
+            "- 把疑似对象直接写成已确认受影响范围。\n"
+            "- 直接照抄 brief 里的动作句或一句话结论，导致对象角色混乱。\n"
+            "\n"
+            "如果 brief 中明确给出了核心外部基础设施，正文必须点名这些域名或 IP，并说明它们为什么被视为当前事件链的核心可疑基础设施，而不只是普通背景流量。"
+        )
+
         prompt = ChatPromptTemplate.from_messages(
             [
                 (
                     "system",
-                    "你是网络安全事件分析师。请仅基于 report_polish_input JSON 生成一份面向运维人员和安全运营协同对象的中文 Markdown 报告。"
-                    "主报告必须使用以下固定结构：首页摘要、1.事件背景与已知线索、2.范围界定与调查假设、3.对象覆盖策略与关键实体、4.事件机制分解、5.关键证据与异常事实、6.时序特征与行为模式、7.传播与关联分析、8.影响分析、9.证据链摘要与观测缺口、10.结论与后续建议、11.技术附录提示。"
-                    "绝不引入输入中不存在的新 IOC、新结论、新阶段或新资产。"
-                    "如果 analysis_conclusion 与 event_conclusion 不一致，只能使用读者能理解的外部表述，不要写内部方向、交付门槛、readiness、selector、reviewer 等内部术语。"
-                    "不要暴露 tool 名、source_type、internal_digest、observation_id、证据编号、精确置信度分数、工作流细节。"
-                    "除非直接影响处置动作，否则不要在主报告中展开 JA3、JA4、DNS answers 等过细技术字段；这些内容应留在附录。"
-                    "请优先写出分析判断，不要逐字段复述 JSON 键名；同类证据要适当归并，避免重复解释。"
-                    "如果时间线或事件摘要里有英文，请改写成自然的中文运维表述。"
-                    "如果某项信息不足，就保守描述，不要补写。",
+                    system_prompt,
                 ),
-                ("user", "report_polish_input:\n{report_polish_json}"),
+                ("user", "report_writer_brief:\n{report_polish_brief}"),
             ]
         )
-        response = llm.invoke(prompt.format_messages(report_polish_json=json.dumps(polish_input, ensure_ascii=False, indent=2)))
-        content = str(getattr(response, "content", "") or "").strip()
-        if content:
-            return {
-                "report_markdown": deterministic,
-                "report_polished_markdown": content + ("\n" if not content.endswith("\n") else ""),
-                "report_appendix_markdown": appendix,
-                "report_polish_input": polish_input,
-                "report_polish_error": "",
-            }
+        report_writer = llm.bind(max_tokens=2400) if hasattr(llm, "bind") else llm
+        last_error = "empty_response"
+        for attempt in range(1, 3):
+            try:
+                response = report_writer.invoke(prompt.format_messages(report_polish_brief=polish_brief))
+                content = str(getattr(response, "content", "") or "").strip()
+                if content:
+                    polished_report = _compose_polished_report(content, appendix)
+                    return {
+                        "report_markdown": deterministic,
+                        "report_polished_markdown": polished_report,
+                        "report_appendix_markdown": appendix,
+                        "report_polish_input": polish_input,
+                        "report_polish_brief": polish_brief,
+                        "report_polish_error": "",
+                    }
+                last_error = f"attempt_{attempt}:empty_response"
+            except Exception as exc:
+                last_error = f"attempt_{attempt}:{type(exc).__name__}: {exc}"
         return {
             "report_markdown": deterministic,
             "report_polished_markdown": "",
             "report_appendix_markdown": appendix,
             "report_polish_input": polish_input,
-            "report_polish_error": "empty_response",
+            "report_polish_brief": polish_brief,
+            "report_polish_error": last_error,
         }
     except Exception as exc:
         return {
@@ -3227,6 +3592,7 @@ def render_incident_report_with_llm(
             "report_polished_markdown": "",
             "report_appendix_markdown": appendix,
             "report_polish_input": polish_input,
+            "report_polish_brief": polish_brief,
             "report_polish_error": f"{type(exc).__name__}: {exc}",
         }
     return {
@@ -3234,5 +3600,6 @@ def render_incident_report_with_llm(
         "report_polished_markdown": "",
         "report_appendix_markdown": appendix,
         "report_polish_input": polish_input,
+        "report_polish_brief": polish_brief,
         "report_polish_error": "",
     }

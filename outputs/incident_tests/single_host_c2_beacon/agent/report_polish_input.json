@@ -2,52 +2,58 @@
   "schema_version": "report-polish-input-v1",
   "audience": "运维人员与安全运营协同对象",
   "goal": "在不引入新事实的前提下，把结构化调查结果写成更像分析师交付给运维的中文 Markdown 报告。",
-  "headline": {
+  "report_brief": {
     "title": "ws-finance-23 Possible Cobalt Strike beacon 调查报告",
     "analysis_window": "2026-03-29 09:12:10 UTC 至 2026-03-29 09:48:00 UTC",
-    "status": "确认安全事件",
+    "final_verdict": "确认安全事件",
     "severity": "高危",
     "confidence": "高",
     "confirmed_scope": "ws-finance-23",
-    "one_sentence_summary": "ws-finance-23 围绕 198.51.100.24、cdn-sync-update.com 已形成可以稳定交付的异常链，当前应按安全事件处置。",
+    "suspected_scope": "当前没有额外进入主报告的待确认受影响对象。",
+    "executive_summary": "ws-finance-23 围绕 198.51.100.24、cdn-sync-update.com 已形成可以稳定交付的异常链，当前应按安全事件处置。",
     "strongest_evidence": "在 2026-03-29 09:45:10 UTC，资产 `ws-finance-23` 与 相关基础设施 建立了可疑通信，说明异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
     "key_gap": "当前没有阻塞交付的关键缺口。",
-    "immediate_action": "优先隔离或重点监控资产：ws-finance-23。"
-  },
-  "background": {
-    "seed_alert": "2026-03-29 09:15:00 UTC，最先在 `ws-finance-23` 相关的 alert观测上触发调查，当时关联对象为 cdn-sync-update.com、198.51.100.24。",
-    "initial_hits": [
-      "命中了种子通信指纹：t12i190700_d83cc789557e_16bbda4055b2。",
-      "当前已有家族/工具背景提示：Possible Cobalt Strike beacon。",
-      "当前已知关键对象包括 198.51.100.24、cdn-sync-update.com、api.telemetry-sync.net。",
-      "Seed 通信指纹 alert matched a known beacon-style fingerprint."
-    ],
-    "upstream_context": "当前可获得的背景提示主要来自家族/工具线索：Possible Cobalt Strike beacon，与当前观察到的阶段形态 命令与控制、执行 基本一致。",
-    "investigation_focus": "在 2026-03-29 09:45:10 UTC，资产 `ws-finance-23` 与 相关基础设施 建立了可疑通信，说明异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。"
-  },
-  "scope_and_hypothesis": {
-    "investigation_scope": "本轮调查覆盖 2026-03-29 09:12:10 UTC 至 2026-03-29 09:48:00 UTC 内围绕 ws-finance-23 与 198.51.100.24、api.telemetry-sync.net、cdn-sync-update.com 的关键事件窗。",
-    "primary_hypothesis": "围绕 ws-finance-23 与 198.51.100.24、api.telemetry-sync.net、cdn-sync-update.com 的异常通信及后续高风险迹象，当前应按“确认安全事件”收敛交付。",
-    "alternative_hypothesis": "在 2026-03-29 09:48:00 UTC，资产 `ws-finance-23` 与 203.0.113.10 / packages.vendor.example 的访问更接近计划内更新、维护或共享基础设施背景。",
-    "out_of_scope": "本轮不把未经过独立验证的候选对象 当前无 直接写成已确认范围，也不把背景情报直接写成已确认事实。",
-    "hypothesis_requirements": "当前主假设至少需要同时满足：种子告警需要能够对应到明确异常起点；同一基础设施的异常通信需要在同资产或关联资产上被再次观察到；事件链需要推进到执行或横向动作，而不只是停留在单点外联；已核查的维护或更新背景不足以解释整条主链。",
-    "hypothesis_failure_conditions": "这条观测更支持背景解释或替代解释，而不是继续放大当前主假设。",
-    "confirmed_assets": "ws-finance-23",
-    "related_assets": "当前没有额外待确认关联资产",
-    "core_external_indicators": "198.51.100.24、api.telemetry-sync.net、cdn-sync-update.com",
-    "key_indicators": "198.51.100.24、api.telemetry-sync.net、cdn-sync-update.com、t12i190700_d83cc789557e_16bbda4055b2",
-    "coverage_boundary": "当前已确认范围收敛在 ws-finance-23；未独立验证的候选对象暂只作为边界线索保留。"
-  },
-  "mechanism": {
-    "trigger_or_start": "在 2026-03-29 09:15:00 UTC，资产 `ws-finance-23` 围绕 198.51.100.24 / cdn-sync-update.com 的异常通信触发了种子告警。",
-    "main_chain": "事件链先表现为资产 `ws-finance-23` 先解析了域名 `cdn-sync-update.com`，为后续与同一基础设施的通信提供了准备，随后资产 `ws-finance-23` 围绕 198.51.100.24 / cdn-sync-update.com 的异常通信触发了种子告警。 随后，资产 `ws-finance-23` 与 相关基础设施 建立了可疑通信。",
-    "amplifier": "当前主链已经超过单点告警，影响判断不再只依赖种子资产本身。",
-    "unconfirmed_links": [
-      "当前没有必须单独展开的未确认机制环节。"
+    "why_current_conclusion": "当前同时满足：种子告警已经和明确异常起点对齐；同一基础设施的连续通信已在同资产或关联资产上被复现；事件链已经推进到更高风险的主机动作；已核查的维护或更新背景不足以解释整条主链，因此本案可以按确认安全事件交付。",
+    "why_not_other_status": "当前未见足以把本案降级为背景活动的强反证，因此可以按确认事件交付。",
+    "immediate_actions": [
+      "优先隔离或重点监控资产：ws-finance-23。",
+      "在边界和代理设备上排查并封禁外部基础设施：198.51.100.24、cdn-sync-update.com、api.telemetry-sync.net。"
     ]
   },
-  "key_evidence": {
-    "supporting": [
+  "evidence_pack": {
+    "background": {
+      "seed_alert": "2026-03-29 09:15:00 UTC，最先在 `ws-finance-23` 相关的 alert观测上触发调查，当时关联对象为 cdn-sync-update.com、198.51.100.24。",
+      "initial_hits": [
+        "命中了种子通信指纹：t12i190700_d83cc789557e_16bbda4055b2。",
+        "当前已有家族/工具背景提示：Possible Cobalt Strike beacon。",
+        "当前已知关键对象包括 198.51.100.24、cdn-sync-update.com、api.telemetry-sync.net。",
+        "Seed 通信指纹 alert matched a known beacon-style fingerprint."
+      ],
+      "upstream_context": "当前可获得的背景提示主要来自家族/工具线索：Possible Cobalt Strike beacon，与当前观察到的阶段形态 命令与控制、执行 基本一致。",
+      "investigation_focus": "在 2026-03-29 09:45:10 UTC，资产 `ws-finance-23` 与 相关基础设施 建立了可疑通信，说明异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。"
+    },
+    "scope_snapshot": {
+      "investigation_scope": "本轮调查覆盖 2026-03-29 09:12:10 UTC 至 2026-03-29 09:48:00 UTC 内围绕 ws-finance-23 与 198.51.100.24、api.telemetry-sync.net、cdn-sync-update.com 的关键事件窗。",
+      "primary_hypothesis": "围绕 ws-finance-23 与 198.51.100.24、api.telemetry-sync.net、cdn-sync-update.com 的异常通信及后续高风险迹象，当前应按“确认安全事件”收敛交付。",
+      "alternative_hypothesis": "在 2026-03-29 09:48:00 UTC，资产 `ws-finance-23` 与 203.0.113.10 / packages.vendor.example 的访问更接近计划内更新、维护或共享基础设施背景。",
+      "out_of_scope": "本轮不把未经过独立验证的候选对象 当前无 直接写成已确认范围，也不把背景情报直接写成已确认事实。",
+      "hypothesis_requirements": "当前主假设至少需要同时满足：种子告警需要能够对应到明确异常起点；同一基础设施的异常通信需要在同资产或关联资产上被再次观察到；事件链需要推进到执行或横向动作，而不只是停留在单点外联；已核查的维护或更新背景不足以解释整条主链。",
+      "hypothesis_failure_conditions": "这条观测更支持背景解释或替代解释，而不是继续放大当前主假设。",
+      "confirmed_assets": "ws-finance-23",
+      "related_assets": "当前没有额外待确认关联资产",
+      "core_external_indicators": "198.51.100.24、api.telemetry-sync.net、cdn-sync-update.com",
+      "key_indicators": "198.51.100.24、api.telemetry-sync.net、cdn-sync-update.com、t12i190700_d83cc789557e_16bbda4055b2",
+      "coverage_boundary": "当前已确认范围收敛在 ws-finance-23；未独立验证的候选对象暂只作为边界线索保留。"
+    },
+    "mechanism_summary": {
+      "trigger_or_start": "在 2026-03-29 09:15:00 UTC，资产 `ws-finance-23` 围绕 198.51.100.24 / cdn-sync-update.com 的异常通信触发了种子告警。",
+      "main_chain": "事件链先表现为资产 `ws-finance-23` 先解析了域名 `cdn-sync-update.com`，为后续与同一基础设施的通信提供了准备，随后资产 `ws-finance-23` 围绕 198.51.100.24 / cdn-sync-update.com 的异常通信触发了种子告警。 随后，资产 `ws-finance-23` 与 相关基础设施 建立了可疑通信。",
+      "amplifier": "当前主链已经超过单点告警，影响判断不再只依赖种子资产本身。",
+      "unconfirmed_links": [
+        "当前没有必须单独展开的未确认机制环节。"
+      ]
+    },
+    "supporting_evidence": [
       {
         "id": "E-01",
         "category": "调查触发证据（网络）",
@@ -65,20 +71,20 @@
         "limitation": "仅凭网络侧重复通信仍可能在少数情况下被正常组件、同步组件或运维脚本解释，因此仍需要结合资产背景或主机侧结果。"
       },
       {
-        "id": "E-03",
-        "category": "连续性支撑证据（网络）",
-        "strength": "高",
-        "fact": "在 2026-03-29 09:12:10 UTC，资产 `ws-finance-23` 先解析了域名 `cdn-sync-update.com`，为后续与同一基础设施的通信提供了准备。",
-        "why_it_matters": "同一基础设施在种子资产或关联资产上再次出现，使单点告警扩展成可复核的连续事件链。",
-        "limitation": "仅凭网络侧重复通信仍可能在少数情况下被正常组件、同步组件或运维脚本解释，因此仍需要结合资产背景或主机侧结果。"
-      },
-      {
         "id": "E-04",
         "category": "风险升级证据（主机）",
         "strength": "高",
         "fact": "在 2026-03-29 09:45:10 UTC，资产 `ws-finance-23` 与 相关基础设施 建立了可疑通信。",
         "why_it_matters": "它把异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
         "limitation": "当前仍缺少更细的命令行、落地文件、持久化或内存证据，因此可以确认存在执行线索，但还不能完整描述具体载荷。"
+      },
+      {
+        "id": "E-03",
+        "category": "连续性支撑证据（网络）",
+        "strength": "高",
+        "fact": "在 2026-03-29 09:12:10 UTC，资产 `ws-finance-23` 先解析了域名 `cdn-sync-update.com`，为后续与同一基础设施的通信提供了准备。",
+        "why_it_matters": "同一基础设施在种子资产或关联资产上再次出现，使单点告警扩展成可复核的连续事件链。",
+        "limitation": "仅凭网络侧重复通信仍可能在少数情况下被正常组件、同步组件或运维脚本解释，因此仍需要结合资产背景或主机侧结果。"
       }
     ],
     "counterevidence": [
@@ -95,108 +101,87 @@
       "hint": "Possible Cobalt Strike beacon",
       "summary": "当前可获得的背景提示主要来自家族/工具线索：Possible Cobalt Strike beacon，与当前观察到的阶段形态 命令与控制、执行 基本一致。",
       "limits": "这类背景提示更适合帮助理解攻击链或工具形态，不应直接当作样本级确认或强归因结论。"
+    },
+    "timeline_highlights": {
+      "patterns": [
+        "当前尚未识别明确的初始入侵入口，现有证据主要从异常外联及后续行为开始收敛。",
+        "告警前后已经出现了解析或访问准备动作，说明异常不是完全孤立的单点命中。",
+        "告警后存在复现或持续性通信，说明相关行为具有连续性。",
+        "事件链已经从单纯通信异常推进到更高风险的后续动作，风险等级明显上升。",
+        "同时间窗也完成了替代解释检查，但现有反证不足以完全推翻主链。"
+      ],
+      "key_events": [
+        {
+          "time": "2026-03-29 09:12:10 UTC",
+          "role": "持续通信",
+          "event": "在 2026-03-29 09:12:10 UTC，资产 `ws-finance-23` 先解析了域名 `cdn-sync-update.com`，为后续与同一基础设施的通信提供了准备。"
+        },
+        {
+          "time": "2026-03-29 09:15:00 UTC",
+          "role": "调查起点",
+          "event": "在 2026-03-29 09:15:00 UTC，资产 `ws-finance-23` 围绕 198.51.100.24 / cdn-sync-update.com 的异常通信触发了种子告警。"
+        },
+        {
+          "time": "2026-03-29 09:30:00 UTC",
+          "role": "持续通信",
+          "event": "在 2026-03-29 09:30:00 UTC，资产 `ws-finance-23` 先解析了域名 `api.telemetry-sync.net`，为后续与同一基础设施的通信提供了准备。"
+        },
+        {
+          "time": "2026-03-29 09:45:10 UTC",
+          "role": "风险升级",
+          "event": "在 2026-03-29 09:45:10 UTC，资产 `ws-finance-23` 与 相关基础设施 建立了可疑通信。"
+        },
+        {
+          "time": "2026-03-29 09:48:00 UTC",
+          "role": "反证检查",
+          "event": "在 2026-03-29 09:48:00 UTC，资产 `ws-finance-23` 与 203.0.113.10 / packages.vendor.example 的访问更接近计划内更新、维护或共享基础设施背景。"
+        }
+      ]
+    },
+    "relationship_findings": {
+      "pivots": "cdn-sync-update.com、api.telemetry-sync.net、packages.vendor.example、198.51.100.24、203.0.113.10、t12i190700_d83cc789557e_16bbda4055b2",
+      "confirmed_relationships": [
+        "当前调查一共纳入了 8 条关键事件，范围主要落在 ws-finance-23。"
+      ],
+      "candidate_relationships": [
+        "当前没有额外进入主报告的待确认受影响对象。"
+      ],
+      "unverified_objects": "当前没有额外未完成独立验证的对象",
+      "relationship_boundary": "当前确认范围收敛在 ws-finance-23；其余候选对象保持待确认状态。"
+    },
+    "impact_summary": {
+      "confirmed_impact": "当前已确认 ws-finance-23 围绕 198.51.100.24、api.telemetry-sync.net、cdn-sync-update.com 形成了连续异常链。",
+      "suspected_impact": "当前没有额外进入主报告的待确认受影响对象。",
+      "time_range": "2026-03-29 09:12:10 UTC 至 2026-03-29 09:48:00 UTC",
+      "asset_range": "ws-finance-23",
+      "external_range": "198.51.100.24、api.telemetry-sync.net、cdn-sync-update.com",
+      "attack_stage": "命令与控制、执行",
+      "unresolved_impact": [
+        "当前没有额外必须单列的影响边界限制。"
+      ]
+    },
+    "open_limits": {
+      "judgment_basis": "种子告警已经和明确异常起点对齐；同一基础设施的连续通信已在同资产或关联资产上被复现；事件链已经推进到更高风险的主机动作；已核查的维护或更新背景不足以解释整条主链。",
+      "judgment_ceiling": "当前证据已经足以稳定交付为 `确认事件`，但仍不宜把未独立验证的候选对象直接写成已受影响范围。",
+      "boundary_findings": [
+        "当前没有额外进入主报告的待确认受影响对象。",
+        "当前没有额外必须单列的结论限制项。",
+        "当前暂无需要优先补查的额外证据。"
+      ],
+      "next_best_evidence": [
+        "当前暂无额外复核重点。"
+      ]
     }
   },
-  "timeline": {
-    "patterns": [
-      "当前尚未识别明确的初始入侵入口，现有证据主要从异常外联及后续行为开始收敛。",
-      "告警前后已经出现了解析或访问准备动作，说明异常不是完全孤立的单点命中。",
-      "告警后存在复现或持续性通信，说明相关行为具有连续性。",
-      "事件链已经从单纯通信异常推进到更高风险的后续动作，风险等级明显上升。",
-      "同时间窗也完成了替代解释检查，但现有反证不足以完全推翻主链。"
-    ],
-    "key_events": [
-      {
-        "time": "2026-03-29T09:12:10Z",
-        "role": "主证据",
-        "event": "资产 `ws-finance-23`：Rare DNS lookup for domain later reused by the 种子告警."
-      },
-      {
-        "time": "2026-03-29T09:14:40Z",
-        "role": "主证据",
-        "event": "资产 `ws-finance-23`：Outbound TLS session to rare external infra using the same 通信指纹 fingerprint as the seed event."
-      },
-      {
-        "time": "2026-03-29T09:15:00Z",
-        "role": "调查起点",
-        "event": "资产 `ws-finance-23`：Seed 通信指纹 alert matched a known beacon-style fingerprint."
-      },
-      {
-        "time": "2026-03-29T09:21:05Z",
-        "role": "主证据",
-        "event": "资产 `ws-finance-23`：Second outbound TLS session to the same external infrastructure after the 种子告警."
-      },
-      {
-        "time": "2026-03-29T09:27:20Z",
-        "role": "主证据",
-        "event": "资产 `ws-finance-23`：Another periodic outbound connection to a sibling domain on the same external IP."
-      },
-      {
-        "time": "2026-03-29T09:30:00Z",
-        "role": "主证据",
-        "event": "资产 `ws-finance-23`：Follow-up DNS resolution for a second suspicious domain on the same infrastructure."
-      },
-      {
-        "time": "2026-03-29T09:45:10Z",
-        "role": "风险升级",
-        "event": "资产 `ws-finance-23`：Suspicious post-beacon process activity appeared on the same workstation after external communications started."
-      },
-      {
-        "time": "2026-03-29T09:48:00Z",
-        "role": "反证检查",
-        "event": "资产 `ws-finance-23`：Scheduled package update traffic during the same hour."
-      }
+  "output_requirements": {
+    "must_keep_single_report": true,
+    "technical_appendix_will_be_appended": true,
+    "appendix_note": "系统会在正文后自动追加完整技术附录；正文只需在第11节提示读者重点关注哪些技术明细。",
+    "writer_style": [
+      "优先写清楚为什么判断成立，而不是逐字段复述材料。",
+      "相近证据要归并叙述，避免对重复网络复现逐条使用同样解释。",
+      "如果材料中出现英文事件描述，请改写成自然中文运维表述。",
+      "不要引入新事实，不要暴露内部实现术语。"
     ]
-  },
-  "relationships": {
-    "pivots": "cdn-sync-update.com、api.telemetry-sync.net、packages.vendor.example、198.51.100.24、203.0.113.10、t12i190700_d83cc789557e_16bbda4055b2",
-    "confirmed_relationships": [
-      "当前调查一共纳入了 8 条关键事件，范围主要落在 ws-finance-23。"
-    ],
-    "candidate_relationships": [
-      "当前没有额外进入主报告的待确认受影响对象。"
-    ],
-    "unverified_objects": "当前没有额外未完成独立验证的对象",
-    "relationship_boundary": "当前确认范围收敛在 ws-finance-23；其余候选对象保持待确认状态。"
-  },
-  "impact": {
-    "confirmed_impact": "当前已确认 ws-finance-23 围绕 198.51.100.24、api.telemetry-sync.net、cdn-sync-update.com 形成了连续异常链。",
-    "suspected_impact": "当前没有额外进入主报告的待确认受影响对象。",
-    "time_range": "2026-03-29 09:12:10 UTC 至 2026-03-29 09:48:00 UTC",
-    "asset_range": "ws-finance-23",
-    "external_range": "198.51.100.24、api.telemetry-sync.net、cdn-sync-update.com",
-    "attack_stage": "命令与控制、执行",
-    "unresolved_impact": [
-      "当前没有额外必须单列的影响边界限制。"
-    ]
-  },
-  "gaps_and_limits": {
-    "judgment_basis": "种子告警已经和明确异常起点对齐；同一基础设施的连续通信已在同资产或关联资产上被复现；事件链已经推进到更高风险的主机动作；已核查的维护或更新背景不足以解释整条主链。",
-    "strongest_evidence": "在 2026-03-29 09:45:10 UTC，资产 `ws-finance-23` 与 相关基础设施 建立了可疑通信，说明异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
-    "key_gap": "当前没有阻塞交付的关键缺口。",
-    "judgment_ceiling": "当前证据已经足以稳定交付为 `确认事件`，但仍不宜把未独立验证的候选对象直接写成已受影响范围。",
-    "cannot_conclude": [
-      "当前没有额外必须单列的结论限制项。"
-    ],
-    "next_best_evidence": [
-      "当前暂无需要优先补查的额外证据。"
-    ]
-  },
-  "recommended_actions": {
-    "current_conclusion": "确认安全事件",
-    "current_status": "确认事件",
-    "severity": "高危",
-    "confidence": "高",
-    "one_sentence_summary": "ws-finance-23 围绕 198.51.100.24、cdn-sync-update.com 已形成可以稳定交付的异常链，当前应按安全事件处置。",
-    "why_current_conclusion": "当前同时满足：种子告警已经和明确异常起点对齐；同一基础设施的连续通信已在同资产或关联资产上被复现；事件链已经推进到更高风险的主机动作；已核查的维护或更新背景不足以解释整条主链，因此本案可以按确认安全事件交付。",
-    "why_not_other_status": "当前未见足以把本案降级为背景活动的强反证，因此可以按确认事件交付。",
-    "immediate_actions": [
-      "优先隔离或重点监控资产：ws-finance-23。",
-      "在边界和代理设备上排查并封禁外部基础设施：198.51.100.24、cdn-sync-update.com、api.telemetry-sync.net。"
-    ],
-    "next_best_evidence": [
-      "当前暂无额外复核重点。"
-    ]
-  },
-  "appendix_note": "技术细节、完整 IOC/IOA、关键对象清单、观测对照与引用来源请放到技术附录，不要在主报告中铺开。"
+  }
 }

@@ -128,11 +128,14 @@ def _run_one_incident_agent(
     report_polished_markdown = str(result.get("report_polished_markdown") or "")
     report_appendix_markdown = str(result.get("report_appendix_markdown") or "")
     report_polish_input = result.get("report_polish_input") or {}
+    report_polish_brief = str(result.get("report_polish_brief") or "")
     report_polish_error = str(result.get("report_polish_error") or "")
     report_outline = result.get("report_outline") or {}
     evidence_store = incident.get("evidence_store") or {}
     reviewer_input = incident.get("reviewer_input") or {}
     delivery_decision = incident.get("delivery_decision") or {}
+    report_polished_path = out_dir / "report_polished.md"
+    report_polish_error_path = out_dir / "report_polish_error.txt"
 
     save_json(out_dir / "incident.json", incident)
     save_json(out_dir / "investigation_trace.json", trace)
@@ -140,6 +143,8 @@ def _run_one_incident_agent(
     save_json(out_dir / "report_outline.json", report_outline)
     if report_polish_input:
         save_json(out_dir / "report_polish_input.json", report_polish_input)
+    if report_polish_brief.strip():
+        save_text(out_dir / "report_polish_brief.md", report_polish_brief)
     if evidence_store:
         save_json(out_dir / "evidence_store.json", evidence_store)
     if reviewer_input:
@@ -149,9 +154,13 @@ def _run_one_incident_agent(
     save_text(out_dir / "report.md", report_markdown)
     save_text(out_dir / "report_appendix.md", report_appendix_markdown)
     if report_polished_markdown.strip():
-        save_text(out_dir / "report_polished.md", report_polished_markdown)
+        save_text(report_polished_path, report_polished_markdown)
+    elif report_polished_path.exists():
+        report_polished_path.unlink()
     if report_polish_error.strip():
-        save_text(out_dir / "report_polish_error.txt", report_polish_error + "\n")
+        save_text(report_polish_error_path, report_polish_error + "\n")
+    elif report_polish_error_path.exists():
+        report_polish_error_path.unlink()
     topology_html_path = draw_graph_pyvis(topology, str(out_dir / "topology.html"))
 
     response = {
@@ -170,6 +179,8 @@ def _run_one_incident_agent(
     }
     if report_polish_input:
         response["report_polish_input_path"] = str((out_dir / "report_polish_input.json").resolve())
+    if report_polish_brief.strip():
+        response["report_polish_brief_path"] = str((out_dir / "report_polish_brief.md").resolve())
     if evidence_store:
         response["evidence_store_path"] = str((out_dir / "evidence_store.json").resolve())
     if reviewer_input:

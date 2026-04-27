@@ -6373,6 +6373,7 @@ def run_incident_agent_case(
         "report_polished_markdown": rendered_report.get("report_polished_markdown") or "",
         "report_appendix_markdown": rendered_report.get("report_appendix_markdown") or "",
         "report_polish_input": rendered_report.get("report_polish_input") or {},
+        "report_polish_brief": rendered_report.get("report_polish_brief") or "",
         "report_polish_error": rendered_report.get("report_polish_error") or "",
         "report_outline": report_outline,
         "ops_report_contract": report_outline.get("ops_report_contract") or report_outline.get("main_report_contract") or {},
