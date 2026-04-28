@@ -3,9 +3,12 @@ from __future__ import annotations
 import ipaddress
 import json
 import re
-from typing import Any, Dict, List
+import time
+from typing import Any, Dict, List, Tuple
 
 from .evidence_store import build_evidence_store, build_legacy_evidence_contract
+from .report_fact_cards import build_report_fact_cards
+from .report_polish_validator import validate_report_polish
 from .report_contracts import build_appendix_contract, build_ops_report_contract
 from .report_inputs import build_report_inputs
 from .report_render import render_appendix_report, render_ops_report
@@ -3204,7 +3207,7 @@ def _select_polish_boundary_findings(
     return _polish_input_list(list(gaps.get("next_best_evidence") or []), limit=2)
 
 
-def build_report_polish_input(outline: Dict[str, Any]) -> Dict[str, Any]:
+def _build_report_polish_input_legacy(outline: Dict[str, Any]) -> Dict[str, Any]:
     outline = dict(outline or {})
     main_report = dict(outline.get("ops_report_contract") or outline.get("main_report_contract") or {})
     report_header = dict(main_report.get("report_header") or {})
@@ -3318,6 +3321,488 @@ def build_report_polish_input(outline: Dict[str, Any]) -> Dict[str, Any]:
         },
     }
     return _prune_empty_structure(polish_input)
+
+
+def _fact_card_index(report_fact_cards: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    return {
+        str(item.get("fact_id") or "").strip(): dict(item)
+        for item in list(report_fact_cards.get("fact_cards") or [])
+        if isinstance(item, dict) and str(item.get("fact_id") or "").strip()
+    }
+
+
+def _fact_cards_by_type(
+    report_fact_cards: Dict[str, Any],
+    *,
+    fact_type: str,
+    status: str | None = None,
+) -> List[Dict[str, Any]]:
+    rows: List[Dict[str, Any]] = []
+    for item in list(report_fact_cards.get("fact_cards") or []):
+        if not isinstance(item, dict):
+            continue
+        if str(item.get("fact_type") or "").strip() != fact_type:
+            continue
+        if status is not None and str(item.get("status") or "").strip() != status:
+            continue
+        rows.append(dict(item))
+    return rows
+
+
+def _scope_role_index(report_fact_cards: Dict[str, Any]) -> Dict[str, str]:
+    index: Dict[str, str] = {}
+    for item in _fact_cards_by_type(report_fact_cards, fact_type="scope"):
+        entity = _polish_input_text(item.get("entity"))
+        role = _polish_input_text(item.get("role"))
+        if entity and role and entity not in index:
+            index[entity] = role
+    return index
+
+
+def _fact_id(item: Dict[str, Any]) -> str:
+    return _polish_input_text(item.get("fact_id"))
+
+
+def _event_fact_subject_role(event_fact: Dict[str, Any], scope_roles: Dict[str, str]) -> str:
+    subject = _polish_input_text(event_fact.get("subject"))
+    return scope_roles.get(subject, "")
+
+
+def _event_fact_action(event_fact: Dict[str, Any]) -> str:
+    return _polish_input_text(event_fact.get("action"))
+
+
+def _take_fact_ids(
+    rows: List[Dict[str, Any]],
+    *,
+    limit: int,
+    skip: set[str] | None = None,
+    predicate: Any | None = None,
+) -> List[str]:
+    used = skip if skip is not None else set()
+    selected: List[str] = []
+    for row in rows:
+        fact_id = _fact_id(row)
+        if not fact_id or fact_id in used:
+            continue
+        if predicate is not None and not predicate(row):
+            continue
+        selected.append(fact_id)
+        used.add(fact_id)
+        if len(selected) >= max(0, int(limit)):
+            break
+    return selected
+
+
+def _fact_reporting_focus(fact: Dict[str, Any], scope_roles: Dict[str, str]) -> str:
+    fact_type = _polish_input_text(fact.get("fact_type"))
+    status = _polish_input_text(fact.get("status"))
+    if fact_type == "event":
+        action = _event_fact_action(fact)
+        subject_role = _event_fact_subject_role(fact, scope_roles)
+        if status == "candidate":
+            return "待确认扩展"
+        if status == "background":
+            return "背景反证"
+        if action == "解析域名":
+            return "异常起点"
+        if action == "对外通信" and subject_role == "seed_asset":
+            return "落地外联"
+        if action == "对外通信" and subject_role == "affected_asset":
+            return "跨资产复现"
+        if action == "出现执行迹象":
+            return "主机升级"
+        if action == "访问内网目标" and subject_role == "seed_asset":
+            return "横向推进"
+        if action == "访问内网目标":
+            return "范围确认"
+        return "关键事件"
+    if fact_type == "scope":
+        role = _polish_input_text(fact.get("role"))
+        mapping = {
+            "seed_asset": "调查锚点",
+            "affected_asset": "确认范围",
+            "related_asset": "待确认范围",
+            "core_external_indicator": "核心外部基础设施",
+            "related_internal_address": "内网关联对象",
+            "contextual_indicator": "背景指标",
+            "family_hint": "背景提示",
+            "seed_fingerprint": "种子指标",
+            "expansion_candidate": "候选扩展",
+        }
+        return mapping.get(role, "关键对象")
+    if fact_type == "gap":
+        return "交付边界"
+    if fact_type == "counterevidence":
+        return "替代解释"
+    if fact_type == "action_basis":
+        return "处置动作"
+    return "关键事实"
+
+
+def _fact_boundary_note(fact: Dict[str, Any], scope_roles: Dict[str, str]) -> str:
+    fact_type = _polish_input_text(fact.get("fact_type"))
+    status = _polish_input_text(fact.get("status"))
+    if fact_type == "event":
+        action = _event_fact_action(fact)
+        subject_role = _event_fact_subject_role(fact, scope_roles)
+        if status == "candidate":
+            return "未独立验证，不能并入已确认范围"
+        if status == "background":
+            return "只能帮助收窄边界，不能单独推翻主结论"
+        if action == "解析域名":
+            return "单次解析不足以独立定性"
+        if action == "对外通信" and subject_role == "seed_asset":
+            return "仍需结合复现或主机侧线索共同定性"
+        if action == "对外通信" and subject_role == "affected_asset":
+            return "要结合时序或主机线索，避免把共享基础设施直接写成确认感染"
+        if action == "出现执行迹象":
+            return "可确认风险升级，但仍缺少更细载荷细节"
+        if action == "访问内网目标":
+            return "说明内网推进，但要结合对象角色说明实际影响范围"
+        return "不要脱离上下文单独放大这条事实"
+    if fact_type == "scope":
+        role = _polish_input_text(fact.get("role"))
+        mapping = {
+            "seed_asset": "作为起点表述，不等于单点即可完成定性",
+            "affected_asset": "说明范围已扩大，但不要替代具体证据链",
+            "related_asset": "保持待确认，不写成已确认受影响",
+            "core_external_indicator": "只应写入外联判断或边界封禁动作",
+            "related_internal_address": "只应写入内网推进或核查动作",
+            "contextual_indicator": "只能作为背景，不要抬成主结论",
+            "family_hint": "只能辅助解释，不做强归因",
+            "seed_fingerprint": "仅作为起点指标，不直接等于事件成立",
+            "expansion_candidate": "仍需独立验证，不能直接升格",
+        }
+        return mapping.get(role, "")
+    if fact_type == "gap":
+        return "限制范围继续扩大，但不否定当前主结论"
+    if fact_type == "counterevidence":
+        return "要解释为何不足以推翻主判断，而不是只罗列背景事件"
+    if fact_type == "action_basis":
+        return "动作需回扣前文证据或边界判断"
+    return ""
+
+
+def _fact_catalog_entry(fact: Dict[str, Any], scope_roles: Dict[str, str]) -> Dict[str, Any]:
+    return {
+        "fact_id": _polish_input_text(fact.get("fact_id")),
+        "fact_type": _polish_input_text(fact.get("fact_type")),
+        "status": _polish_input_text(fact.get("status")),
+        "summary_line": _polish_input_text(fact.get("summary_line")),
+        "reporting_focus": _fact_reporting_focus(fact, scope_roles),
+        "boundary_note": _fact_boundary_note(fact, scope_roles),
+    }
+
+
+def _build_fact_catalog_for_ids(
+    report_fact_cards: Dict[str, Any],
+    *,
+    allowed_fact_ids: set[str] | None,
+) -> List[Dict[str, Any]]:
+    scope_roles = _scope_role_index(report_fact_cards)
+    group_specs = [
+        ("已确认事件事实", _fact_cards_by_type(report_fact_cards, fact_type="event", status="confirmed")),
+        ("待确认事件事实", _fact_cards_by_type(report_fact_cards, fact_type="event", status="candidate")),
+        ("背景事件事实", _fact_cards_by_type(report_fact_cards, fact_type="event", status="background")),
+        ("已确认范围对象", _fact_cards_by_type(report_fact_cards, fact_type="scope", status="confirmed")),
+        ("待确认范围对象", _fact_cards_by_type(report_fact_cards, fact_type="scope", status="candidate")),
+        ("背景指标对象", _fact_cards_by_type(report_fact_cards, fact_type="scope", status="background")),
+        ("反证事实", _fact_cards_by_type(report_fact_cards, fact_type="counterevidence")),
+        ("缺口事实", _fact_cards_by_type(report_fact_cards, fact_type="gap")),
+        ("动作依据事实", _fact_cards_by_type(report_fact_cards, fact_type="action_basis")),
+    ]
+    catalog: List[Dict[str, Any]] = []
+    for group_title, facts in group_specs:
+        entries = []
+        for fact in facts:
+            fact_id = _polish_input_text(fact.get("fact_id"))
+            if not fact_id:
+                continue
+            if allowed_fact_ids is not None and fact_id not in allowed_fact_ids:
+                continue
+            entries.append(_fact_catalog_entry(fact, scope_roles))
+        if not entries:
+            continue
+        catalog.append(
+            {
+                "group_title": group_title,
+                "facts": entries,
+            }
+        )
+    return catalog
+
+
+def _section_fact_payload(
+    fact_index: Dict[str, Dict[str, Any]],
+    *,
+    fact_ids: List[str],
+    packet_refs: List[str],
+    objective: str,
+    section_id: str,
+    section_title: str,
+) -> Dict[str, Any]:
+    cleaned_fact_ids = [fact_id for fact_id in _dedupe_text(fact_ids) if dict(fact_index.get(fact_id) or {})]
+    return {
+        "section_id": section_id,
+        "section_title": section_title,
+        "objective": objective,
+        "packet_refs": _dedupe_text(packet_refs),
+        "allowed_fact_ids": cleaned_fact_ids,
+    }
+
+
+def _build_section_fact_map(report_fact_cards: Dict[str, Any]) -> List[Dict[str, Any]]:
+    fact_index = _fact_card_index(report_fact_cards)
+    verdict_packet = dict(report_fact_cards.get("verdict_packet") or {})
+    scope_packet = dict(report_fact_cards.get("scope_packet") or {})
+    constraint_packet = dict(report_fact_cards.get("constraint_packet") or {})
+    action_packet = dict(report_fact_cards.get("action_packet") or {})
+    scope_roles = _scope_role_index(report_fact_cards)
+
+    confirmed_events = _fact_cards_by_type(report_fact_cards, fact_type="event", status="confirmed")
+    candidate_events = _fact_cards_by_type(report_fact_cards, fact_type="event", status="candidate")
+    background_events = _fact_cards_by_type(report_fact_cards, fact_type="event", status="background")
+    key_scope_cards = [
+        item
+        for item in _fact_cards_by_type(report_fact_cards, fact_type="scope")
+        if str(item.get("role") or "").strip() in {"seed_asset", "affected_asset", "related_asset", "core_external_indicator"}
+    ]
+    core_external_scope_ids = [
+        str(item.get("fact_id") or "").strip()
+        for item in key_scope_cards
+        if str(item.get("role") or "").strip() == "core_external_indicator"
+    ]
+    confirmed_asset_scope_ids = [
+        str(item.get("fact_id") or "").strip()
+        for item in key_scope_cards
+        if str(item.get("role") or "").strip() in {"seed_asset", "affected_asset"}
+    ]
+    candidate_scope_ids = [
+        str(item.get("fact_id") or "").strip()
+        for item in key_scope_cards
+        if str(item.get("role") or "").strip() == "related_asset"
+    ]
+    lateral_cards = [
+        item
+        for item in confirmed_events
+        if str(item.get("action") or "").strip() in {"访问内网目标", "出现执行迹象"}
+    ]
+    counter_cards = _fact_cards_by_type(report_fact_cards, fact_type="counterevidence")
+    gap_cards = _fact_cards_by_type(report_fact_cards, fact_type="gap")
+    action_cards = _fact_cards_by_type(report_fact_cards, fact_type="action_basis")
+
+    def _role_is(row: Dict[str, Any], role_name: str) -> bool:
+        return _event_fact_subject_role(row, scope_roles) == role_name
+
+    def _action_is(row: Dict[str, Any], action_name: str) -> bool:
+        return _event_fact_action(row) == action_name
+
+    seed_dns_ids = _take_fact_ids(
+        confirmed_events,
+        limit=2,
+        predicate=lambda row: _action_is(row, "解析域名") and _role_is(row, "seed_asset"),
+    )
+    seed_external_ids = _take_fact_ids(
+        confirmed_events,
+        limit=3,
+        predicate=lambda row: _action_is(row, "对外通信") and _role_is(row, "seed_asset"),
+    )
+    affected_external_ids = _take_fact_ids(
+        confirmed_events,
+        limit=3,
+        predicate=lambda row: _action_is(row, "对外通信") and _role_is(row, "affected_asset"),
+    )
+    execution_ids = _take_fact_ids(
+        confirmed_events,
+        limit=3,
+        predicate=lambda row: _action_is(row, "出现执行迹象"),
+    )
+    seed_lateral_ids = _take_fact_ids(
+        confirmed_events,
+        limit=3,
+        predicate=lambda row: _action_is(row, "访问内网目标") and _role_is(row, "seed_asset"),
+    )
+    affected_lateral_ids = _take_fact_ids(
+        confirmed_events,
+        limit=3,
+        predicate=lambda row: _action_is(row, "访问内网目标") and _role_is(row, "affected_asset"),
+    )
+    candidate_event_ids = [_fact_id(item) for item in candidate_events if _fact_id(item)]
+    background_event_ids = [_fact_id(item) for item in background_events if _fact_id(item)]
+    counter_ids = [_fact_id(item) for item in counter_cards if _fact_id(item)]
+    gap_ids = [_fact_id(item) for item in gap_cards if _fact_id(item)]
+
+    return [
+        _section_fact_payload(
+            fact_index,
+            section_id="summary",
+            section_title="首页摘要",
+            objective="只收敛结论、严重度、把握度、已确认范围和立即动作，不展开附录型对象清单。",
+            packet_refs=["verdict_packet", "scope_packet", "action_packet"],
+            fact_ids=list(verdict_packet.get("supporting_fact_ids") or [])[:4] + list(scope_packet.get("supporting_fact_ids") or [])[:2],
+        ),
+        _section_fact_payload(
+            fact_index,
+            section_id="1",
+            section_title="1. 事件背景与已知线索",
+            objective="说明事件为什么进入调查、初始异常是什么、当前最关键的外部基础设施是什么。",
+            packet_refs=["verdict_packet", "scope_packet"],
+            fact_ids=seed_dns_ids[:1] + seed_external_ids[:1] + confirmed_asset_scope_ids[:1] + core_external_scope_ids[:2],
+        ),
+        _section_fact_payload(
+            fact_index,
+            section_id="2",
+            section_title="2. 范围界定与调查假设",
+            objective="说明本轮判断覆盖到哪里、哪些对象仍待确认、为什么边界停在这里。",
+            packet_refs=["scope_packet", "constraint_packet"],
+            fact_ids=confirmed_asset_scope_ids[:2] + core_external_scope_ids[:2] + candidate_scope_ids[:1] + gap_ids[:1] + counter_ids[:1],
+        ),
+        _section_fact_payload(
+            fact_index,
+            section_id="3",
+            section_title="3. 对象覆盖策略与关键实体",
+            objective="区分已确认资产、待确认对象、核心外部基础设施和背景指标，只点关键对象。",
+            packet_refs=["scope_packet"],
+            fact_ids=confirmed_asset_scope_ids[:2] + candidate_scope_ids[:1] + core_external_scope_ids[:2],
+        ),
+        _section_fact_payload(
+            fact_index,
+            section_id="4",
+            section_title="4. 事件机制分解",
+            objective="按推进关系解释事件从异常通信到执行/横向的主链，不逐条重放所有时间点。",
+            packet_refs=["verdict_packet", "scope_packet"],
+            fact_ids=seed_dns_ids[:1] + seed_external_ids[:1] + execution_ids[:1] + seed_lateral_ids[:1] + (affected_external_ids[:1] or affected_lateral_ids[:1]),
+        ),
+        _section_fact_payload(
+            fact_index,
+            section_id="5",
+            section_title="5. 关键证据与异常事实",
+            objective="只抓最关键的支撑事实与反证边界，写清它们为什么改变判断。",
+            packet_refs=["verdict_packet", "constraint_packet"],
+            fact_ids=seed_external_ids[:1] + affected_external_ids[:1] + execution_ids[:1] + (seed_lateral_ids[:1] or affected_lateral_ids[:1]) + counter_ids[:1],
+        ),
+        _section_fact_payload(
+            fact_index,
+            section_id="6",
+            section_title="6. 时序特征与行为模式",
+            objective="只保留少量关键时间节点，并说明这些节点对判断意味着什么。",
+            packet_refs=["verdict_packet", "constraint_packet"],
+            fact_ids=seed_dns_ids[:1] + seed_external_ids[:1] + execution_ids[:1] + (affected_external_ids[:1] or affected_lateral_ids[:1]) + background_event_ids[:1],
+        ),
+        _section_fact_payload(
+            fact_index,
+            section_id="7",
+            section_title="7. 传播与关联分析",
+            objective="说明哪些关联已经进入主判断，哪些扩线结果仍只是候选或边界说明。",
+            packet_refs=["scope_packet", "constraint_packet"],
+            fact_ids=seed_lateral_ids[:1] + (affected_external_ids[:1] or affected_lateral_ids[:1]) + candidate_event_ids[:3] + list(scope_packet.get("supporting_fact_ids") or [])[-1:],
+        ),
+        _section_fact_payload(
+            fact_index,
+            section_id="8",
+            section_title="8. 影响分析",
+            objective="说明已经确认的影响范围、仍待确认的部分，以及这对运维处置意味着什么。",
+            packet_refs=["verdict_packet", "scope_packet", "action_packet"],
+            fact_ids=confirmed_asset_scope_ids[:2] + candidate_scope_ids[:1] + core_external_scope_ids[:2] + (affected_external_ids[:1] or execution_ids[:1]) + (affected_lateral_ids[:1] or seed_lateral_ids[:1]),
+        ),
+        _section_fact_payload(
+            fact_index,
+            section_id="9",
+            section_title="9. 证据链摘要与观测缺口",
+            objective="说明判断上限、当前仍未闭合的缺口，以及为什么这些缺口没有推翻主判断。",
+            packet_refs=["constraint_packet"],
+            fact_ids=list(constraint_packet.get("supporting_fact_ids") or []) + candidate_event_ids[:2],
+        ),
+        _section_fact_payload(
+            fact_index,
+            section_id="10",
+            section_title="10. 结论与后续建议",
+            objective="按立即处置、短期核查、持续复核三类写动作建议，并回扣前文证据边界。",
+            packet_refs=["verdict_packet", "action_packet", "constraint_packet"],
+            fact_ids=list(action_packet.get("supporting_fact_ids") or []) + gap_ids[:1],
+        ),
+        _section_fact_payload(
+            fact_index,
+            section_id="11",
+            section_title="11. 技术附录提示",
+            objective="只提示附录里有哪些技术明细可以进一步查阅，不重复附录内容。",
+            packet_refs=["scope_packet", "constraint_packet"],
+            fact_ids=counter_ids[:1] + gap_ids[:1],
+        ),
+    ]
+
+
+def _collect_report_writer_fact_ids(
+    packets: Dict[str, Dict[str, Any]],
+    section_fact_map: List[Dict[str, Any]],
+) -> set[str]:
+    fact_ids: List[str] = []
+    for packet in packets.values():
+        fact_ids.extend(list(packet.get("supporting_fact_ids") or []))
+    for section in section_fact_map:
+        fact_ids.extend(list(section.get("allowed_fact_ids") or []))
+    return set(_dedupe_text(fact_ids))
+
+
+def build_report_polish_input_v2(outline: Dict[str, Any], report_fact_cards: Dict[str, Any]) -> Dict[str, Any]:
+    outline = dict(outline or {})
+    report_fact_cards = dict(report_fact_cards or {})
+    main_report = dict(outline.get("ops_report_contract") or outline.get("main_report_contract") or {})
+    report_header = dict(main_report.get("report_header") or {})
+    verdict_packet = dict(report_fact_cards.get("verdict_packet") or {})
+    scope_packet = dict(report_fact_cards.get("scope_packet") or {})
+    constraint_packet = dict(report_fact_cards.get("constraint_packet") or {})
+    action_packet = dict(report_fact_cards.get("action_packet") or {})
+    section_fact_map = _build_section_fact_map(report_fact_cards)
+    referenced_fact_ids = _collect_report_writer_fact_ids(
+        {
+            "verdict_packet": verdict_packet,
+            "scope_packet": scope_packet,
+            "constraint_packet": constraint_packet,
+            "action_packet": action_packet,
+        },
+        section_fact_map,
+    )
+
+    return _prune_empty_structure(
+        {
+            "schema_version": "report-polish-input-v2",
+            "source_mode": "fact_cards_v2",
+            "audience": "运维人员与安全运营协同对象",
+            "goal": "在不引入新事实的前提下，基于统一事实卡和结论 packet 写成更像分析师交付给运维的中文 Markdown 报告。",
+            "fact_card_count": len(list(report_fact_cards.get("fact_cards") or [])),
+            "packet_refs": ["verdict_packet", "scope_packet", "constraint_packet", "action_packet"],
+            "report_header": {
+                "title": _polish_input_text(main_report.get("title") or report_header.get("event_title")),
+                "analysis_window": _polish_input_text(report_header.get("analysis_window")),
+                "final_verdict": _polish_input_text(report_header.get("current_status_label") or report_header.get("current_status")),
+                "severity": _polish_input_text(verdict_packet.get("severity") or report_header.get("severity")),
+                "confidence": _polish_input_text(verdict_packet.get("confidence") or report_header.get("confidence")),
+                "confirmed_scope": _polish_input_text(report_header.get("confirmed_scope")),
+                "one_sentence_summary": _polish_input_text(verdict_packet.get("conclusion_statement") or report_header.get("one_sentence_summary")),
+            },
+            "packets": {
+                "verdict_packet": verdict_packet,
+                "scope_packet": scope_packet,
+                "constraint_packet": constraint_packet,
+                "action_packet": action_packet,
+            },
+            "fact_catalog": _build_fact_catalog_for_ids(report_fact_cards, allowed_fact_ids=referenced_fact_ids),
+            "section_fact_map": section_fact_map,
+            "output_requirements": {
+                "must_keep_single_report": True,
+                "technical_appendix_will_be_appended": True,
+                "appendix_note": "系统会在正文后自动追加完整技术附录；正文只需在第11节提示读者重点关注哪些技术明细。",
+                "writer_style": [
+                    "优先解释为什么判断成立、为什么边界停在这里、运维最该先做什么。",
+                    "正文只基于 packet 与各节允许引用的 fact cards 写作，不要重新发明新的事实层。",
+                    "相近事实要归并叙述，不要把重复通信逐条写成同一句话的改写版。",
+                    "不要引入新事实，不要暴露内部实现术语。",
+                ],
+            },
+        }
+    )
 
 
 def _append_polish_brief_line(lines: List[str], label: str, value: Any) -> None:
@@ -3438,6 +3923,81 @@ def _append_polish_brief_heading(lines: List[str], heading: str) -> None:
 
 
 def build_report_polish_brief(polish_input: Dict[str, Any]) -> str:
+    if str(polish_input.get("source_mode") or "").strip() == "fact_cards_v2":
+        report_header = dict(polish_input.get("report_header") or {})
+        packets = dict(polish_input.get("packets") or {})
+        verdict_packet = dict(packets.get("verdict_packet") or {})
+        scope_packet = dict(packets.get("scope_packet") or {})
+        constraint_packet = dict(packets.get("constraint_packet") or {})
+        action_packet = dict(packets.get("action_packet") or {})
+        fact_catalog = list(polish_input.get("fact_catalog") or [])
+        section_fact_map = list(polish_input.get("section_fact_map") or [])
+
+        lines: List[str] = ["# Report Writer Brief", ""]
+        lines.append("## Writing Task")
+        lines.append("- 目标读者：运维人员与安全运营协同对象。")
+        lines.append("- 正文必须只基于下方 packets 与各章节允许引用的 fact cards 写作，不要使用这些材料之外的事实。")
+        lines.append("- 正文只负责解释判断、范围和动作；完整技术细节会在正文后自动追加，不要在正文重复 IOC 表、对象表和观测映射表。")
+        lines.append("- 如果某节材料不足，请保留标题并用保守表述说明当前证据不足，不得补写。")
+        lines.append("- Fact Catalog 会把全部可用事实只列一次；各章节仅围绕 Section Fact Map 中给出的 fact ID 取材。")
+        lines.append("- 如果某条 fact 带有“判断作用 / 书写边界”，正文应先解释它为什么改变判断，再交代边界，不要只复述事件发生。")
+
+        _append_polish_brief_heading(lines, "## Header Packet")
+        _append_polish_brief_line(lines, "事件标题", report_header.get("title"))
+        _append_polish_brief_line(lines, "分析窗口", report_header.get("analysis_window"))
+        _append_polish_brief_line(lines, "最终结论", report_header.get("final_verdict"))
+        _append_polish_brief_line(lines, "严重度", report_header.get("severity"))
+        _append_polish_brief_line(lines, "研判把握", report_header.get("confidence"))
+        _append_polish_brief_line(lines, "已确认范围", report_header.get("confirmed_scope"))
+        _append_polish_brief_line(lines, "一句话结论", report_header.get("one_sentence_summary"))
+
+        _append_polish_brief_heading(lines, "## Verdict Packet")
+        _append_polish_brief_line(lines, "结论陈述", verdict_packet.get("conclusion_statement"))
+
+        _append_polish_brief_heading(lines, "## Scope Packet")
+        _append_polish_brief_list(lines, "已确认对象", list(scope_packet.get("confirmed_entities") or []))
+        _append_polish_brief_list(lines, "待确认对象", list(scope_packet.get("candidate_entities") or []))
+
+        _append_polish_brief_heading(lines, "## Constraint Packet")
+        _append_polish_brief_line(lines, "边界陈述", constraint_packet.get("boundary_statement"))
+        _append_polish_brief_list(lines, "未闭合问题", list(constraint_packet.get("blocking_gaps") or []))
+        _append_polish_brief_list(lines, "反证与替代解释", list(constraint_packet.get("counterevidence") or []))
+
+        _append_polish_brief_heading(lines, "## Action Packet")
+        _append_polish_brief_list(lines, "立即动作", list(action_packet.get("immediate_actions") or []))
+        _append_polish_brief_list(lines, "下一步动作", list(action_packet.get("next_steps") or []))
+
+        _append_polish_brief_heading(lines, "## Fact Catalog")
+        for group in fact_catalog:
+            lines.append(f"### {group.get('group_title')}")
+            facts = list(group.get("facts") or [])
+            for fact in facts:
+                fact_id = _polish_input_text(fact.get("fact_id"))
+                summary_line = _polish_input_text(fact.get("summary_line"))
+                reporting_focus = _polish_input_text(fact.get("reporting_focus"))
+                boundary_note = _polish_input_text(fact.get("boundary_note"))
+                if fact_id and summary_line:
+                    line = f"- `{fact_id}`"
+                    if reporting_focus:
+                        line += f" [{reporting_focus}]"
+                    line += f"：{summary_line}"
+                    if boundary_note:
+                        line += f"；书写边界：{boundary_note}"
+                    lines.append(line)
+
+        _append_polish_brief_heading(lines, "## Section Fact Map")
+        for section in section_fact_map:
+            lines.append(f"### {section.get('section_title')}")
+            _append_polish_brief_line(lines, "本节目标", section.get("objective"))
+            _append_polish_brief_list(lines, "可引用 packets", list(section.get("packet_refs") or []))
+            _append_polish_brief_list(lines, "优先引用事实 ID（按顺序）", list(section.get("allowed_fact_ids") or []))
+
+        _append_polish_brief_heading(lines, "## Writing Priorities")
+        lines.append("- 第1、2、4、5、7、8、9节默认写成连续短段落，不要把正文写成 fact card 清单。")
+        lines.append("- 已确认对象、待确认对象、背景指标必须分开表述，不能混写。")
+        lines.append("- 反证只说明为什么它不足以推翻主判断，不要把背景流量写成主结论。")
+        return "\n".join(lines).strip() + "\n"
+
     report_brief = dict(polish_input.get("report_brief") or {})
     evidence_pack = dict(polish_input.get("evidence_pack") or {})
     background = dict(evidence_pack.get("background") or {})
@@ -3538,6 +4098,349 @@ def _compose_polished_report(body_markdown: str, appendix_markdown: str) -> str:
     return f"{body}\n\n---\n\n{appendix}\n"
 
 
+def _report_polish_has_hard_fail(validation: Dict[str, Any]) -> bool:
+    status = _polish_input_text(validation.get("status"))
+    if status == "hard_fail":
+        return True
+    issue_counts = dict(validation.get("issue_counts") or {})
+    try:
+        return int(issue_counts.get("hard_fail") or 0) > 0
+    except (TypeError, ValueError):
+        return False
+
+
+def _format_report_polish_issues(validation: Dict[str, Any], *, limit: int = 8) -> str:
+    issues = [dict(item) for item in list(validation.get("issues") or []) if isinstance(item, dict)]
+    if not issues:
+        return "- 当前没有可修订的问题。"
+
+    lines: List[str] = []
+    for issue in issues[:limit]:
+        code = _polish_input_text(issue.get("code")) or "unknown_issue"
+        section = _polish_input_text(issue.get("section")) or "未知章节"
+        message = _polish_input_text(issue.get("message"))
+        sentence = _polish_input_text(issue.get("sentence"))
+        evidence = _dedupe_text(list(issue.get("evidence") or []))
+
+        line = f"- [{code}] {section}：{message}"
+        if evidence:
+            line += f"；涉及：{' / '.join(evidence)}"
+        if sentence:
+            line += f"；原句：{sentence}"
+        lines.append(line)
+
+    remaining = len(issues) - len(lines)
+    if remaining > 0:
+        lines.append(f"- 其余 {remaining} 条问题也需要一并修正。")
+    return "\n".join(lines)
+
+
+SECTION_HEADING_RE = re.compile(r"^(#{1,3})\s+(.+?)\s*$")
+
+
+def _body_only_markdown(markdown: str) -> str:
+    text = str(markdown or "")
+    if "\n---\n" in text:
+        text = text.split("\n---\n", 1)[0]
+    appendix_marker = "## 事件调查技术附录"
+    if appendix_marker in text:
+        text = text.split(appendix_marker, 1)[0]
+    return text.strip()
+
+
+def _split_markdown_sections(markdown: str) -> List[Dict[str, Any]]:
+    sections: List[Dict[str, Any]] = []
+    current: Dict[str, Any] | None = None
+    for raw_line in str(markdown or "").splitlines():
+        line = raw_line.rstrip()
+        match = SECTION_HEADING_RE.match(line)
+        if match and match.group(2):
+            if current is not None:
+                current["text"] = "\n".join(current.pop("lines", [])).strip()
+                sections.append(current)
+            current = {
+                "level": len(match.group(1)),
+                "title": _polish_input_text(match.group(2)),
+                "lines": [],
+            }
+            continue
+        if current is not None:
+            current.setdefault("lines", []).append(line)
+    if current is not None:
+        current["text"] = "\n".join(current.pop("lines", [])).strip()
+        sections.append(current)
+    return sections
+
+
+def _section_to_markdown(section: Dict[str, Any]) -> str:
+    level = int(section.get("level") or 2)
+    title = _polish_input_text(section.get("title"))
+    text = str(section.get("text") or "").strip()
+    heading = f"{'#' * max(1, level)} {title}".rstrip()
+    if not text:
+        return heading
+    return f"{heading}\n{text}"
+
+
+def _sections_to_markdown(sections: List[Dict[str, Any]]) -> str:
+    return "\n\n".join(_section_to_markdown(section) for section in sections if _polish_input_text(section.get("title"))).strip()
+
+
+def _validation_section_titles(validation: Dict[str, Any]) -> List[str]:
+    titles: List[str] = []
+    for issue in list(validation.get("issues") or []):
+        if not isinstance(issue, dict):
+            continue
+        title = _polish_input_text(issue.get("section"))
+        if title and title not in titles:
+            titles.append(title)
+    return titles
+
+
+def _format_report_polish_section_issues(validation: Dict[str, Any], section_title: str, *, limit: int = 6) -> str:
+    issues = [
+        dict(item)
+        for item in list(validation.get("issues") or [])
+        if isinstance(item, dict) and _polish_input_text(item.get("section")) == section_title
+    ]
+    if not issues:
+        return "- 当前没有需要修正的该节问题。"
+    return _format_report_polish_issues({"issues": issues}, limit=limit)
+
+
+def _fact_catalog_entry_index(polish_input: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    index: Dict[str, Dict[str, Any]] = {}
+    for group in list(polish_input.get("fact_catalog") or []):
+        if not isinstance(group, dict):
+            continue
+        for fact in list(group.get("facts") or []):
+            if not isinstance(fact, dict):
+                continue
+            fact_id = _polish_input_text(fact.get("fact_id"))
+            if fact_id:
+                index[fact_id] = dict(fact)
+    return index
+
+
+def _append_section_packet_lines(lines: List[str], packet_name: str, packet: Dict[str, Any]) -> None:
+    label_map = {
+        "verdict_packet": "Verdict Packet",
+        "scope_packet": "Scope Packet",
+        "constraint_packet": "Constraint Packet",
+        "action_packet": "Action Packet",
+    }
+    visible_items = []
+    for key, value in packet.items():
+        if key in {"supporting_fact_ids", "schema_version"}:
+            continue
+        if isinstance(value, list):
+            cleaned = _polish_input_list(list(value or []))
+            if cleaned:
+                visible_items.append((key, "；".join(cleaned)))
+        else:
+            cleaned = _polish_input_text(value)
+            if cleaned:
+                visible_items.append((key, cleaned))
+    if not visible_items:
+        return
+    lines.append(f"## {label_map.get(packet_name, packet_name)}")
+    for key, value in visible_items:
+        lines.append(f"- {key}：{value}")
+    lines.append("")
+
+
+def _build_report_polish_section_brief(polish_input: Dict[str, Any], section_title: str) -> str:
+    section_map = [
+        dict(item)
+        for item in list(polish_input.get("section_fact_map") or [])
+        if isinstance(item, dict) and _polish_input_text(item.get("section_title")) == section_title
+    ]
+    if not section_map:
+        return ""
+    section = section_map[0]
+    report_header = dict(polish_input.get("report_header") or {})
+    packets = dict(polish_input.get("packets") or {})
+    fact_index = _fact_catalog_entry_index(polish_input)
+
+    lines: List[str] = [
+        "# Section Writer Brief",
+        "",
+        "## Repair Task",
+        f"- 目标章节：{section_title}",
+        f"- 本节目标：{_polish_input_text(section.get('objective'))}",
+        "- 你只能输出这一节，不要输出其他章节。",
+        "- 必须保留该节标题，并且正文只能基于下方 packet 与 allowed facts。",
+        "- 若信息不足，请保守表述，不得补写新事实。",
+        "",
+        "## Header Context",
+    ]
+    for key in ["title", "analysis_window", "final_verdict", "severity", "confidence", "confirmed_scope", "one_sentence_summary"]:
+        value = _polish_input_text(report_header.get(key))
+        if value:
+            lines.append(f"- {key}：{value}")
+    lines.append("")
+
+    for packet_name in list(section.get("packet_refs") or []):
+        packet = dict(packets.get(packet_name) or {})
+        _append_section_packet_lines(lines, packet_name, packet)
+
+    lines.append("## Allowed Facts")
+    for fact_id in list(section.get("allowed_fact_ids") or []):
+        fact = dict(fact_index.get(_polish_input_text(fact_id)) or {})
+        if not fact:
+            continue
+        summary_line = _polish_input_text(fact.get("summary_line"))
+        reporting_focus = _polish_input_text(fact.get("reporting_focus"))
+        boundary_note = _polish_input_text(fact.get("boundary_note"))
+        line = f"- `{fact_id}`"
+        if reporting_focus:
+            line += f" [{reporting_focus}]"
+        if summary_line:
+            line += f"：{summary_line}"
+        if boundary_note:
+            line += f"；书写边界：{boundary_note}"
+        lines.append(line)
+    lines.append("")
+    return "\n".join(lines).strip() + "\n"
+
+
+def _normalize_single_section_response(raw_markdown: str, *, section_title: str, default_level: int) -> Dict[str, Any] | None:
+    body = _body_only_markdown(raw_markdown)
+    sections = _split_markdown_sections(body)
+    for section in sections:
+        if _polish_input_text(section.get("title")) == section_title:
+            return {
+                "level": int(section.get("level") or default_level),
+                "title": section_title,
+                "text": str(section.get("text") or "").strip(),
+            }
+    text = body.strip()
+    if not text:
+        return None
+    return {
+        "level": default_level,
+        "title": section_title,
+        "text": text,
+    }
+
+
+def _repair_polished_sections(
+    *,
+    content: str,
+    deterministic: str,
+    validation: Dict[str, Any],
+    report_writer: Any,
+    section_repair_prompt: Any,
+    polish_input: Dict[str, Any],
+    report_fact_cards: Dict[str, Any],
+) -> Tuple[str, Dict[str, Any], str]:
+    body = _body_only_markdown(content)
+    sections = _split_markdown_sections(body)
+    if not sections:
+        return content, validation, ""
+
+    section_index = {
+        _polish_input_text(section.get("title")): idx
+        for idx, section in enumerate(sections)
+        if _polish_input_text(section.get("title"))
+    }
+    if not section_index:
+        return content, validation, ""
+
+    deterministic_sections = _split_markdown_sections(_body_only_markdown(deterministic))
+    deterministic_index = {
+        _polish_input_text(section.get("title")): dict(section)
+        for section in deterministic_sections
+        if _polish_input_text(section.get("title"))
+    }
+
+    repaired_titles: List[str] = []
+    fallback_titles: List[str] = []
+    failing_titles = [title for title in _validation_section_titles(validation) if title in section_index]
+
+    for section_title in failing_titles:
+        section_brief = _build_report_polish_section_brief(polish_input, section_title)
+        if not section_brief:
+            continue
+        current_section = dict(sections[section_index[section_title]])
+        validation_notes = _format_report_polish_section_issues(validation, section_title)
+        response = _invoke_report_writer_with_retry(
+            report_writer,
+            section_repair_prompt.format_messages(
+                section_title=section_title,
+                section_brief=section_brief,
+                section_markdown=_section_to_markdown(current_section),
+                validation_notes=validation_notes,
+            ),
+        )
+        repaired_section = _normalize_single_section_response(
+            str(getattr(response, "content", "") or "").strip(),
+            section_title=section_title,
+            default_level=int(current_section.get("level") or 2),
+        )
+        if repaired_section is None:
+            continue
+        sections[section_index[section_title]] = repaired_section
+        repaired_titles.append(section_title)
+
+    updated_content = _sections_to_markdown(sections)
+    updated_validation = validate_report_polish(updated_content, report_fact_cards)
+
+    if _report_polish_has_hard_fail(updated_validation):
+        for section_title in [title for title in _validation_section_titles(updated_validation) if title in section_index]:
+            deterministic_section = dict(deterministic_index.get(section_title) or {})
+            if not deterministic_section:
+                continue
+            current_level = int(sections[section_index[section_title]].get("level") or deterministic_section.get("level") or 2)
+            deterministic_section["level"] = current_level
+            sections[section_index[section_title]] = deterministic_section
+            if section_title not in fallback_titles:
+                fallback_titles.append(section_title)
+        updated_content = _sections_to_markdown(sections)
+        updated_validation = validate_report_polish(updated_content, report_fact_cards)
+
+    notes: List[str] = []
+    if repaired_titles:
+        notes.append("section_repair:" + ",".join(repaired_titles))
+    if fallback_titles:
+        notes.append("section_fallback:" + ",".join(fallback_titles))
+    return updated_content, updated_validation, " | ".join(notes)
+
+
+def _is_transient_report_polish_error(exc: Exception) -> bool:
+    text = f"{type(exc).__name__}: {exc}".lower()
+    transient_markers = (
+        "apiconnectionerror",
+        "connection error",
+        "connection reset",
+        "timed out",
+        "timeout",
+        "temporarily unavailable",
+        "server disconnected",
+        "rate limit",
+        "429",
+        "502",
+        "503",
+        "504",
+    )
+    return any(marker in text for marker in transient_markers)
+
+
+def _invoke_report_writer_with_retry(report_writer: Any, messages: Any, *, max_attempts: int = 3) -> Any:
+    last_exc: Exception | None = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            return report_writer.invoke(messages)
+        except Exception as exc:
+            last_exc = exc
+            if attempt >= max_attempts or not _is_transient_report_polish_error(exc):
+                raise
+            time.sleep(float(attempt))
+    if last_exc is not None:
+        raise last_exc
+    raise RuntimeError("report_writer_invoke_failed_without_exception")
+
+
 def build_incident_report_outline(incident: Dict[str, Any]) -> Dict[str, Any]:
     evidence_store = incident.get("evidence_store") or {}
     if not evidence_store:
@@ -3574,20 +4477,34 @@ def render_incident_report_with_llm(
     llm: Any = None,
     *,
     outline: Dict[str, Any] | None = None,
-) -> Dict[str, str]:
+) -> Dict[str, Any]:
     resolved_outline = _resolve_report_outline(incident, outline)
     deterministic = render_incident_report(incident, outline=resolved_outline)
     appendix = render_incident_report_appendix(incident, outline=resolved_outline)
     outline = resolved_outline
-    polish_input = build_report_polish_input(outline)
+    evidence_store = incident.get("evidence_store") or build_evidence_store(incident)
+    reviewer_input = incident.get("reviewer_input") or build_reviewer_input(incident, evidence_store)
+    delivery_decision = incident.get("delivery_decision") or build_delivery_decision(evidence_store, reviewer_input)
+    report_fact_cards = build_report_fact_cards(evidence_store, delivery_decision)
+    polish_input = build_report_polish_input_v2(outline, report_fact_cards)
     polish_brief = build_report_polish_brief(polish_input)
+    skipped_validation = {
+        "schema_version": "report-polish-validation-v1",
+        "applied": False,
+        "status": "skipped_no_polished_report",
+        "summary": "当前没有生成 polished 正文，因此跳过后置校验。",
+        "issue_counts": {"hard_fail": 0, "soft_warn": 0},
+        "issues": [],
+    }
     if llm is None:
         return {
             "report_markdown": deterministic,
             "report_polished_markdown": "",
             "report_appendix_markdown": appendix,
+            "report_fact_cards": report_fact_cards,
             "report_polish_input": polish_input,
             "report_polish_brief": polish_brief,
+            "report_polish_validation": skipped_validation,
             "report_polish_error": "",
         }
 
@@ -3598,6 +4515,7 @@ def render_incident_report_with_llm(
             "你是网络安全事件分析师。请仅基于 report_writer_brief 生成一份面向运维人员和安全运营协同对象的中文 Markdown 报告。\n"
             "技术附录会由系统在正文后自动追加；你现在只需要写正文，不要把 IOC 表、对象表、观测引用表整段重复写进正文。\n"
             "正文必须像分析师写给运维的调查报告，优先解释判断为什么成立、哪些证据最关键、哪些边界仍未闭合，而不是按 JSON 键名逐条转述。\n"
+            "如果 brief 中某条 fact 带有“判断作用”或“书写边界”，应吸收这些分析含义，不要只重复事实句本身。\n"
             "正文以分析叙述为主，尽量不用表格；全文目标约 1800 到 3000 中文字，避免为了压缩篇幅而把章节写成只有标题没有信息的空壳。\n"
             "每一节只保留最关键的判断、依据和边界；技术细目统一留给系统自动追加的附录。\n"
             "绝不引入输入中不存在的新 IOC、新结论、新阶段或新资产。\n"
@@ -3607,6 +4525,7 @@ def render_incident_report_with_llm(
             "除非直接影响处置动作，否则不要在主报告中展开 JA3、JA4、DNS answers 等过细技术字段；这些内容应留在附录。\n"
             "如果时间线或事件摘要里有英文，请改写成自然的中文运维表述。\n"
             "如果 brief 里的一句话结论、已确认范围或动作建议把不同角色的对象并列写在一起，你必须先按对象角色重组后再写，不能照抄原句。\n"
+            "凡是域名、IP、资产名、内网地址、时间这类精确实体，一律逐字沿用 brief 中已有写法，不要缩写、改写、补字、漏字或替换字符。\n"
             "当规则冲突时，优先级如下：1. 不新增事实；2. 对象角色规则；3. 固定章节结构与固定枚举；4. 各章节写作任务；5. 风格与篇幅要求。\n"
             "最终只返回 Markdown 正文，不要返回 JSON、额外说明或实现解释。\n"
         )
@@ -3698,31 +4617,155 @@ def render_incident_report_with_llm(
                 ("user", "仅基于以下 report_writer_brief 生成正文，不要使用 brief 之外的事实：\n{report_polish_brief}"),
             ]
         )
+        repair_prompt = ChatPromptTemplate.from_messages(
+            [
+                (
+                    "system",
+                    system_prompt,
+                ),
+                (
+                    "system",
+                    writer_prompt,
+                ),
+                (
+                    "system",
+                    "你现在处于正文修订阶段。你会收到同一份 report_writer_brief、一版正文草稿，以及 validator 指出的事实漂移问题。"
+                    "请在保持原有章节结构、细节密度和主体分析判断的前提下，做最小必要修订，修掉所有问题。"
+                    "默认把当前草稿当作基线，未被 validator 点中的句子和段落尽量原样保留；不要为了修一个词而整段重写。"
+                    "如果问题只是域名、IP、资产名、内网地址、时间、对象角色或确认范围表述漂移，优先只修对应句子里的问题片段，不要改写无关句子。"
+                    "不要删除整节，不要把正文退化成 fact 清单，也不要为了求稳而压缩已经存在的关键细节。"
+                    "修订后的正文应尽量保留草稿里已经成立的分析性叙述，而不是重新生成一版更泛化的报告。"
+                    "凡是域名、IP、资产名、内网地址、时间这类精确实体，必须逐字使用 brief 中已有写法。"
+                    "最终只返回修订后的完整 Markdown 正文。",
+                ),
+                (
+                    "user",
+                    "report_writer_brief：\n{report_polish_brief}\n\n当前正文草稿：\n{draft_markdown}\n\nvalidator 问题：\n{validation_notes}",
+                ),
+            ]
+        )
+        section_repair_prompt = ChatPromptTemplate.from_messages(
+            [
+                (
+                    "system",
+                    system_prompt,
+                ),
+                (
+                    "system",
+                    "你现在只修复单个章节。你会收到该章节的 section_writer_brief、当前章节草稿，以及 validator 指出的该节问题。"
+                    "你只能输出这一个章节，必须保留原章节标题，不要输出其他章节。"
+                    "修订时优先做最小必要修改，未被点中的句子尽量保留。"
+                    "如果 validator 问题只涉及时间、IP、域名、资产名、对象状态或某个事件句，就只修对应句子，不要重写整节。"
+                    "如果材料不足，请在该节内部用保守表述承认边界，不得补写新事实。"
+                    "最终只返回该章节的 Markdown。",
+                ),
+                (
+                    "user",
+                    "section_writer_brief：\n{section_brief}\n\n当前章节草稿：\n{section_markdown}\n\nvalidator 问题：\n{validation_notes}",
+                ),
+            ]
+        )
         report_writer = llm.bind(max_tokens=2400) if hasattr(llm, "bind") else llm
         last_error = "empty_response"
+        last_validation = skipped_validation
+        last_content = ""
         for attempt in range(1, 3):
             try:
-                response = report_writer.invoke(prompt.format_messages(report_polish_brief=polish_brief))
+                response = _invoke_report_writer_with_retry(
+                    report_writer,
+                    prompt.format_messages(report_polish_brief=polish_brief),
+                )
                 content = str(getattr(response, "content", "") or "").strip()
                 if content:
-                    polished_report = _compose_polished_report(content, appendix)
+                    validation = validate_report_polish(content, report_fact_cards)
+                    final_content = content
+                    final_validation = validation
+                    last_content = final_content
+                    last_validation = final_validation
+
+                    if _report_polish_has_hard_fail(validation):
+                        repair_notes = _format_report_polish_issues(validation)
+                        repair_response = _invoke_report_writer_with_retry(
+                            report_writer,
+                            repair_prompt.format_messages(
+                                report_polish_brief=polish_brief,
+                                draft_markdown=content,
+                                validation_notes=repair_notes,
+                            )
+                        )
+                        repaired_content = str(getattr(repair_response, "content", "") or "").strip()
+                        if repaired_content:
+                            repaired_validation = validate_report_polish(repaired_content, report_fact_cards)
+                            final_content = repaired_content
+                            final_validation = repaired_validation
+                        else:
+                            last_error = f"attempt_{attempt}:repair_empty_response"
+
+                    if _report_polish_has_hard_fail(final_validation):
+                        section_repaired_content, section_repaired_validation, section_repair_note = _repair_polished_sections(
+                            content=final_content,
+                            deterministic=deterministic,
+                            validation=final_validation,
+                            report_writer=report_writer,
+                            section_repair_prompt=section_repair_prompt,
+                            polish_input=polish_input,
+                            report_fact_cards=report_fact_cards,
+                        )
+                        final_content = section_repaired_content
+                        final_validation = section_repaired_validation
+                        if section_repair_note:
+                            last_error = f"attempt_{attempt}:{section_repair_note}"
+
+                    last_content = final_content
+                    last_validation = final_validation
+                    if _report_polish_has_hard_fail(final_validation):
+                        last_error = f"attempt_{attempt}:validation_hard_fail:{_polish_input_text(final_validation.get('summary'))}"
+                        continue
+
+                    polished_report = _compose_polished_report(final_content, appendix)
                     return {
                         "report_markdown": deterministic,
                         "report_polished_markdown": polished_report,
                         "report_appendix_markdown": appendix,
+                        "report_fact_cards": report_fact_cards,
                         "report_polish_input": polish_input,
                         "report_polish_brief": polish_brief,
+                        "report_polish_validation": final_validation,
                         "report_polish_error": "",
                     }
                 last_error = f"attempt_{attempt}:empty_response"
             except Exception as exc:
                 last_error = f"attempt_{attempt}:{type(exc).__name__}: {exc}"
+        if last_content:
+            if _report_polish_has_hard_fail(last_validation):
+                return {
+                    "report_markdown": deterministic,
+                    "report_polished_markdown": "",
+                    "report_appendix_markdown": appendix,
+                    "report_fact_cards": report_fact_cards,
+                    "report_polish_input": polish_input,
+                    "report_polish_brief": polish_brief,
+                    "report_polish_validation": last_validation,
+                    "report_polish_error": last_error or "validation_hard_fail",
+                }
+            return {
+                "report_markdown": deterministic,
+                "report_polished_markdown": _compose_polished_report(last_content, appendix),
+                "report_appendix_markdown": appendix,
+                "report_fact_cards": report_fact_cards,
+                "report_polish_input": polish_input,
+                "report_polish_brief": polish_brief,
+                "report_polish_validation": last_validation,
+                "report_polish_error": last_error,
+            }
         return {
             "report_markdown": deterministic,
             "report_polished_markdown": "",
             "report_appendix_markdown": appendix,
+            "report_fact_cards": report_fact_cards,
             "report_polish_input": polish_input,
             "report_polish_brief": polish_brief,
+            "report_polish_validation": skipped_validation,
             "report_polish_error": last_error,
         }
     except Exception as exc:
@@ -3730,15 +4773,19 @@ def render_incident_report_with_llm(
             "report_markdown": deterministic,
             "report_polished_markdown": "",
             "report_appendix_markdown": appendix,
+            "report_fact_cards": report_fact_cards,
             "report_polish_input": polish_input,
             "report_polish_brief": polish_brief,
+            "report_polish_validation": skipped_validation,
             "report_polish_error": f"{type(exc).__name__}: {exc}",
         }
     return {
         "report_markdown": deterministic,
         "report_polished_markdown": "",
         "report_appendix_markdown": appendix,
+        "report_fact_cards": report_fact_cards,
         "report_polish_input": polish_input,
         "report_polish_brief": polish_brief,
+        "report_polish_validation": skipped_validation,
         "report_polish_error": "",
     }

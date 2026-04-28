@@ -58,7 +58,13 @@ python -m demo_agent \
 conda run -n trail-agent python tools/test_llm_agent_open_loop.py
 ```
 
-## 3. 输出内容
+## 3. 生命周期 / 数据流
+
+详细生命周期说明已单独整理到：
+
+- [lifecycle.md](/home/estar0x/project/maltrail_test/Trace-Agent/demo_agent/docs/lifecycle.md)
+
+## 4. 输出内容
 
 每条 case 通常会生成：
 
@@ -68,14 +74,22 @@ conda run -n trail-agent python tools/test_llm_agent_open_loop.py
 - `investigation_trace.json`
 - `report_outline.json`
 - `report.md`
+- `report_appendix.md`
+- `report_polish_input.json`
+- `report_polish_brief.md`
+- `report_polished.md` 或 `report_polish_error.txt`
 - `topology.json`
 - `topology.html`
 
-## 4. 常见查看顺序
+## 5. 常见查看顺序
 
 建议先看：
 
 1. `report.md`
-2. `incident.json`
-3. `investigation_trace.json`
-4. `topology.html`
+2. `report_polished.md`（如果存在）
+3. `report_outline.json`
+4. `delivery_decision.json`
+5. `reviewer_input.json`
+6. `incident.json`
+7. `investigation_trace.json`
+8. `topology.html`

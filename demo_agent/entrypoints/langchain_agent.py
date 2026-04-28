@@ -127,8 +127,10 @@ def _run_one_incident_agent(
     report_markdown = str(result.get("report_markdown") or "")
     report_polished_markdown = str(result.get("report_polished_markdown") or "")
     report_appendix_markdown = str(result.get("report_appendix_markdown") or "")
+    report_fact_cards = result.get("report_fact_cards") or {}
     report_polish_input = result.get("report_polish_input") or {}
     report_polish_brief = str(result.get("report_polish_brief") or "")
+    report_polish_validation = result.get("report_polish_validation") or {}
     report_polish_error = str(result.get("report_polish_error") or "")
     report_outline = result.get("report_outline") or {}
     evidence_store = incident.get("evidence_store") or {}
@@ -141,10 +143,14 @@ def _run_one_incident_agent(
     save_json(out_dir / "investigation_trace.json", trace)
     save_json(out_dir / "topology.json", topology)
     save_json(out_dir / "report_outline.json", report_outline)
+    if report_fact_cards:
+        save_json(out_dir / "report_fact_cards.json", report_fact_cards)
     if report_polish_input:
         save_json(out_dir / "report_polish_input.json", report_polish_input)
     if report_polish_brief.strip():
         save_text(out_dir / "report_polish_brief.md", report_polish_brief)
+    if report_polish_validation:
+        save_json(out_dir / "report_polish_validation.json", report_polish_validation)
     if evidence_store:
         save_json(out_dir / "evidence_store.json", evidence_store)
     if reviewer_input:
@@ -179,8 +185,12 @@ def _run_one_incident_agent(
     }
     if report_polish_input:
         response["report_polish_input_path"] = str((out_dir / "report_polish_input.json").resolve())
+    if report_fact_cards:
+        response["report_fact_cards_path"] = str((out_dir / "report_fact_cards.json").resolve())
     if report_polish_brief.strip():
         response["report_polish_brief_path"] = str((out_dir / "report_polish_brief.md").resolve())
+    if report_polish_validation:
+        response["report_polish_validation_path"] = str((out_dir / "report_polish_validation.json").resolve())
     if evidence_store:
         response["evidence_store_path"] = str((out_dir / "evidence_store.json").resolve())
     if reviewer_input:
