@@ -3421,14 +3421,14 @@ def _fact_reporting_focus(fact: Dict[str, Any], scope_roles: Dict[str, str]) -> 
         role = _polish_input_text(fact.get("role"))
         mapping = {
             "seed_asset": "调查锚点",
-            "affected_asset": "确认范围",
-            "related_asset": "待确认范围",
-            "core_external_indicator": "核心外部基础设施",
+            "affected_asset": "已确认受影响资产",
+            "related_asset": "待确认对象",
+            "core_external_indicator": "已确认关联基础设施",
             "related_internal_address": "内网关联对象",
             "contextual_indicator": "背景指标",
             "family_hint": "背景提示",
             "seed_fingerprint": "种子指标",
-            "expansion_candidate": "候选扩展",
+            "expansion_candidate": "待确认对象",
         }
         return mapping.get(role, "关键对象")
     if fact_type == "gap":
@@ -3464,11 +3464,11 @@ def _fact_boundary_note(fact: Dict[str, Any], scope_roles: Dict[str, str]) -> st
     if fact_type == "scope":
         role = _polish_input_text(fact.get("role"))
         mapping = {
-            "seed_asset": "作为起点表述，不等于单点即可完成定性",
-            "affected_asset": "说明范围已扩大，但不要替代具体证据链",
+            "seed_asset": "作为起点表述，不等于单点即可完成定性，也不要写成已确认受影响范围",
+            "affected_asset": "说明对象已进入已确认影响范围，但不要替代具体证据链",
             "related_asset": "保持待确认，不写成已确认受影响",
-            "core_external_indicator": "只应写入外联判断或边界封禁动作",
-            "related_internal_address": "只应写入内网推进或核查动作",
+            "core_external_indicator": "只应写入外联判断或边界封禁动作，不写成已确认受影响范围",
+            "related_internal_address": "只应写入内网推进或核查动作，不写成已确认受影响范围",
             "contextual_indicator": "只能作为背景，不要抬成主结论",
             "family_hint": "只能辅助解释，不做强归因",
             "seed_fingerprint": "仅作为起点指标，不直接等于事件成立",
@@ -3501,13 +3501,22 @@ def _build_fact_catalog_for_ids(
     allowed_fact_ids: set[str] | None,
 ) -> List[Dict[str, Any]]:
     scope_roles = _scope_role_index(report_fact_cards)
+    scope_cards = _fact_cards_by_type(report_fact_cards, fact_type="scope")
+
+    def _scope_cards_for_roles(*roles: str) -> List[Dict[str, Any]]:
+        role_set = {str(role).strip() for role in roles if str(role).strip()}
+        return [item for item in scope_cards if _polish_input_text(item.get("role")) in role_set]
+
     group_specs = [
         ("已确认事件事实", _fact_cards_by_type(report_fact_cards, fact_type="event", status="confirmed")),
         ("待确认事件事实", _fact_cards_by_type(report_fact_cards, fact_type="event", status="candidate")),
         ("背景事件事实", _fact_cards_by_type(report_fact_cards, fact_type="event", status="background")),
-        ("已确认范围对象", _fact_cards_by_type(report_fact_cards, fact_type="scope", status="confirmed")),
-        ("待确认范围对象", _fact_cards_by_type(report_fact_cards, fact_type="scope", status="candidate")),
-        ("背景指标对象", _fact_cards_by_type(report_fact_cards, fact_type="scope", status="background")),
+        ("调查锚点对象", _scope_cards_for_roles("seed_asset")),
+        ("已确认受影响对象", _scope_cards_for_roles("affected_asset")),
+        ("待确认范围对象", _scope_cards_for_roles("related_asset", "expansion_candidate")),
+        ("已确认关联基础设施", _scope_cards_for_roles("core_external_indicator")),
+        ("内网关联对象", _scope_cards_for_roles("related_internal_address")),
+        ("背景指标对象", _scope_cards_for_roles("contextual_indicator", "family_hint", "seed_fingerprint")),
         ("反证事实", _fact_cards_by_type(report_fact_cards, fact_type="counterevidence")),
         ("缺口事实", _fact_cards_by_type(report_fact_cards, fact_type="gap")),
         ("动作依据事实", _fact_cards_by_type(report_fact_cards, fact_type="action_basis")),
@@ -3555,7 +3564,6 @@ def _section_fact_payload(
 def _build_section_fact_map(report_fact_cards: Dict[str, Any]) -> List[Dict[str, Any]]:
     fact_index = _fact_card_index(report_fact_cards)
     verdict_packet = dict(report_fact_cards.get("verdict_packet") or {})
-    scope_packet = dict(report_fact_cards.get("scope_packet") or {})
     constraint_packet = dict(report_fact_cards.get("constraint_packet") or {})
     action_packet = dict(report_fact_cards.get("action_packet") or {})
     scope_roles = _scope_role_index(report_fact_cards)
@@ -3566,31 +3574,30 @@ def _build_section_fact_map(report_fact_cards: Dict[str, Any]) -> List[Dict[str,
     key_scope_cards = [
         item
         for item in _fact_cards_by_type(report_fact_cards, fact_type="scope")
-        if str(item.get("role") or "").strip() in {"seed_asset", "affected_asset", "related_asset", "core_external_indicator"}
+        if str(item.get("role") or "").strip() in {"seed_asset", "affected_asset", "related_asset", "expansion_candidate", "core_external_indicator"}
+    ]
+    anchor_scope_ids = [
+        str(item.get("fact_id") or "").strip()
+        for item in key_scope_cards
+        if str(item.get("role") or "").strip() == "seed_asset"
     ]
     core_external_scope_ids = [
         str(item.get("fact_id") or "").strip()
         for item in key_scope_cards
         if str(item.get("role") or "").strip() == "core_external_indicator"
     ]
-    confirmed_asset_scope_ids = [
+    affected_scope_ids = [
         str(item.get("fact_id") or "").strip()
         for item in key_scope_cards
-        if str(item.get("role") or "").strip() in {"seed_asset", "affected_asset"}
+        if str(item.get("role") or "").strip() == "affected_asset"
     ]
     candidate_scope_ids = [
         str(item.get("fact_id") or "").strip()
         for item in key_scope_cards
-        if str(item.get("role") or "").strip() == "related_asset"
-    ]
-    lateral_cards = [
-        item
-        for item in confirmed_events
-        if str(item.get("action") or "").strip() in {"访问内网目标", "出现执行迹象"}
+        if str(item.get("role") or "").strip() in {"related_asset", "expansion_candidate"}
     ]
     counter_cards = _fact_cards_by_type(report_fact_cards, fact_type="counterevidence")
     gap_cards = _fact_cards_by_type(report_fact_cards, fact_type="gap")
-    action_cards = _fact_cards_by_type(report_fact_cards, fact_type="action_basis")
 
     def _role_is(row: Dict[str, Any], role_name: str) -> bool:
         return _event_fact_subject_role(row, scope_roles) == role_name
@@ -3638,33 +3645,33 @@ def _build_section_fact_map(report_fact_cards: Dict[str, Any]) -> List[Dict[str,
             fact_index,
             section_id="summary",
             section_title="首页摘要",
-            objective="只收敛结论、严重度、把握度、已确认范围和立即动作，不展开附录型对象清单。",
+            objective="只收敛结论、严重度、把握度、已确认受影响范围和立即动作，不展开附录型对象清单；如果当前只有调查锚点而没有已确认受影响资产，不要把调查锚点改写成已确认影响范围。",
             packet_refs=["verdict_packet", "scope_packet", "action_packet"],
-            fact_ids=list(verdict_packet.get("supporting_fact_ids") or [])[:4] + list(scope_packet.get("supporting_fact_ids") or [])[:2],
+            fact_ids=list(verdict_packet.get("supporting_fact_ids") or [])[:4] + core_external_scope_ids[:1] + affected_scope_ids[:1],
         ),
         _section_fact_payload(
             fact_index,
             section_id="1",
             section_title="1. 事件背景与已知线索",
-            objective="说明事件为什么进入调查、初始异常是什么、当前最关键的外部基础设施是什么。",
+            objective="说明事件为什么进入调查、调查起点资产是什么、初始异常是什么，以及当前最关键的外部基础设施是什么。",
             packet_refs=["verdict_packet", "scope_packet"],
-            fact_ids=seed_dns_ids[:1] + seed_external_ids[:1] + confirmed_asset_scope_ids[:1] + core_external_scope_ids[:2],
+            fact_ids=seed_dns_ids[:1] + seed_external_ids[:1] + anchor_scope_ids[:1] + core_external_scope_ids[:2],
         ),
         _section_fact_payload(
             fact_index,
             section_id="2",
             section_title="2. 范围界定与调查假设",
-            objective="说明本轮判断覆盖到哪里、哪些对象仍待确认、为什么边界停在这里。",
+            objective="说明调查锚点、已确认受影响范围和待确认对象各落在哪里，以及为什么边界停在这里。",
             packet_refs=["scope_packet", "constraint_packet"],
-            fact_ids=confirmed_asset_scope_ids[:2] + core_external_scope_ids[:2] + candidate_scope_ids[:1] + gap_ids[:1] + counter_ids[:1],
+            fact_ids=anchor_scope_ids[:1] + affected_scope_ids[:2] + core_external_scope_ids[:2] + candidate_scope_ids[:1] + gap_ids[:1] + counter_ids[:1],
         ),
         _section_fact_payload(
             fact_index,
             section_id="3",
             section_title="3. 对象覆盖策略与关键实体",
-            objective="区分已确认资产、待确认对象、核心外部基础设施和背景指标，只点关键对象。",
+            objective="区分调查锚点、已确认受影响对象、待确认对象、核心外部基础设施和背景指标，只点关键对象。",
             packet_refs=["scope_packet"],
-            fact_ids=confirmed_asset_scope_ids[:2] + candidate_scope_ids[:1] + core_external_scope_ids[:2],
+            fact_ids=anchor_scope_ids[:1] + affected_scope_ids[:2] + candidate_scope_ids[:1] + core_external_scope_ids[:2],
         ),
         _section_fact_payload(
             fact_index,
@@ -3694,17 +3701,17 @@ def _build_section_fact_map(report_fact_cards: Dict[str, Any]) -> List[Dict[str,
             fact_index,
             section_id="7",
             section_title="7. 传播与关联分析",
-            objective="说明哪些关联已经进入主判断，哪些扩线结果仍只是候选或边界说明。",
+            objective="说明哪些关联已经进入主判断，哪些扩线结果仍只是候选或边界说明，不要把调查锚点直接写成范围扩大。",
             packet_refs=["scope_packet", "constraint_packet"],
-            fact_ids=seed_lateral_ids[:1] + (affected_external_ids[:1] or affected_lateral_ids[:1]) + candidate_event_ids[:3] + list(scope_packet.get("supporting_fact_ids") or [])[-1:],
+            fact_ids=seed_lateral_ids[:1] + (affected_external_ids[:1] or affected_lateral_ids[:1]) + candidate_event_ids[:3] + candidate_scope_ids[:1],
         ),
         _section_fact_payload(
             fact_index,
             section_id="8",
             section_title="8. 影响分析",
-            objective="说明已经确认的影响范围、仍待确认的部分，以及这对运维处置意味着什么。",
+            objective="说明已确认受影响范围、已确认异常行为和仍待确认部分之间的区别；如果没有已确认受影响资产，必须写成“当前尚无已确认受影响资产；已观察到的异常行为主要落在调查锚点”，不要使用“影响范围仅限于调查锚点”这类表述。",
             packet_refs=["verdict_packet", "scope_packet", "action_packet"],
-            fact_ids=confirmed_asset_scope_ids[:2] + candidate_scope_ids[:1] + core_external_scope_ids[:2] + (affected_external_ids[:1] or execution_ids[:1]) + (affected_lateral_ids[:1] or seed_lateral_ids[:1]),
+            fact_ids=anchor_scope_ids[:1] + affected_scope_ids[:2] + candidate_scope_ids[:1] + core_external_scope_ids[:2] + (affected_external_ids[:1] or execution_ids[:1] or seed_external_ids[:1]) + (affected_lateral_ids[:1] or seed_lateral_ids[:1]),
         ),
         _section_fact_payload(
             fact_index,
@@ -3941,6 +3948,8 @@ def build_report_polish_brief(polish_input: Dict[str, Any]) -> str:
         lines.append("- 如果某节材料不足，请保留标题并用保守表述说明当前证据不足，不得补写。")
         lines.append("- Fact Catalog 会把全部可用事实只列一次；各章节仅围绕 Section Fact Map 中给出的 fact ID 取材。")
         lines.append("- 如果某条 fact 带有“判断作用 / 书写边界”，正文应先解释它为什么改变判断，再交代边界，不要只复述事件发生。")
+        lines.append("- 调查锚点、已确认受影响对象、核心外部基础设施是三类不同角色，必须分开表述。")
+        lines.append("- 如果当前没有已确认受影响资产，可以写调查锚点和处置焦点，但不要把调查起点改写成已确认影响范围。")
 
         _append_polish_brief_heading(lines, "## Header Packet")
         _append_polish_brief_line(lines, "事件标题", report_header.get("title"))
@@ -3948,14 +3957,18 @@ def build_report_polish_brief(polish_input: Dict[str, Any]) -> str:
         _append_polish_brief_line(lines, "最终结论", report_header.get("final_verdict"))
         _append_polish_brief_line(lines, "严重度", report_header.get("severity"))
         _append_polish_brief_line(lines, "研判把握", report_header.get("confidence"))
-        _append_polish_brief_line(lines, "已确认范围", report_header.get("confirmed_scope"))
+        _append_polish_brief_line(lines, "已确认受影响范围", report_header.get("confirmed_scope"))
         _append_polish_brief_line(lines, "一句话结论", report_header.get("one_sentence_summary"))
 
         _append_polish_brief_heading(lines, "## Verdict Packet")
         _append_polish_brief_line(lines, "结论陈述", verdict_packet.get("conclusion_statement"))
 
         _append_polish_brief_heading(lines, "## Scope Packet")
-        _append_polish_brief_list(lines, "已确认对象", list(scope_packet.get("confirmed_entities") or []))
+        confirmed_entities = list(scope_packet.get("confirmed_entities") or [])
+        if confirmed_entities:
+            _append_polish_brief_list(lines, "已确认受影响对象", confirmed_entities)
+        else:
+            _append_polish_brief_line(lines, "已确认受影响对象", "当前尚无已确认受影响资产")
         _append_polish_brief_list(lines, "待确认对象", list(scope_packet.get("candidate_entities") or []))
 
         _append_polish_brief_heading(lines, "## Constraint Packet")
@@ -3994,7 +4007,10 @@ def build_report_polish_brief(polish_input: Dict[str, Any]) -> str:
 
         _append_polish_brief_heading(lines, "## Writing Priorities")
         lines.append("- 第1、2、4、5、7、8、9节默认写成连续短段落，不要把正文写成 fact card 清单。")
-        lines.append("- 已确认对象、待确认对象、背景指标必须分开表述，不能混写。")
+        lines.append("- 调查锚点、已确认受影响对象、待确认对象、背景指标必须分开表述，不能混写。")
+        lines.append("- 调查起点资产只写成调查锚点或调查焦点，不写成已确认受影响资产。")
+        lines.append("- 核心外部基础设施只写成已确认关联基础设施或关键外联对象，不写成已确认受影响范围。")
+        lines.append("- 第8节如果没有已确认受影响对象，使用“当前尚无已确认受影响资产；已观察到的异常行为主要落在调查锚点”这类句式，不要使用任何“影响范围仅限于调查锚点”的变体。")
         lines.append("- 反证只说明为什么它不足以推翻主判断，不要把背景流量写成主结论。")
         return "\n".join(lines).strip() + "\n"
 
@@ -4525,6 +4541,7 @@ def render_incident_report_with_llm(
             "除非直接影响处置动作，否则不要在主报告中展开 JA3、JA4、DNS answers 等过细技术字段；这些内容应留在附录。\n"
             "如果时间线或事件摘要里有英文，请改写成自然的中文运维表述。\n"
             "如果 brief 里的一句话结论、已确认范围或动作建议把不同角色的对象并列写在一起，你必须先按对象角色重组后再写，不能照抄原句。\n"
+            "这里的“已确认范围”专指已确认受影响范围，不包括仅作为调查锚点、调查焦点或外部基础设施出现的对象。\n"
             "凡是域名、IP、资产名、内网地址、时间这类精确实体，一律逐字沿用 brief 中已有写法，不要缩写、改写、补字、漏字或替换字符。\n"
             "当规则冲突时，优先级如下：1. 不新增事实；2. 对象角色规则；3. 固定章节结构与固定枚举；4. 各章节写作任务；5. 风格与篇幅要求。\n"
             "最终只返回 Markdown 正文，不要返回 JSON、额外说明或实现解释。\n"
@@ -4553,6 +4570,7 @@ def render_incident_report_with_llm(
             "- **一句话结论**：\n"
             "- **立即动作**：\n"
             "首页摘要视为格式校验点：不要额外添加报告总标题、案例标题、导语、空行说明或第 7 行摘要。\n"
+            "其中“已确认范围”这一行专指已确认受影响范围；如果当前只有调查锚点而没有已确认受影响资产，必须如实写成“当前尚无已确认受影响资产”或同等保守表述。\n"
             "\n"
             "固定枚举要求：\n"
             "1. 严重度只能写：高 / 中 / 低。\n"
@@ -4563,26 +4581,28 @@ def render_incident_report_with_llm(
             "缺信息时的保守写法：\n"
             "1. 若 brief 未提供支撑某节所需的信息，请保留该节标题，并用 1 到 2 句说明“当前证据不足以支持进一步确认”或“当前仅能保守收敛到以下范围”，不得为了补齐章节而补写新事实。\n"
             "2. 若不存在足够反证，只说明“目前未见足以推翻主判断的反向证据”，不要为了满足结构制造反证段落。\n"
-            "3. 若 brief 同时包含已确认对象与候选对象，必须先写已确认范围，再单独写待确认对象，禁止混写。\n"
+            "3. 若 brief 同时包含已确认受影响对象与候选对象，必须先写已确认范围，再单独写待确认对象，禁止混写。\n"
             "4. 若 brief 中直接出现内部工作词，必须先改写成读者向表达再落文；例如把内部扩线话术改写为“围绕当前关键关联指标继续核查”，而不是保留原词。\n"
             "\n"
             "对象角色规则：\n"
-            "1. 核心外部基础设施或外部基础设施范围，只能写进外联异常判断、边界封禁或出口侧排查动作。\n"
-            "2. 关联内部地址、横向目标、内网 IP，只能写进横向移动、内网核查或主机侧排查动作，不能写成需要边界封禁的外部基础设施。\n"
-            "3. 待确认对象、候选对象、背景指标，必须和已确认对象分开表述，不能并入已确认范围。\n"
-            "4. 如果同一节里同时出现外部基础设施和内部横向目标，必须明确说明二者在事件链中的角色不同。\n"
-            "5. 如果 brief 中明确给出了核心外部基础设施，正文必须点名这些域名或 IP，并说明它们为什么被视为当前事件链的核心可疑基础设施，而不只是普通背景流量。\n"
+            "1. 调查锚点或调查起点资产，只能写成调查锚点、调查焦点或当前处置重点，不能直接写成已确认受影响范围。\n"
+            "2. 已确认受影响对象，才可以写进已确认范围、已确认影响或确认传播范围。\n"
+            "3. 核心外部基础设施或外部基础设施范围，只能写进外联异常判断、边界封禁或出口侧排查动作。\n"
+            "4. 关联内部地址、横向目标、内网 IP，只能写进横向移动、内网核查或主机侧排查动作，不能写成需要边界封禁的外部基础设施。\n"
+            "5. 待确认对象、候选对象、背景指标，必须和已确认对象分开表述，不能并入已确认范围。\n"
+            "6. 如果同一节里同时出现外部基础设施和内部横向目标，必须明确说明二者在事件链中的角色不同。\n"
+            "7. 如果 brief 中明确给出了核心外部基础设施，正文必须点名这些域名或 IP，并说明它们为什么被视为当前事件链的核心可疑基础设施，而不只是普通背景流量。\n"
             "\n"
             "各章节的写作任务如下：\n"
             "首页摘要：只放结论、严重度、把握度、已确认范围、一句话结论和立即动作，不要塞附录型对象清单。\n"
             "第1节：说明这起事件最初为什么进入调查，初始异常是什么，核心外部基础设施是什么。\n"
             "第2节：说明本轮调查试图回答什么问题，当前结论覆盖到哪里，不覆盖到哪里；若边界未闭合，要明确写出保守边界。\n"
-            "第3节：只写真正影响判断的关键对象，明确区分已确认资产、待确认对象、核心外部基础设施和背景指标。\n"
+            "第3节：只写真正影响判断的关键对象，明确区分调查锚点、已确认受影响对象、待确认对象、核心外部基础设施和背景指标。\n"
             "第4节：把事件写成因果链，突出从网络异常到主机执行再到范围扩展的推进关系，不要逐条重放全部时间点。\n"
             "第5节：只选最关键的 3 到 4 组证据，按“事实 -> 为什么它改变判断 -> 它的边界”来写；优先覆盖异常起点、持续复现、主机或横向升级、反证不足这几类内容。\n"
             "第6节：总结时序模式，只保留 3 到 4 个决定性时间节点，并写清这些节点对判断意味着什么。\n"
             "第7节：说明传播和关联是如何被确认的，哪些扩线结果仍只是候选，为什么它们暂时不能并入主范围；若目标仍待确认，只能写成“出现关联命中”或“需要继续核实”，不能直接写成“已确认扩散到该资产”。\n"
-            "第8节：说明已经确认的影响是什么，疑似影响是什么，以及这些影响对运维处置意味着什么。\n"
+            "第8节：说明已确认受影响范围、已确认异常行为和待确认影响之间的区别；如果当前没有已确认受影响对象，必须使用“当前尚无已确认受影响资产；已观察到的异常行为主要落在调查锚点”这类句式，不要使用任何“影响范围仅限于调查锚点”的变体。\n"
             "第9节：明确指出当前还能做出的判断上限，以及剩余缺口限制了哪些更强结论，但不要把缺口写成否定当前主结论。\n"
             "第10节：动作建议必须分清优先级，并尽量回扣前文证据或边界判断；只分成“立即处置 / 短期核查 / 持续复核”三组，不要扩成更细的 checklist。\n"
             "第11节：只提示读者附录里能看到什么技术明细，不要在这一节重复附录内容。\n"
@@ -4599,6 +4619,7 @@ def render_incident_report_with_llm(
             "- 只说“异常仍在持续”而不说明为什么它重要。\n"
             "- 只写存在维护窗口或背景流量，但不解释为什么这些反证不足以推翻主结论。\n"
             "- 把疑似对象直接写成已确认受影响范围。\n"
+            "- 在没有已确认受影响对象时，写“当前影响范围仅限于该资产”“当前的影响范围仅限于调查锚点的异常行为”等同类表述。\n"
             "- 把待确认关联资产写成已确认传播终点，例如“已确认异常从 A 扩散到了 B”。\n"
             "- 直接照抄 brief 里的动作句或一句话结论，导致对象角色混乱。\n"
             "- 把附录型对象清单改写成正文枚举，导致主体段落失去分析性。\n"

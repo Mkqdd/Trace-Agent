@@ -1,1 +1,0 @@
-attempt_2:validation_hard_fail:发现 7 条 hard-fail 和 0 条 soft-warn。

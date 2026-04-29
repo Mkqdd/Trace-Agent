@@ -34,7 +34,6 @@ demo_agent/.env.example
 python -m demo_agent \
   --alert fixtures/incidents/web_initial_access_to_beacon \
   --out outputs/incident_tests/web_initial_access_to_beacon/agent \
-  --decision-mode heuristic \
   --mode incident-agent
 ```
 
@@ -42,7 +41,7 @@ python -m demo_agent \
 
 - `--alert`：可以直接指向 fixture case 目录，也可以指向 `seed_alert.json`
 - `--out`：输出目录
-- `--decision-mode`：调查模式，可选 `heuristic`、`llm_selector`、`llm_agent`、`hybrid`
+- `--decision-mode`：调查模式，默认 `llm_agent`；可选 `heuristic`、`llm_selector`、`llm_agent`、`hybrid`
 - `--mode`：当前只保留 `incident-agent`
 
 模式区别：
@@ -51,6 +50,8 @@ python -m demo_agent \
 - `llm_selector`：LLM 只能在代码给出的候选动作中选一个
 - `llm_agent`：LLM 在开放工具目录里自行决定下一步工具和参数，并显式决定何时 `finish`
 - `hybrid`：保留候选动作模式，但优先让 LLM 选择
+
+如果没有配置可用 LLM，请求 `llm_agent` 时会自动降级到 `heuristic`，以便离线 smoke test 仍能跑通。
 
 如果要快速验证 `llm_agent` 的开放式循环，可运行：
 

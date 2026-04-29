@@ -13,14 +13,15 @@ from ..utils.io import load_json, save_json, save_text
 
 ROOT = Path(__file__).resolve().parents[2]
 DECISION_MODE_CHOICES = ["heuristic", "llm_selector", "llm_agent", "hybrid"]
+DEFAULT_DECISION_MODE = "llm_agent"
 LLM_DECISION_MODES = {"llm_selector", "llm_agent", "hybrid"}
 
 
 def _normalize_decision_mode(value: Any) -> str:
     text = str(value or "").strip().lower()
     aliases = {
-        "": "heuristic",
-        "default": "heuristic",
+        "": DEFAULT_DECISION_MODE,
+        "default": DEFAULT_DECISION_MODE,
         "heuristic_fallback": "heuristic",
         "llm": "llm_selector",
         "selector": "llm_selector",
@@ -29,7 +30,7 @@ def _normalize_decision_mode(value: Any) -> str:
     }
     normalized = aliases.get(text, text)
     if normalized not in DECISION_MODE_CHOICES:
-        return "heuristic"
+        return DEFAULT_DECISION_MODE
     return normalized
 
 
@@ -38,7 +39,7 @@ def _truthy_env(name: str) -> bool:
 
 
 def _load_optional_llm(decision_mode: str | None = None) -> Tuple[Any, Dict[str, Any]]:
-    requested_mode = _normalize_decision_mode(decision_mode or os.getenv("INCIDENT_AGENT_DECISION_MODE") or "")
+    requested_mode = _normalize_decision_mode(decision_mode or os.getenv("INCIDENT_AGENT_DECISION_MODE") or DEFAULT_DECISION_MODE)
     enabled_by_flag = _truthy_env("INCIDENT_AGENT_ENABLE_LLM")
     should_attempt = enabled_by_flag or requested_mode in LLM_DECISION_MODES
     runtime = {
@@ -172,7 +173,7 @@ def _run_one_incident_agent(
     response = {
         "ok": True,
         "out_dir": str(out_dir),
-        "decision_mode": decision_mode or os.getenv("INCIDENT_AGENT_DECISION_MODE") or "heuristic",
+        "decision_mode": _normalize_decision_mode(decision_mode or os.getenv("INCIDENT_AGENT_DECISION_MODE") or DEFAULT_DECISION_MODE),
         "llm_runtime": dict(llm_runtime or {}),
         "incident_json_path": str((out_dir / "incident.json").resolve()),
         "investigation_trace_path": str((out_dir / "investigation_trace.json").resolve()),
@@ -224,7 +225,7 @@ def run(
     return {
         "mode": "incident-agent",
         "fixture_dir": str(resolved_fixture_dir),
-        "decision_mode": decision_mode or os.getenv("INCIDENT_AGENT_DECISION_MODE") or "heuristic",
+        "decision_mode": _normalize_decision_mode(decision_mode or os.getenv("INCIDENT_AGENT_DECISION_MODE") or DEFAULT_DECISION_MODE),
         "llm_runtime": dict(llm_runtime or {}),
         "items": [
             _run_one_incident_agent(
@@ -250,9 +251,9 @@ def main() -> None:
     parser.add_argument("--fixture-dir", default=None, help="incident-agent 模式的 fixture 目录，可选")
     parser.add_argument(
         "--decision-mode",
-        default=os.getenv("INCIDENT_AGENT_DECISION_MODE") or "heuristic",
+        default=os.getenv("INCIDENT_AGENT_DECISION_MODE") or DEFAULT_DECISION_MODE,
         choices=DECISION_MODE_CHOICES,
-        help="decision mode: heuristic, llm_selector, llm_agent, or hybrid",
+        help="decision mode: llm_agent (default), heuristic, llm_selector, or hybrid",
     )
     args = parser.parse_args()
 

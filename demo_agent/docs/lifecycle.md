@@ -47,8 +47,8 @@
 │ │    2. `_action_candidates()` / `_available_tool_catalog()` │
 │ │    3. `_stop_decision()`                                   │
 │ │    4. 选择动作                                              │
-│ │       - `heuristic` / `llm_selector` / `hybrid`            │
-│ │       - 或 `llm_agent` + reviewer gate                     │
+│ │       - 默认：`llm_agent` + reviewer gate                  │
+│ │       - fallback / legacy：`heuristic` / `llm_selector` / `hybrid` │
 │ │    5. `_execute_action()`                                  │
 │ │    6. observation -> `incident_state` / `evidence_ledger`  │
 │ │    7. 记录 `investigation_trace`                           │
@@ -126,14 +126,16 @@
 
 ## 3. 不同 decision mode 在哪里分叉
 
+默认主线是 `llm_agent`。如果没有可用 LLM，会自动降级到 `heuristic`，用于离线 fallback 和 baseline 对照。
+
 - `heuristic`
-  - 代码直接根据候选动作优先级推进。
+  - 代码直接根据候选动作优先级推进，主要作为 fallback / baseline。
 - `llm_selector`
   - LLM 只能在代码给出的 `candidate_actions` 里选一个。
 - `hybrid`
   - 仍然保留候选动作集合，但优先让 LLM 参与选择。
 - `llm_agent`
-  - LLM 直接面向开放工具目录提出动作，随后再经过 reviewer gate 决定是否放行、替换或 finish。
+  - 当前主开发路径。LLM 直接面向开放工具目录提出动作，随后再经过 reviewer gate 决定是否放行、替换或 finish。
 
 ## 4. deterministic report 和 polished report 的关系
 

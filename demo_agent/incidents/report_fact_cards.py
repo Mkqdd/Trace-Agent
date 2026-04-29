@@ -60,6 +60,17 @@ CONFIDENCE_BAND = {
     "low": "低",
     "低": "低",
 }
+SCOPE_ROLE_LABEL = {
+    "seed_asset": "调查锚点",
+    "affected_asset": "已确认受影响资产",
+    "related_asset": "待确认关联资产",
+    "core_external_indicator": "已确认关联基础设施",
+    "related_internal_address": "内网关联对象",
+    "contextual_indicator": "背景指标",
+    "family_hint": "背景提示",
+    "seed_fingerprint": "种子指标",
+    "expansion_candidate": "候选扩展对象",
+}
 
 
 def _text(value: Any) -> str:
@@ -226,13 +237,22 @@ def _event_summary_line(event: Dict[str, Any], *, status: str) -> str:
 
 def _scope_summary_line(item: Dict[str, Any]) -> str:
     value = _text(item.get("value")) or "相关对象"
-    role_label = _text(item.get("role_label")) or _text(item.get("current_role")) or "对象"
-    status = ROLE_TO_STATUS.get(_text(item.get("current_role")), "candidate")
-    if status == "confirmed":
-        return f"对象 `{value}` 当前作为{role_label}纳入已确认范围。"
+    current_role = _text(item.get("current_role"))
+    role_label = SCOPE_ROLE_LABEL.get(current_role) or _text(item.get("role_label")) or current_role or "对象"
+    status = ROLE_TO_STATUS.get(current_role, "candidate")
+    if current_role == "seed_asset":
+        return f"对象 `{value}` 当前作为调查锚点保留在主调查链中。"
+    if current_role == "affected_asset":
+        return f"对象 `{value}` 当前作为已确认受影响资产纳入已确认影响范围。"
+    if current_role == "core_external_indicator":
+        return f"对象 `{value}` 当前作为已确认关联基础设施纳入主证据链。"
+    if current_role == "related_internal_address":
+        return f"对象 `{value}` 当前作为内网关联对象纳入主证据链。"
     if status == "background":
         return f"对象 `{value}` 当前只作为{role_label}保留为背景指标。"
-    return f"对象 `{value}` 当前作为{role_label}保留为待确认范围。"
+    if status == "candidate":
+        return f"对象 `{value}` 当前作为{role_label}保留为待确认范围。"
+    return f"对象 `{value}` 当前作为{role_label}纳入主证据链。"
 
 
 def _gap_summary_line(gap: Dict[str, Any]) -> str:
@@ -254,7 +274,9 @@ def _recommendation_rows(evidence_store: Dict[str, Any], delivery_decision: Dict
     focus_assets = confirmed_scope or ([_text(coverage.get("seed_asset"))] if _text(coverage.get("seed_asset")) else [])
 
     rows: List[Tuple[str, str]] = []
-    if focus_assets:
+    if confirmed_scope:
+        rows.append(("immediate", _action_text(f"优先隔离或重点监控已确认受影响资产：{'、'.join(confirmed_scope[:4])}")))
+    elif focus_assets:
         rows.append(("immediate", _action_text(f"优先隔离或重点监控资产：{'、'.join(focus_assets[:4])}")))
     if core_indicators:
         rows.append(("immediate", _action_text(f"在边界和代理设备上排查并封禁外部基础设施：{'、'.join(core_indicators[:4])}")))
@@ -321,6 +343,10 @@ def build_report_fact_cards(evidence_store: Dict[str, Any], delivery_decision: D
     candidate_event_fact_ids: List[str] = []
     confirmed_scope_fact_ids: List[str] = []
     candidate_scope_fact_ids: List[str] = []
+    seed_scope_fact_ids: List[str] = []
+    affected_scope_fact_ids: List[str] = []
+    core_external_scope_fact_ids: List[str] = []
+    related_internal_scope_fact_ids: List[str] = []
     packet_confirmed_scope_fact_ids: List[str] = []
     packet_candidate_scope_fact_ids: List[str] = []
     gap_fact_ids: List[str] = []
@@ -396,9 +422,17 @@ def build_report_fact_cards(evidence_store: Dict[str, Any], delivery_decision: D
             confirmed_scope_fact_ids.append(fact_id)
         elif card_status == "candidate":
             candidate_scope_fact_ids.append(fact_id)
-        if current_role in {"seed_asset", "affected_asset", "core_external_indicator"}:
+        if current_role == "seed_asset":
+            seed_scope_fact_ids.append(fact_id)
+        elif current_role == "affected_asset":
+            affected_scope_fact_ids.append(fact_id)
+        elif current_role == "core_external_indicator":
+            core_external_scope_fact_ids.append(fact_id)
+        elif current_role == "related_internal_address":
+            related_internal_scope_fact_ids.append(fact_id)
+        if current_role in {"affected_asset", "core_external_indicator"}:
             packet_confirmed_scope_fact_ids.append(fact_id)
-        elif current_role == "related_asset":
+        elif current_role in {"related_asset", "expansion_candidate"}:
             packet_candidate_scope_fact_ids.append(fact_id)
 
     gap_rows: List[Dict[str, Any]] = [
@@ -461,13 +495,17 @@ def build_report_fact_cards(evidence_store: Dict[str, Any], delivery_decision: D
 
     delivery_verdict = dict(delivery_decision.get("delivery_verdict") or {})
     analysis_verdict = dict(delivery_decision.get("analysis_verdict") or {})
+    primary_scope_fact_ids = affected_scope_fact_ids[:2] or seed_scope_fact_ids[:1]
+    indicator_scope_fact_ids = core_external_scope_fact_ids[:2] or related_internal_scope_fact_ids[:1]
     verdict_packet = {
         "severity": _normalize_severity(
             delivery_verdict.get("severity") or analysis_verdict.get("severity") or delivery_decision.get("severity")
         ),
         "confidence": _normalize_confidence(delivery_decision.get("confidence_band") or analysis_verdict.get("confidence_band")),
         "conclusion_statement": _conclusion_statement(evidence_store, delivery_decision),
-        "supporting_fact_ids": _dedupe_text(event_fact_ids[:3] + packet_confirmed_scope_fact_ids[:4] + counterevidence_fact_ids[:1]),
+        "supporting_fact_ids": _dedupe_text(
+            event_fact_ids[:3] + primary_scope_fact_ids + indicator_scope_fact_ids + counterevidence_fact_ids[:1]
+        ),
     }
     scope_packet = {
         "confirmed_entities": _dedupe_text(list(delivery_decision.get("confirmed_scope") or [])),
@@ -487,7 +525,7 @@ def build_report_fact_cards(evidence_store: Dict[str, Any], delivery_decision: D
     action_packet = {
         "immediate_actions": immediate_actions[:3],
         "next_steps": next_steps[:3],
-        "supporting_fact_ids": _dedupe_text(packet_confirmed_scope_fact_ids[:4] + gap_fact_ids[:2] + action_card_ids),
+        "supporting_fact_ids": _dedupe_text(primary_scope_fact_ids + indicator_scope_fact_ids + gap_fact_ids[:2] + action_card_ids),
     }
 
     type_counts: Dict[str, int] = {}
