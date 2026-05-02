@@ -111,13 +111,24 @@ def _run_one_incident_agent(
     save_json(out_dir / "input_alert.json", alert)
     save_json(out_dir / "event.json", event)
 
-    result = run_incident_agent_case(
-        seed_alert=alert,
-        fixture_dir=str(fixture_dir),
-        llm=llm,
-        llm_runtime=llm_runtime,
-        decision_mode=decision_mode,
-    )
+    llm_trace_path = out_dir / "llm_calls.jsonl"
+    previous_llm_trace_path = os.environ.get("INCIDENT_AGENT_LLM_TRACE_PATH")
+    if llm is not None:
+        os.environ["INCIDENT_AGENT_LLM_TRACE_PATH"] = str(llm_trace_path)
+    try:
+        result = run_incident_agent_case(
+            seed_alert=alert,
+            fixture_dir=str(fixture_dir),
+            llm=llm,
+            llm_runtime=llm_runtime,
+            decision_mode=decision_mode,
+        )
+    finally:
+        if llm is not None:
+            if previous_llm_trace_path is None:
+                os.environ.pop("INCIDENT_AGENT_LLM_TRACE_PATH", None)
+            else:
+                os.environ["INCIDENT_AGENT_LLM_TRACE_PATH"] = previous_llm_trace_path
     incident = result.get("incident") or {}
     if isinstance(incident, dict):
         decision_block = dict(incident.get("decision_mode") or {})
@@ -134,6 +145,7 @@ def _run_one_incident_agent(
     report_polish_validation = result.get("report_polish_validation") or {}
     report_polish_error = str(result.get("report_polish_error") or "")
     report_outline = result.get("report_outline") or {}
+    run_metrics = result.get("run_metrics") or incident.get("run_metrics") or {}
     evidence_store = incident.get("evidence_store") or {}
     reviewer_input = incident.get("reviewer_input") or {}
     delivery_decision = incident.get("delivery_decision") or {}
@@ -142,6 +154,8 @@ def _run_one_incident_agent(
 
     save_json(out_dir / "incident.json", incident)
     save_json(out_dir / "investigation_trace.json", trace)
+    if run_metrics:
+        save_json(out_dir / "run_metrics.json", run_metrics)
     save_json(out_dir / "topology.json", topology)
     save_json(out_dir / "report_outline.json", report_outline)
     if report_fact_cards:
@@ -177,6 +191,8 @@ def _run_one_incident_agent(
         "llm_runtime": dict(llm_runtime or {}),
         "incident_json_path": str((out_dir / "incident.json").resolve()),
         "investigation_trace_path": str((out_dir / "investigation_trace.json").resolve()),
+        "run_metrics_path": str((out_dir / "run_metrics.json").resolve()) if run_metrics else "",
+        "llm_call_trace_path": str(llm_trace_path.resolve()) if llm_trace_path.exists() else "",
         "topology_json_path": str((out_dir / "topology.json").resolve()),
         "topology_html_path": topology_html_path,
         "report_outline_path": str((out_dir / "report_outline.json").resolve()),
@@ -243,10 +259,10 @@ def run(
 def main() -> None:
     import argparse
 
-    default_fixture = ROOT / "fixtures" / "incidents" / "single_host_c2_beacon"
+    default_fixture = ROOT / "fixtures" / "incidents" / "web_initial_access_without_execution"
     parser = argparse.ArgumentParser(description="Trace-Agent incident-agent pipeline.")
     parser.add_argument("--alert", default=str(default_fixture), help="path to a fixture case directory or seed_alert.json")
-    parser.add_argument("--out", default=str(ROOT / "outputs" / "incident_tests" / "single_host_c2_beacon" / "agent"), help="output directory")
+    parser.add_argument("--out", default=str(ROOT / "outputs" / "incident_tests" / "web_initial_access_without_execution" / "agent"), help="output directory")
     parser.add_argument("--mode", default="incident-agent", choices=["incident-agent"], help="agent mode")
     parser.add_argument("--fixture-dir", default=None, help="incident-agent 模式的 fixture 目录，可选")
     parser.add_argument(

@@ -1,0 +1,36 @@
+{
+  "event_time": "2026-05-11 14:12:00",
+  "simulated": false,
+  "src": {
+    "ip": "10.60.1.14",
+    "port": null
+  },
+  "dst": {
+    "ip": "198.51.100.88",
+    "port": null
+  },
+  "protocol": "TLS",
+  "trigger_fingerprint": {
+    "type": "JA4",
+    "value": "t13d1517h2_91adbe210bc1_7cae1281e991",
+    "matched": true
+  },
+  "enrichment": {
+    "info": "Possible web-shell beacon",
+    "reference": "fixture",
+    "update_time": "2026-05-11 14:12:00"
+  },
+  "raw_alert": {
+    "timestamp": "2026-05-11 14:12:00",
+    "src_ip": "10.60.1.14",
+    "dst_ip": "198.51.100.88",
+    "protocol": "TLS",
+    "trigger_fingerprint": {
+      "type": "JA4",
+      "value": "t13d1517h2_91adbe210bc1_7cae1281e991"
+    },
+    "info": "Possible web-shell beacon",
+    "reference": "fixture",
+    "update_time": "2026-05-11 14:12:00"
+  }
+}

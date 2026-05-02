@@ -40,6 +40,7 @@ from .pipeline import (
 from .render import build_incident_report_outline, build_incident_topology, render_incident_report_with_llm
 from .reviewer import build_delivery_decision, build_reviewer_input
 from .store import FixtureTraceStoreAdapter, TraceStore
+from ..services.api.llm_observability import invoke_llm_with_trace
 
 
 DEFAULT_BUDGETS = {
@@ -84,44 +85,79 @@ VALID_DECISION_MODES = {
 }
 REVIEWER_DECISIONS = {"allow", "block", "redundant", "deliverable", "not_deliverable"}
 REVIEWER_NEXT_ACTION_TYPES = {"tool", "finish", "none"}
+POST_ACTION_REVIEW_RESULTS = {"continue", "needs_retry", "stop_ready", "low_value", "boundary"}
+POST_ACTION_MATERIAL_DELTA_LEVELS = {"high", "medium", "low", "none"}
+STOP_REASON_STEP_BUDGET = "step_budget_exhausted"
+STOP_REASON_TOOL_BUDGET = "tool_budget_exhausted"
+STOP_REASON_RUNTIME_BUDGET = "runtime_budget_exhausted"
+STOP_REASON_EVENT_QUERY_BUDGET = "event_query_budget_exhausted"
+STOP_REASON_INTEL_QUERY_BUDGET = "intel_query_budget_exhausted"
+STOP_REASON_DELIVERY_READY = "delivery_ready"
+STOP_REASON_REPEATED_BLOCKED_FINISH = "repeated_blocked_finish"
+STOP_REASON_TWO_LOW_VALUE_STEPS = "two_low_value_steps"
+STOP_REASON_PREFLIGHT_BLOCK_LOOP = "preflight_block_loop"
+STOP_REASON_AGENT_FINISH = "agent_finish"
+STOP_REASON_SELECTOR_STOP = "selector_stop"
+STOP_REASON_NO_HIGH_VALUE_ACTION = "no_high_value_action"
+STOP_REASON_NO_ACTIONABLE_PATH = "no_actionable_path"
+STOP_REASON_UNKNOWN = "unknown_stop_reason"
+STOP_REASON_CONTINUE = "continue"
+STOP_REASON_PENDING_POST_ACTION_REVIEW = "pending_post_action_review"
+STOP_REASON_ENUM = {
+    STOP_REASON_STEP_BUDGET,
+    STOP_REASON_TOOL_BUDGET,
+    STOP_REASON_RUNTIME_BUDGET,
+    STOP_REASON_EVENT_QUERY_BUDGET,
+    STOP_REASON_INTEL_QUERY_BUDGET,
+    STOP_REASON_DELIVERY_READY,
+    STOP_REASON_REPEATED_BLOCKED_FINISH,
+    STOP_REASON_TWO_LOW_VALUE_STEPS,
+    STOP_REASON_PREFLIGHT_BLOCK_LOOP,
+    STOP_REASON_AGENT_FINISH,
+    STOP_REASON_SELECTOR_STOP,
+    STOP_REASON_NO_HIGH_VALUE_ACTION,
+    STOP_REASON_NO_ACTIONABLE_PATH,
+    STOP_REASON_UNKNOWN,
+}
 GROUNDING_STATUS_CONTEXT_ONLY = "context_only"
 GROUNDING_STATUS_GROUNDED = "grounded_but_unconfirmed"
 GROUNDING_STATUS_CONFIRMED = "confirmed_supporting"
 INVESTIGATOR_SYSTEM_PROMPT = """
 你是 Trace-Agent 的 investigator agent。
 Trace-Agent 是一个面向安全告警调查的事件研判代理：它从一条 seed alert 出发，调用受控工具查询日志、资产上下文、威胁情报和页面证据，逐步判断这是否构成安全事件、影响范围在哪里、哪些线索仍只是候选或背景。
-你的任务是在每一轮基于 seed、runtime 和 tool_catalog 提出一个下一步调查动作，目标是把 seed alert 收敛成可审查的事件级研判：建立上下文、缩小范围、验证候选、寻找反证，或在没有高价值动作时建议 finish。
-你不是报告写手，也不是最终审批者；reviewer 会决定是否执行你的提案。
+你的任务是在每一轮基于 seed 和 agent_context 提出一个下一步调查动作，目标是把 seed alert 收敛成可审查的事件级研判：建立上下文、缩小范围、验证候选、寻找反证，或在没有高价值动作时建议 finish。
+你不是报告写手，也不是最终审批者；preflight 会做机械合法性校验，工具执行后 reviewer 会评价这一步是否有增量并给下一轮反馈。若你请求 finish，reviewer 会审查是否达到交付门槛。
 
 输入契约：
-- 只把 user 消息中的 seed、runtime、tool_catalog 作为事实来源；缺失字段视为 unknown，不得脑补。
-- runtime 是当前调查视图，不是待复述材料；你要从中判断哪个不确定性最值得用工具缩小。
-- tool_catalog 是唯一工具白名单；只能选择其中一个工具名，并使用其参数说明、alignment 和 capability 信息构造 params。
-- 如果 material_gaps、acceptance_state 或 tool_catalog[*].alignment 不完整，只能基于已存在字段保守决策，不得声称某 gap 已闭合或某工具必然高价值。
+- 只把 user 消息中的 seed 和 agent_context 作为事实来源；缺失字段视为 unknown，不得脑补。
+- agent_context.evidence_view / gap_view 是当前调查视图，不是待复述材料；你要从中判断哪个不确定性最值得用工具缩小。
+- agent_context.tool_catalog 是唯一工具 API 白名单；只能选择其中一个工具名。
+- agent_context.action_options 是当前可安全构造参数的动作入口；优先用 safe_params_hint 构造 params，但仍要用 reason 说明为什么该动作能缩小当前不确定性。
+- agent_context.control_constraints 是硬限制；如果工具处于 active_tool_cooldowns 或 forbidden_repeats 中，除非存在明确新状态并给出 override_reason，否则不要选择。
+- 如果 material_gaps、action_options 或 alignment 不完整，只能基于已存在字段保守决策，不得声称某 gap 已闭合或某工具必然高价值。
 
 冲突优先级：
 1. 事实与工具边界：不得新增事实、不得编造工具、不得编造参数来源。
 2. 继续/结束判断：可行动的 blocking gap 或 blocking_checks 优先于 preferred_stop；如果没有可行动 gap 且 preferred_stop/deliverable_now 为真，应建议 finish。
 3. 候选/确认边界：candidate 只能作为待验证线索，不能直接当作 confirmed 证据。
 4. 冷却与低收益抑制：不得重复低收益或冷却中的工具，除非有明确状态变化和 override_reason。
-5. 对齐与参数优化：在满足以上约束后，再按 tool_catalog[*].alignment.priority_tier、reason 和 expected gain 选择最优工具。
+5. 对齐与参数优化：在满足以上约束后，再按 action_options[*].alignment、gap_view.primary_focus 和 expected_gain 选择最优工具。
 
 决策策略：
 - 优先选择能缩小最高优先级、仍可行动的 material gap 的工具；reason 要说明这一步会减少哪个不确定性。
-- 如果 runtime.control_summary.scope_followup_pending 为 true，优先考虑仍未执行过的新 scope 动作；但如果 control_summary.next_focus 明确要求 candidate grounding 或反证检查，应服从 next_focus。
-- 如果 runtime.control_summary.focus_mode 是 candidate_validation，应优先做 ground_candidate_event 或显式情报验证；不要继续把 candidate 当作 confirmed 事件扩线。
+- 如果 gap_view.primary_focus.focus_mode 是 candidate_validation，应优先做 ground_candidate_event 或显式情报验证；不要继续把 candidate 当作 confirmed 事件扩线。
 - search_related_events / expand_asset_scope 找到的可疑事件默认只是 candidate；只有经过 grounding 或独立情报支撑后，才可作为主证据链候选。
-- 如果 material_gaps 中某项 status 是 reportable_unresolved，它应留给报告边界说明，不应继续为它调用工具。
-- 如果 runtime.control_summary.recent_low_value_steps >= 2，只有在出现新状态、未尝试工具、或明确 blocking gap 时才继续；否则建议 finish。
-- 如果 acceptance_state.preferred_stop 为 true，默认建议 finish；只有存在非 reportable_unresolved 的可行动 gap，且工具能直接缩小它时，才建议继续，并在 why_not_finish 中说明。
+- 如果 gap_view.material_gaps 中某项 status 是 reportable_unresolved，它应留给报告边界说明，不应继续为它调用工具。
+- 如果 control_constraints.recent_low_value_steps >= 2，只有在出现新状态、未尝试工具、或明确 blocking gap 时才继续；否则建议 finish。
+- 如果 reviewer_feedback.next_round_feedback 存在，应先吸收其中的限制和边界提醒，再选择下一步动作。
 - 如果 blocking_checks 仍存在，不要建议 finish，除非 tool_catalog 中没有任何工具能直接缩小这些检查对应的问题。
 
 工具选择规则：
 - 不要重复调用同一输入已经成功执行过的确定性工具。
-- 如果选择 active_tool_cooldowns 中仍在冷却的工具，必须提供 override_reason，说明状态发生了什么变化，或为什么本次调用与低收益尝试不同。
+- 如果选择 control_constraints.active_tool_cooldowns 中仍在冷却的工具，必须提供 override_reason，说明状态发生了什么变化，或为什么本次调用与低收益尝试不同。
 - 对 extract_claim_candidates_from_page / extract_entities_from_page，优先传 content_ref，不要直接粘贴长文本。
-- params 必须来自 seed、runtime 或 tool_catalog 中的可见字段；如果无法构造安全参数，不要选择该工具。
-- target_gap_ids 应来自 runtime.material_gaps 或 tool_catalog alignment；只有在输入没有相关 gap id 但动作仍明显必要时，才允许为空列表。
+- params 必须来自 seed、agent_context.action_options[*].safe_params_hint 或 agent_context 中的可见字段；如果无法构造安全参数，不要选择该工具。
+- target_gap_ids 应来自 gap_view.material_gaps 或 action_options[*].target_gap_ids；只有在输入没有相关 gap id 但动作仍明显必要时，才允许为空列表。
 
 输出要求：
 - 只输出一个 JSON object，不要 Markdown，不要解释段落，不要 null，不要用空字符串占位。
@@ -136,15 +172,16 @@ Trace-Agent 是一个面向安全告警调查的事件研判代理：它从一�
 {{"action":"tool","tool_name":"expand_asset_scope","params":{{"asset_ids":["asset-id"],"window_minutes":120,"limit":60}},"target_gap_ids":["scope_expansion"],"reason":"当前仍缺少范围确认，新的 scope 查询能验证是否存在相邻资产关联。","why_not_finish":"scope_expansion 仍可行动且尚未耗尽。","override_reason":"资产范围出现新候选，和上一轮低收益查询的输入不同。"}}
 {{"action":"finish","reason":"当前没有可行动的 blocking gap，剩余问题已转为 reportable_unresolved 或边界说明。"}}
 """.strip()
-REVIEWER_SYSTEM_PROMPT = """
+LEGACY_PROPOSAL_REVIEWER_SYSTEM_PROMPT = """
 你是 Trace-Agent 的 incident delivery reviewer。
-Trace-Agent 是一个面向安全告警调查的事件研判代理；investigator 每轮会提出一个调查 proposal，你负责判断这个 proposal 是否应该被执行、替换、阻止，或者当前是否已经可以结束调查。
+Trace-Agent 是一个面向安全告警调查的事件研判代理；investigator 每轮会提出一个调查 proposal，你负责判断这个 proposal 是否可执行、是否应被阻止或视为低收益，或者当前是否已经可以结束调查。
 你是验收员和控制面，不是第二个调查员：你不能调用工具，不能发散规划多步路线，不能补写事实，只能基于 seed、review_context、proposal 和 tool_catalog 审查本轮动作。
+当前过渡版本中，next_action 只是兼容旧协议的解释字段，不会被主循环直接执行；你的核心职责是用 reason、blocking_gaps、next_focus 给 investigator 下一轮自然语言反馈，而不是替 investigator 接管动作选择。
 
 输入契约：
 - seed、review_context、proposal、tool_catalog 是唯一事实来源；缺失字段视为 unknown，不得脑补。
 - review_context 是当前调查状态与交付门槛视图；proposal 是 investigator 本轮提出的单个动作合同。
-- tool_catalog 是唯一工具白名单；如果你给替代 next_action，tool_name 必须来自 tool_catalog，params 必须能直接执行。
+- tool_catalog 是唯一工具白名单；如果你为了兼容旧协议输出 next_action，tool_name 必须来自 tool_catalog，params 必须能直接执行。
 - 如果 material_gaps、acceptance_state、proposal.alignment 或 active_tool_cooldowns 缺失，只能保守判断，不得声称已交付、已闭合或已耗尽。
 
 冲突优先级：
@@ -153,13 +190,13 @@ Trace-Agent 是一个面向安全告警调查的事件研判代理；investigato
 3. 阻塞缺口：如果仍有可行动 blocking gap 或 blocking_checks，不能批准 finish；应优先要求能直接缩小该缺口的动作。
 4. 候选/确认边界：candidate 事件未 grounding 时，不能把扩线结果当作 confirmed 证据交付。
 5. 冷却与低收益：冷却工具、重复工具、recent_materially_depleted 工具默认应 block 或 redundant，除非 proposal.override_reason 具体且说明状态变化。
-6. 对齐与替代动作：在满足以上约束后，再依据 proposal.alignment、control_summary.next_focus 和 tool capabilities 决定 allow 或给一个替代动作。
+6. 对齐与反馈线索：在满足以上约束后，再依据 proposal.alignment、control_summary.next_focus 和 tool capabilities 决定 allow，或给一个仅用于解释的兼容 next_action。
 
 决策语义：
 - allow：proposal 与当前主目标或 blocking gap 直接对齐，参数可执行，且没有违反 cooldown/重复调用约束。next_action 必须复述被批准的 proposal。
-- block：proposal 不安全、工具不存在、参数不可执行、违反冷却但无充分 override，或明显偏离当前主目标。若有明确替代工具，给一个 next_action；否则 next_action.action_type 为 "none"。
-- redundant：proposal 可执行但近期低收益、重复、只处理 reportable_unresolved/boundary 问题，或不能带来 material delta。若有更高价值替代动作，给一个 next_action；否则 "none" 或在已可交付时 "finish"。
-- not_deliverable：investigator 请求 finish 或 proposal 意味着收尾，但当前仍有可行动缺口。必须给出原因；如果能确定唯一替代动作，给一个 tool next_action。
+- block：proposal 不安全、工具不存在、参数不可执行、违反冷却但无充分 override，或明显偏离当前主目标。若需要兼容旧协议，可给一个说明性 next_action；否则 next_action.action_type 为 "none"。
+- redundant：proposal 可执行但近期低收益、重复、只处理 reportable_unresolved/boundary 问题，或不能带来 material delta。若需要兼容旧协议，可给一个说明性 next_action；否则 "none" 或在已可交付时 "finish"。
+- not_deliverable：investigator 请求 finish 或 proposal 意味着收尾，但当前仍有可行动缺口。必须给出原因；如需兼容旧协议，可给一个 tool next_action 作为线索，但核心反馈必须写在 reason/blocking_gaps/next_focus。
 - deliverable：当前已经达到交付门槛，且剩余问题不应继续阻塞调查。next_action 必须是 finish。
 
 审查策略：
@@ -168,7 +205,7 @@ Trace-Agent 是一个面向安全告警调查的事件研判代理；investigato
 - 如果 proposal 试图继续扩线 candidate，而 focus_mode 是 candidate_validation，应 block/redundant，并优先建议 grounding 或显式情报验证。
 - 如果 material_gaps 中某项 status 是 reportable_unresolved，它应进入报告边界，不应继续为它放行工具。
 - 如果 proposal 选择 active_tool_cooldowns 中的工具，override_reason 缺失或只是泛泛而谈时，必须 block 或 redundant。
-- 你可以给一个替代 next_action，但不能输出多步计划；替代动作必须是当前最小、最高价值、可直接执行的一步。
+- 你可以在 next_action 中给一个兼容旧协议的单步线索，但它只作为反馈说明，不会被主循环直接执行；不能输出多步计划。
 
 输出要求：
 - 只输出一个 JSON object，不要 Markdown，不要解释段落，不要 null，不要用空字符串占位。
@@ -185,6 +222,73 @@ Trace-Agent 是一个面向安全告警调查的事件研判代理；investigato
 {{"decision":"allow","deliverable_now":false,"next_action":{{"action_type":"tool","tool_name":"ground_candidate_event","params":{{"event_id":"candidate-event-id"}},"target_gap_ids":["candidate_grounding"],"reason":"proposal 直接缩小当前 candidate grounding gap。"}},"reason":"该动作与当前 next_focus 对齐，且参数可执行。"}}
 {{"decision":"block","deliverable_now":false,"blocking_gaps":[{{"gap_id":"scope_expansion","reason":"当前仍有可行动范围缺口。"}}],"next_action":{{"action_type":"tool","tool_name":"expand_asset_scope","params":{{"asset_ids":["asset-id"],"window_minutes":120,"limit":60}},"target_gap_ids":["scope_expansion"],"reason":"替代动作用于直接缩小范围缺口。"}},"blocked_tools":[{{"tool_name":"search_related_events","reason":"当前提案继续扩线 candidate，未处理范围确认焦点。"}}],"reason":"proposal 没有直接推进当前 blocking gap。"}}
 {{"decision":"deliverable","deliverable_now":true,"next_action":{{"action_type":"finish","reason":"当前没有可行动 blocking gap，剩余问题只限制边界说明。"}},"reason":"当前已达到交付门槛，不应继续执行低价值工具。"}}
+""".strip()
+FINISH_REVIEWER_SYSTEM_PROMPT = """
+你是 Trace-Agent 的 finish reviewer。
+Trace-Agent 是一个面向安全告警调查的事件研判代理；investigator 本轮请求 finish，你只负责判断这次收尾请求是否达到交付门槛，并把拒绝原因写成下一轮 investigator 可吸收的反馈。
+你不是 planner，也不是 tool router：不能输出工具名、不能输出可执行 params、不能替 investigator 选择下一步工具，不能新增事实。
+
+输入契约：
+- seed、review_context、finish_request 是唯一事实来源；缺失字段视为 unknown，不得脑补。
+- review_context.acceptance_state 是交付门槛视图；只有其中明确 deliverable_now 为 true，且没有可行动 blocking gap / blocking_checks 时，才可以接受 finish。
+- 如果仍存在可行动 material gap，只能说明“为什么不能 finish”和“剩余不确定性是什么”，不能建议具体工具或参数。
+
+冲突优先级：
+1. 事实边界：不得新增事实，不得基于 case 名、预期答案或经验模板判断。
+2. 交付门槛：acceptance_state.deliverable_now / readiness.ready_for_delivery 与 blocking gap/check 优先于 investigator 的主观 finish 理由。
+3. 候选边界：candidate 未 grounding 时，不能当作 confirmed 交付。
+4. 职责边界：只能接受或拒绝 finish；不能输出 next_action tool。
+
+输出要求：
+- 只输出一个 JSON object，不要 Markdown，不要 null，不要空字符串占位。
+- decision 只能是 "deliverable" 或 "not_deliverable"。
+- 必填字段：decision、deliverable_now、reason、blocking_gaps、next_round_feedback、stop_recommendation。
+- blocking_gaps 是 0 到 3 条对象，只能引用 review_context 中已有 gap id。
+- next_round_feedback 是 0 到 3 条自然语言反馈，不能包含工具参数。
+- stop_recommendation 必须包含 should_stop 和 reason；should_stop 只是建议，最终是否停止由 stop gate 决定。
+
+合法输出示例：
+{{"decision":"not_deliverable","deliverable_now":false,"blocking_gaps":[{{"gap_id":"candidate_grounding","reason":"候选事件仍未完成 grounding，不能进入 confirmed 证据链。"}}],"next_round_feedback":["finish 过早：下一轮应先解释 candidate_grounding 是否能闭合，或将其明确降为报告边界。"],"stop_recommendation":{{"should_stop":false,"reason":"仍有可行动 blocking gap。"}},"reason":"当前仍存在可行动的候选验证缺口。"}}
+{{"decision":"deliverable","deliverable_now":true,"blocking_gaps":[],"next_round_feedback":[],"stop_recommendation":{{"should_stop":true,"reason":"当前没有可行动 blocking gap，剩余问题可作为报告边界。"}},"reason":"当前已达到交付门槛，可以结束调查。"}}
+""".strip()
+POST_ACTION_REVIEWER_SYSTEM_PROMPT = """
+你是 Trace-Agent 的 post-action reviewer。
+Trace-Agent 是一个面向安全告警调查的事件研判代理；investigator 负责提出动作，preflight 负责机械校验，tool executor 已经执行本轮工具。你的任务是在工具执行后审查这一步是否带来有效调查增量，并把下一轮 investigator 应注意的自然语言反馈写清楚。
+你不是 planner，也不是 tool router：不能调用工具，不能输出可执行 params，不能替 investigator 选择下一步工具，不能新增事实。你只能基于 seed、before_context、executed_step、after_context 判断这一步的效果、剩余焦点和下一轮约束。
+
+输入契约：
+- seed、before_context、executed_step、after_context 是唯一事实来源；缺失字段视为 unknown，不得脑补。
+- executed_step.observation_delta 是本轮工具执行产生的变化摘要；不能把没有出现在 delta/observation/gap_transition 中的内容写成事实。
+- gap id 只能引用 before_context 或 after_context 中已有 gap；不能创造新 gap。
+- constraints 只能表达下一轮需要注意的限制，例如避免同输入重复、冷却某工具或需要 override；不能表达“下一步必须调用某工具”。
+
+冲突优先级：
+1. 事实边界：不新增事实、不改写 observation、不把 candidate 说成 confirmed。
+2. 反馈职责：只评价已执行 step，不规划下一步动作。
+3. 交付边界：stop_recommendation 只能作为建议；最终是否停止由 stop gate 决定。
+4. 约束边界：constraints 只能限制低收益重复或需要 override 的行为，不能变成隐式 tool selection。
+5. 简洁稳定：反馈优先具体、可复用、可进入下一轮 prompt。
+
+审查策略：
+- 如果 observation_delta 显示新增事件、资产、指示物、claim、关闭 gap、验证 candidate、或 readiness/verdict 变化，说明 material_delta 为 high/medium，并指出推进了什么。
+- 如果 observation_delta 显示没有新增实质信息，material_delta 应为 low 或 none，并解释为什么下一轮应避免同输入重复。
+- 如果剩余问题已经属于 reportable_unresolved 或 boundary，review_result 可为 boundary，并把它写成报告边界而非继续调查要求。
+- 如果 after_context.acceptance_state 显示已经可交付，review_result 可为 stop_ready，但只能作为 stop_recommendation。
+- 如果本轮把 candidate 继续扩线但没有 grounding，反馈必须提醒不要把 candidate 直接升级为 confirmed。
+
+输出要求：
+- 只输出一个 JSON object，不要 Markdown，不要 null，不要空字符串占位。
+- 必填字段：review_result、material_delta、reason、next_round_feedback、constraints、stop_recommendation。
+- review_result 只能是 "continue"、"needs_retry"、"stop_ready"、"low_value"、"boundary"。
+- material_delta 只能是 "high"、"medium"、"low"、"none"。
+- next_round_feedback 是 0 到 3 条自然语言反馈；不能包含可执行 params。
+- constraints 是 0 到 3 条对象；type 只能是 "avoid_tool"、"requires_override"、"boundary_note"；如果 type 涉及工具，tool_name 只能是本轮 executed_step.action.tool_name 或最近低收益工具。
+- stop_recommendation 必须包含 should_stop 和 reason；should_stop 只是建议，不是命令。
+
+合法输出示例：
+{{"review_result":"continue","material_delta":"medium","closed_gap_ids":["build_context"],"remaining_focus":{{"gap_id":"candidate_grounding","reason":"候选事件仍缺少独立落证。"}},"next_round_feedback":["本轮补齐了 seed 上下文，下一轮不要直接把扩线 candidate 写成 confirmed。"],"constraints":[],"stop_recommendation":{{"should_stop":false,"reason":"仍有可行动 candidate grounding gap。"}},"reason":"本轮产生了新的上下文证据，但还未完成候选验证。"}}
+{{"review_result":"low_value","material_delta":"none","closed_gap_ids":[],"remaining_focus":{{"gap_id":"scope_expansion","reason":"同输入扩线没有新增事件。"}},"next_round_feedback":["同一输入的扩线没有 material delta，下一轮除非出现新状态，不要重复同类查询。"],"constraints":[{{"type":"avoid_tool","tool_name":"search_related_events","scope":"same_input","reason":"同输入扩线没有新增实质信息。"}}],"stop_recommendation":{{"should_stop":false,"reason":"仍需判断是否有其他可行动 gap。"}},"reason":"本轮没有新增实质信息。"}}
+{{"review_result":"stop_ready","material_delta":"high","closed_gap_ids":["check_counterevidence"],"next_round_feedback":[],"constraints":[],"stop_recommendation":{{"should_stop":true,"reason":"核心 gap 已闭合，剩余问题可作为报告边界。"}},"reason":"本轮完成关键反证检查并达到可交付状态。"}}
 """.strip()
 ORDERED_TOOL_NAMES = [
     "search_seed_context",
@@ -1056,12 +1160,20 @@ def _initial_session_state(seed_event: Dict[str, Any], budgets: Dict[str, int], 
         "open_questions": _initial_open_questions(seed_event),
         "working_hypotheses": _initial_working_hypotheses(seed_event),
         "stop_reason": "",
+        "secondary_stop_reasons": [],
+        "ready_for_delivery_at_stop": False,
+        "actionable_path_at_stop": False,
+        "blocking_gap_count_at_stop": 0,
         "consecutive_low_value_steps": 0,
         "requested_decision_mode": selector_policy.get("requested_mode") or DECISION_MODE_HEURISTIC,
         "decision_mode": selector_policy.get("effective_mode") or DECISION_MODE_HEURISTIC,
         "selector_llm_available": bool(selector_policy.get("llm_available")),
         "selector_history": [],
         "agent_history": [],
+        "preflight_history": [],
+        "preflight_block_count": 0,
+        "consecutive_preflight_blocks": 0,
+        "last_preflight_block_reason": "",
         "reviewer_history": [],
         "guardrail_feedback": [],
         "blocked_finish_attempts": 0,
@@ -3040,6 +3152,184 @@ def _format_llm_session_summary(
     }
 
 
+def _static_tool_catalog_view(tool_catalog: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    return [
+        {
+            "tool_name": str(item.get("tool_name") or "").strip(),
+            "description": str(item.get("description") or "").strip(),
+            "schema": dict((item.get("param_notes") or {}).get("params") or {}),
+            "capability_tags": list(item.get("capability_tags") or []),
+            "result_shape": list(item.get("evidence_types") or []),
+        }
+        for item in list(tool_catalog or [])
+        if str(item.get("tool_name") or "").strip()
+    ]
+
+
+def _action_options_view(tool_catalog: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    options: List[Dict[str, Any]] = []
+    for item in list(tool_catalog or []):
+        tool_name = str(item.get("tool_name") or "").strip()
+        if not tool_name:
+            continue
+        options.append(
+            {
+                "tool_name": tool_name,
+                "safe_params_hint": dict(item.get("recommended_params") or {}),
+                "target_gap_ids": list(item.get("target_gap_ids") or []),
+                "expected_gain": str(item.get("expected_gain") or "").strip(),
+                "input_fingerprint": str(item.get("input_fingerprint") or "").strip(),
+                "alignment": _candidate_alignment_view(dict(item.get("alignment") or {})),
+            }
+        )
+    return options[:8]
+
+
+def _control_constraints_view(
+    session_state: Dict[str, Any],
+    incident_state: Dict[str, Any],
+    finalized: Dict[str, Any],
+) -> Dict[str, Any]:
+    active_cooldowns = [
+        {
+            "tool_name": str(item.get("tool_name") or "").strip(),
+            "reason": str(item.get("reason") or "").strip(),
+            "related_gap_ids": list(item.get("related_gap_ids") or []),
+            "release_hint": str(item.get("release_hint") or "").strip(),
+        }
+        for item in _active_tool_cooldowns(session_state, incident_state, finalized)
+    ]
+    forbidden_repeats = [
+        {
+            "tool_name": str(item.get("tool_name") or "").strip(),
+            "input_fingerprint": str(item.get("input_fingerprint") or "").strip(),
+            "last_step_index": int(item.get("step_index") or 0),
+            "delta_summary": str((item.get("output_delta") or {}).get("summary") or "").strip(),
+        }
+        for item in list(session_state.get("tool_history") or [])[-8:]
+        if str(item.get("tool_name") or "").strip() and str(item.get("input_fingerprint") or "").strip()
+    ]
+    return {
+        "active_tool_cooldowns": active_cooldowns,
+        "forbidden_repeats": forbidden_repeats,
+        "recent_low_value_steps": int(session_state.get("consecutive_low_value_steps") or 0),
+        "preflight_block_count": int(session_state.get("preflight_block_count") or 0),
+    }
+
+
+def _reviewer_feedback_view(session_state: Dict[str, Any]) -> Dict[str, Any]:
+    reviewer_state = dict(session_state.get("reviewer_state") or {})
+    last_reviewer = dict(reviewer_state.get("last_decision") or {})
+    constraints = [
+        {
+            "type": str(item.get("type") or "avoid_tool").strip(),
+            "tool_name": str(item.get("tool_name") or "").strip(),
+            "scope": str(item.get("scope") or "").strip(),
+            "reason": str(item.get("reason") or "").strip(),
+        }
+        for item in list(last_reviewer.get("constraints") or [])[:3]
+        if isinstance(item, dict) and (str(item.get("reason") or "").strip() or str(item.get("tool_name") or "").strip())
+    ]
+    if not constraints:
+        constraints = [
+            {
+                "type": "avoid_tool",
+                "tool_name": str(item.get("tool_name") or "").strip(),
+                "scope": "",
+                "reason": str(item.get("reason") or "").strip(),
+            }
+            for item in list(last_reviewer.get("blocked_tools") or [])[:3]
+            if isinstance(item, dict) and str(item.get("tool_name") or "").strip()
+        ]
+    return {
+        "next_round_feedback": list(session_state.get("guardrail_feedback") or [])[-3:],
+        "constraints": constraints[:3],
+        "last_material_delta": str(
+            last_reviewer.get("material_delta")
+            or ((last_reviewer.get("output_delta") or {}).get("summary"))
+            or ""
+        ).strip(),
+    }
+
+
+def _build_agent_context_v1(
+    seed_event: Dict[str, Any],
+    session_state: Dict[str, Any],
+    incident_state: Dict[str, Any],
+    finalized: Dict[str, Any],
+    tool_catalog: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+    ledger = list(incident_state.get("evidence_ledger") or [])
+    latest_evidence = [
+        {
+            "observation_id": str(item.get("observation_id") or "").strip(),
+            "relation": str(item.get("relation") or "").strip(),
+            "summary": str(item.get("summary") or "").strip(),
+        }
+        for item in ledger[-5:]
+    ]
+    candidate_events = [
+        {
+            "event_id": str(item.get("id") or "").strip(),
+            "asset_id": str(item.get("asset_id") or "").strip(),
+            "classification": str(item.get("classification") or "").strip(),
+            "summary": str(item.get("summary") or "").strip(),
+            "indicators": _event_indicator_candidates(item),
+        }
+        for item in list(finalized.get("annotated_events") or [])
+        if str(item.get("role") or "").strip() == "candidate"
+    ][:6]
+    acceptance_state = _acceptance_state(seed_event, session_state, incident_state, finalized)
+    control_summary = _control_summary(seed_event, session_state, incident_state, finalized)
+    material_gaps = [
+        {
+            "id": str(item.get("id") or item.get("gap_id") or "").strip(),
+            "question": str(item.get("question") or "").strip(),
+            "priority": str(item.get("priority") or "").strip(),
+            "status": str(item.get("status") or "").strip(),
+            "actionable_now": bool(item.get("actionable_now")),
+            "delivery_blocking": bool(item.get("delivery_blocking")),
+            "actionable_tools": list(item.get("actionable_tools") or []),
+            "closure_criteria": list(item.get("closure_criteria") or []),
+        }
+        for item in list(acceptance_state.get("material_gaps") or finalized.get("gap_ledger") or [])
+    ]
+    reportable_unresolved = [
+        item
+        for item in material_gaps
+        if str(item.get("status") or "").strip() == "reportable_unresolved"
+    ]
+    return {
+        "task_state": {
+            "goal": str(session_state.get("goal") or "").strip(),
+            "step_index": int(session_state.get("step_index") or 0),
+            "budgets": dict(session_state.get("budgets") or {}),
+        },
+        "evidence_view": {
+            "latest_evidence": latest_evidence,
+            "entities": dict(finalized.get("entities") or incident_state.get("entities") or {}),
+            "candidate_events": candidate_events,
+        },
+        "gap_view": {
+            "material_gaps": material_gaps,
+            "primary_focus": {
+                "focus_mode": str(control_summary.get("focus_mode") or "").strip(),
+                "next_focus": dict(control_summary.get("next_focus") or {}),
+                "primary_goal": str(control_summary.get("primary_goal") or "").strip(),
+                "primary_reason": str(control_summary.get("primary_reason") or "").strip(),
+                "deliverable_now": bool(control_summary.get("deliverable_now")),
+                "blocking_check_ids": list(control_summary.get("blocking_check_ids") or []),
+                "scope_followup_pending": bool(control_summary.get("scope_followup_pending")),
+            },
+            "reportable_unresolved": reportable_unresolved,
+        },
+        "tool_catalog": _static_tool_catalog_view(tool_catalog),
+        "action_options": _action_options_view(tool_catalog),
+        "control_constraints": _control_constraints_view(session_state, incident_state, finalized),
+        "reviewer_feedback": _reviewer_feedback_view(session_state),
+    }
+
+
 def _selector_candidate_view(candidates: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return [
         {
@@ -3102,6 +3392,31 @@ def _extract_selector_json(content: str) -> Dict[str, Any]:
     if start >= 0 and end > start:
         return json.loads(text[start : end + 1])
     raise ValueError("selector response does not contain JSON object")
+
+
+def _stable_json_payload(value: Any) -> str:
+    try:
+        return json.dumps(value, ensure_ascii=False, sort_keys=True, default=str)
+    except TypeError:
+        return json.dumps(str(value), ensure_ascii=False)
+
+
+def _prompt_payload_summary(**payloads: Any) -> Dict[str, Any]:
+    parts: Dict[str, Dict[str, Any]] = {}
+    total_bytes = 0
+    for name, value in payloads.items():
+        text = _stable_json_payload(value)
+        encoded = text.encode("utf-8")
+        byte_count = len(encoded)
+        total_bytes += byte_count
+        parts[name] = {
+            "bytes": byte_count,
+            "sha1": hashlib.sha1(encoded).hexdigest()[:12],
+        }
+    return {
+        "total_bytes": total_bytes,
+        "parts": parts,
+    }
 
 
 def _choose_action(
@@ -3172,12 +3487,16 @@ def _choose_action(
                 ),
             ]
         )
-        response = llm.invoke(
-            prompt.format_messages(
-                seed_json=json.dumps(seed_event, ensure_ascii=False),
-                session_json=json.dumps(_format_llm_session_summary(seed_event, session_state, incident_state), ensure_ascii=False),
-                candidates_json=json.dumps(_selector_candidate_view(candidates), ensure_ascii=False),
-            )
+        messages = prompt.format_messages(
+            seed_json=json.dumps(seed_event, ensure_ascii=False),
+            session_json=json.dumps(_format_llm_session_summary(seed_event, session_state, incident_state), ensure_ascii=False),
+            candidates_json=json.dumps(_selector_candidate_view(candidates), ensure_ascii=False),
+        )
+        response = invoke_llm_with_trace(
+            llm,
+            messages,
+            role="llm_selector",
+            step_index=int(session_state.get("step_index") or 0) + 1,
         )
         content = str(getattr(response, "content", "") or "").strip()
         selector_decision["raw_response"] = content[:800]
@@ -3373,11 +3692,14 @@ def _choose_open_agent_action(
     session_state: Dict[str, Any],
     incident_state: Dict[str, Any],
     finalized: Dict[str, Any],
+    *,
+    tool_catalog: Optional[List[Dict[str, Any]]] = None,
+    agent_context: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    tool_catalog = _available_tool_catalog(seed_event, session_state, incident_state)
+    tool_catalog = list(tool_catalog) if tool_catalog is not None else _available_tool_catalog(seed_event, session_state, incident_state)
+    agent_context = dict(agent_context or _build_agent_context_v1(seed_event, session_state, incident_state, finalized, tool_catalog))
     acceptance_state = _acceptance_state(seed_event, session_state, incident_state, finalized)
     completion_advice = _completion_advice(seed_event, session_state, incident_state, finalized)
-    runtime_summary = _format_llm_session_summary(seed_event, session_state, incident_state, finalized)
     decision = {
         "step_index": int(session_state.get("step_index") or 0) + 1,
         "requested_mode": session_state.get("requested_decision_mode") or DECISION_MODE_LLM_AGENT,
@@ -3401,6 +3723,10 @@ def _choose_open_agent_action(
         "validator_feedback": "",
         "completion_advice": completion_advice,
         "material_gaps": list(completion_advice.get("material_gaps") or []),
+        "prompt_payload": _prompt_payload_summary(
+            seed=seed_event,
+            agent_context=agent_context,
+        ),
         "outcome": "",
     }
     if llm is None:
@@ -3427,16 +3753,19 @@ def _choose_open_agent_action(
                 ),
                 (
                     "user",
-                    "seed:\n{seed_json}\n\nruntime:\n{runtime_json}\n\ntool_catalog:\n{tool_catalog_json}",
+                    "seed:\n{seed_json}\n\nagent_context:\n{agent_context_json}",
                 ),
             ]
         )
-        response = llm.invoke(
-            prompt.format_messages(
-                seed_json=json.dumps(seed_event, ensure_ascii=False),
-                runtime_json=json.dumps(runtime_summary, ensure_ascii=False),
-                tool_catalog_json=json.dumps(tool_catalog, ensure_ascii=False),
-            )
+        messages = prompt.format_messages(
+            seed_json=json.dumps(seed_event, ensure_ascii=False),
+            agent_context_json=json.dumps(agent_context, ensure_ascii=False),
+        )
+        response = invoke_llm_with_trace(
+            llm,
+            messages,
+            role="investigator",
+            step_index=int(session_state.get("step_index") or 0) + 1,
         )
         content = str(getattr(response, "content", "") or "").strip()
         decision["raw_response"] = content[:1200]
@@ -3507,6 +3836,179 @@ def _reviewer_context_view(
         "control_summary": control_summary,
         "control_phase": str(control_summary.get("compat_phase") or ""),
         "active_tool_cooldowns": _active_tool_cooldowns(session_state, incident_state, finalized),
+    }
+
+
+def _compact_observation_for_review(observation: Dict[str, Any]) -> Dict[str, Any]:
+    return {
+        "observation_id": str(observation.get("observation_id") or "").strip(),
+        "tool_name": str(observation.get("tool_name") or "").strip(),
+        "relation": str(observation.get("relation") or "").strip(),
+        "grounding_status": str(observation.get("grounding_status") or "").strip(),
+        "source_type": str(observation.get("source_type") or "").strip(),
+        "summary": str(observation.get("summary") or "").strip(),
+        "event_ids": unique_preserve_order(
+            [str(item.get("id") or "").strip() for item in list(observation.get("events") or []) if str(item.get("id") or "").strip()]
+        )[:8],
+        "checked_event_ids": unique_preserve_order([str(item or "").strip() for item in list(observation.get("checked_event_ids") or []) if str(item or "").strip()])[:8],
+        "relation_event_ids": unique_preserve_order([str(item or "").strip() for item in list(observation.get("relation_event_ids") or []) if str(item or "").strip()])[:8],
+        "boundary_event_ids": unique_preserve_order([str(item or "").strip() for item in list(observation.get("boundary_event_ids") or []) if str(item or "").strip()])[:8],
+        "claims": [
+            {
+                "claim_id": str(item.get("claim_id") or item.get("id") or "").strip(),
+                "text": str(item.get("text") or "").strip()[:300],
+                "confidence": item.get("confidence"),
+            }
+            for item in list(observation.get("claims") or [])[:6]
+            if isinstance(item, dict)
+        ],
+        "derived_entities": dict(observation.get("derived_entities") or {}),
+        "output_delta": dict(observation.get("output_delta") or {}),
+    }
+
+
+def _post_action_review_context(
+    *,
+    seed_event: Dict[str, Any],
+    session_state: Dict[str, Any],
+    incident_state: Dict[str, Any],
+    finalized_before: Dict[str, Any],
+    finalized_after: Dict[str, Any],
+    action: Dict[str, Any],
+    observation: Dict[str, Any],
+    step_trace: Dict[str, Any],
+) -> Dict[str, Any]:
+    state_updates = dict(step_trace.get("state_updates") or {})
+    return {
+        "before_context": {
+            "gap_ledger": list(finalized_before.get("gap_ledger") or []),
+            "readiness": dict(finalized_before.get("readiness") or {}),
+            "delivery_verdict": finalized_before.get("delivery_verdict") or finalized_before.get("verdict") or {},
+            "scope": dict(finalized_before.get("scope") or {}),
+            "uncertainties": list(finalized_before.get("uncertainties") or []),
+            "control_summary": dict(step_trace.get("control_summary") or {}),
+        },
+        "executed_step": {
+            "step_index": int(session_state.get("step_index") or 0),
+            "action": {
+                "tool_name": str(action.get("tool_name") or "").strip(),
+                "target_gap_ids": list(action.get("target_gap_ids") or []),
+                "input_fingerprint": str(action.get("input_fingerprint") or "").strip(),
+                "reason": str(action.get("reason") or action.get("llm_reason") or "").strip(),
+            },
+            "selected_gaps": list(step_trace.get("selected_gaps") or []),
+            "expected_closure_criteria": list(step_trace.get("expected_closure_criteria") or []),
+            "observation": _compact_observation_for_review(observation),
+            "observation_delta": dict(observation.get("output_delta") or state_updates.get("observation_delta") or {}),
+            "gap_transition": dict(state_updates.get("gap_transition") or {}),
+        },
+        "after_context": _reviewer_context_view(seed_event, session_state, incident_state, finalized_after),
+    }
+
+
+def _normalize_post_action_constraints(value: Any, *, allowed_tools: set[str]) -> List[Dict[str, Any]]:
+    if not isinstance(value, list):
+        return []
+    rows: List[Dict[str, Any]] = []
+    allowed_types = {"avoid_tool", "requires_override", "boundary_note"}
+    for item in value:
+        if not isinstance(item, dict):
+            continue
+        constraint_type = str(item.get("type") or "").strip()
+        if constraint_type not in allowed_types:
+            continue
+        tool_name = str(item.get("tool_name") or "").strip()
+        if constraint_type in {"avoid_tool", "requires_override"} and tool_name not in allowed_tools:
+            continue
+        row = {
+            "type": constraint_type,
+            "reason": str(item.get("reason") or "").strip(),
+        }
+        if tool_name:
+            row["tool_name"] = tool_name
+        scope = str(item.get("scope") or "").strip()
+        if scope:
+            row["scope"] = scope
+        gap_ids = _text_list(item.get("related_gap_ids") or item.get("target_gap_ids"), limit=4)
+        if gap_ids:
+            row["related_gap_ids"] = gap_ids
+        rows.append(row)
+    return rows[:3]
+
+
+def _fallback_post_action_review(
+    *,
+    session_state: Dict[str, Any],
+    finalized_after: Dict[str, Any],
+    action: Dict[str, Any],
+    observation: Dict[str, Any],
+    fallback_reason: str = "",
+) -> Dict[str, Any]:
+    delta = dict(observation.get("output_delta") or {})
+    novelty_score = int(delta.get("novelty_score") or 0)
+    acceptance_state = dict(finalized_after.get("acceptance_state") or {})
+    if not acceptance_state:
+        acceptance_state = {"deliverable_now": bool((finalized_after.get("readiness") or {}).get("ready_for_delivery"))}
+
+    if novelty_score >= 4 or bool(delta.get("became_ready")) or bool(delta.get("verdict_changed")):
+        material_delta = "high"
+    elif novelty_score >= 2:
+        material_delta = "medium"
+    elif novelty_score >= 1:
+        material_delta = "low"
+    else:
+        material_delta = "none"
+
+    blocking_gaps = _canonical_blocking_gaps(list((finalized_after.get("acceptance_state") or {}).get("material_gaps") or finalized_after.get("gap_ledger") or []))
+    focus_gap = dict(blocking_gaps[0]) if blocking_gaps else {}
+    review_result = "stop_ready" if bool(acceptance_state.get("deliverable_now")) else ("low_value" if material_delta in {"low", "none"} else "continue")
+    reason = str(fallback_reason or "").strip()
+    if not reason:
+        reason = str(delta.get("summary") or "").strip() or "本轮工具执行已完成，使用程序摘要生成 reviewer fallback。"
+
+    feedback: List[str] = []
+    if material_delta in {"low", "none"}:
+        feedback.append("本轮没有明显 material delta；下一轮除非出现新输入或新状态，不要重复同输入查询。")
+    elif focus_gap:
+        feedback.append(f"本轮有调查增量；下一轮仍需围绕 {str(focus_gap.get('gap_id') or focus_gap.get('id') or '').strip()} 的未闭合问题给出判断。")
+
+    constraints: List[Dict[str, Any]] = []
+    tool_name = str(action.get("tool_name") or "").strip()
+    if material_delta in {"low", "none"} and tool_name:
+        constraints.append(
+            {
+                "type": "avoid_tool",
+                "tool_name": tool_name,
+                "scope": "same_input",
+                "reason": "本轮同输入没有明显 material delta。",
+                "related_gap_ids": list(action.get("target_gap_ids") or []),
+            }
+        )
+
+    return {
+        "step_index": int(session_state.get("step_index") or 0),
+        "role": "post_action_reviewer",
+        "review_result": review_result,
+        "material_delta": material_delta,
+        "closed_gap_ids": _text_list(delta.get("closed_gap_ids"), limit=6),
+        "remaining_focus": (
+            {
+                "gap_id": str(focus_gap.get("gap_id") or focus_gap.get("id") or "").strip(),
+                "reason": str(focus_gap.get("reason") or focus_gap.get("question") or "").strip(),
+            }
+            if focus_gap
+            else {}
+        ),
+        "next_round_feedback": feedback[:3],
+        "constraints": constraints[:3],
+        "stop_recommendation": {
+            "should_stop": bool(review_result == "stop_ready"),
+            "reason": "当前达到可交付状态。" if review_result == "stop_ready" else "仍需由 stop gate 结合剩余 gap 判断是否继续。",
+        },
+        "reason": reason,
+        "fallback_used": True,
+        "fallback_reason": str(fallback_reason or "post_action_fallback").strip(),
+        "outcome": review_result,
     }
 
 
@@ -3624,7 +4126,8 @@ def _apply_reviewer_control_metadata(
     if not low_value_repeats:
         low_value_repeats = _low_value_repeat_rows(tool_catalog, blocked_tools)
 
-    next_focus = dict(review.get("next_focus") or {})
+    raw_next_focus = review.get("next_focus") or {}
+    next_focus = dict(raw_next_focus) if isinstance(raw_next_focus, dict) else {}
     if not next_focus:
         next_focus = _build_reviewer_next_focus(tool_catalog, blocking_gaps)
     compat_allowed_tools = [
@@ -3836,7 +4339,7 @@ def _apply_reviewer_control_metadata(
     return review
 
 
-def _review_open_agent_proposal(
+def _legacy_review_open_agent_proposal(
     llm: Any,
     seed_event: Dict[str, Any],
     session_state: Dict[str, Any],
@@ -3845,6 +4348,12 @@ def _review_open_agent_proposal(
     tool_catalog: List[Dict[str, Any]],
     proposal: Dict[str, Any],
 ) -> Dict[str, Any]:
+    """Deprecated proposal-review path retained for old trace comparisons.
+
+    Mainline llm_agent execution no longer lets reviewer approve, replace, or
+    execute investigator tool proposals. Tool proposals go through mechanical
+    preflight and post-action review; finish requests use `_review_finish_request`.
+    """
     tool_names = [str(item.get("tool_name") or "").strip() for item in tool_catalog if str(item.get("tool_name") or "").strip()]
     acceptance_state = _acceptance_state(seed_event, session_state, incident_state, finalized)
     review_context = _reviewer_context_view(seed_event, session_state, incident_state, finalized)
@@ -3865,6 +4374,12 @@ def _review_open_agent_proposal(
         "raw_response": "",
         "fallback_used": False,
         "fallback_reason": "",
+        "prompt_payload": _prompt_payload_summary(
+            seed=seed_event,
+            review_context=review_context,
+            proposal=proposal,
+            tool_catalog=tool_catalog,
+        ),
         "outcome": "allow",
     }
     if llm is None:
@@ -3879,7 +4394,7 @@ def _review_open_agent_proposal(
             [
                 (
                     "system",
-                    REVIEWER_SYSTEM_PROMPT,
+                    LEGACY_PROPOSAL_REVIEWER_SYSTEM_PROMPT,
                 ),
                 (
                     "user",
@@ -3887,13 +4402,17 @@ def _review_open_agent_proposal(
                 ),
             ]
         )
-        response = llm.invoke(
-            prompt.format_messages(
-                seed_json=json.dumps(seed_event, ensure_ascii=False),
-                context_json=json.dumps(review_context, ensure_ascii=False),
-                proposal_json=json.dumps(proposal, ensure_ascii=False),
-                tool_catalog_json=json.dumps(tool_catalog, ensure_ascii=False),
-            )
+        messages = prompt.format_messages(
+            seed_json=json.dumps(seed_event, ensure_ascii=False),
+            context_json=json.dumps(review_context, ensure_ascii=False),
+            proposal_json=json.dumps(proposal, ensure_ascii=False),
+            tool_catalog_json=json.dumps(tool_catalog, ensure_ascii=False),
+        )
+        response = invoke_llm_with_trace(
+            llm,
+            messages,
+            role="legacy_proposal_reviewer",
+            step_index=int(session_state.get("step_index") or 0) + 1,
         )
         content = str(getattr(response, "content", "") or "").strip()
         review["raw_response"] = content[:1200]
@@ -3980,38 +4499,460 @@ def _review_open_agent_proposal(
     return review
 
 
-def _review_blocks_tool(review: Dict[str, Any], tool_name: str) -> bool:
-    normalized = str(tool_name or "").strip()
-    if not normalized:
-        return False
-    blocked_names = {
-        str(item.get("tool_name") or "").strip()
-        for item in list(review.get("blocked_tools") or [])
-        if str(item.get("tool_name") or "").strip()
+def _finish_review_fallback(
+    seed_event: Dict[str, Any],
+    session_state: Dict[str, Any],
+    incident_state: Dict[str, Any],
+    finalized: Dict[str, Any],
+    proposal: Dict[str, Any],
+    *,
+    fallback_reason: str = "",
+) -> Dict[str, Any]:
+    acceptance_state = _acceptance_state(seed_event, session_state, incident_state, finalized)
+    deliverable_now = bool(acceptance_state.get("deliverable_now"))
+    material_gaps = list(acceptance_state.get("material_gaps") or [])
+    blocking_gaps = [] if deliverable_now else _canonical_blocking_gaps(material_gaps)
+    reason = str(acceptance_state.get("preferred_stop_reason") or "").strip()
+    technical_fallback_reasons = {"llm_unavailable", "finish_review_fallback"}
+    if (
+        not reason
+        and fallback_reason
+        and str(fallback_reason).strip() not in technical_fallback_reasons
+        and not str(fallback_reason).startswith("finish_reviewer_error:")
+    ):
+        reason = str(fallback_reason).strip()
+    if not reason:
+        reason = (
+            "当前已达到交付门槛，可以结束调查。"
+            if deliverable_now
+            else "当前仍存在可行动或未解释的调查缺口，finish 请求暂不接受。"
+        )
+    focus_gap = dict(blocking_gaps[0]) if blocking_gaps else {}
+    next_round_feedback: List[str] = []
+    if not deliverable_now:
+        if focus_gap:
+            gap_id = str(focus_gap.get("gap_id") or focus_gap.get("id") or "").strip()
+            gap_reason = str(focus_gap.get("reason") or focus_gap.get("question") or "").strip()
+            next_round_feedback.append(
+                f"finish 未被接受：仍需解释或缩小 {gap_id or 'remaining_gap'}"
+                + (f"（{gap_reason}）" if gap_reason else "。")
+            )
+        else:
+            next_round_feedback.append("finish 未被接受：当前 readiness 尚未明确达到可交付门槛。")
+    return {
+        "step_index": int(session_state.get("step_index") or 0) + 1,
+        "role": "finish_reviewer",
+        "decision": "deliverable" if deliverable_now else "not_deliverable",
+        "deliverable_now": deliverable_now,
+        "material_gaps": material_gaps,
+        "allowed_tools": [],
+        "next_action": {
+            "action_type": "finish" if deliverable_now else "none",
+            "reason": reason,
+        },
+        "blocked_tools": [],
+        "blocking_gaps": blocking_gaps,
+        "low_value_repeats": [],
+        "tool_cooldown_suggestions": [],
+        "next_focus": (
+            {
+                "gap_id": str(focus_gap.get("gap_id") or focus_gap.get("id") or "").strip(),
+                "question": str(focus_gap.get("question") or "").strip(),
+                "reason": str(focus_gap.get("reason") or "").strip(),
+            }
+            if focus_gap
+            else {}
+        ),
+        "next_round_feedback": next_round_feedback[:3],
+        "stop_recommendation": {
+            "should_stop": deliverable_now,
+            "reason": reason,
+        },
+        "reason": reason,
+        "raw_response": "",
+        "fallback_used": True,
+        "fallback_reason": str(fallback_reason or "finish_review_fallback").strip(),
+        "prompt_payload": _prompt_payload_summary(
+            seed=seed_event,
+            review_context=_reviewer_context_view(seed_event, session_state, incident_state, finalized),
+            finish_request=proposal,
+        ),
+        "outcome": "deliverable" if deliverable_now else "not_deliverable",
     }
-    if normalized in blocked_names:
-        return True
-    allowed = [str(item or "").strip() for item in list(review.get("allowed_tools") or []) if str(item or "").strip()]
-    return bool(allowed and normalized not in allowed)
 
 
-def _reviewer_replacement_tool(
-    review: Dict[str, Any],
+def _review_finish_request(
+    llm: Any,
+    seed_event: Dict[str, Any],
+    session_state: Dict[str, Any],
+    incident_state: Dict[str, Any],
+    finalized: Dict[str, Any],
+    proposal: Dict[str, Any],
+) -> Dict[str, Any]:
+    acceptance_state = _acceptance_state(seed_event, session_state, incident_state, finalized)
+    review_context = _reviewer_context_view(seed_event, session_state, incident_state, finalized)
+    review = {
+        "step_index": int(session_state.get("step_index") or 0) + 1,
+        "role": "finish_reviewer",
+        "decision": "not_deliverable",
+        "deliverable_now": False,
+        "material_gaps": list(acceptance_state.get("material_gaps") or []),
+        "allowed_tools": [],
+        "next_action": {"action_type": "none", "reason": ""},
+        "blocked_tools": [],
+        "blocking_gaps": _canonical_blocking_gaps(list(acceptance_state.get("material_gaps") or [])),
+        "low_value_repeats": [],
+        "tool_cooldown_suggestions": [],
+        "next_focus": {},
+        "next_round_feedback": [],
+        "stop_recommendation": {"should_stop": False, "reason": ""},
+        "reason": "",
+        "raw_response": "",
+        "fallback_used": False,
+        "fallback_reason": "",
+        "prompt_payload": _prompt_payload_summary(
+            seed=seed_event,
+            review_context=review_context,
+            finish_request=proposal,
+        ),
+        "outcome": "not_deliverable",
+    }
+    if llm is None:
+        return _finish_review_fallback(
+            seed_event,
+            session_state,
+            incident_state,
+            finalized,
+            proposal,
+            fallback_reason="llm_unavailable",
+        )
+
+    try:
+        from langchain_core.prompts import ChatPromptTemplate
+
+        prompt = ChatPromptTemplate.from_messages(
+            [
+                ("system", FINISH_REVIEWER_SYSTEM_PROMPT),
+                (
+                    "user",
+                    "seed:\n{seed_json}\n\nreview_context:\n{context_json}\n\nfinish_request:\n{proposal_json}",
+                ),
+            ]
+        )
+        messages = prompt.format_messages(
+            seed_json=json.dumps(seed_event, ensure_ascii=False),
+            context_json=json.dumps(review_context, ensure_ascii=False),
+            proposal_json=json.dumps(proposal, ensure_ascii=False),
+        )
+        response = invoke_llm_with_trace(
+            llm,
+            messages,
+            role="finish_reviewer",
+            step_index=int(session_state.get("step_index") or 0) + 1,
+        )
+        content = str(getattr(response, "content", "") or "").strip()
+        review["raw_response"] = content[:1200]
+        parsed = _extract_selector_json(content)
+        decision = str(parsed.get("decision") or "").strip().lower()
+        if decision not in {"deliverable", "not_deliverable"}:
+            decision = "not_deliverable"
+        parsed_deliverable_now = bool(parsed.get("deliverable_now")) and decision == "deliverable"
+        if parsed_deliverable_now and not bool(acceptance_state.get("deliverable_now")):
+            decision = "not_deliverable"
+            parsed_deliverable_now = False
+        canonical_gap_map = _merged_gap_map(
+            list(finalized.get("gap_ledger") or []),
+            list(incident_state.get("gap_ledger") or []),
+            list(acceptance_state.get("material_gaps") or []),
+        )
+        blocking_gaps = _normalize_blocking_gap_rows(parsed.get("blocking_gaps"), canonical_gap_map)
+        if not parsed_deliverable_now and not blocking_gaps:
+            blocking_gaps = _canonical_blocking_gaps(list(acceptance_state.get("material_gaps") or []))
+        stop_raw = parsed.get("stop_recommendation") or {}
+        stop_recommendation = dict(stop_raw) if isinstance(stop_raw, dict) else {}
+        focus_gap = dict(blocking_gaps[0]) if blocking_gaps else {}
+        review.update(
+            {
+                "decision": decision,
+                "deliverable_now": parsed_deliverable_now,
+                "next_action": {
+                    "action_type": "finish" if parsed_deliverable_now else "none",
+                    "reason": str(parsed.get("reason") or "").strip(),
+                },
+                "blocking_gaps": [] if parsed_deliverable_now else blocking_gaps,
+                "next_focus": (
+                    {
+                        "gap_id": str(focus_gap.get("gap_id") or focus_gap.get("id") or "").strip(),
+                        "question": str(focus_gap.get("question") or "").strip(),
+                        "reason": str(focus_gap.get("reason") or "").strip(),
+                    }
+                    if focus_gap and not parsed_deliverable_now
+                    else {}
+                ),
+                "next_round_feedback": _text_list(parsed.get("next_round_feedback"), limit=3),
+                "stop_recommendation": {
+                    "should_stop": bool(stop_recommendation.get("should_stop")) and parsed_deliverable_now,
+                    "reason": str(stop_recommendation.get("reason") or parsed.get("reason") or "").strip(),
+                },
+                "reason": str(parsed.get("reason") or "").strip(),
+                "outcome": decision,
+            }
+        )
+    except Exception as exc:
+        return _finish_review_fallback(
+            seed_event,
+            session_state,
+            incident_state,
+            finalized,
+            proposal,
+            fallback_reason=f"finish_reviewer_error:{exc}",
+        )
+
+    if not str(review.get("reason") or "").strip():
+        review["reason"] = str(acceptance_state.get("preferred_stop_reason") or "").strip()
+    if not list(review.get("next_round_feedback") or []) and str(review.get("decision") or "") == "not_deliverable":
+        fallback_feedback = _finish_review_fallback(
+            seed_event,
+            session_state,
+            incident_state,
+            finalized,
+            proposal,
+            fallback_reason=str(review.get("reason") or "finish_rejected").strip(),
+        )
+        review["next_round_feedback"] = list(fallback_feedback.get("next_round_feedback") or [])[:3]
+    return review
+
+
+def _review_investigator_proposal_for_feedback(
+    llm: Any,
+    seed_event: Dict[str, Any],
+    session_state: Dict[str, Any],
+    incident_state: Dict[str, Any],
+    finalized: Dict[str, Any],
     tool_catalog: List[Dict[str, Any]],
-) -> Optional[Dict[str, Any]]:
-    next_action = dict(review.get("next_action") or {})
-    if str(next_action.get("action_type") or "").strip() != "tool":
-        return None
-    tool_name = str(next_action.get("tool_name") or "").strip()
-    available = {str(item.get("tool_name") or "").strip() for item in tool_catalog}
-    if not tool_name or tool_name not in available:
-        return None
-    return _tool_action_contract(
-        next_action,
-        reason=str(next_action.get("reason") or review.get("reason") or "").strip(),
-        override_reason=str(next_action.get("override_reason") or "").strip(),
-        target_gap_ids=list(next_action.get("target_gap_ids") or []),
-        question=str(next_action.get("question") or "").strip(),
+    proposal: Dict[str, Any],
+) -> Dict[str, Any]:
+    del tool_catalog
+    return _review_finish_request(
+        llm,
+        seed_event,
+        session_state,
+        incident_state,
+        finalized,
+        proposal,
+    )
+
+
+def _apply_post_action_reviewer_feedback(
+    *,
+    session_state: Dict[str, Any],
+    incident_state: Dict[str, Any],
+    finalized_after: Dict[str, Any],
+    action: Dict[str, Any],
+    review: Dict[str, Any],
+) -> Dict[str, Any]:
+    feedback_rows = _text_list(review.get("next_round_feedback"), limit=3)
+    if not feedback_rows and str(review.get("reason") or "").strip() and str(review.get("review_result") or "").strip() in {"needs_retry", "low_value", "boundary"}:
+        feedback_rows = [str(review.get("reason") or "").strip()]
+    for feedback in feedback_rows:
+        _append_guardrail_feedback(session_state, feedback)
+
+    cooldown_suggestions: List[Dict[str, Any]] = []
+    for constraint in list(review.get("constraints") or [])[:3]:
+        if not isinstance(constraint, dict):
+            continue
+        constraint_type = str(constraint.get("type") or "").strip()
+        tool_name = str(constraint.get("tool_name") or "").strip()
+        if constraint_type not in {"avoid_tool", "requires_override"} or not tool_name:
+            continue
+        related_gap_ids = _text_list(
+            constraint.get("related_gap_ids") or action.get("target_gap_ids"),
+            limit=4,
+        )
+        cooldown_suggestions.append(
+            {
+                "tool_name": tool_name,
+                "reason": _cooldown_reason_text(str(constraint.get("reason") or review.get("reason") or "").strip()),
+                "related_gap_ids": related_gap_ids,
+                "state_signature": _cooldown_state_signature(
+                    incident_state,
+                    finalized_after,
+                    related_gap_ids=related_gap_ids,
+                ),
+                "issued_step": int(session_state.get("step_index") or 0),
+                "issued_for_focus": str(((review.get("remaining_focus") or {}).get("gap_id")) or "").strip(),
+                "issued_for_goal": str(((review.get("remaining_focus") or {}).get("reason")) or "").strip(),
+                "issued_in_phase": "post_action_review",
+                "override_required": True,
+                "release_hint": "当相关 gap 状态发生变化、出现新的 grounded evidence，或输入参数改变后，再考虑重试。",
+            }
+        )
+    review["tool_cooldown_suggestions"] = cooldown_suggestions
+    review["active_tool_cooldowns"] = _merge_tool_cooldowns(
+        session_state,
+        incident_state,
+        finalized_after,
+        cooldown_suggestions,
+    )
+    return review
+
+
+def _review_executed_step(
+    llm: Any,
+    seed_event: Dict[str, Any],
+    session_state: Dict[str, Any],
+    incident_state: Dict[str, Any],
+    finalized_before: Dict[str, Any],
+    finalized_after: Dict[str, Any],
+    action: Dict[str, Any],
+    observation: Dict[str, Any],
+    step_trace: Dict[str, Any],
+) -> Dict[str, Any]:
+    review_context = _post_action_review_context(
+        seed_event=seed_event,
+        session_state=session_state,
+        incident_state=incident_state,
+        finalized_before=finalized_before,
+        finalized_after=finalized_after,
+        action=action,
+        observation=observation,
+        step_trace=step_trace,
+    )
+    executed_tool = str(action.get("tool_name") or "").strip()
+    allowed_constraint_tools: set[str] = set()
+    if executed_tool:
+        allowed_constraint_tools.add(executed_tool)
+    for item in list(session_state.get("tool_history") or [])[-4:]:
+        tool_name = str(item.get("tool_name") or "").strip()
+        output_delta = dict(item.get("output_delta") or {})
+        if tool_name and int(output_delta.get("novelty_score") or 0) <= 1:
+            allowed_constraint_tools.add(tool_name)
+
+    review = {
+        "step_index": int(session_state.get("step_index") or 0),
+        "role": "post_action_reviewer",
+        "review_result": "continue",
+        "material_delta": "none",
+        "closed_gap_ids": [],
+        "remaining_focus": {},
+        "next_round_feedback": [],
+        "constraints": [],
+        "stop_recommendation": {"should_stop": False, "reason": ""},
+        "reason": "",
+        "raw_response": "",
+        "fallback_used": False,
+        "fallback_reason": "",
+        "prompt_payload": _prompt_payload_summary(
+            seed=seed_event,
+            before_context=review_context.get("before_context"),
+            executed_step=review_context.get("executed_step"),
+            after_context=review_context.get("after_context"),
+        ),
+        "outcome": "continue",
+        "execution_effect": "post_action_feedback",
+    }
+    if llm is None:
+        review.update(
+            _fallback_post_action_review(
+                session_state=session_state,
+                finalized_after=finalized_after,
+                action=action,
+                observation=observation,
+                fallback_reason="llm_unavailable",
+            )
+        )
+        return _apply_post_action_reviewer_feedback(
+            session_state=session_state,
+            incident_state=incident_state,
+            finalized_after=finalized_after,
+            action=action,
+            review=review,
+        )
+
+    try:
+        from langchain_core.prompts import ChatPromptTemplate
+
+        prompt = ChatPromptTemplate.from_messages(
+            [
+                (
+                    "system",
+                    POST_ACTION_REVIEWER_SYSTEM_PROMPT,
+                ),
+                (
+                    "user",
+                    "seed:\n{seed_json}\n\nbefore_context:\n{before_json}\n\nexecuted_step:\n{step_json}\n\nafter_context:\n{after_json}",
+                ),
+            ]
+        )
+        messages = prompt.format_messages(
+            seed_json=json.dumps(seed_event, ensure_ascii=False),
+            before_json=json.dumps(review_context.get("before_context") or {}, ensure_ascii=False),
+            step_json=json.dumps(review_context.get("executed_step") or {}, ensure_ascii=False),
+            after_json=json.dumps(review_context.get("after_context") or {}, ensure_ascii=False),
+        )
+        response = invoke_llm_with_trace(
+            llm,
+            messages,
+            role="post_action_reviewer",
+            step_index=int(session_state.get("step_index") or 0),
+        )
+        content = str(getattr(response, "content", "") or "").strip()
+        review["raw_response"] = content[:1200]
+        parsed = _extract_selector_json(content)
+        review_result = str(parsed.get("review_result") or "continue").strip().lower()
+        if review_result not in POST_ACTION_REVIEW_RESULTS:
+            review_result = "continue"
+        material_delta = str(parsed.get("material_delta") or "none").strip().lower()
+        if material_delta not in POST_ACTION_MATERIAL_DELTA_LEVELS:
+            material_delta = "none"
+        raw_remaining_focus = parsed.get("remaining_focus") or {}
+        remaining_focus = dict(raw_remaining_focus) if isinstance(raw_remaining_focus, dict) else {}
+        known_gap_ids = {
+            str(item.get("id") or item.get("gap_id") or "").strip()
+            for item in list(finalized_after.get("gap_ledger") or [])
+            if str(item.get("id") or item.get("gap_id") or "").strip()
+        }
+        focus_gap_id = str(remaining_focus.get("gap_id") or remaining_focus.get("id") or "").strip()
+        if focus_gap_id and known_gap_ids and focus_gap_id not in known_gap_ids:
+            remaining_focus = {}
+        stop_raw = parsed.get("stop_recommendation") or {}
+        stop_recommendation = dict(stop_raw) if isinstance(stop_raw, dict) else {}
+        review.update(
+            {
+                "review_result": review_result,
+                "material_delta": material_delta,
+                "closed_gap_ids": _text_list(parsed.get("closed_gap_ids"), limit=6),
+                "remaining_focus": remaining_focus,
+                "next_round_feedback": _text_list(parsed.get("next_round_feedback"), limit=3),
+                "constraints": _normalize_post_action_constraints(
+                    parsed.get("constraints"),
+                    allowed_tools=allowed_constraint_tools,
+                ),
+                "stop_recommendation": {
+                    "should_stop": bool(stop_recommendation.get("should_stop")),
+                    "reason": str(stop_recommendation.get("reason") or "").strip(),
+                },
+                "reason": str(parsed.get("reason") or "").strip(),
+                "outcome": review_result,
+            }
+        )
+    except Exception as exc:
+        review.update(
+            _fallback_post_action_review(
+                session_state=session_state,
+                finalized_after=finalized_after,
+                action=action,
+                observation=observation,
+                fallback_reason=f"post_action_reviewer_error:{exc}",
+            )
+        )
+
+    return _apply_post_action_reviewer_feedback(
+        session_state=session_state,
+        incident_state=incident_state,
+        finalized_after=finalized_after,
+        action=action,
+        review=review,
     )
 
 
@@ -4315,6 +5256,241 @@ def _enforce_active_cooldown_gate(
         proposal,
         review,
     )
+
+
+def _preflight_result(
+    *,
+    allowed: bool,
+    reason: str,
+    action_type: str,
+    normalized_action: Optional[Dict[str, Any]] = None,
+    feedback_for_next_turn: str = "",
+    counts_as_step: bool = False,
+    counts_as_block: bool = True,
+) -> Dict[str, Any]:
+    result = {
+        "allowed": bool(allowed),
+        "reason": str(reason or "").strip(),
+        "action_type": str(action_type or "").strip(),
+        "feedback_for_next_turn": str(feedback_for_next_turn or "").strip(),
+        "counts_as_step": bool(counts_as_step),
+        "counts_as_block": bool(counts_as_block),
+    }
+    if normalized_action is not None:
+        result["normalized_action"] = dict(normalized_action)
+    return result
+
+
+def _tool_budget_block_reason(session_state: Dict[str, Any], tool_name: str) -> str:
+    budgets = session_state.get("budgets") or {}
+    if int(budgets.get("remaining_steps") or 0) <= 0:
+        return STOP_REASON_STEP_BUDGET
+    if int(budgets.get("remaining_tool_calls") or 0) <= 0:
+        return STOP_REASON_TOOL_BUDGET
+    if tool_name in EVENT_TOOL_NAMES and int(budgets.get("remaining_event_queries") or 0) <= 0:
+        return STOP_REASON_EVENT_QUERY_BUDGET
+    if tool_name in (INTEL_TOOL_NAMES | PAGE_TOOL_NAMES) and int(budgets.get("remaining_intel_queries") or 0) <= 0:
+        return STOP_REASON_INTEL_QUERY_BUDGET
+    return ""
+
+
+def _preflight_investigator_action(
+    *,
+    seed_event: Dict[str, Any],
+    session_state: Dict[str, Any],
+    incident_state: Dict[str, Any],
+    finalized: Dict[str, Any],
+    tool_catalog: List[Dict[str, Any]],
+    proposal: Dict[str, Any],
+    normalized_action: Optional[Dict[str, Any]],
+) -> Dict[str, Any]:
+    action_type = str(proposal.get("action_type") or "").strip()
+    if action_type == "finish":
+        return _preflight_result(
+            allowed=True,
+            reason="finish_schema_allowed",
+            action_type="finish",
+            counts_as_block=False,
+        )
+
+    if action_type not in {"tool", "fallback"}:
+        return _preflight_result(
+            allowed=False,
+            reason="invalid_action_type",
+            action_type=action_type,
+            feedback_for_next_turn="investigator 必须输出 tool 或 finish；当前 action_type 无法执行。",
+            counts_as_step=True,
+        )
+    if normalized_action is None:
+        return _preflight_result(
+            allowed=False,
+            reason=str(proposal.get("fallback_reason") or "params_normalize_error"),
+            action_type=action_type,
+            feedback_for_next_turn="当前 tool proposal 无法归一化为可执行参数；下一轮必须补齐工具所需字段。",
+            counts_as_step=True,
+        )
+
+    action = dict(normalized_action)
+    tool_name = str(action.get("tool_name") or "").strip()
+    available_tools = {str(item.get("tool_name") or "").strip() for item in list(tool_catalog or [])}
+    if not tool_name or tool_name not in available_tools:
+        return _preflight_result(
+            allowed=False,
+            reason="unknown_tool",
+            action_type=action_type,
+            feedback_for_next_turn=f"工具 {tool_name or '<empty>'} 不在当前 tool_catalog 中；只能选择白名单工具。",
+            counts_as_step=True,
+        )
+
+    budget_reason = _tool_budget_block_reason(session_state, tool_name)
+    if budget_reason:
+        return _preflight_result(
+            allowed=False,
+            reason=budget_reason,
+            action_type=action_type,
+            feedback_for_next_turn=f"{tool_name} 当前没有可用预算；必须选择仍有预算的动作或 finish。",
+            counts_as_step=False,
+        )
+
+    action["input_fingerprint"] = str(
+        action.get("input_fingerprint")
+        or _action_input_fingerprint(
+            tool_name,
+            dict(action.get("params") or {}),
+            dict(action.get("meta") or {}),
+        )
+    )
+    if _matching_tool_run(session_state, tool_name, str(action.get("input_fingerprint") or "")):
+        return _preflight_result(
+            allowed=False,
+            reason="duplicate_deterministic_call",
+            action_type=action_type,
+            feedback_for_next_turn=(
+                f"{tool_name} 已经用同一输入执行过；不要重复调用确定性查询，"
+                "除非先产生新的可区分输入。"
+            ),
+            counts_as_step=False,
+        )
+
+    cooldown_violation = _proposal_cooldown_violation(
+        {
+            "action_type": "tool",
+            "tool_name": tool_name,
+            "override_reason": str(action.get("override_reason") or proposal.get("override_reason") or "").strip(),
+        },
+        _active_tool_cooldowns(session_state, incident_state, finalized),
+    )
+    if cooldown_violation:
+        return _preflight_result(
+            allowed=False,
+            reason="tool_in_cooldown_without_override",
+            action_type=action_type,
+            feedback_for_next_turn=(
+                f"{tool_name} 仍在冷却中：{_cooldown_reason_text(str(cooldown_violation.get('reason') or '').strip())} "
+                "如果确实要覆盖冷却，下一轮必须说明具体状态变化。"
+            ),
+            counts_as_step=False,
+        )
+
+    gap_rows = list(finalized.get("gap_ledger") or [])
+    known_gap_ids = {
+        str(item.get("id") or "").strip()
+        for item in gap_rows
+        if str(item.get("id") or "").strip()
+    }
+    target_gap_ids = _text_list(action.get("target_gap_ids") or proposal.get("target_gap_ids"), limit=4)
+    unknown_gap_ids = [gap_id for gap_id in target_gap_ids if known_gap_ids and gap_id not in known_gap_ids]
+    if unknown_gap_ids:
+        return _preflight_result(
+            allowed=False,
+            reason="unknown_target_gap_id",
+            action_type=action_type,
+            feedback_for_next_turn=f"target_gap_ids 包含未知 gap：{', '.join(unknown_gap_ids[:3])}；只能引用当前 gap_ledger。",
+            counts_as_step=True,
+        )
+    if gap_rows and not target_gap_ids and tool_name != "search_seed_context":
+        return _preflight_result(
+            allowed=False,
+            reason="missing_target_gap_ids",
+            action_type=action_type,
+            feedback_for_next_turn="当前已有 material gaps；tool action 必须说明要缩小哪些 target_gap_ids。",
+            counts_as_step=True,
+        )
+
+    action["target_gap_ids"] = target_gap_ids
+    return _preflight_result(
+        allowed=True,
+        reason="allowed",
+        action_type="tool",
+        normalized_action=action,
+        counts_as_block=False,
+    )
+
+
+def _append_guardrail_feedback(session_state: Dict[str, Any], feedback: str) -> None:
+    normalized = str(feedback or "").strip()
+    if not normalized:
+        return
+    session_state["guardrail_feedback"] = (list(session_state.get("guardrail_feedback") or []) + [normalized])[-4:]
+
+
+def _reviewer_feedback_for_next_turn(review: Dict[str, Any], *, prefix: str = "reviewer feedback") -> str:
+    decision = str(review.get("decision") or "").strip()
+    reason = str(review.get("reason") or "").strip()
+    parts: List[str] = []
+    if reason:
+        parts.append(f"{prefix}: {reason}")
+    elif decision:
+        parts.append(f"{prefix}: reviewer decision={decision}")
+
+    for feedback in _text_list(review.get("next_round_feedback"), limit=2):
+        parts.append(feedback)
+
+    gap_rows = []
+    for item in list(review.get("blocking_gaps") or [])[:3]:
+        gap_id = str(item.get("gap_id") or item.get("id") or "").strip()
+        gap_reason = str(item.get("reason") or item.get("question") or "").strip()
+        if gap_id and gap_reason:
+            gap_rows.append(f"{gap_id}({gap_reason})")
+        elif gap_id:
+            gap_rows.append(gap_id)
+    if gap_rows:
+        parts.append(f"仍需解释或缩小的 blocking gaps: {', '.join(gap_rows)}")
+
+    raw_next_focus = review.get("next_focus") or {}
+    next_focus = dict(raw_next_focus) if isinstance(raw_next_focus, dict) else {}
+    focus_question = str(next_focus.get("question") or "").strip()
+    focus_reason = str(next_focus.get("reason") or "").strip()
+    if focus_question or focus_reason:
+        parts.append(f"下一轮请围绕 reviewer focus 重新提出 investigator 动作: {focus_question or focus_reason}")
+
+    return "；".join(parts).strip()
+
+
+def _record_preflight_result(session_state: Dict[str, Any], result: Dict[str, Any]) -> None:
+    compact = {
+        key: value
+        for key, value in dict(result or {}).items()
+        if key != "normalized_action"
+    }
+    session_state.setdefault("preflight_history", []).append(compact)
+    session_state["preflight_history"] = list(session_state.get("preflight_history") or [])[-20:]
+    if bool(result.get("allowed")):
+        session_state["consecutive_preflight_blocks"] = 0
+        session_state["last_preflight_block_reason"] = ""
+        return
+
+    if bool(result.get("counts_as_block", True)):
+        session_state["preflight_block_count"] = int(session_state.get("preflight_block_count") or 0) + 1
+        reason = str(result.get("reason") or "").strip()
+        if reason and reason == str(session_state.get("last_preflight_block_reason") or "").strip():
+            session_state["consecutive_preflight_blocks"] = int(session_state.get("consecutive_preflight_blocks") or 0) + 1
+        else:
+            session_state["consecutive_preflight_blocks"] = 1
+        session_state["last_preflight_block_reason"] = reason
+    if bool(result.get("counts_as_step")):
+        _consume_non_tool_step_budget(session_state)
+    _append_guardrail_feedback(session_state, str(result.get("feedback_for_next_turn") or "").strip())
 
 
 def _observation_base(tool_name: str, payload: Dict[str, Any], source_type: str, observation_id: str) -> Dict[str, Any]:
@@ -5484,6 +6660,185 @@ def _tool_history_record(action: Dict[str, Any], observation: Dict[str, Any], se
     }
 
 
+def _run_approved_tool_step(
+    *,
+    seed_event: Dict[str, Any],
+    started_at: float,
+    session_state: Dict[str, Any],
+    incident_state: Dict[str, Any],
+    store: TraceStore,
+    action: Dict[str, Any],
+    finalized_before: Dict[str, Any],
+    material_gaps_before: List[Dict[str, Any]],
+    selected_gap_ids: List[str],
+    step_trace: Dict[str, Any],
+    defer_stop_decision: bool = False,
+) -> Dict[str, Any]:
+    """Execute one already-approved tool action and commit its runtime writebacks."""
+    action["input_fingerprint"] = str(
+        action.get("input_fingerprint")
+        or _action_input_fingerprint(
+            str(action.get("tool_name") or ""),
+            dict(action.get("params") or {}),
+            dict(action.get("meta") or {}),
+        )
+    )
+    observation_id = f"obs-{int(session_state['step_index']):03d}"
+    before_snapshot = _incident_snapshot(incident_state)
+    observation = _execute_action(seed_event, action, store, incident_state, observation_id)
+    _update_budgets(session_state, str(action.get("tool_name") or ""))
+    _attach_observation(incident_state, observation)
+
+    ledger_entry = _evidence_entry_from_observation(observation)
+    incident_state.setdefault("evidence_ledger", []).append(ledger_entry)
+    if observation.get("relation") == "counterevidence":
+        incident_state.setdefault("counterevidence", []).append(ledger_entry)
+
+    if observation.get("tool_name") == "search_seed_context":
+        incident_state["context_bundle"] = {
+            "minimal_event_ids": [str(item.get("id") or "") for item in list(observation.get("events") or [])],
+            "minimal_event_count": len(list(observation.get("events") or [])),
+        }
+
+    finalized_after = _finalize_runtime_state(seed_event, session_state, incident_state)
+    observation["output_delta"] = _build_observation_delta(
+        before_snapshot,
+        incident_state,
+        observation,
+        finalized_before,
+        finalized_after,
+    )
+    if _observation_high_value(observation):
+        session_state["consecutive_low_value_steps"] = 0
+    else:
+        session_state["consecutive_low_value_steps"] = int(session_state.get("consecutive_low_value_steps") or 0) + 1
+
+    session_state.setdefault("tool_history", []).append(_tool_history_record(action, observation, session_state))
+    followup = (
+        {"stop": False, "reason": STOP_REASON_PENDING_POST_ACTION_REVIEW}
+        if defer_stop_decision
+        else _stop_decision(seed_event, started_at, session_state, incident_state, finalized_after)
+    )
+    step_trace["observation_ids"] = [observation.get("observation_id")]
+    step_trace["state_updates"] = {
+        "verdict": finalized_after["verdict"],
+        "provisional_verdict": finalized_after["provisional_verdict"],
+        "delivery_verdict": finalized_after["delivery_verdict"],
+        "readiness": finalized_after["readiness"],
+        "report_ready": finalized_after["report_ready"],
+        "known_event_count": len(finalized_after["annotated_events"]),
+        "supporting_observation_ids": finalized_after["decision_basis"].get("positive_observation_ids") or [],
+        "counter_observation_ids": finalized_after["decision_basis"].get("counter_observation_ids") or [],
+        "observation_delta": dict(observation.get("output_delta") or {}),
+        "gap_transition": _gap_transition_view(material_gaps_before, list(finalized_after.get("gap_ledger") or []), selected_gap_ids),
+    }
+    if followup["stop"]:
+        step_trace["stop_reason"] = followup["reason"]
+        _record_stop_decision(session_state, followup)
+    else:
+        step_trace["continue_reason"] = followup["reason"]
+
+    return {
+        "finalized": finalized_after,
+        "followup": followup,
+        "observation": observation,
+        "step_trace": step_trace,
+    }
+
+
+def _payload_total_bytes(rows: List[Dict[str, Any]]) -> int:
+    total = 0
+    for item in list(rows or []):
+        payload = dict(item.get("prompt_payload") or {})
+        total += int(payload.get("total_bytes") or 0)
+    return total
+
+
+def _trace_payload_total_bytes(rows: List[Dict[str, Any]], key: str) -> int:
+    total = 0
+    for item in list(rows or []):
+        payload = dict(item.get(key) or {})
+        total += int(payload.get("total_bytes") or 0)
+    return total
+
+
+def _investigation_run_metrics(
+    session_state: Dict[str, Any],
+    investigation_trace: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+    agent_history = [dict(item) for item in list(session_state.get("agent_history") or []) if isinstance(item, dict)]
+    reviewer_history = [dict(item) for item in list(session_state.get("reviewer_history") or []) if isinstance(item, dict)]
+    tool_history = [dict(item) for item in list(session_state.get("tool_history") or []) if isinstance(item, dict)]
+
+    reviewer_replacement_count = 0
+    execution_source_counts: Dict[str, int] = {}
+    for step in list(investigation_trace or []):
+        if not isinstance(step, dict):
+            continue
+        selected_action = dict(step.get("selected_action") or {})
+        execution_source = str(step.get("execution_source") or selected_action.get("execution_source") or "").strip()
+        if not execution_source:
+            execution_source = "unknown"
+        execution_source_counts[execution_source] = execution_source_counts.get(execution_source, 0) + 1
+        if execution_source == "reviewer_replacement":
+            reviewer_replacement_count += 1
+
+    invalid_proposal_count = len(
+        [
+            item
+            for item in agent_history
+            if bool(item.get("fallback_used")) or str(item.get("fallback_reason") or "").strip()
+        ]
+    )
+    reviewer_block_count = len(
+        [
+            item
+            for item in reviewer_history
+            if str(item.get("decision") or "").strip() in {"block", "redundant", "not_deliverable"}
+            or str(item.get("review_result") or "").strip() in {"needs_retry", "low_value"}
+        ]
+    )
+
+    seen_fingerprints: set[tuple[str, str]] = set()
+    duplicate_deterministic_call_count = 0
+    for item in tool_history:
+        tool_name = str(item.get("tool_name") or "").strip()
+        fingerprint = str(item.get("input_fingerprint") or "").strip()
+        if not tool_name or not fingerprint:
+            continue
+        key = (tool_name, fingerprint)
+        if key in seen_fingerprints:
+            duplicate_deterministic_call_count += 1
+        else:
+            seen_fingerprints.add(key)
+
+    stop_reason = str(session_state.get("stop_reason") or "").strip()
+    stop_reason_in_enum = stop_reason in STOP_REASON_ENUM
+    return {
+        "stop_reason": stop_reason,
+        "stop_reason_in_enum": stop_reason_in_enum,
+        "secondary_stop_reasons": _text_list(session_state.get("secondary_stop_reasons"), limit=4),
+        "ready_for_delivery_at_stop": bool(session_state.get("ready_for_delivery_at_stop")),
+        "actionable_path_at_stop": bool(session_state.get("actionable_path_at_stop")),
+        "blocking_gap_count_at_stop": int(session_state.get("blocking_gap_count_at_stop") or 0),
+        "tool_history_length": len(tool_history),
+        "agent_round_count": len(agent_history),
+        "reviewer_round_count": len(reviewer_history),
+        "reviewer_replacement_count": reviewer_replacement_count,
+        "execution_source_counts": execution_source_counts,
+        "invalid_proposal_count": invalid_proposal_count,
+        "duplicate_deterministic_call_count": duplicate_deterministic_call_count,
+        "preflight_block_count": int(session_state.get("preflight_block_count") or 0),
+        "reviewer_block_count": reviewer_block_count,
+        "prompt_payload_bytes": {
+            "agent_total": _payload_total_bytes(agent_history),
+            "reviewer_total": _payload_total_bytes(reviewer_history),
+            "agent_context_v1_preview_total": _trace_payload_total_bytes(investigation_trace, "agent_context_v1_payload"),
+            "total": _payload_total_bytes(agent_history) + _payload_total_bytes(reviewer_history),
+        },
+    }
+
+
 def _evidence_entry_from_observation(observation: Dict[str, Any]) -> Dict[str, Any]:
     event_ids = unique_preserve_order(
         list(observation.get("relation_event_ids") or [])
@@ -5730,6 +7085,69 @@ def _finalize_runtime_state(seed_event: Dict[str, Any], session_state: Dict[str,
     }
 
 
+def _normalized_stop_reason(reason: str) -> str:
+    normalized = str(reason or "").strip()
+    if not normalized:
+        return STOP_REASON_UNKNOWN
+    if normalized in STOP_REASON_ENUM:
+        return normalized
+    return STOP_REASON_UNKNOWN
+
+
+def _latest_post_action_review(session_state: Dict[str, Any]) -> Dict[str, Any]:
+    reviewer_state = dict(session_state.get("reviewer_state") or {})
+    last_decision = dict(reviewer_state.get("last_decision") or {})
+    if str(last_decision.get("role") or "").strip() == "post_action_reviewer":
+        return last_decision
+    for item in reversed(list(session_state.get("reviewer_history") or [])):
+        if isinstance(item, dict) and str(item.get("role") or "").strip() == "post_action_reviewer":
+            return dict(item)
+    return {}
+
+
+def _post_action_stop_signal(session_state: Dict[str, Any]) -> Dict[str, Any]:
+    latest = _latest_post_action_review(session_state)
+    if not latest:
+        return {"should_stop": False, "reason": "", "review_result": ""}
+    stop_recommendation = dict(latest.get("stop_recommendation") or {})
+    review_result = str(latest.get("review_result") or "").strip()
+    should_stop = bool(stop_recommendation.get("should_stop")) or review_result == "stop_ready"
+    return {
+        "should_stop": should_stop,
+        "reason": str(stop_recommendation.get("reason") or latest.get("reason") or "").strip(),
+        "review_result": review_result,
+    }
+
+
+def _stop_result(
+    *,
+    stop: bool,
+    reason: str,
+    secondary_stop_reasons: Optional[List[str]] = None,
+    ready_for_delivery: bool = False,
+    has_actionable_path: bool = False,
+    blocking_gap_count: int = 0,
+) -> Dict[str, Any]:
+    normalized_reason = _normalized_stop_reason(reason) if stop else (str(reason or "").strip() or STOP_REASON_CONTINUE)
+    return {
+        "stop": bool(stop),
+        "reason": normalized_reason,
+        "secondary_stop_reasons": _text_list(secondary_stop_reasons or [], limit=4),
+        "ready_for_delivery": bool(ready_for_delivery),
+        "has_actionable_path": bool(has_actionable_path),
+        "blocking_gap_count": int(blocking_gap_count or 0),
+    }
+
+
+def _record_stop_decision(session_state: Dict[str, Any], decision: Dict[str, Any]) -> None:
+    reason = _normalized_stop_reason(str(decision.get("reason") or ""))
+    session_state["stop_reason"] = reason
+    session_state["secondary_stop_reasons"] = _text_list(decision.get("secondary_stop_reasons"), limit=4)
+    session_state["ready_for_delivery_at_stop"] = bool(decision.get("ready_for_delivery"))
+    session_state["actionable_path_at_stop"] = bool(decision.get("has_actionable_path"))
+    session_state["blocking_gap_count_at_stop"] = int(decision.get("blocking_gap_count") or 0)
+
+
 def _stop_decision(
     seed_event: Dict[str, Any],
     started_at: float,
@@ -5752,35 +7170,125 @@ def _stop_decision(
         )
         if str(item).strip()
     ]
-    reviewer_prefers_stop = bool(acceptance_state.get("preferred_stop"))
-    reviewer_has_actionable_path = bool(actionable_gaps)
-    reviewer_is_stalled = bool(insufficient_progress_signals) and not reviewer_has_actionable_path and not reviewer_prefers_stop
+    acceptance_prefers_stop = bool(acceptance_state.get("preferred_stop"))
+    ready_for_delivery = bool(acceptance_state.get("ready_for_delivery"))
+    has_actionable_path = bool(actionable_gaps)
+    is_stalled = bool(insufficient_progress_signals) and not has_actionable_path and not acceptance_prefers_stop
+    post_action_stop = _post_action_stop_signal(session_state)
+    post_action_recommends_stop = bool(post_action_stop.get("should_stop"))
     decision_mode = str(session_state.get("decision_mode") or DECISION_MODE_HEURISTIC).strip() or DECISION_MODE_HEURISTIC
+    budget_stop_reasons: List[str] = []
     if int(budgets.get("remaining_steps") or 0) <= 0:
-        return {"stop": True, "reason": "step_budget_exhausted"}
+        budget_stop_reasons.append(STOP_REASON_STEP_BUDGET)
     if int(budgets.get("remaining_tool_calls") or 0) <= 0:
-        return {"stop": True, "reason": "tool_budget_exhausted"}
+        budget_stop_reasons.append(STOP_REASON_TOOL_BUDGET)
     if elapsed_s >= float(budgets.get("max_runtime_s") or DEFAULT_BUDGETS["max_runtime_s"]):
-        return {"stop": True, "reason": "runtime_budget_exhausted"}
-    if decision_mode != DECISION_MODE_LLM_AGENT and reviewer_prefers_stop and int(session_state.get("step_index") or 0) >= 2:
-        return {"stop": True, "reason": "delivery_ready"}
+        budget_stop_reasons.append(STOP_REASON_RUNTIME_BUDGET)
+
+    if (
+        int(session_state.get("step_index") or 0) >= 2
+        and ready_for_delivery
+        and not blocking_gaps
+        and not has_actionable_path
+    ):
+        return _stop_result(
+            stop=True,
+            reason=STOP_REASON_DELIVERY_READY,
+            secondary_stop_reasons=budget_stop_reasons,
+            ready_for_delivery=ready_for_delivery,
+            has_actionable_path=has_actionable_path,
+            blocking_gap_count=len(blocking_gaps),
+        )
+    if (
+        decision_mode != DECISION_MODE_LLM_AGENT
+        and acceptance_prefers_stop
+        and int(session_state.get("step_index") or 0) >= 2
+    ):
+        return _stop_result(
+            stop=True,
+            reason=STOP_REASON_DELIVERY_READY,
+            secondary_stop_reasons=budget_stop_reasons,
+            ready_for_delivery=ready_for_delivery,
+            has_actionable_path=has_actionable_path,
+            blocking_gap_count=len(blocking_gaps),
+        )
+    if (
+        decision_mode == DECISION_MODE_LLM_AGENT
+        and post_action_recommends_stop
+        and int(session_state.get("step_index") or 0) >= 2
+        and acceptance_prefers_stop
+        and not blocking_gaps
+        and not has_actionable_path
+    ):
+        return _stop_result(
+            stop=True,
+            reason=STOP_REASON_DELIVERY_READY,
+            secondary_stop_reasons=budget_stop_reasons,
+            ready_for_delivery=ready_for_delivery,
+            has_actionable_path=has_actionable_path,
+            blocking_gap_count=len(blocking_gaps),
+        )
+    if (
+        decision_mode == DECISION_MODE_LLM_AGENT
+        and post_action_recommends_stop
+        and int(session_state.get("step_index") or 0) >= 2
+        and ready_for_delivery
+        and not blocking_gaps
+        and not has_actionable_path
+    ):
+        return _stop_result(
+            stop=True,
+            reason=STOP_REASON_DELIVERY_READY,
+            secondary_stop_reasons=budget_stop_reasons,
+            ready_for_delivery=ready_for_delivery,
+            has_actionable_path=has_actionable_path,
+            blocking_gap_count=len(blocking_gaps),
+        )
+    if budget_stop_reasons:
+        return _stop_result(
+            stop=True,
+            reason=budget_stop_reasons[0],
+            secondary_stop_reasons=budget_stop_reasons[1:],
+            ready_for_delivery=ready_for_delivery,
+            has_actionable_path=has_actionable_path,
+            blocking_gap_count=len(blocking_gaps),
+        )
     if (
         decision_mode == DECISION_MODE_LLM_AGENT
         and int(session_state.get("blocked_finish_attempts") or 0) >= 3
         and int(session_state.get("step_index") or 0) >= 2
     ):
-        return {"stop": True, "reason": "repeated_blocked_finish"}
+        return _stop_result(
+            stop=True,
+            reason=STOP_REASON_REPEATED_BLOCKED_FINISH,
+            ready_for_delivery=ready_for_delivery,
+            has_actionable_path=has_actionable_path,
+            blocking_gap_count=len(blocking_gaps),
+        )
     if (
         int(session_state.get("consecutive_low_value_steps") or 0) >= 2
         and int(session_state.get("step_index") or 0) >= 2
         and (
-            reviewer_prefers_stop
-            or reviewer_is_stalled
-            or (not blocking_gaps and not reviewer_has_actionable_path)
+            acceptance_prefers_stop
+            or is_stalled
+            or (post_action_recommends_stop and (ready_for_delivery or not has_actionable_path))
+            or (not blocking_gaps and not has_actionable_path)
         )
     ):
-        return {"stop": True, "reason": "two_low_value_steps"}
-    return {"stop": False, "reason": "continue"}
+        return _stop_result(
+            stop=True,
+            reason=STOP_REASON_TWO_LOW_VALUE_STEPS,
+            ready_for_delivery=ready_for_delivery,
+            has_actionable_path=has_actionable_path,
+            blocking_gap_count=len(blocking_gaps),
+        )
+    return _stop_result(
+        stop=False,
+        reason=STOP_REASON_CONTINUE,
+        ready_for_delivery=ready_for_delivery,
+        has_actionable_path=has_actionable_path,
+        blocking_gap_count=len(blocking_gaps),
+    )
 
 
 def run_incident_agent_case(
@@ -5812,13 +7320,15 @@ def run_incident_agent_case(
         runtime_control = _control_summary(seed_event, session_state, incident_state, finalized)
         completion_advice = _completion_advice(seed_event, session_state, incident_state, finalized)
         tool_catalog = _available_tool_catalog(seed_event, session_state, incident_state)
+        agent_context_v1 = _build_agent_context_v1(seed_event, session_state, incident_state, finalized, tool_catalog)
+        agent_context_v1_payload = _prompt_payload_summary(agent_context_v1=agent_context_v1)
         decision = _stop_decision(seed_event, started_at, session_state, incident_state, finalized)
-        delivery_style_stop = str(decision.get("reason") or "").strip() == "delivery_ready"
+        delivery_style_stop = str(decision.get("reason") or "").strip() == STOP_REASON_DELIVERY_READY
         if open_agent_mode and decision["stop"] and (not delivery_style_stop or bool(completion_advice.get("should_finish"))):
-            session_state["stop_reason"] = decision["reason"]
+            _record_stop_decision(session_state, decision)
             break
         if not open_agent_mode and decision["stop"]:
-            session_state["stop_reason"] = decision["reason"]
+            _record_stop_decision(session_state, decision)
             if (
                 not delivery_style_stop
                 or bool(completion_advice.get("should_finish"))
@@ -5827,7 +7337,15 @@ def run_incident_agent_case(
                 break
 
         if open_agent_mode:
-            planning = _choose_open_agent_action(llm, seed_event, session_state, incident_state, finalized)
+            planning = _choose_open_agent_action(
+                llm,
+                seed_event,
+                session_state,
+                incident_state,
+                finalized,
+                tool_catalog=tool_catalog,
+                agent_context=agent_context_v1,
+            )
             agent_decision = dict(planning.get("decision") or {})
 
             if planning.get("action_type") == "tool":
@@ -5914,110 +7432,64 @@ def run_incident_agent_case(
                 "fallback_used": bool(agent_decision.get("fallback_used")),
                 "fallback_reason": str(agent_decision.get("fallback_reason") or "").strip(),
             }
-            active_cooldowns_before_review = _active_tool_cooldowns(
-                session_state,
-                incident_state,
-                finalized,
-            )
-            reviewer_decision = _review_open_agent_proposal(
-                llm,
-                seed_event,
-                session_state,
-                incident_state,
-                finalized,
-                tool_catalog,
-                proposal,
-            )
-            if (
-                reviewer_decision.get("fallback_used")
-                or str(reviewer_decision.get("decision") or "").strip() not in REVIEWER_DECISIONS
-            ):
-                reviewer_decision = _fallback_reviewer_decision(
-                    seed_event,
-                    session_state,
-                    incident_state,
-                    finalized,
-                    tool_catalog,
-                    proposal,
-                    reviewer_decision,
-                )
-                reviewer_decision = _apply_reviewer_control_metadata(
-                    seed_event,
-                    session_state,
-                    incident_state,
-                    finalized,
-                    tool_catalog,
-                    proposal,
-                    reviewer_decision,
-                )
-            acceptance_state = _acceptance_state(seed_event, session_state, incident_state, finalized)
-            if str(reviewer_decision.get("decision") or "").strip() == "deliverable" and not bool(acceptance_state.get("deliverable_now")):
-                reviewer_decision = _fallback_reviewer_decision(
-                    seed_event,
-                    session_state,
-                    incident_state,
-                    finalized,
-                    tool_catalog,
-                    proposal,
-                    reviewer_decision,
-                )
-                reviewer_decision = _apply_reviewer_control_metadata(
-                    seed_event,
-                    session_state,
-                    incident_state,
-                    finalized,
-                    tool_catalog,
-                    proposal,
-                    reviewer_decision,
-                )
-            reviewer_decision = _enforce_active_cooldown_gate(
-                seed_event,
-                session_state,
-                incident_state,
-                finalized,
-                tool_catalog,
-                proposal,
-                reviewer_decision,
-                active_cooldowns=active_cooldowns_before_review,
-            )
-
+            if not str(agent_decision.get("action_type") or "").strip():
+                agent_decision["action_type"] = str(planning.get("action_type") or "").strip()
             session_state.setdefault("agent_state", {})["last_decision"] = agent_decision
             session_state.setdefault("agent_history", []).append(agent_decision)
-            session_state.setdefault("reviewer_state", {})["last_decision"] = reviewer_decision
-            session_state.setdefault("reviewer_history", []).append(reviewer_decision)
 
-            if str(agent_decision.get("action_type") or "").strip() == "finish":
-                agent_decision["finish_requested"] = True
-                if str(reviewer_decision.get("decision") or "").strip() == "deliverable":
-                    agent_decision["finish_accepted"] = True
-                    agent_decision["finish_blocked_reason"] = ""
-                    session_state["blocked_finish_attempts"] = 0
-                else:
+            preflight_result = _preflight_investigator_action(
+                seed_event=seed_event,
+                session_state=session_state,
+                incident_state=incident_state,
+                finalized=finalized,
+                tool_catalog=tool_catalog,
+                proposal=proposal,
+                normalized_action=chosen,
+            )
+            _record_preflight_result(session_state, preflight_result)
+
+            if not bool(preflight_result.get("allowed")):
+                reviewer_decision = {
+                    "decision": "skipped_by_preflight",
+                    "reason": str(preflight_result.get("reason") or "").strip(),
+                    "execution_effect": "not_run",
+                }
+                if str(proposal.get("action_type") or "").strip() == "finish":
+                    agent_decision["finish_requested"] = True
                     agent_decision["finish_accepted"] = False
-                    agent_decision["finish_blocked_reason"] = str(reviewer_decision.get("reason") or "").strip()
+                    agent_decision["finish_blocked_reason"] = str(preflight_result.get("reason") or "").strip()
                     session_state["blocked_finish_attempts"] = int(session_state.get("blocked_finish_attempts") or 0) + 1
-
-            if str(reviewer_decision.get("decision") or "").strip() == "deliverable":
-                session_state["step_index"] = int(session_state.get("step_index") or 0) + 1
-                _consume_non_tool_step_budget(session_state)
-                agent_decision["finish_requested"] = True
-                agent_decision["finish_accepted"] = True
-                session_state["stop_reason"] = "agent_finish"
+                followup = _stop_decision(seed_event, started_at, session_state, incident_state, finalized)
+                if (
+                    not bool(followup.get("stop"))
+                    and int(session_state.get("consecutive_preflight_blocks") or 0) >= 2
+                ):
+                    followup = _stop_result(stop=True, reason=STOP_REASON_PREFLIGHT_BLOCK_LOOP)
+                    _record_stop_decision(session_state, followup)
+                elif bool(followup.get("stop")):
+                    _record_stop_decision(session_state, followup)
                 step_trace = {
-                    "step_index": session_state["step_index"],
+                    "step_index": int(session_state.get("step_index") or 0),
+                    "execution_source": "preflight_blocked",
                     "control_summary": runtime_control,
                     "open_questions": list(session_state.get("open_questions") or []),
                     "working_hypotheses": list(session_state.get("working_hypotheses") or []),
                     "available_tools": tool_catalog,
+                    "agent_context_v1_preview": agent_context_v1,
+                    "agent_context_v1_payload": agent_context_v1_payload,
+                    "investigator_raw_proposal": agent_decision,
+                    "normalized_proposal": proposal,
+                    "preflight_result_preview": preflight_result,
                     "agent_decision": agent_decision,
                     "reviewer_decision": reviewer_decision,
                     "selected_action": {
-                        "tool_name": "finish",
-                        "question": "finish investigation",
+                        "tool_name": "preflight_blocked",
+                        "execution_source": "preflight_blocked",
+                        "question": str(preflight_result.get("feedback_for_next_turn") or "").strip(),
                         "trace_params": {},
                         "expected_gain": "",
                         "alignment": _candidate_alignment_view(proposal_alignment),
-                        "llm_reason": str(reviewer_decision.get("reason") or agent_decision.get("reason") or "").strip(),
+                        "llm_reason": str(preflight_result.get("reason") or "").strip(),
                     },
                     "observation_ids": [],
                     "state_updates": {
@@ -6029,70 +7501,131 @@ def run_incident_agent_case(
                         "known_event_count": len(finalized["annotated_events"]),
                         "supporting_observation_ids": finalized["decision_basis"].get("positive_observation_ids") or [],
                         "counter_observation_ids": finalized["decision_basis"].get("counter_observation_ids") or [],
+                        "preflight_result": preflight_result,
                     },
-                    "stop_reason": "agent_finish",
                 }
-                investigation_trace.append(step_trace)
-                break
-
-            approved_action = chosen
-            if approved_action is not None and (
-                str(reviewer_decision.get("decision") or "").strip() in {"block", "redundant"}
-                or _review_blocks_tool(reviewer_decision, str(approved_action.get("tool_name") or ""))
-            ):
-                approved_action = None
-            if approved_action is None:
-                approved_action = _reviewer_replacement_tool(
-                    reviewer_decision,
-                    tool_catalog,
-                )
-            if approved_action is None:
-                feedback = str(reviewer_decision.get("reason") or "").strip()
-                if feedback:
-                    session_state["guardrail_feedback"] = (list(session_state.get("guardrail_feedback") or []) + [feedback])[-4:]
-                if bool((finalized.get("readiness") or {}).get("ready_for_delivery")):
-                    session_state["step_index"] = int(session_state.get("step_index") or 0) + 1
-                    _consume_non_tool_step_budget(session_state)
-                    session_state["stop_reason"] = "agent_finish"
-                    step_trace = {
-                        "step_index": session_state["step_index"],
-                        "control_summary": runtime_control,
-                        "open_questions": list(session_state.get("open_questions") or []),
-                        "working_hypotheses": list(session_state.get("working_hypotheses") or []),
-                        "available_tools": tool_catalog,
-                        "agent_decision": agent_decision,
-                        "reviewer_decision": reviewer_decision,
-                        "selected_action": {
-                            "tool_name": "finish",
-                            "question": "finish investigation",
-                            "trace_params": {},
-                            "expected_gain": "",
-                            "alignment": _candidate_alignment_view(proposal_alignment),
-                            "llm_reason": str(reviewer_decision.get("reason") or "").strip(),
-                        },
-                        "observation_ids": [],
-                        "state_updates": {
-                            "verdict": finalized["verdict"],
-                            "provisional_verdict": finalized["provisional_verdict"],
-                            "delivery_verdict": finalized["delivery_verdict"],
-                            "readiness": finalized["readiness"],
-                            "report_ready": finalized["report_ready"],
-                            "known_event_count": len(finalized["annotated_events"]),
-                            "supporting_observation_ids": finalized["decision_basis"].get("positive_observation_ids") or [],
-                            "counter_observation_ids": finalized["decision_basis"].get("counter_observation_ids") or [],
-                        },
-                        "stop_reason": "agent_finish",
-                    }
+                if bool(followup.get("stop")):
+                    step_trace["stop_reason"] = str(followup.get("reason") or "").strip()
                     investigation_trace.append(step_trace)
                     break
-                session_state["stop_reason"] = decision["reason"] if decision["stop"] else "no_high_value_action"
-                break
+                step_trace["continue_reason"] = str(followup.get("reason") or STOP_REASON_CONTINUE)
+                investigation_trace.append(step_trace)
+                continue
 
+            if str(preflight_result.get("action_type") or "").strip() == "finish":
+                reviewer_decision = _review_investigator_proposal_for_feedback(
+                    llm,
+                    seed_event,
+                    session_state,
+                    incident_state,
+                    finalized,
+                    tool_catalog,
+                    proposal,
+                )
+                finish_accepted = (
+                    str(reviewer_decision.get("decision") or "").strip() == "deliverable"
+                    and bool(reviewer_decision.get("deliverable_now"))
+                )
+                reviewer_decision["execution_effect"] = (
+                    "finish_accepted_by_reviewer"
+                    if finish_accepted
+                    else "finish_feedback_for_next_turn"
+                )
+                session_state.setdefault("reviewer_state", {})["last_decision"] = reviewer_decision
+                session_state.setdefault("reviewer_history", []).append(reviewer_decision)
+
+                session_state["step_index"] = int(session_state.get("step_index") or 0) + 1
+                _consume_non_tool_step_budget(session_state)
+                agent_decision["finish_requested"] = True
+                agent_decision["finish_accepted"] = finish_accepted
+                agent_decision["finish_blocked_reason"] = (
+                    ""
+                    if finish_accepted
+                    else str(reviewer_decision.get("reason") or "reviewer_rejected_finish").strip()
+                )
+                if finish_accepted:
+                    session_state["blocked_finish_attempts"] = 0
+                    _record_stop_decision(session_state, {"stop": True, "reason": STOP_REASON_AGENT_FINISH})
+                else:
+                    session_state["blocked_finish_attempts"] = int(session_state.get("blocked_finish_attempts") or 0) + 1
+                    _append_guardrail_feedback(
+                        session_state,
+                        _reviewer_feedback_for_next_turn(
+                            reviewer_decision,
+                            prefix="finish 未被 reviewer 接受",
+                        ),
+                    )
+                    followup = _stop_decision(seed_event, started_at, session_state, incident_state, finalized)
+                    if bool(followup.get("stop")):
+                        _record_stop_decision(session_state, followup)
+
+                step_trace = {
+                    "step_index": session_state["step_index"],
+                    "execution_source": "finish_reviewer",
+                    "control_summary": runtime_control,
+                    "open_questions": list(session_state.get("open_questions") or []),
+                    "working_hypotheses": list(session_state.get("working_hypotheses") or []),
+                    "available_tools": tool_catalog,
+                    "agent_context_v1_preview": agent_context_v1,
+                    "agent_context_v1_payload": agent_context_v1_payload,
+                    "investigator_raw_proposal": agent_decision,
+                    "normalized_proposal": proposal,
+                    "preflight_result_preview": preflight_result,
+                    "agent_decision": agent_decision,
+                    "reviewer_decision": reviewer_decision,
+                    "selected_action": {
+                        "tool_name": "finish" if finish_accepted else "finish_rejected_by_reviewer",
+                        "execution_source": "finish_reviewer",
+                        "question": (
+                            "finish investigation"
+                            if finish_accepted
+                            else _reviewer_feedback_for_next_turn(
+                                reviewer_decision,
+                                prefix="finish 未被 reviewer 接受",
+                            )
+                        ),
+                        "trace_params": {},
+                        "expected_gain": "",
+                        "alignment": _candidate_alignment_view(proposal_alignment),
+                        "llm_reason": str(agent_decision.get("reason") or reviewer_decision.get("reason") or preflight_result.get("reason") or "").strip(),
+                    },
+                    "observation_ids": [],
+                    "state_updates": {
+                        "verdict": finalized["verdict"],
+                        "provisional_verdict": finalized["provisional_verdict"],
+                        "delivery_verdict": finalized["delivery_verdict"],
+                        "readiness": finalized["readiness"],
+                        "report_ready": finalized["report_ready"],
+                        "known_event_count": len(finalized["annotated_events"]),
+                        "supporting_observation_ids": finalized["decision_basis"].get("positive_observation_ids") or [],
+                        "counter_observation_ids": finalized["decision_basis"].get("counter_observation_ids") or [],
+                        "preflight_result": preflight_result,
+                        "reviewer_feedback": list(session_state.get("guardrail_feedback") or [])[-4:],
+                    },
+                }
+                if finish_accepted:
+                    step_trace["stop_reason"] = STOP_REASON_AGENT_FINISH
+                    investigation_trace.append(step_trace)
+                    break
+                if str(session_state.get("stop_reason") or "").strip():
+                    step_trace["stop_reason"] = str(session_state.get("stop_reason") or "").strip()
+                    investigation_trace.append(step_trace)
+                    break
+                step_trace["continue_reason"] = "reviewer_rejected_finish"
+                investigation_trace.append(step_trace)
+                continue
+
+            approved_action = dict(preflight_result.get("normalized_action") or {})
+            approved_execution_source = (
+                "investigator_fallback_preflight_approved"
+                if str(proposal.get("action_type") or "").strip() == "fallback"
+                else "investigator_preflight_approved"
+            )
             session_state["guardrail_feedback"] = []
             if str(agent_decision.get("action_type") or "").strip() != "finish":
                 session_state["blocked_finish_attempts"] = 0
             session_state["step_index"] = int(session_state.get("step_index") or 0) + 1
-            observation_id = f"obs-{int(session_state['step_index']):03d}"
+            finalized_before = dict(finalized)
             material_gaps_before = list(finalized.get("gap_ledger") or [])
             selected_gap_ids = _selected_gap_ids_for_action(
                 str(approved_action.get("tool_name") or ""),
@@ -6103,12 +7636,22 @@ def run_incident_agent_case(
             selected_gap_rows = _selected_gap_view(material_gaps_before, selected_gap_ids)
             step_trace = {
                 "step_index": session_state["step_index"],
+                "execution_source": approved_execution_source,
                 "control_summary": runtime_control,
                 "open_questions": list(session_state.get("open_questions") or []),
                 "working_hypotheses": list(session_state.get("working_hypotheses") or []),
                 "available_tools": tool_catalog,
+                "agent_context_v1_preview": agent_context_v1,
+                "agent_context_v1_payload": agent_context_v1_payload,
+                "investigator_raw_proposal": agent_decision,
+                "normalized_proposal": proposal,
+                "preflight_result_preview": preflight_result,
                 "agent_decision": agent_decision,
-                "reviewer_decision": reviewer_decision,
+                "reviewer_decision": {
+                    "role": "post_action_reviewer",
+                    "review_result": "pending",
+                    "execution_effect": "pending_until_tool_result",
+                },
                 "selected_gap_ids": selected_gap_ids,
                 "selected_gaps": selected_gap_rows,
                 "expected_closure_criteria": unique_preserve_order(
@@ -6118,6 +7661,7 @@ def run_incident_agent_case(
                 ),
                 "selected_action": {
                     "tool_name": approved_action.get("tool_name"),
+                    "execution_source": approved_execution_source,
                     "question": approved_action.get("question"),
                     "trace_params": approved_action.get("trace_params"),
                     "expected_gain": approved_action.get("expected_gain"),
@@ -6135,68 +7679,63 @@ def run_incident_agent_case(
                             )
                         )
                     ),
-                    "llm_reason": approved_action.get("llm_reason") or str(reviewer_decision.get("reason") or agent_decision.get("reason") or "").strip(),
+                    "llm_reason": approved_action.get("llm_reason") or str(agent_decision.get("reason") or "").strip(),
                     "override_reason": str(agent_decision.get("override_reason") or approved_action.get("override_reason") or "").strip(),
                 },
             }
 
-            approved_action["input_fingerprint"] = str(
-                approved_action.get("input_fingerprint")
-                or _action_input_fingerprint(
-                    str(approved_action.get("tool_name") or ""),
-                    dict(approved_action.get("params") or {}),
-                    dict(approved_action.get("meta") or {}),
-                )
+            step_result = _run_approved_tool_step(
+                seed_event=seed_event,
+                started_at=started_at,
+                session_state=session_state,
+                incident_state=incident_state,
+                store=resolved_store,
+                action=approved_action,
+                finalized_before=finalized_before,
+                material_gaps_before=material_gaps_before,
+                selected_gap_ids=selected_gap_ids,
+                step_trace=step_trace,
+                defer_stop_decision=True,
             )
-            before_snapshot = _incident_snapshot(incident_state)
-            finalized_before = dict(finalized)
-            observation = _execute_action(seed_event, approved_action, resolved_store, incident_state, observation_id)
-            _update_budgets(session_state, str(approved_action.get("tool_name") or ""))
-            _attach_observation(incident_state, observation)
-            ledger_entry = _evidence_entry_from_observation(observation)
-            incident_state.setdefault("evidence_ledger", []).append(ledger_entry)
-            if observation.get("relation") == "counterevidence":
-                incident_state.setdefault("counterevidence", []).append(ledger_entry)
-
-            if observation.get("tool_name") == "search_seed_context":
-                incident_state["context_bundle"] = {
-                    "minimal_event_ids": [str(item.get("id") or "") for item in list(observation.get("events") or [])],
-                    "minimal_event_count": len(list(observation.get("events") or [])),
-                }
-
-            finalized = _finalize_runtime_state(seed_event, session_state, incident_state)
-            observation["output_delta"] = _build_observation_delta(
-                before_snapshot,
+            finalized = dict(step_result.get("finalized") or finalized)
+            followup = dict(step_result.get("followup") or {"stop": False, "reason": STOP_REASON_PENDING_POST_ACTION_REVIEW})
+            step_trace = dict(step_result.get("step_trace") or step_trace)
+            observation = dict(step_result.get("observation") or {})
+            reviewer_decision = _review_executed_step(
+                llm,
+                seed_event,
+                session_state,
                 incident_state,
-                observation,
                 finalized_before,
                 finalized,
+                approved_action,
+                observation,
+                step_trace,
             )
-            if _observation_high_value(observation):
-                session_state["consecutive_low_value_steps"] = 0
-            else:
-                session_state["consecutive_low_value_steps"] = int(session_state.get("consecutive_low_value_steps") or 0) + 1
-
-            session_state.setdefault("tool_history", []).append(_tool_history_record(approved_action, observation, session_state))
-            followup = _stop_decision(seed_event, started_at, session_state, incident_state, finalized)
-            step_trace["observation_ids"] = [observation.get("observation_id")]
-            step_trace["state_updates"] = {
-                "verdict": finalized["verdict"],
-                "provisional_verdict": finalized["provisional_verdict"],
-                "delivery_verdict": finalized["delivery_verdict"],
-                "readiness": finalized["readiness"],
-                "report_ready": finalized["report_ready"],
-                "known_event_count": len(finalized["annotated_events"]),
-                "supporting_observation_ids": finalized["decision_basis"].get("positive_observation_ids") or [],
-                "counter_observation_ids": finalized["decision_basis"].get("counter_observation_ids") or [],
-                "observation_delta": dict(observation.get("output_delta") or {}),
-                "gap_transition": _gap_transition_view(material_gaps_before, list(finalized.get("gap_ledger") or []), selected_gap_ids),
+            session_state.setdefault("reviewer_state", {})["last_decision"] = reviewer_decision
+            session_state.setdefault("reviewer_history", []).append(reviewer_decision)
+            step_trace["reviewer_decision"] = reviewer_decision
+            step_trace["reviewer_feedback_preview"] = {
+                "review_result": str(reviewer_decision.get("review_result") or "").strip(),
+                "material_delta": str(reviewer_decision.get("material_delta") or "").strip(),
+                "next_round_feedback": list(reviewer_decision.get("next_round_feedback") or []),
+                "constraints": list(reviewer_decision.get("constraints") or []),
+                "stop_recommendation": dict(reviewer_decision.get("stop_recommendation") or {}),
             }
+            step_trace.setdefault("state_updates", {})["post_action_review"] = {
+                "review_result": str(reviewer_decision.get("review_result") or "").strip(),
+                "material_delta": str(reviewer_decision.get("material_delta") or "").strip(),
+                "remaining_focus": dict(reviewer_decision.get("remaining_focus") or {}),
+                "stop_recommendation": dict(reviewer_decision.get("stop_recommendation") or {}),
+            }
+            step_trace.setdefault("state_updates", {})["reviewer_feedback"] = list(session_state.get("guardrail_feedback") or [])[-4:]
+            followup = _stop_decision(seed_event, started_at, session_state, incident_state, finalized)
             if followup["stop"]:
-                step_trace["stop_reason"] = followup["reason"]
-                session_state["stop_reason"] = followup["reason"]
+                step_trace.pop("continue_reason", None)
+                step_trace["stop_reason"] = str(followup.get("reason") or "").strip()
+                _record_stop_decision(session_state, followup)
             else:
-                step_trace["continue_reason"] = followup["reason"]
+                step_trace["continue_reason"] = str(followup.get("reason") or STOP_REASON_CONTINUE)
             investigation_trace.append(step_trace)
             if followup["stop"]:
                 break
@@ -6230,15 +7769,18 @@ def run_incident_agent_case(
         session_state.setdefault("selector_history", []).append(selector_decision)
         session_state.setdefault("selector_state", {})["last_decision"] = selector_decision
         if chosen is None:
-            session_state["stop_reason"] = (
-                "selector_stop"
+            selector_stop_reason = (
+                STOP_REASON_SELECTOR_STOP
                 if selector_decision.get("stop_accepted")
-                else (decision["reason"] if decision["stop"] else "no_high_value_action")
+                else (decision["reason"] if decision["stop"] else STOP_REASON_NO_HIGH_VALUE_ACTION)
             )
+            selector_stop_decision = dict(decision if decision.get("stop") else {})
+            selector_stop_decision.update({"stop": True, "reason": selector_stop_reason})
+            _record_stop_decision(session_state, selector_stop_decision)
             break
 
         session_state["step_index"] = int(session_state.get("step_index") or 0) + 1
-        observation_id = f"obs-{int(session_state['step_index']):03d}"
+        finalized_before = dict(finalized)
         material_gaps_before = list(finalized.get("gap_ledger") or [])
         selected_gap_ids = _selected_gap_ids_for_action(
             str(chosen.get("tool_name") or ""),
@@ -6249,10 +7791,17 @@ def run_incident_agent_case(
         selected_gap_rows = _selected_gap_view(material_gaps_before, selected_gap_ids)
         step_trace = {
             "step_index": session_state["step_index"],
+            "execution_source": (
+                "selector_guardrail_fallback"
+                if str(selector_decision.get("chosen_by") or "").strip() == "guardrail_fallback"
+                else "selector"
+            ),
             "control_summary": runtime_control,
             "open_questions": list(session_state.get("open_questions") or []),
             "working_hypotheses": list(session_state.get("working_hypotheses") or []),
             "candidate_actions": _selector_candidate_view(candidates),
+            "agent_context_v1_preview": agent_context_v1,
+            "agent_context_v1_payload": agent_context_v1_payload,
             "selector_decision": selector_decision,
             "selected_gap_ids": selected_gap_ids,
             "selected_gaps": selected_gap_rows,
@@ -6263,6 +7812,11 @@ def run_incident_agent_case(
             ),
             "selected_action": {
                 "tool_name": chosen.get("tool_name"),
+                "execution_source": (
+                    "selector_guardrail_fallback"
+                    if str(selector_decision.get("chosen_by") or "").strip() == "guardrail_fallback"
+                    else "selector"
+                ),
                 "question": chosen.get("question"),
                 "trace_params": chosen.get("trace_params"),
                 "expected_gain": chosen.get("expected_gain"),
@@ -6283,68 +7837,27 @@ def run_incident_agent_case(
             },
         }
 
-        chosen["input_fingerprint"] = str(
-            chosen.get("input_fingerprint")
-            or _action_input_fingerprint(
-                str(chosen.get("tool_name") or ""),
-                dict(chosen.get("params") or {}),
-                dict(chosen.get("meta") or {}),
-            )
+        step_result = _run_approved_tool_step(
+            seed_event=seed_event,
+            started_at=started_at,
+            session_state=session_state,
+            incident_state=incident_state,
+            store=resolved_store,
+            action=chosen,
+            finalized_before=finalized_before,
+            material_gaps_before=material_gaps_before,
+            selected_gap_ids=selected_gap_ids,
+            step_trace=step_trace,
         )
-        before_snapshot = _incident_snapshot(incident_state)
-        finalized_before = dict(finalized)
-        observation = _execute_action(seed_event, chosen, resolved_store, incident_state, observation_id)
-        _update_budgets(session_state, str(chosen.get("tool_name") or ""))
-        _attach_observation(incident_state, observation)
-        ledger_entry = _evidence_entry_from_observation(observation)
-        incident_state.setdefault("evidence_ledger", []).append(ledger_entry)
-        if observation.get("relation") == "counterevidence":
-            incident_state.setdefault("counterevidence", []).append(ledger_entry)
-
-        if observation.get("tool_name") == "search_seed_context":
-            incident_state["context_bundle"] = {
-                "minimal_event_ids": [str(item.get("id") or "") for item in list(observation.get("events") or [])],
-                "minimal_event_count": len(list(observation.get("events") or [])),
-            }
-
-        finalized = _finalize_runtime_state(seed_event, session_state, incident_state)
-        observation["output_delta"] = _build_observation_delta(
-            before_snapshot,
-            incident_state,
-            observation,
-            finalized_before,
-            finalized,
-        )
-        if _observation_high_value(observation):
-            session_state["consecutive_low_value_steps"] = 0
-        else:
-            session_state["consecutive_low_value_steps"] = int(session_state.get("consecutive_low_value_steps") or 0) + 1
-
-        session_state.setdefault("tool_history", []).append(_tool_history_record(chosen, observation, session_state))
-        followup = _stop_decision(seed_event, started_at, session_state, incident_state, finalized)
-        step_trace["observation_ids"] = [observation.get("observation_id")]
-        step_trace["state_updates"] = {
-            "verdict": finalized["verdict"],
-            "provisional_verdict": finalized["provisional_verdict"],
-            "delivery_verdict": finalized["delivery_verdict"],
-            "readiness": finalized["readiness"],
-            "report_ready": finalized["report_ready"],
-            "known_event_count": len(finalized["annotated_events"]),
-            "supporting_observation_ids": finalized["decision_basis"].get("positive_observation_ids") or [],
-            "counter_observation_ids": finalized["decision_basis"].get("counter_observation_ids") or [],
-            "observation_delta": dict(observation.get("output_delta") or {}),
-            "gap_transition": _gap_transition_view(material_gaps_before, list(finalized.get("gap_ledger") or []), selected_gap_ids),
-        }
-        if followup["stop"]:
-            step_trace["stop_reason"] = followup["reason"]
-            session_state["stop_reason"] = followup["reason"]
-        else:
-            step_trace["continue_reason"] = followup["reason"]
+        finalized = dict(step_result.get("finalized") or finalized)
+        followup = dict(step_result.get("followup") or {"stop": False, "reason": STOP_REASON_CONTINUE})
+        step_trace = dict(step_result.get("step_trace") or step_trace)
         investigation_trace.append(step_trace)
         if followup["stop"]:
             break
 
     finalized = _finalize_runtime_state(seed_event, session_state, incident_state)
+    run_metrics = _investigation_run_metrics(session_state, investigation_trace)
     incident = {
         "schema_version": "0.3",
         "mode": "incident-agent",
@@ -6415,6 +7928,7 @@ def run_incident_agent_case(
         "evidence_store": finalized.get("evidence_store") or incident_state.get("evidence_store") or {},
         "reviewer_input": finalized.get("reviewer_input") or incident_state.get("reviewer_input") or {},
         "delivery_decision": finalized.get("delivery_decision") or incident_state.get("delivery_decision") or {},
+        "run_metrics": run_metrics,
     }
     report_outline = build_incident_report_outline(incident)
     rendered_report = render_incident_report_with_llm(incident, llm=llm, outline=report_outline)
@@ -6430,6 +7944,7 @@ def run_incident_agent_case(
         "report_polish_brief": rendered_report.get("report_polish_brief") or "",
         "report_polish_validation": rendered_report.get("report_polish_validation") or {},
         "report_polish_error": rendered_report.get("report_polish_error") or "",
+        "run_metrics": run_metrics,
         "report_outline": report_outline,
         "ops_report_contract": report_outline.get("ops_report_contract") or report_outline.get("main_report_contract") or {},
         "appendix_contract": report_outline.get("appendix_contract") or report_outline.get("appendix") or {},

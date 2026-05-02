@@ -1,0 +1,87 @@
+{
+  "version": "2.0",
+  "title": "事件级溯源拓扑",
+  "nodes": [
+    {
+      "id": "fp:ja4:t13d1517h2_22adbe210bc1_11cae1281e22",
+      "label": "JA4 t13d1517h2_22adbe210bc1_11cae1281e22",
+      "type": "fingerprint_ja4"
+    },
+    {
+      "id": "asset:web-app-02",
+      "label": "web-app-02",
+      "type": "internal_host"
+    },
+    {
+      "id": "ip:198.51.100.177",
+      "label": "198.51.100.177",
+      "type": "external_ip"
+    },
+    {
+      "id": "domain:auth-edge-panel.net",
+      "label": "auth-edge-panel.net",
+      "type": "domain"
+    },
+    {
+      "id": "domain:cdn-auth-edge.net",
+      "label": "cdn-auth-edge.net",
+      "type": "domain"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:evt-801:asset-fp",
+      "source": "asset:web-app-02",
+      "target": "fp:ja4:t13d1517h2_22adbe210bc1_11cae1281e22",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-802:asset-fp",
+      "source": "asset:web-app-02",
+      "target": "fp:ja4:t13d1517h2_22adbe210bc1_11cae1281e22",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-803:asset-ip",
+      "source": "asset:web-app-02",
+      "target": "ip:198.51.100.177",
+      "label": "alert"
+    },
+    {
+      "id": "edge:evt-803:ip-domain",
+      "source": "ip:198.51.100.177",
+      "target": "domain:auth-edge-panel.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-803:asset-fp",
+      "source": "asset:web-app-02",
+      "target": "fp:ja4:t13d1517h2_22adbe210bc1_11cae1281e22",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-804:asset-ip",
+      "source": "asset:web-app-02",
+      "target": "ip:198.51.100.177",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-804:ip-domain",
+      "source": "ip:198.51.100.177",
+      "target": "domain:auth-edge-panel.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-804:asset-fp",
+      "source": "asset:web-app-02",
+      "target": "fp:ja4:t13d1517h2_22adbe210bc1_11cae1281e22",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-805:asset-fp",
+      "source": "asset:web-app-02",
+      "target": "fp:ja4:t13d1517h2_22adbe210bc1_11cae1281e22",
+      "label": "seed_indicator"
+    }
+  ]
+}

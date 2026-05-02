@@ -1,0 +1,17 @@
+{
+  "stop_reason": "runtime_budget_exhausted",
+  "tool_history_length": 4,
+  "agent_round_count": 4,
+  "reviewer_round_count": 4,
+  "reviewer_replacement_count": 0,
+  "invalid_proposal_count": 0,
+  "duplicate_deterministic_call_count": 0,
+  "preflight_block_count": 0,
+  "reviewer_block_count": 0,
+  "prompt_payload_bytes": {
+    "agent_total": 141149,
+    "reviewer_total": 244310,
+    "agent_context_v1_preview_total": 30902,
+    "total": 385459
+  }
+}

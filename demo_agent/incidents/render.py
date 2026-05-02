@@ -13,6 +13,7 @@ from .report_contracts import build_appendix_contract, build_ops_report_contract
 from .report_inputs import build_report_inputs
 from .report_render import render_appendix_report, render_ops_report
 from .reviewer import build_delivery_decision, build_reviewer_input
+from ..services.api.llm_observability import invoke_llm_with_trace
 
 EVENT_TOOL_NAMES = {"search_seed_context", "search_related_events", "expand_asset_scope"}
 STAGE_LABELS = {
@@ -4388,6 +4389,8 @@ def _repair_polished_sections(
                 section_markdown=_section_to_markdown(current_section),
                 validation_notes=validation_notes,
             ),
+            role="report_polish_section_repair",
+            extra={"section_title": section_title},
         )
         repaired_section = _normalize_single_section_response(
             str(getattr(response, "content", "") or "").strip(),
@@ -4442,11 +4445,27 @@ def _is_transient_report_polish_error(exc: Exception) -> bool:
     return any(marker in text for marker in transient_markers)
 
 
-def _invoke_report_writer_with_retry(report_writer: Any, messages: Any, *, max_attempts: int = 3) -> Any:
+def _invoke_report_writer_with_retry(
+    report_writer: Any,
+    messages: Any,
+    *,
+    max_attempts: int = 3,
+    role: str = "report_polish",
+    extra: Dict[str, Any] | None = None,
+) -> Any:
     last_exc: Exception | None = None
     for attempt in range(1, max_attempts + 1):
         try:
-            return report_writer.invoke(messages)
+            return invoke_llm_with_trace(
+                report_writer,
+                messages,
+                role=role,
+                extra={
+                    **dict(extra or {}),
+                    "attempt": attempt,
+                    "max_attempts": max_attempts,
+                },
+            )
         except Exception as exc:
             last_exc = exc
             if attempt >= max_attempts or not _is_transient_report_polish_error(exc):
@@ -4695,6 +4714,7 @@ def render_incident_report_with_llm(
                 response = _invoke_report_writer_with_retry(
                     report_writer,
                     prompt.format_messages(report_polish_brief=polish_brief),
+                    role="report_polish_initial",
                 )
                 content = str(getattr(response, "content", "") or "").strip()
                 if content:
@@ -4712,7 +4732,8 @@ def render_incident_report_with_llm(
                                 report_polish_brief=polish_brief,
                                 draft_markdown=content,
                                 validation_notes=repair_notes,
-                            )
+                            ),
+                            role="report_polish_full_repair",
                         )
                         repaired_content = str(getattr(repair_response, "content", "") or "").strip()
                         if repaired_content:

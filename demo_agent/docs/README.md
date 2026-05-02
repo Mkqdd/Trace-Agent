@@ -56,7 +56,13 @@ python -m demo_agent \
 如果要快速验证 `llm_agent` 的开放式循环，可运行：
 
 ```bash
-conda run -n trail-agent python tools/test_llm_agent_open_loop.py
+conda run -n trail-agent python tools/test_llm_agent_protocol.py
+```
+
+如果要先确认外部 LLM API 是否可连通，可运行：
+
+```bash
+conda run -n trail-agent python tools/llm_ping.py --trace-path outputs/llm_ping.jsonl
 ```
 
 ## 3. 生命周期 / 数据流

@@ -44,15 +44,21 @@
 │ │    - `investigation_trace[]`                               │
 │ ├── while loop                                               │
 │ │    1. `_finalize_runtime_state()`                          │
-│ │    2. `_action_candidates()` / `_available_tool_catalog()` │
-│ │    3. `_stop_decision()`                                   │
-│ │    4. 选择动作                                              │
-│ │       - 默认：`llm_agent` + reviewer gate                  │
-│ │       - fallback / legacy：`heuristic` / `llm_selector` / `hybrid` │
-│ │    5. `_execute_action()`                                  │
-│ │    6. observation -> `incident_state` / `evidence_ledger`  │
-│ │    7. 记录 `investigation_trace`                           │
-│ │    8. 回到步骤 1，直到 stop                                │
+│ │    2. 构造 `AgentContext V1`                               │
+│ │       - `evidence_view` / `gap_view`                       │
+│ │       - `tool_catalog` / `action_options`                  │
+│ │       - `control_constraints` / `reviewer_feedback`        │
+│ │    3. `_stop_decision()` 做预算与交付层预检查              │
+│ │    4. `investigator` 基于 `seed + agent_context` 提案       │
+│ │    5. `_preflight_investigator_action()` 机械校验           │
+│ │       - schema / 工具白名单 / 参数 / budget / cooldown     │
+│ │    6. `_run_approved_tool_step()` 执行并写回 observation    │
+│ │    7. `_review_executed_step()` 做 post-action review       │
+│ │       - 评价本轮增量                                       │
+│ │       - 写入下一轮 feedback / constraints                  │
+│ │       - 给 stop gate 一个非强制 stop_recommendation        │
+│ │    8. `_stop_decision()` 统一收口是否停止                  │
+│ │    9. 记录 `investigation_trace` 并回到步骤 1              │
 │ └── 输出最终 `incident` 视图                                 │
 └──────────────────────┬───────────────────────────────────────┘
                        │
@@ -111,6 +117,15 @@
 - `investigation_trace`
   - 逐 step 的外层审计轨迹。
   - 每一步会记录：控制摘要、候选动作、选中的动作、observation id、状态更新、stop/continue reason。
+- `AgentContext V1`
+  - 面向 investigator 的模型输入视图，不是持久化事实源。
+  - 把事实视图、gap 视图、静态工具 API、当前可安全构造参数的 action options、控制约束和 reviewer feedback 分开。
+- `preflight_history`
+  - 只记录执行前机械校验结果。
+  - 它不判断哪个动作“更聪明”，也不会替 investigator 选择工具。
+- `reviewer_history`
+  - 当前主线中分为两类记录：`finish_reviewer` 与 `post_action_reviewer`。
+  - `post_action_reviewer` 只评价已执行工具的增量，并把反馈写入下一轮上下文；它不能替换或执行动作。
 - `evidence_store`
   - 从运行期 `incident_state` 收敛出的结构化证据层。
   - 后面的 reviewer、delivery decision、report inputs、appendix 都主要吃这层。
@@ -135,7 +150,10 @@
 - `hybrid`
   - 仍然保留候选动作集合，但优先让 LLM 参与选择。
 - `llm_agent`
-  - 当前主开发路径。LLM 直接面向开放工具目录提出动作，随后再经过 reviewer gate 决定是否放行、替换或 finish。
+  - 当前主开发路径。investigator 面向 `AgentContext V1` 提出单步 tool / finish proposal。
+  - tool proposal 先经过 preflight 机械校验，合法后直接执行；reviewer 只在执行后评价增量并给下一轮反馈。
+  - finish proposal 走轻量 finish reviewer；reviewer 可以拒绝 finish 并给反馈，但不能替 investigator 输出可执行工具。
+  - 最终是否停止由 `_stop_decision()` 统一决定，post-action reviewer 的 `stop_recommendation` 只是其中一个信号。
 
 ## 4. deterministic report 和 polished report 的关系
 

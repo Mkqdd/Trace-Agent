@@ -1,0 +1,163 @@
+{
+  "schema_version": "delivery-decision-v1",
+  "approved": false,
+  "delivery_status": "needs_review",
+  "delivery_status_label": "可疑事件，建议继续复核",
+  "confidence_band": "中",
+  "confirmed_scope": [],
+  "candidate_scope": [
+    "ws-eng-09"
+  ],
+  "blocking_gaps": [
+    {
+      "gap_id": "validate_candidate_events",
+      "question": "扩线得到的 5 条关联事件尚未完成独立验证，是否应并入主事件范围？",
+      "priority": "high",
+      "status": "open",
+      "status_reason": "",
+      "delivery_blocking": true,
+      "actionable_now": true,
+      "blocks_delivery_now": true,
+      "next_best_question": "扩线得到的 5 条关联事件尚未完成独立验证，是否应并入主事件范围？"
+    },
+    {
+      "gap_id": "check_counterevidence",
+      "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "priority": "medium",
+      "status": "open",
+      "status_reason": "",
+      "delivery_blocking": true,
+      "actionable_now": true,
+      "blocks_delivery_now": true,
+      "next_best_question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。"
+    },
+    {
+      "gap_id": "structure_evidence",
+      "question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+      "priority": "medium",
+      "status": "open",
+      "status_reason": "",
+      "delivery_blocking": true,
+      "actionable_now": true,
+      "blocks_delivery_now": true,
+      "next_best_question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。"
+    }
+  ],
+  "non_blocking_gaps": [],
+  "next_best_questions": [
+    "扩线得到的 5 条关联事件尚未完成独立验证，是否应并入主事件范围？",
+    "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+    "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。"
+  ],
+  "reviewer_rationale": "交付门槛尚未满足：仍有 5 条候选扩线事件没有完成独立验证。；尚未执行显式反证检查。；仍缺少情报或结构化整理动作，报告材料尚未收束。；扩线得到的 5 条关联事件尚未完成独立验证，是否应并入主事件范围？",
+  "insufficient_progress_signals": [
+    "最近多轮工具调用的新颖度偏低，调查推进可能已经放缓。",
+    "当前仍存在阻塞交付的关键缺口。",
+    "当前还没有形成稳定的已确认影响范围。"
+  ],
+  "delivery_verdict": {
+    "status": "needs_review",
+    "status_label": "可疑事件，建议继续复核",
+    "confidence": 68,
+    "severity": "中危",
+    "rationale": [
+      "事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。",
+      "seed alert 自带家族/工具提示：Suspected multi-host beacon spread。",
+      "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。",
+      "交付门槛尚未满足：仍有 5 条候选扩线事件没有完成独立验证。；尚未执行显式反证检查。；仍缺少情报或结构化整理动作，报告材料尚未收束。；扩线得到的 5 条关联事件尚未完成独立验证，是否应并入主事件范围？"
+    ],
+    "delivery_ready": false,
+    "blocked_by": [
+      "candidate_events_grounded",
+      "counterevidence_checked",
+      "supplemental_context_reviewed"
+    ],
+    "provisional_status": "confirmed_incident",
+    "provisional_status_label": "确认事件"
+  },
+  "analysis_verdict": {
+    "status": "confirmed_incident",
+    "status_label": "确认事件",
+    "confidence": 94,
+    "severity": "高危",
+    "rationale": [
+      "事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。",
+      "seed alert 自带家族/工具提示：Suspected multi-host beacon spread。",
+      "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。"
+    ]
+  },
+  "readiness": {
+    "ready_for_delivery": false,
+    "summary": "交付门槛尚未满足：仍有 5 条候选扩线事件没有完成独立验证。；尚未执行显式反证检查。；仍缺少情报或结构化整理动作，报告材料尚未收束。；扩线得到的 5 条关联事件尚未完成独立验证，是否应并入主事件范围？",
+    "checks": [
+      {
+        "id": "context_built",
+        "ok": true,
+        "reason": "已围绕 seed alert 建立最小上下文。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "cluster_built",
+        "ok": true,
+        "reason": "事件簇规模已经足以支撑时间线和范围判断。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "candidate_events_grounded",
+        "ok": false,
+        "reason": "仍有 5 条候选扩线事件没有完成独立验证。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "timeline_built",
+        "ok": true,
+        "reason": "已形成时间线，可解释关键观察的先后关系。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "scope_assessed",
+        "ok": true,
+        "reason": "当前事件范围已经落到资产或核心外部指示物上。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "evidence_chain_ready",
+        "ok": true,
+        "reason": "确认事件前至少需要执行、横向移动、外传等高风险阶段，或已经保守收敛到多资产范围，目前该条件已满足。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "counterevidence_checked",
+        "ok": false,
+        "reason": "尚未执行显式反证检查。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "supplemental_context_reviewed",
+        "ok": false,
+        "reason": "仍缺少情报或结构化整理动作，报告材料尚未收束。",
+        "delivery_blocking": true
+      }
+    ],
+    "blocking_checks": [
+      {
+        "id": "candidate_events_grounded",
+        "ok": false,
+        "reason": "仍有 5 条候选扩线事件没有完成独立验证。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "counterevidence_checked",
+        "ok": false,
+        "reason": "尚未执行显式反证检查。",
+        "delivery_blocking": true
+      },
+      {
+        "id": "supplemental_context_reviewed",
+        "ok": false,
+        "reason": "仍缺少情报或结构化整理动作，报告材料尚未收束。",
+        "delivery_blocking": true
+      }
+    ]
+  }
+}
