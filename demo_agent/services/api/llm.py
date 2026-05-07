@@ -9,6 +9,6 @@ def make_llm(cfg: AgentConfig) -> ChatOpenAI:
         temperature=cfg.llm_temperature,
         openai_api_key=cfg.llm_api_key,
         openai_api_base=cfg.llm_base_url,
-        request_timeout=60,
+        request_timeout=180,
         max_retries=1,
     )

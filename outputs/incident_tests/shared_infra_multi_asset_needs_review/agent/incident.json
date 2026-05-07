@@ -8624,7 +8624,7 @@
     "prompt_payload_bytes": {
       "agent_total": 0,
       "reviewer_total": 0,
-      "agent_context_v1_preview_total": 57252,
+      "agent_context_v1_preview_total": 65384,
       "total": 0
     }
   }

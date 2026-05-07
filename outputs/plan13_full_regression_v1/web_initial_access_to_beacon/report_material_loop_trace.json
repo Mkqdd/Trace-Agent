@@ -1,0 +1,672 @@
+{
+  "schema_version": "report-material-loop-trace-v1",
+  "status": "submitted",
+  "rounds": [
+    {
+      "round": 1,
+      "action": {
+        "action": "submit",
+        "materials": {
+          "schema_version": "report-writer-materials-v1",
+          "case_thesis": {
+            "conclusion": "确认安全事件；事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。；seed alert 自带家族/工具提示：Possible web-shell beacon。；主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。",
+            "sources": [
+              "verdict:delivery"
+            ],
+            "why_it_matters": "事件已经从初始异常发展到高风险阶段，影响范围可能扩大，需要立即采取行动以防止进一步损害。",
+            "why_this_judgment_holds": "事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。"
+          },
+          "narrative_spine": [
+            {
+              "step_label": "初始异常",
+              "source_ids": [
+                "event:evt-301"
+              ]
+            },
+            {
+              "step_label": "可疑活动",
+              "source_ids": [
+                "event:evt-302",
+                "event:evt-303"
+              ]
+            },
+            {
+              "step_label": "确认恶意行为",
+              "source_ids": [
+                "event:evt-304",
+                "event:evt-305"
+              ]
+            },
+            {
+              "step_label": "事件范围",
+              "source_ids": [
+                "object:OBJ-01",
+                "object:OBJ-02",
+                "object:OBJ-03"
+              ]
+            }
+          ],
+          "evidence_argument_map": [
+            {
+              "claim": "可疑事件",
+              "source_ids": [
+                "event:evt-301",
+                "event:evt-302"
+              ],
+              "why_it_matters": "这些事件表明了潜在的入侵尝试，需要进一步调查以确定是否发生了实际的恶意活动。",
+              "limitation": "这些事件仅表明了可疑活动，但不足以单独证明恶意行为的存在。"
+            },
+            {
+              "claim": "确认恶意行为",
+              "source_ids": [
+                "event:evt-303",
+                "event:evt-304"
+              ],
+              "why_it_matters": "这些事件提供了恶意行为存在的直接证据，支持了事件成立的判断。",
+              "limitation": "尽管这些事件提供了恶意行为的直接证据，但仍需进一步调查以确定其影响范围。"
+            },
+            {
+              "claim": "执行阶段",
+              "source_ids": [
+                "event:evt-305"
+              ],
+              "why_it_matters": "这些事件表明了恶意软件的执行阶段，进一步证实了事件的严重性。",
+              "limitation": "这些事件仅表明了恶意软件的执行阶段，但无法单独确定其对整个网络的影响。"
+            }
+          ],
+          "scope_role_matrix": [
+            {
+              "object": "web-app-01",
+              "source_ids": [
+                "object:OBJ-01"
+              ],
+              "role": "confirmed_affected_asset",
+              "why_it_matters": "web-app-01 是种子资产，也是确认受到影响的资产，需要重点关注。"
+            },
+            {
+              "object": "198.51.100.88",
+              "source_ids": [
+                "object:OBJ-02"
+              ],
+              "role": "external_infrastructure",
+              "why_it_matters": "198.51.100.88 是核心外部指标，可能是恶意活动的一部分，需要进行封禁处理。"
+            },
+            {
+              "object": "cdn-auth-check.net",
+              "source_ids": [
+                "object:OBJ-03"
+              ],
+              "role": "external_infrastructure",
+              "why_it_matters": "cdn-auth-check.net 是核心外部指标，可能是恶意活动的一部分，需要进行封禁处理。"
+            }
+          ],
+          "counterarguments_and_boundaries": [
+            {
+              "claim": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+              "source_ids": [
+                "gap:expand_cluster_scope"
+              ],
+              "why_it_matters": "这表明当前的判断可能存在局限性，需要进一步扩线以确认是否存在更大的影响范围。",
+              "limitation": "当前的判断可能不完全准确，需要进一步调查以确认是否存在更大的影响范围。"
+            }
+          ],
+          "action_rationale": [
+            {
+              "action": "优先隔离或重点监控资产：web-app-01。",
+              "source_ids": [
+                "action:1"
+              ],
+              "why_it_matters": "由于 web-app-01 是确认受到影响的资产，因此需要优先隔离或重点监控以防止进一步损害。"
+            },
+            {
+              "action": "在边界和代理设备上排查并封禁外部基础设施：198.51.100.88、cdn-auth-check.net。",
+              "source_ids": [
+                "action:2"
+              ],
+              "why_it_matters": "由于 198.51.100.88 和 cdn-auth-check.net 是核心外部指标，可能是恶意活动的一部分，因此需要在边界和代理设备上排查并封禁这些外部基础设施。"
+            },
+            {
+              "action": "以 seed 指标和事件簇中的域名 / IP 为 pivot，继续检索同时间窗内的重复通信。",
+              "source_ids": [
+                "action:3"
+              ],
+              "why_it_matters": "通过继续检索同时间窗内的重复通信，可以进一步确认事件的影响范围和严重性。"
+            }
+          ],
+          "section_briefs": [],
+          "reportable_limits": []
+        }
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "round": "preload",
+      "tool_name": "get_case_overview",
+      "params": {},
+      "result": {
+        "case_header": {
+          "title": "web-app-01 Possible web-shell beacon 调查报告",
+          "analysis_window": "2026-05-11 14:02:00 UTC 至 2026-05-11 14:23:00 UTC",
+          "delivery_status": "confirmed_incident",
+          "delivery_status_label": "确认安全事件",
+          "severity": "高危",
+          "confidence": "高",
+          "source_layer": "delivery_decision",
+          "severity_normalized": "高",
+          "confidence_normalized": "高",
+          "seed_alert_summary": {
+            "event_time": "2026-05-11 14:12:00",
+            "src_ip": "10.60.1.14",
+            "dst_ip": "198.51.100.88",
+            "protocol": "TLS",
+            "fingerprint_type": "JA4",
+            "fingerprint_value": "t13d1517h2_91adbe210bc1_7cae1281e991",
+            "info": "Possible web-shell beacon"
+          },
+          "final_verdict_summary": {
+            "source_id": "verdict:delivery",
+            "status": "confirmed_incident",
+            "status_label": "确认安全事件",
+            "severity": "高",
+            "confidence": "高",
+            "delivery_ready": true,
+            "provisional_status_label": "确认事件",
+            "rationale": [
+              "事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。",
+              "seed alert 自带家族/工具提示：Possible web-shell beacon。",
+              "主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。"
+            ],
+            "exact_fact_text": "确认安全事件；事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。；seed alert 自带家族/工具提示：Possible web-shell beacon。；主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。"
+          }
+        },
+        "confirmed_scope": [
+          "web-app-01"
+        ],
+        "candidate_scope": [
+          "t13d1517h2_91adbe210bc1_7cae1281e991"
+        ],
+        "external_infrastructure": [
+          "198.51.100.88",
+          "cdn-auth-check.net"
+        ],
+        "source_counts": {
+          "observations": 5,
+          "events": 5,
+          "claims": 10,
+          "objects": 7,
+          "gaps": 7
+        }
+      }
+    },
+    {
+      "round": "preload",
+      "tool_name": "get_scope_roles",
+      "params": {
+        "mode": "key"
+      },
+      "result": {
+        "scope": {
+          "confirmed_assets": [
+            "web-app-01"
+          ],
+          "candidate_assets": [
+            "t13d1517h2_91adbe210bc1_7cae1281e991"
+          ],
+          "seed_assets": [
+            "web-app-01"
+          ],
+          "external_infrastructure": [
+            "198.51.100.88",
+            "cdn-auth-check.net"
+          ],
+          "background_objects": [],
+          "related_internal_addresses": [
+            "10.60.1.14"
+          ]
+        },
+        "objects": [
+          {
+            "source_id": "object:OBJ-01",
+            "object": "web-app-01",
+            "object_type": "asset",
+            "investigation_role": "seed_asset",
+            "report_scope_role": "confirmed_affected_asset",
+            "may_be_written_as_affected": true,
+            "exact_fact_text": "对象 `web-app-01` 的调查角色为 seed_asset，报告范围角色为 confirmed_affected_asset。"
+          },
+          {
+            "source_id": "object:OBJ-02",
+            "object": "198.51.100.88",
+            "object_type": "IP",
+            "investigation_role": "core_external_indicator",
+            "report_scope_role": "external_infrastructure",
+            "may_be_written_as_affected": false,
+            "exact_fact_text": "对象 `198.51.100.88` 的调查角色为 core_external_indicator，报告范围角色为 external_infrastructure。"
+          },
+          {
+            "source_id": "object:OBJ-03",
+            "object": "cdn-auth-check.net",
+            "object_type": "domain",
+            "investigation_role": "core_external_indicator",
+            "report_scope_role": "external_infrastructure",
+            "may_be_written_as_affected": false,
+            "exact_fact_text": "对象 `cdn-auth-check.net` 的调查角色为 core_external_indicator，报告范围角色为 external_infrastructure。"
+          }
+        ],
+        "source_conflicts": []
+      }
+    },
+    {
+      "round": "preload",
+      "tool_name": "get_gaps_and_boundaries",
+      "params": {
+        "include_closed": false
+      },
+      "result": {
+        "gaps": [
+          {
+            "source_id": "gap:expand_cluster_scope",
+            "question": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+            "status": "reportable_unresolved",
+            "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+            "delivery_blocking": true,
+            "actionable_now": false,
+            "exact_fact_text": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。"
+          }
+        ],
+        "counterevidence": [],
+        "source_conflicts": []
+      }
+    },
+    {
+      "round": "preload",
+      "tool_name": "get_timeline",
+      "params": {
+        "mode": "with_candidates"
+      },
+      "result": {
+        "mode": "with_candidates",
+        "events": [
+          {
+            "source_id": "event:evt-301",
+            "time": "2026-05-11T14:02:00Z",
+            "status": "confirmed",
+            "classification": "suspicious",
+            "stages": [
+              "initial-access"
+            ],
+            "asset": "web-app-01",
+            "exact_fact_text": "2026-05-11 14:02:00 UTC，资产 `web-app-01`，Public-facing web server received suspicious exploit requests against the login endpoint before external TLS traffic began.，源地址 `10.60.1.14`"
+          },
+          {
+            "source_id": "event:evt-302",
+            "time": "2026-05-11T14:07:30Z",
+            "status": "confirmed",
+            "classification": "suspicious",
+            "stages": [
+              "initial-access",
+              "command-and-control"
+            ],
+            "asset": "web-app-01",
+            "exact_fact_text": "2026-05-11 14:07:30 UTC，资产 `web-app-01`，关联对象 `cdn-auth-check.net`，The web server resolved a rare domain shortly after the exploit attempts.，源地址 `10.60.1.14`"
+          },
+          {
+            "source_id": "event:evt-303",
+            "time": "2026-05-11T14:12:00Z",
+            "status": "confirmed",
+            "classification": "malicious",
+            "stages": [
+              "command-and-control"
+            ],
+            "asset": "web-app-01",
+            "exact_fact_text": "2026-05-11 14:12:00 UTC，资产 `web-app-01`，关联对象 `cdn-auth-check.net / 198.51.100.88`，Seed JA4 alert matched a possible web-shell beacon over TLS.，源地址 `10.60.1.14`"
+          },
+          {
+            "source_id": "event:evt-304",
+            "time": "2026-05-11T14:18:10Z",
+            "status": "confirmed",
+            "classification": "suspicious",
+            "stages": [
+              "command-and-control"
+            ],
+            "asset": "web-app-01",
+            "exact_fact_text": "2026-05-11 14:18:10 UTC，资产 `web-app-01`，关联对象 `cdn-auth-check.net / 198.51.100.88`，The same web server reconnected to the same external infrastructure after the seed alert.，源地址 `10.60.1.14`"
+          },
+          {
+            "source_id": "event:evt-305",
+            "time": "2026-05-11T14:23:00Z",
+            "status": "confirmed",
+            "classification": "suspicious",
+            "stages": [
+              "execution"
+            ],
+            "asset": "web-app-01",
+            "exact_fact_text": "2026-05-11 14:23:00 UTC，资产 `web-app-01`，PowerShell launcher executed under w3wp after suspicious outbound TLS traffic began.，源地址 `10.60.1.14`"
+          }
+        ]
+      }
+    },
+    {
+      "round": "preload",
+      "tool_name": "list_source_items",
+      "params": {
+        "item_type": "claim",
+        "status": "any",
+        "limit": 8
+      },
+      "result": {
+        "item_type": "claim",
+        "status": "any",
+        "items": [
+          {
+            "source_id": "claim:CL-01",
+            "id": "CL-01",
+            "status": "supporting",
+            "time": "",
+            "object": "",
+            "summary": "检索到 5 条偏可疑事件，围绕 cdn-auth-check.net、198.51.100.88 展开。",
+            "exact_fact_text": "检索到 5 条偏可疑事件，围绕 cdn-auth-check.net、198.51.100.88 展开。",
+            "relation": "supporting",
+            "observation_ref_count": 1
+          },
+          {
+            "source_id": "claim:CL-02",
+            "id": "CL-02",
+            "status": "candidate",
+            "time": "",
+            "object": "",
+            "summary": "扩线检索到 5 条可疑关联事件，围绕 cdn-auth-check.net、198.51.100.88 展开；当前先作为待验证候选线索。",
+            "exact_fact_text": "扩线检索到 5 条可疑关联事件，围绕 cdn-auth-check.net、198.51.100.88 展开；当前先作为待验证候选线索。",
+            "relation": "candidate",
+            "observation_ref_count": 1
+          },
+          {
+            "source_id": "claim:CL-03",
+            "id": "CL-03",
+            "status": "candidate",
+            "time": "",
+            "object": "",
+            "summary": "扩线检索到 5 条可疑关联事件，围绕 cdn-auth-check.net、198.51.100.88 展开；当前先作为待验证候选线索。",
+            "exact_fact_text": "扩线检索到 5 条可疑关联事件，围绕 cdn-auth-check.net、198.51.100.88 展开；当前先作为待验证候选线索。",
+            "relation": "candidate",
+            "observation_ref_count": 1
+          },
+          {
+            "source_id": "claim:CL-04",
+            "id": "CL-04",
+            "status": "context",
+            "time": "",
+            "object": "",
+            "summary": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。",
+            "exact_fact_text": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。",
+            "relation": "context",
+            "observation_ref_count": 1
+          },
+          {
+            "source_id": "claim:CL-05",
+            "id": "CL-05",
+            "status": "context",
+            "time": "",
+            "object": "",
+            "summary": "- primary: web-app-01 疑似 Possible web-shell beacon 相关事件 (score=9)",
+            "exact_fact_text": "- primary: web-app-01 疑似 Possible web-shell beacon 相关事件 (score=9)",
+            "relation": "context",
+            "observation_ref_count": 1
+          },
+          {
+            "source_id": "claim:CL-06",
+            "id": "CL-06",
+            "status": "context",
+            "time": "",
+            "object": "",
+            "summary": "- Seed JA4 alert matched a possible web-shell beacon over TLS.",
+            "exact_fact_text": "- Seed JA4 alert matched a possible web-shell beacon over TLS.",
+            "relation": "context",
+            "observation_ref_count": 1
+          },
+          {
+            "source_id": "claim:CL-07",
+            "id": "CL-07",
+            "status": "context",
+            "time": "",
+            "object": "",
+            "summary": "- family_hint=Possible web-shell beacon",
+            "exact_fact_text": "- family_hint=Possible web-shell beacon",
+            "relation": "context",
+            "observation_ref_count": 1
+          },
+          {
+            "source_id": "claim:CL-08",
+            "id": "CL-08",
+            "status": "context",
+            "time": "",
+            "object": "",
+            "summary": "- PowerShell launcher executed under w3wp after suspicious outbound TLS traffic began.",
+            "exact_fact_text": "- PowerShell launcher executed under w3wp after suspicious outbound TLS traffic began.",
+            "relation": "context",
+            "observation_ref_count": 1
+          }
+        ]
+      }
+    },
+    {
+      "round": "preload",
+      "tool_name": "list_source_items",
+      "params": {
+        "item_type": "recommendation",
+        "status": "any",
+        "limit": 8
+      },
+      "result": {
+        "item_type": "recommendation",
+        "status": "any",
+        "items": [
+          {
+            "source_id": "action:1",
+            "id": "",
+            "status": "",
+            "time": "",
+            "object": "",
+            "summary": "优先隔离或重点监控资产：web-app-01。",
+            "exact_fact_text": "优先隔离或重点监控资产：web-app-01。",
+            "relation": "",
+            "observation_ref_count": 0
+          },
+          {
+            "source_id": "action:2",
+            "id": "",
+            "status": "",
+            "time": "",
+            "object": "",
+            "summary": "在边界和代理设备上排查并封禁外部基础设施：198.51.100.88、cdn-auth-check.net。",
+            "exact_fact_text": "在边界和代理设备上排查并封禁外部基础设施：198.51.100.88、cdn-auth-check.net。",
+            "relation": "",
+            "observation_ref_count": 0
+          },
+          {
+            "source_id": "action:3",
+            "id": "",
+            "status": "",
+            "time": "",
+            "object": "",
+            "summary": "以 seed 指标和事件簇中的域名 / IP 为 pivot，继续检索同时间窗内的重复通信。",
+            "exact_fact_text": "以 seed 指标和事件簇中的域名 / IP 为 pivot，继续检索同时间窗内的重复通信。",
+            "relation": "",
+            "observation_ref_count": 0
+          }
+        ]
+      }
+    }
+  ],
+  "validation": {
+    "schema_version": "report-writer-materials-validation-v1",
+    "ok": true,
+    "source_id_count": 13,
+    "invalid_namespace": [],
+    "missing_source_ids": [],
+    "missing_exact_fact_text": [],
+    "empty_required_sections": [],
+    "missing_case_thesis_fields": []
+  },
+  "submitted_materials": {
+    "schema_version": "report-writer-materials-v1",
+    "case_thesis": {
+      "conclusion": "确认安全事件",
+      "sources": [
+        "verdict:delivery"
+      ],
+      "why_it_matters": "事件已经从初始异常发展到高风险阶段，影响范围可能扩大，需要立即采取行动以防止进一步损害。",
+      "why_this_judgment_holds": "事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。",
+      "severity": "高",
+      "confidence": "高",
+      "confirmed_scope": [
+        "web-app-01"
+      ],
+      "candidate_scope": [
+        "t13d1517h2_91adbe210bc1_7cae1281e991"
+      ],
+      "why_not_stronger_or_broader": "候选范围、未独立验证事件或未闭合缺口不能直接并入已确认范围。",
+      "source_ids": [
+        "verdict:delivery"
+      ],
+      "exact_fact_text": "确认安全事件；事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。；seed alert 自带家族/工具提示：Possible web-shell beacon。；主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。"
+    },
+    "narrative_spine": [
+      {
+        "step_label": "初始异常",
+        "source_ids": [
+          "event:evt-301"
+        ],
+        "exact_fact_text": "2026-05-11 14:02:00 UTC，资产 `web-app-01`，Public-facing web server received suspicious exploit requests against the login endpoint before external TLS traffic began.，源地址 `10.60.1.14`"
+      },
+      {
+        "step_label": "可疑活动",
+        "source_ids": [
+          "event:evt-302",
+          "event:evt-303"
+        ],
+        "exact_fact_text": "2026-05-11 14:07:30 UTC，资产 `web-app-01`，关联对象 `cdn-auth-check.net`，The web server resolved a rare domain shortly after the exploit attempts.，源地址 `10.60.1.14`；2026-05-11 14:12:00 UTC，资产 `web-app-01`，关联对象 `cdn-auth-check.net / 198.51.100.88`，Seed JA4 alert matched a possible web-shell beacon over TLS.，源地址 `10.60.1.14`"
+      },
+      {
+        "step_label": "确认恶意行为",
+        "source_ids": [
+          "event:evt-304",
+          "event:evt-305"
+        ],
+        "exact_fact_text": "2026-05-11 14:18:10 UTC，资产 `web-app-01`，关联对象 `cdn-auth-check.net / 198.51.100.88`，The same web server reconnected to the same external infrastructure after the seed alert.，源地址 `10.60.1.14`；2026-05-11 14:23:00 UTC，资产 `web-app-01`，PowerShell launcher executed under w3wp after suspicious outbound TLS traffic began.，源地址 `10.60.1.14`"
+      },
+      {
+        "step_label": "事件范围",
+        "source_ids": [
+          "object:OBJ-01",
+          "object:OBJ-02",
+          "object:OBJ-03"
+        ],
+        "exact_fact_text": "对象 `web-app-01`，类型为资产，当前角色为种子资产，种子告警首先落在该资产上。；当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；对象 `198.51.100.88`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选地址。；对象 `cdn-auth-check.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。"
+      }
+    ],
+    "evidence_argument_map": [
+      {
+        "claim": "可疑事件",
+        "source_ids": [
+          "event:evt-301",
+          "event:evt-302"
+        ],
+        "why_it_matters": "这些事件表明了潜在的入侵尝试，需要进一步调查以确定是否发生了实际的恶意活动。",
+        "limitation": "这些事件仅表明了可疑活动，但不足以单独证明恶意行为的存在。",
+        "exact_fact_text": "2026-05-11 14:02:00 UTC，资产 `web-app-01`，Public-facing web server received suspicious exploit requests against the login endpoint before external TLS traffic began.，源地址 `10.60.1.14`；2026-05-11 14:07:30 UTC，资产 `web-app-01`，关联对象 `cdn-auth-check.net`，The web server resolved a rare domain shortly after the exploit attempts.，源地址 `10.60.1.14`"
+      },
+      {
+        "claim": "确认恶意行为",
+        "source_ids": [
+          "event:evt-303",
+          "event:evt-304"
+        ],
+        "why_it_matters": "这些事件提供了恶意行为存在的直接证据，支持了事件成立的判断。",
+        "limitation": "尽管这些事件提供了恶意行为的直接证据，但仍需进一步调查以确定其影响范围。",
+        "exact_fact_text": "2026-05-11 14:12:00 UTC，资产 `web-app-01`，关联对象 `cdn-auth-check.net / 198.51.100.88`，Seed JA4 alert matched a possible web-shell beacon over TLS.，源地址 `10.60.1.14`；2026-05-11 14:18:10 UTC，资产 `web-app-01`，关联对象 `cdn-auth-check.net / 198.51.100.88`，The same web server reconnected to the same external infrastructure after the seed alert.，源地址 `10.60.1.14`"
+      },
+      {
+        "claim": "执行阶段",
+        "source_ids": [
+          "event:evt-305"
+        ],
+        "why_it_matters": "这些事件表明了恶意软件的执行阶段，进一步证实了事件的严重性。",
+        "limitation": "这些事件仅表明了恶意软件的执行阶段，但无法单独确定其对整个网络的影响。",
+        "exact_fact_text": "2026-05-11 14:23:00 UTC，资产 `web-app-01`，PowerShell launcher executed under w3wp after suspicious outbound TLS traffic began.，源地址 `10.60.1.14`"
+      }
+    ],
+    "scope_role_matrix": [
+      {
+        "object": "web-app-01",
+        "source_ids": [
+          "object:OBJ-01"
+        ],
+        "role": "confirmed_affected_asset",
+        "why_it_matters": "web-app-01 是种子资产，也是确认受到影响的资产，需要重点关注。",
+        "exact_fact_text": "对象 `web-app-01`，类型为资产，当前角色为种子资产，种子告警首先落在该资产上。；当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。",
+        "how_to_write": "confirmed_affected_asset"
+      },
+      {
+        "object": "198.51.100.88",
+        "source_ids": [
+          "object:OBJ-02"
+        ],
+        "role": "external_infrastructure",
+        "why_it_matters": "198.51.100.88 是核心外部指标，可能是恶意活动的一部分，需要进行封禁处理。",
+        "exact_fact_text": "对象 `198.51.100.88`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选地址。",
+        "how_to_write": "external_infrastructure"
+      },
+      {
+        "object": "cdn-auth-check.net",
+        "source_ids": [
+          "object:OBJ-03"
+        ],
+        "role": "external_infrastructure",
+        "why_it_matters": "cdn-auth-check.net 是核心外部指标，可能是恶意活动的一部分，需要进行封禁处理。",
+        "exact_fact_text": "对象 `cdn-auth-check.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。",
+        "how_to_write": "external_infrastructure"
+      }
+    ],
+    "counterarguments_and_boundaries": [
+      {
+        "claim": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+        "source_ids": [
+          "gap:expand_cluster_scope"
+        ],
+        "why_it_matters": "这表明当前的判断可能存在局限性，需要进一步扩线以确认是否存在更大的影响范围。",
+        "limitation": "当前的判断可能不完全准确，需要进一步调查以确认是否存在更大的影响范围。",
+        "exact_fact_text": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。"
+      }
+    ],
+    "action_rationale": [
+      {
+        "action": "优先隔离或重点监控资产：web-app-01。",
+        "source_ids": [
+          "action:1"
+        ],
+        "why_it_matters": "由于 web-app-01 是确认受到影响的资产，因此需要优先隔离或重点监控以防止进一步损害。",
+        "exact_fact_text": "优先隔离或重点监控资产：web-app-01。"
+      },
+      {
+        "action": "在边界和代理设备上排查并封禁外部基础设施：198.51.100.88、cdn-auth-check.net。",
+        "source_ids": [
+          "action:2"
+        ],
+        "why_it_matters": "由于 198.51.100.88 和 cdn-auth-check.net 是核心外部指标，可能是恶意活动的一部分，因此需要在边界和代理设备上排查并封禁这些外部基础设施。",
+        "exact_fact_text": "在边界和代理设备上排查并封禁外部基础设施：198.51.100.88、cdn-auth-check.net。"
+      },
+      {
+        "action": "以 seed 指标和事件簇中的域名 / IP 为 pivot，继续检索同时间窗内的重复通信。",
+        "source_ids": [
+          "action:3"
+        ],
+        "why_it_matters": "通过继续检索同时间窗内的重复通信，可以进一步确认事件的影响范围和严重性。",
+        "exact_fact_text": "以 seed 指标和事件簇中的域名 / IP 为 pivot，继续检索同时间窗内的重复通信。"
+      }
+    ],
+    "section_briefs": [],
+    "reportable_limits": []
+  }
+}

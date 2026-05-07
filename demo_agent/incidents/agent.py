@@ -2935,6 +2935,88 @@ def _available_tool_catalog(seed_event: Dict[str, Any], session_state: Dict[str,
         "extract_claim_candidates_from_page": {"params": {"content_ref": "latest_page_document|investigation_digest", "focus": "str"}},
         "extract_entities_from_page": {"params": {"content_ref": "latest_page_document|investigation_digest"}},
     }
+    tool_semantics = {
+        "search_seed_context": {
+            "use_when": "调查刚开始、缺少 seed 周边上下文、或需要判断 seed 是否孤立时使用。",
+            "returns": ["seed window events", "初始资产/外部对象", "初始 claim", "可关闭的上下文 gap"],
+            "do_not_use_for": "不要在 seed 上下文已经建立后重复调用；后续扩线应使用 search_related_events 或 expand_asset_scope。",
+        },
+        "search_related_events": {
+            "use_when": "需要围绕当前关键关联指标扩大事件簇、查找同域名/目标 IP/指纹/资产复现时使用。",
+            "returns": ["candidate related events", "candidate assets", "candidate claims", "scope expansion evidence"],
+            "do_not_use_for": "结果默认只是 candidate；不要直接当作 confirmed scope，也不要用同一输入反复扩线。",
+        },
+        GROUND_CANDIDATE_TOOL_NAME: {
+            "use_when": "已有 candidate event，且当前焦点是判断它能否进入主证据链时使用。",
+            "returns": ["candidate grounding result", "local/structured intel hits", "closed candidate ids", "boundary claims"],
+            "do_not_use_for": "不要用它做泛泛情报搜索；没有明确 event_id 时不要调用。",
+        },
+        COUNTEREVIDENCE_TOOL_NAME: {
+            "use_when": "交付前需要检查维护窗口、补丁、备份、共享基线等替代解释或反证时使用。",
+            "returns": ["counterevidence observations", "background validation", "false-positive boundaries"],
+            "do_not_use_for": "不要把反证检查当作扩线工具；它用于收窄或限定结论，不用于新增传播范围。",
+        },
+        "expand_asset_scope": {
+            "use_when": "已有具体资产需要补采上下文，确认关联资产是否真正受影响或只是背景对象时使用。",
+            "returns": ["asset scoped events", "asset context", "host confirmation signals", "scope boundary evidence"],
+            "do_not_use_for": "不要用它替代 candidate grounding；没有明确 asset_ids 时不要调用。",
+        },
+        "local_intel_lookup": {
+            "use_when": "需要查询内部情报库、JA4DB/JA3/证书/IP/域名等本地已知指示物时使用。",
+            "returns": ["local intel hits", "structured indicator context", "known infra/fingerprint context"],
+            "do_not_use_for": "不要把未命中解释成安全；未命中只能说明本地库暂无支撑。",
+        },
+        "vt_enrich_ioc": {
+            "use_when": "需要验证关键外部 IP 的 reputation、ASN 或公开情报上下文时使用。",
+            "returns": ["IP reputation", "ASN/context", "external intel signals"],
+            "do_not_use_for": "当前主要适合 IP；不要拿它验证内部资产、进程或非 IP 对象。",
+        },
+        "abuse_ch_lookup": {
+            "use_when": "需要用 abuse.ch 系列来源验证 IP、域名、URL 或 hash 的恶意基础设施背景时使用。",
+            "returns": ["structured abuse.ch hits", "malware/IOC context", "reference search fallback"],
+            "do_not_use_for": "不要用站内搜索结果单独完成强归因；它只能作为外部背景或支撑材料。",
+        },
+        "technical_source_search": {
+            "use_when": "需要查找家族、TTP、基础设施或行为背景的技术来源时使用。",
+            "returns": ["technical references", "family/TTP/background candidates", "page URLs"],
+            "do_not_use_for": "不要把搜索摘要当成本案事实；需要页面内容时再用 fetch_page_content。",
+        },
+        "threatfox_ioc_lookup": {
+            "use_when": "需要查询 ThreatFox 结构化 IOC 记录，补充恶意基础设施或家族背景时使用。",
+            "returns": ["ThreatFox structured hits", "IOC reputation", "malware family context"],
+            "do_not_use_for": "不要用 ThreatFox 命中直接替代本地事件证据。",
+        },
+        "urlhaus_ioc_lookup": {
+            "use_when": "需要查询 URLhaus 中 URL/域名/IP 相关恶意投递或下载基础设施时使用。",
+            "returns": ["URLhaus structured hits", "URL/domain context", "malware delivery context"],
+            "do_not_use_for": "不要用它验证主机侧执行或横向移动事实。",
+        },
+        "malware_profile_lookup": {
+            "use_when": "已有较明确家族/工具名，需要查 profile 来理解行为、TTP 或报告背景时使用。",
+            "returns": ["malware profile", "behavior/TTP context", "family background"],
+            "do_not_use_for": "没有家族/工具候选时不要泛查；profile 不能直接证明本案归因。",
+        },
+        "pivot_related_indicators": {
+            "use_when": "需要围绕一个主指示物查找二跳 IOC、相关基础设施或可能的 pivot 线索时使用。",
+            "returns": ["related indicators", "secondary infra candidates", "pivot expansion hints"],
+            "do_not_use_for": "返回对象默认是候选；不要直接写成已确认同一事件范围。",
+        },
+        "fetch_page_content": {
+            "use_when": "已有具体技术页面 URL，需要读取正文供后续 claim/entity 抽取时使用。",
+            "returns": ["page content", "content_ref", "title/source metadata"],
+            "do_not_use_for": "不要直接抓取无关页面；长文本不要直接塞给抽取工具，优先传 content_ref。",
+        },
+        "extract_claim_candidates_from_page": {
+            "use_when": "已经有 page content 或 investigation_digest，需要抽取可引用 claim 支撑背景解释时使用。",
+            "returns": ["claim candidates", "source snippets", "claim confidence/context"],
+            "do_not_use_for": "不要从未取回的页面抽取；抽出的 claim 仍是背景材料，不自动成为本案事实。",
+        },
+        "extract_entities_from_page": {
+            "use_when": "已经有 page content 或 investigation_digest，需要抽取 IOC、家族、工具或实体候选时使用。",
+            "returns": ["entity candidates", "IOC/entity mentions", "source snippets"],
+            "do_not_use_for": "不要把页面实体直接并入 confirmed scope；必须和本地事件或情报 grounding 区分。",
+        },
+    }
     catalog: List[Dict[str, Any]] = []
     for tool_name in ORDERED_TOOL_NAMES:
         precondition = _tool_precondition_view(seed_event, session_state, incident_state, tool_name)
@@ -2977,6 +3059,9 @@ def _available_tool_catalog(seed_event: Dict[str, Any], session_state: Dict[str,
                 "tool_name": tool_name,
                 "category": request.get("category"),
                 "description": descriptions.get(tool_name, ""),
+                "use_when": str((tool_semantics.get(tool_name) or {}).get("use_when") or "").strip(),
+                "returns": list((tool_semantics.get(tool_name) or {}).get("returns") or []),
+                "do_not_use_for": str((tool_semantics.get(tool_name) or {}).get("do_not_use_for") or "").strip(),
                 "question": request.get("question"),
                 "expected_gain": request.get("expected_gain"),
                 "recommended_params": request.get("trace_params") or request.get("params") or {},
@@ -3157,6 +3242,9 @@ def _static_tool_catalog_view(tool_catalog: List[Dict[str, Any]]) -> List[Dict[s
         {
             "tool_name": str(item.get("tool_name") or "").strip(),
             "description": str(item.get("description") or "").strip(),
+            "use_when": str(item.get("use_when") or "").strip(),
+            "returns": list(item.get("returns") or []),
+            "do_not_use_for": str(item.get("do_not_use_for") or "").strip(),
             "schema": dict((item.get("param_notes") or {}).get("params") or {}),
             "capability_tags": list(item.get("capability_tags") or []),
             "result_shape": list(item.get("evidence_types") or []),
@@ -7944,6 +8032,11 @@ def run_incident_agent_case(
         "report_polish_brief": rendered_report.get("report_polish_brief") or "",
         "report_polish_validation": rendered_report.get("report_polish_validation") or {},
         "report_polish_error": rendered_report.get("report_polish_error") or "",
+        "report_source_bundle": rendered_report.get("report_source_bundle") or {},
+        "report_writer_materials": rendered_report.get("report_writer_materials") or {},
+        "report_material_loop_trace": rendered_report.get("report_material_loop_trace") or {},
+        "report_agent_error": rendered_report.get("report_agent_error") or "",
+        "report_agent_materials_enabled": bool(rendered_report.get("report_agent_materials_enabled")),
         "run_metrics": run_metrics,
         "report_outline": report_outline,
         "ops_report_contract": report_outline.get("ops_report_contract") or report_outline.get("main_report_contract") or {},

@@ -144,6 +144,10 @@ def _run_one_incident_agent(
     report_polish_brief = str(result.get("report_polish_brief") or "")
     report_polish_validation = result.get("report_polish_validation") or {}
     report_polish_error = str(result.get("report_polish_error") or "")
+    report_source_bundle = result.get("report_source_bundle") or {}
+    report_writer_materials = result.get("report_writer_materials") or {}
+    report_material_loop_trace = result.get("report_material_loop_trace") or {}
+    report_agent_error = str(result.get("report_agent_error") or "")
     report_outline = result.get("report_outline") or {}
     run_metrics = result.get("run_metrics") or incident.get("run_metrics") or {}
     evidence_store = incident.get("evidence_store") or {}
@@ -166,6 +170,14 @@ def _run_one_incident_agent(
         save_text(out_dir / "report_polish_brief.md", report_polish_brief)
     if report_polish_validation:
         save_json(out_dir / "report_polish_validation.json", report_polish_validation)
+    if report_source_bundle:
+        save_json(out_dir / "report_source_bundle.json", report_source_bundle)
+    if report_writer_materials:
+        save_json(out_dir / "report_writer_materials.json", report_writer_materials)
+    if report_material_loop_trace:
+        save_json(out_dir / "report_material_loop_trace.json", report_material_loop_trace)
+    if report_agent_error.strip():
+        save_text(out_dir / "report_agent_error.txt", report_agent_error + "\n")
     if evidence_store:
         save_json(out_dir / "evidence_store.json", evidence_store)
     if reviewer_input:
@@ -208,6 +220,14 @@ def _run_one_incident_agent(
         response["report_polish_brief_path"] = str((out_dir / "report_polish_brief.md").resolve())
     if report_polish_validation:
         response["report_polish_validation_path"] = str((out_dir / "report_polish_validation.json").resolve())
+    if report_source_bundle:
+        response["report_source_bundle_path"] = str((out_dir / "report_source_bundle.json").resolve())
+    if report_writer_materials:
+        response["report_writer_materials_path"] = str((out_dir / "report_writer_materials.json").resolve())
+    if report_material_loop_trace:
+        response["report_material_loop_trace_path"] = str((out_dir / "report_material_loop_trace.json").resolve())
+    if report_agent_error.strip():
+        response["report_agent_error_path"] = str((out_dir / "report_agent_error.txt").resolve())
     if evidence_store:
         response["evidence_store_path"] = str((out_dir / "evidence_store.json").resolve())
     if reviewer_input:
@@ -271,16 +291,39 @@ def main() -> None:
         choices=DECISION_MODE_CHOICES,
         help="decision mode: llm_agent (default), heuristic, llm_selector, or hybrid",
     )
+    parser.add_argument(
+        "--use-report-agent-materials",
+        dest="use_report_agent_materials",
+        action="store_true",
+        default=None,
+        help="启用 plan13 report material loop 生成 report_polished.md；当前默认开启。",
+    )
+    parser.add_argument(
+        "--no-use-report-agent-materials",
+        dest="use_report_agent_materials",
+        action="store_false",
+        help="关闭 plan13 report material loop，回退到旧 report_writer_brief polish 链路。",
+    )
     args = parser.parse_args()
 
     resolved_fixture_dir = Path(args.fixture_dir).resolve() if args.fixture_dir else None
-    res = run(
-        alert_path=Path(args.alert).resolve(),
-        out_dir=Path(args.out).resolve(),
-        mode=args.mode,
-        fixture_dir=resolved_fixture_dir,
-        decision_mode=args.decision_mode,
-    )
+    previous_report_agent_flag = os.environ.get("INCIDENT_AGENT_USE_REPORT_AGENT_MATERIALS")
+    if args.use_report_agent_materials is not None:
+        os.environ["INCIDENT_AGENT_USE_REPORT_AGENT_MATERIALS"] = "1" if args.use_report_agent_materials else "0"
+    try:
+        res = run(
+            alert_path=Path(args.alert).resolve(),
+            out_dir=Path(args.out).resolve(),
+            mode=args.mode,
+            fixture_dir=resolved_fixture_dir,
+            decision_mode=args.decision_mode,
+        )
+    finally:
+        if args.use_report_agent_materials is not None:
+            if previous_report_agent_flag is None:
+                os.environ.pop("INCIDENT_AGENT_USE_REPORT_AGENT_MATERIALS", None)
+            else:
+                os.environ["INCIDENT_AGENT_USE_REPORT_AGENT_MATERIALS"] = previous_report_agent_flag
     print(json.dumps(res, ensure_ascii=False, indent=2))
 
 

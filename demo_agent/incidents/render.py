@@ -2,13 +2,17 @@ from __future__ import annotations
 
 import ipaddress
 import json
+import os
 import re
 import time
 from typing import Any, Dict, List, Tuple
 
 from .evidence_store import build_evidence_store, build_legacy_evidence_contract
+from .report_agent import run_report_material_loop
+from .report_agent_writer import render_polished_body_from_materials
 from .report_fact_cards import build_report_fact_cards
 from .report_polish_validator import validate_report_polish
+from .report_source_bundle import build_report_source_bundle
 from .report_contracts import build_appendix_contract, build_ops_report_contract
 from .report_inputs import build_report_inputs
 from .report_render import render_appendix_report, render_ops_report
@@ -4512,6 +4516,7 @@ def render_incident_report_with_llm(
     llm: Any = None,
     *,
     outline: Dict[str, Any] | None = None,
+    use_report_agent_materials: bool | None = None,
 ) -> Dict[str, Any]:
     resolved_outline = _resolve_report_outline(incident, outline)
     deterministic = render_incident_report(incident, outline=resolved_outline)
@@ -4523,6 +4528,32 @@ def render_incident_report_with_llm(
     report_fact_cards = build_report_fact_cards(evidence_store, delivery_decision)
     polish_input = build_report_polish_input_v2(outline, report_fact_cards)
     polish_brief = build_report_polish_brief(polish_input)
+    report_source_bundle = build_report_source_bundle(
+        incident,
+        evidence_store=evidence_store,
+        delivery_decision=delivery_decision,
+        outline=outline,
+    )
+    report_writer_materials: Dict[str, Any] = {}
+    report_material_loop_trace: Dict[str, Any] = {}
+    report_agent_error = ""
+    if use_report_agent_materials is None:
+        report_agent_flag = str(os.getenv("INCIDENT_AGENT_USE_REPORT_AGENT_MATERIALS") or "").strip().lower()
+        use_report_agent_materials = report_agent_flag not in {"0", "false", "no", "off"}
+
+    def _with_report_agent_artifacts(payload: Dict[str, Any]) -> Dict[str, Any]:
+        payload = dict(payload)
+        payload.update(
+            {
+                "report_source_bundle": report_source_bundle,
+                "report_writer_materials": report_writer_materials,
+                "report_material_loop_trace": report_material_loop_trace,
+                "report_agent_error": report_agent_error,
+                "report_agent_materials_enabled": bool(use_report_agent_materials),
+            }
+        )
+        return payload
+
     skipped_validation = {
         "schema_version": "report-polish-validation-v1",
         "applied": False,
@@ -4532,7 +4563,7 @@ def render_incident_report_with_llm(
         "issues": [],
     }
     if llm is None:
-        return {
+        return _with_report_agent_artifacts({
             "report_markdown": deterministic,
             "report_polished_markdown": "",
             "report_appendix_markdown": appendix,
@@ -4541,7 +4572,32 @@ def render_incident_report_with_llm(
             "report_polish_brief": polish_brief,
             "report_polish_validation": skipped_validation,
             "report_polish_error": "",
-        }
+        })
+
+    if use_report_agent_materials:
+        try:
+            report_writer_materials, report_material_loop_trace = run_report_material_loop(report_source_bundle, llm)
+            loop_status = str(report_material_loop_trace.get("status") or "")
+            loop_validation = report_material_loop_trace.get("validation") or {}
+            if loop_validation.get("ok"):
+                body = render_polished_body_from_materials(llm, report_writer_materials)
+                if body.strip():
+                    validation = validate_report_polish(body, report_fact_cards)
+                    return _with_report_agent_artifacts({
+                        "report_markdown": deterministic,
+                        "report_polished_markdown": _compose_polished_report(body, appendix),
+                        "report_appendix_markdown": appendix,
+                        "report_fact_cards": report_fact_cards,
+                        "report_polish_input": polish_input,
+                        "report_polish_brief": polish_brief,
+                        "report_polish_validation": validation,
+                        "report_polish_error": "",
+                    })
+                report_agent_error = "report_agent_writer_empty_response"
+            else:
+                report_agent_error = f"report_material_loop_invalid:{loop_status or 'unknown'}"
+        except Exception as exc:
+            report_agent_error = f"{type(exc).__name__}: {exc}"
 
     try:
         from langchain_core.prompts import ChatPromptTemplate
@@ -4765,7 +4821,7 @@ def render_incident_report_with_llm(
                         continue
 
                     polished_report = _compose_polished_report(final_content, appendix)
-                    return {
+                    return _with_report_agent_artifacts({
                         "report_markdown": deterministic,
                         "report_polished_markdown": polished_report,
                         "report_appendix_markdown": appendix,
@@ -4774,13 +4830,13 @@ def render_incident_report_with_llm(
                         "report_polish_brief": polish_brief,
                         "report_polish_validation": final_validation,
                         "report_polish_error": "",
-                    }
+                    })
                 last_error = f"attempt_{attempt}:empty_response"
             except Exception as exc:
                 last_error = f"attempt_{attempt}:{type(exc).__name__}: {exc}"
         if last_content:
             if _report_polish_has_hard_fail(last_validation):
-                return {
+                return _with_report_agent_artifacts({
                     "report_markdown": deterministic,
                     "report_polished_markdown": "",
                     "report_appendix_markdown": appendix,
@@ -4789,8 +4845,8 @@ def render_incident_report_with_llm(
                     "report_polish_brief": polish_brief,
                     "report_polish_validation": last_validation,
                     "report_polish_error": last_error or "validation_hard_fail",
-                }
-            return {
+                })
+            return _with_report_agent_artifacts({
                 "report_markdown": deterministic,
                 "report_polished_markdown": _compose_polished_report(last_content, appendix),
                 "report_appendix_markdown": appendix,
@@ -4799,8 +4855,8 @@ def render_incident_report_with_llm(
                 "report_polish_brief": polish_brief,
                 "report_polish_validation": last_validation,
                 "report_polish_error": last_error,
-            }
-        return {
+            })
+        return _with_report_agent_artifacts({
             "report_markdown": deterministic,
             "report_polished_markdown": "",
             "report_appendix_markdown": appendix,
@@ -4809,9 +4865,9 @@ def render_incident_report_with_llm(
             "report_polish_brief": polish_brief,
             "report_polish_validation": skipped_validation,
             "report_polish_error": last_error,
-        }
+        })
     except Exception as exc:
-        return {
+        return _with_report_agent_artifacts({
             "report_markdown": deterministic,
             "report_polished_markdown": "",
             "report_appendix_markdown": appendix,
@@ -4820,8 +4876,8 @@ def render_incident_report_with_llm(
             "report_polish_brief": polish_brief,
             "report_polish_validation": skipped_validation,
             "report_polish_error": f"{type(exc).__name__}: {exc}",
-        }
-    return {
+        })
+    return _with_report_agent_artifacts({
         "report_markdown": deterministic,
         "report_polished_markdown": "",
         "report_appendix_markdown": appendix,
@@ -4830,4 +4886,4 @@ def render_incident_report_with_llm(
         "report_polish_brief": polish_brief,
         "report_polish_validation": skipped_validation,
         "report_polish_error": "",
-    }
+    })

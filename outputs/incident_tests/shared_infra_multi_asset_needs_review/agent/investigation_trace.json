@@ -433,6 +433,14 @@
         {
           "tool_name": "search_seed_context",
           "description": "围绕 seed alert 取最小时间窗上下文，适合先确认告警是否孤立。",
+          "use_when": "调查刚开始、缺少 seed 周边上下文、或需要判断 seed 是否孤立时使用。",
+          "returns": [
+            "seed window events",
+            "初始资产/外部对象",
+            "初始 claim",
+            "可关闭的上下文 gap"
+          ],
+          "do_not_use_for": "不要在 seed 上下文已经建立后重复调用；后续扩线应使用 search_related_events 或 expand_asset_scope。",
           "schema": {},
           "capability_tags": [
             "context_building",
@@ -448,6 +456,13 @@
         {
           "tool_name": "local_intel_lookup",
           "description": "查询本地 MySQL 情报库，适合 JA4DB / JA3 / SSL / CERT / IP / 域名等内部已知指示物验证。",
+          "use_when": "需要查询内部情报库、JA4DB/JA3/证书/IP/域名等本地已知指示物时使用。",
+          "returns": [
+            "local intel hits",
+            "structured indicator context",
+            "known infra/fingerprint context"
+          ],
+          "do_not_use_for": "不要把未命中解释成安全；未命中只能说明本地库暂无支撑。",
           "schema": {
             "indicator_value": "str",
             "indicator_type": "IP|DOMAIN|JA3|JA4|SSL_SHA1|CERT_SHA1|..."
@@ -466,6 +481,13 @@
         {
           "tool_name": "extract_claim_candidates_from_page",
           "description": "从最新页面正文或调查摘要中抽取可引用 claim；优先用 content_ref，不要直接粘贴长文本。",
+          "use_when": "已经有 page content 或 investigation_digest，需要抽取可引用 claim 支撑背景解释时使用。",
+          "returns": [
+            "claim candidates",
+            "source snippets",
+            "claim confidence/context"
+          ],
+          "do_not_use_for": "不要从未取回的页面抽取；抽出的 claim 仍是背景材料，不自动成为本案事实。",
           "schema": {
             "content_ref": "latest_page_document|investigation_digest",
             "focus": "str"
@@ -480,6 +502,13 @@
         {
           "tool_name": "extract_entities_from_page",
           "description": "从最新页面正文或调查摘要中抽取实体；优先用 content_ref，不要直接粘贴长文本。",
+          "use_when": "已经有 page content 或 investigation_digest，需要抽取 IOC、家族、工具或实体候选时使用。",
+          "returns": [
+            "entity candidates",
+            "IOC/entity mentions",
+            "source snippets"
+          ],
+          "do_not_use_for": "不要把页面实体直接并入 confirmed scope；必须和本地事件或情报 grounding 区分。",
           "schema": {
             "content_ref": "latest_page_document|investigation_digest"
           },
@@ -603,11 +632,11 @@
       }
     },
     "agent_context_v1_payload": {
-      "total_bytes": 7560,
+      "total_bytes": 8890,
       "parts": {
         "agent_context_v1": {
-          "bytes": 7560,
-          "sha1": "df596fb72fc2"
+          "bytes": 8890,
+          "sha1": "3058d3c1f040"
         }
       }
     },
@@ -1314,6 +1343,14 @@
         {
           "tool_name": "search_related_events",
           "description": "基于当前 pivot 扩大事件簇，但结果默认只是候选线索，不应直接并入主证据链。",
+          "use_when": "需要围绕当前关键关联指标扩大事件簇、查找同域名/目标 IP/指纹/资产复现时使用。",
+          "returns": [
+            "candidate related events",
+            "candidate assets",
+            "candidate claims",
+            "scope expansion evidence"
+          ],
+          "do_not_use_for": "结果默认只是 candidate；不要直接当作 confirmed scope，也不要用同一输入反复扩线。",
           "schema": {
             "pivots": "asset_ids/src_ips/dst_ips/domains/fingerprints",
             "window_minutes": "int",
@@ -1334,6 +1371,13 @@
         {
           "tool_name": "check_counterevidence",
           "description": "检查维护、补丁、备份、共享基线等反证，适合在交付前降误报。",
+          "use_when": "交付前需要检查维护窗口、补丁、备份、共享基线等替代解释或反证时使用。",
+          "returns": [
+            "counterevidence observations",
+            "background validation",
+            "false-positive boundaries"
+          ],
+          "do_not_use_for": "不要把反证检查当作扩线工具；它用于收窄或限定结论，不用于新增传播范围。",
           "schema": {
             "asset_ids": "list[str]",
             "window_minutes": "int",
@@ -1351,6 +1395,14 @@
         {
           "tool_name": "expand_asset_scope",
           "description": "围绕指定资产补采上下文，适合确认关联资产是否真正受影响。",
+          "use_when": "已有具体资产需要补采上下文，确认关联资产是否真正受影响或只是背景对象时使用。",
+          "returns": [
+            "asset scoped events",
+            "asset context",
+            "host confirmation signals",
+            "scope boundary evidence"
+          ],
+          "do_not_use_for": "不要用它替代 candidate grounding；没有明确 asset_ids 时不要调用。",
           "schema": {
             "asset_ids": "list[str]",
             "window_minutes": "int",
@@ -1369,6 +1421,13 @@
         {
           "tool_name": "extract_claim_candidates_from_page",
           "description": "从最新页面正文或调查摘要中抽取可引用 claim；优先用 content_ref，不要直接粘贴长文本。",
+          "use_when": "已经有 page content 或 investigation_digest，需要抽取可引用 claim 支撑背景解释时使用。",
+          "returns": [
+            "claim candidates",
+            "source snippets",
+            "claim confidence/context"
+          ],
+          "do_not_use_for": "不要从未取回的页面抽取；抽出的 claim 仍是背景材料，不自动成为本案事实。",
           "schema": {
             "content_ref": "latest_page_document|investigation_digest",
             "focus": "str"
@@ -1383,6 +1442,13 @@
         {
           "tool_name": "extract_entities_from_page",
           "description": "从最新页面正文或调查摘要中抽取实体；优先用 content_ref，不要直接粘贴长文本。",
+          "use_when": "已经有 page content 或 investigation_digest，需要抽取 IOC、家族、工具或实体候选时使用。",
+          "returns": [
+            "entity candidates",
+            "IOC/entity mentions",
+            "source snippets"
+          ],
+          "do_not_use_for": "不要把页面实体直接并入 confirmed scope；必须和本地事件或情报 grounding 区分。",
           "schema": {
             "content_ref": "latest_page_document|investigation_digest"
           },
@@ -1550,11 +1616,11 @@
       }
     },
     "agent_context_v1_payload": {
-      "total_bytes": 9282,
+      "total_bytes": 10990,
       "parts": {
         "agent_context_v1": {
-          "bytes": 9282,
-          "sha1": "9316c4ee4728"
+          "bytes": 10990,
+          "sha1": "49036cb7a03b"
         }
       }
     },
@@ -2277,6 +2343,14 @@
         {
           "tool_name": "search_related_events",
           "description": "基于当前 pivot 扩大事件簇，但结果默认只是候选线索，不应直接并入主证据链。",
+          "use_when": "需要围绕当前关键关联指标扩大事件簇、查找同域名/目标 IP/指纹/资产复现时使用。",
+          "returns": [
+            "candidate related events",
+            "candidate assets",
+            "candidate claims",
+            "scope expansion evidence"
+          ],
+          "do_not_use_for": "结果默认只是 candidate；不要直接当作 confirmed scope，也不要用同一输入反复扩线。",
           "schema": {
             "pivots": "asset_ids/src_ips/dst_ips/domains/fingerprints",
             "window_minutes": "int",
@@ -2297,6 +2371,13 @@
         {
           "tool_name": "check_counterevidence",
           "description": "检查维护、补丁、备份、共享基线等反证，适合在交付前降误报。",
+          "use_when": "交付前需要检查维护窗口、补丁、备份、共享基线等替代解释或反证时使用。",
+          "returns": [
+            "counterevidence observations",
+            "background validation",
+            "false-positive boundaries"
+          ],
+          "do_not_use_for": "不要把反证检查当作扩线工具；它用于收窄或限定结论，不用于新增传播范围。",
           "schema": {
             "asset_ids": "list[str]",
             "window_minutes": "int",
@@ -2314,6 +2395,14 @@
         {
           "tool_name": "expand_asset_scope",
           "description": "围绕指定资产补采上下文，适合确认关联资产是否真正受影响。",
+          "use_when": "已有具体资产需要补采上下文，确认关联资产是否真正受影响或只是背景对象时使用。",
+          "returns": [
+            "asset scoped events",
+            "asset context",
+            "host confirmation signals",
+            "scope boundary evidence"
+          ],
+          "do_not_use_for": "不要用它替代 candidate grounding；没有明确 asset_ids 时不要调用。",
           "schema": {
             "asset_ids": "list[str]",
             "window_minutes": "int",
@@ -2332,6 +2421,13 @@
         {
           "tool_name": "extract_claim_candidates_from_page",
           "description": "从最新页面正文或调查摘要中抽取可引用 claim；优先用 content_ref，不要直接粘贴长文本。",
+          "use_when": "已经有 page content 或 investigation_digest，需要抽取可引用 claim 支撑背景解释时使用。",
+          "returns": [
+            "claim candidates",
+            "source snippets",
+            "claim confidence/context"
+          ],
+          "do_not_use_for": "不要从未取回的页面抽取；抽出的 claim 仍是背景材料，不自动成为本案事实。",
           "schema": {
             "content_ref": "latest_page_document|investigation_digest",
             "focus": "str"
@@ -2346,6 +2442,13 @@
         {
           "tool_name": "extract_entities_from_page",
           "description": "从最新页面正文或调查摘要中抽取实体；优先用 content_ref，不要直接粘贴长文本。",
+          "use_when": "已经有 page content 或 investigation_digest，需要抽取 IOC、家族、工具或实体候选时使用。",
+          "returns": [
+            "entity candidates",
+            "IOC/entity mentions",
+            "source snippets"
+          ],
+          "do_not_use_for": "不要把页面实体直接并入 confirmed scope；必须和本地事件或情报 grounding 区分。",
           "schema": {
             "content_ref": "latest_page_document|investigation_digest"
           },
@@ -2522,11 +2625,11 @@
       }
     },
     "agent_context_v1_payload": {
-      "total_bytes": 10101,
+      "total_bytes": 11809,
       "parts": {
         "agent_context_v1": {
-          "bytes": 10101,
-          "sha1": "4986dbe5a4bf"
+          "bytes": 11809,
+          "sha1": "27f59712748a"
         }
       }
     },
@@ -3233,6 +3336,14 @@
         {
           "tool_name": "search_related_events",
           "description": "基于当前 pivot 扩大事件簇，但结果默认只是候选线索，不应直接并入主证据链。",
+          "use_when": "需要围绕当前关键关联指标扩大事件簇、查找同域名/目标 IP/指纹/资产复现时使用。",
+          "returns": [
+            "candidate related events",
+            "candidate assets",
+            "candidate claims",
+            "scope expansion evidence"
+          ],
+          "do_not_use_for": "结果默认只是 candidate；不要直接当作 confirmed scope，也不要用同一输入反复扩线。",
           "schema": {
             "pivots": "asset_ids/src_ips/dst_ips/domains/fingerprints",
             "window_minutes": "int",
@@ -3253,6 +3364,13 @@
         {
           "tool_name": "check_counterevidence",
           "description": "检查维护、补丁、备份、共享基线等反证，适合在交付前降误报。",
+          "use_when": "交付前需要检查维护窗口、补丁、备份、共享基线等替代解释或反证时使用。",
+          "returns": [
+            "counterevidence observations",
+            "background validation",
+            "false-positive boundaries"
+          ],
+          "do_not_use_for": "不要把反证检查当作扩线工具；它用于收窄或限定结论，不用于新增传播范围。",
           "schema": {
             "asset_ids": "list[str]",
             "window_minutes": "int",
@@ -3270,6 +3388,13 @@
         {
           "tool_name": "extract_claim_candidates_from_page",
           "description": "从最新页面正文或调查摘要中抽取可引用 claim；优先用 content_ref，不要直接粘贴长文本。",
+          "use_when": "已经有 page content 或 investigation_digest，需要抽取可引用 claim 支撑背景解释时使用。",
+          "returns": [
+            "claim candidates",
+            "source snippets",
+            "claim confidence/context"
+          ],
+          "do_not_use_for": "不要从未取回的页面抽取；抽出的 claim 仍是背景材料，不自动成为本案事实。",
           "schema": {
             "content_ref": "latest_page_document|investigation_digest",
             "focus": "str"
@@ -3284,6 +3409,13 @@
         {
           "tool_name": "extract_entities_from_page",
           "description": "从最新页面正文或调查摘要中抽取实体；优先用 content_ref，不要直接粘贴长文本。",
+          "use_when": "已经有 page content 或 investigation_digest，需要抽取 IOC、家族、工具或实体候选时使用。",
+          "returns": [
+            "entity candidates",
+            "IOC/entity mentions",
+            "source snippets"
+          ],
+          "do_not_use_for": "不要把页面实体直接并入 confirmed scope；必须和本地事件或情报 grounding 区分。",
           "schema": {
             "content_ref": "latest_page_document|investigation_digest"
           },
@@ -3437,11 +3569,11 @@
       }
     },
     "agent_context_v1_payload": {
-      "total_bytes": 9227,
+      "total_bytes": 10592,
       "parts": {
         "agent_context_v1": {
-          "bytes": 9227,
-          "sha1": "5f75bbac830d"
+          "bytes": 10592,
+          "sha1": "7e998fe7fd63"
         }
       }
     },
@@ -4087,6 +4219,13 @@
         {
           "tool_name": "check_counterevidence",
           "description": "检查维护、补丁、备份、共享基线等反证，适合在交付前降误报。",
+          "use_when": "交付前需要检查维护窗口、补丁、备份、共享基线等替代解释或反证时使用。",
+          "returns": [
+            "counterevidence observations",
+            "background validation",
+            "false-positive boundaries"
+          ],
+          "do_not_use_for": "不要把反证检查当作扩线工具；它用于收窄或限定结论，不用于新增传播范围。",
           "schema": {
             "asset_ids": "list[str]",
             "window_minutes": "int",
@@ -4104,6 +4243,13 @@
         {
           "tool_name": "extract_claim_candidates_from_page",
           "description": "从最新页面正文或调查摘要中抽取可引用 claim；优先用 content_ref，不要直接粘贴长文本。",
+          "use_when": "已经有 page content 或 investigation_digest，需要抽取可引用 claim 支撑背景解释时使用。",
+          "returns": [
+            "claim candidates",
+            "source snippets",
+            "claim confidence/context"
+          ],
+          "do_not_use_for": "不要从未取回的页面抽取；抽出的 claim 仍是背景材料，不自动成为本案事实。",
           "schema": {
             "content_ref": "latest_page_document|investigation_digest",
             "focus": "str"
@@ -4118,6 +4264,13 @@
         {
           "tool_name": "extract_entities_from_page",
           "description": "从最新页面正文或调查摘要中抽取实体；优先用 content_ref，不要直接粘贴长文本。",
+          "use_when": "已经有 page content 或 investigation_digest，需要抽取 IOC、家族、工具或实体候选时使用。",
+          "returns": [
+            "entity candidates",
+            "IOC/entity mentions",
+            "source snippets"
+          ],
+          "do_not_use_for": "不要把页面实体直接并入 confirmed scope；必须和本地事件或情报 grounding 区分。",
           "schema": {
             "content_ref": "latest_page_document|investigation_digest"
           },
@@ -4242,11 +4395,11 @@
       }
     },
     "agent_context_v1_payload": {
-      "total_bytes": 7816,
+      "total_bytes": 8816,
       "parts": {
         "agent_context_v1": {
-          "bytes": 7816,
-          "sha1": "c059cfa8df54"
+          "bytes": 8816,
+          "sha1": "6ee00877e976"
         }
       }
     },
@@ -4808,6 +4961,13 @@
         {
           "tool_name": "extract_claim_candidates_from_page",
           "description": "从最新页面正文或调查摘要中抽取可引用 claim；优先用 content_ref，不要直接粘贴长文本。",
+          "use_when": "已经有 page content 或 investigation_digest，需要抽取可引用 claim 支撑背景解释时使用。",
+          "returns": [
+            "claim candidates",
+            "source snippets",
+            "claim confidence/context"
+          ],
+          "do_not_use_for": "不要从未取回的页面抽取；抽出的 claim 仍是背景材料，不自动成为本案事实。",
           "schema": {
             "content_ref": "latest_page_document|investigation_digest",
             "focus": "str"
@@ -4822,6 +4982,13 @@
         {
           "tool_name": "extract_entities_from_page",
           "description": "从最新页面正文或调查摘要中抽取实体；优先用 content_ref，不要直接粘贴长文本。",
+          "use_when": "已经有 page content 或 investigation_digest，需要抽取 IOC、家族、工具或实体候选时使用。",
+          "returns": [
+            "entity candidates",
+            "IOC/entity mentions",
+            "source snippets"
+          ],
+          "do_not_use_for": "不要把页面实体直接并入 confirmed scope；必须和本地事件或情报 grounding 区分。",
           "schema": {
             "content_ref": "latest_page_document|investigation_digest"
           },
@@ -4928,11 +5095,11 @@
       }
     },
     "agent_context_v1_payload": {
-      "total_bytes": 7043,
+      "total_bytes": 7699,
       "parts": {
         "agent_context_v1": {
-          "bytes": 7043,
-          "sha1": "6153c7448605"
+          "bytes": 7699,
+          "sha1": "2fbb8c6852c4"
         }
       }
     },
@@ -5461,6 +5628,14 @@
         {
           "tool_name": "search_related_events",
           "description": "基于当前 pivot 扩大事件簇，但结果默认只是候选线索，不应直接并入主证据链。",
+          "use_when": "需要围绕当前关键关联指标扩大事件簇、查找同域名/目标 IP/指纹/资产复现时使用。",
+          "returns": [
+            "candidate related events",
+            "candidate assets",
+            "candidate claims",
+            "scope expansion evidence"
+          ],
+          "do_not_use_for": "结果默认只是 candidate；不要直接当作 confirmed scope，也不要用同一输入反复扩线。",
           "schema": {
             "pivots": "asset_ids/src_ips/dst_ips/domains/fingerprints",
             "window_minutes": "int",
@@ -5567,11 +5742,11 @@
       }
     },
     "agent_context_v1_payload": {
-      "total_bytes": 6223,
+      "total_bytes": 6588,
       "parts": {
         "agent_context_v1": {
-          "bytes": 6223,
-          "sha1": "6ef77d79e927"
+          "bytes": 6588,
+          "sha1": "f71a2681b4fc"
         }
       }
     },

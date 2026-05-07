@@ -1,0 +1,189 @@
+{
+  "schema_version": "report-writer-materials-v1",
+  "case_thesis": {
+    "conclusion": "可疑事件，建议继续复核",
+    "judgment_sources": [
+      "verdict:delivery"
+    ],
+    "why_it_matters": "当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。最小事件链、交付材料和反证检查均已到位，可按待人工复核结论交付。",
+    "why_this_judgment_holds": "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。",
+    "severity": "中",
+    "confidence": "中",
+    "confirmed_scope": [
+      "ws-rnd-04"
+    ],
+    "candidate_scope": [
+      "ws-rnd-09"
+    ],
+    "why_not_stronger_or_broader": "候选范围、未独立验证事件或未闭合缺口不能直接并入已确认范围。",
+    "source_ids": [
+      "verdict:delivery"
+    ],
+    "exact_fact_text": "可疑事件，建议继续复核；当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。；seed alert 自带家族/工具提示：Possible cloud-storage exfil candidate。；已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。；最小事件链、交付材料和反证检查均已到位，可按待人工复核结论交付。"
+  },
+  "narrative_spine": [
+    {
+      "step_label": "事件起点",
+      "source_ids": [
+        "event:evt-602"
+      ],
+      "exact_fact_text": "2026-06-03 16:40:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，Seed JA4 alert observed a suspicious TLS session to a rare storage edge.，源地址 `10.90.2.44`"
+    },
+    {
+      "step_label": "事件持续",
+      "source_ids": [
+        "event:evt-603"
+      ],
+      "exact_fact_text": "2026-06-03 16:44:00 UTC，资产 `ws-rnd-04`，Archive utility spawned on the workstation shortly before the outbound transfer.，源地址 `10.90.2.44`"
+    },
+    {
+      "step_label": "事件升级",
+      "source_ids": [
+        "event:evt-604"
+      ],
+      "exact_fact_text": "2026-06-03 16:47:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，A large outbound HTTPS upload followed the archive creation, but DLP visibility is incomplete.，源地址 `10.90.2.44`"
+    },
+    {
+      "step_label": "事件范围",
+      "source_ids": [
+        "event:evt-605"
+      ],
+      "exact_fact_text": "背景/替代解释事件：2026-06-03 17:05:00 UTC，资产 `ws-rnd-09`，关联对象 `files-sync-share.net / 198.51.100.144`，A second workstation briefly connected to the same storage edge, but only once and without host evidence.，源地址 `10.90.2.49`"
+    }
+  ],
+  "evidence_argument_map": [
+    {
+      "claim": "可疑事件簇已形成",
+      "source_ids": [
+        "event:evt-602",
+        "event:evt-603",
+        "event:evt-604"
+      ],
+      "why_it_matters": "事件链显示可疑活动，支持可疑事件簇的形成。",
+      "limitation": "事件链中的某些事件分类为未知，可能需要进一步验证。",
+      "exact_fact_text": "2026-06-03 16:40:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，Seed JA4 alert observed a suspicious TLS session to a rare storage edge.，源地址 `10.90.2.44`；2026-06-03 16:44:00 UTC，资产 `ws-rnd-04`，Archive utility spawned on the workstation shortly before the outbound transfer.，源地址 `10.90.2.44`；2026-06-03 16:47:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，A large outbound HTTPS upload followed the archive creation, but DLP visibility is incomplete.，源地址 `10.90.2.44`"
+    },
+    {
+      "claim": "关联资产的扩展信号",
+      "source_ids": [
+        "event:evt-605"
+      ],
+      "why_it_matters": "表明可能存在共享基础设施上的扩展信号。",
+      "limitation": "事件分类为背景，可能需要进一步验证其与主要事件的关系。",
+      "exact_fact_text": "背景/替代解释事件：2026-06-03 17:05:00 UTC，资产 `ws-rnd-09`，关联对象 `files-sync-share.net / 198.51.100.144`，A second workstation briefly connected to the same storage edge, but only once and without host evidence.，源地址 `10.90.2.49`"
+    },
+    {
+      "claim": "外部证据支撑不足",
+      "source_ids": [
+        "gap:validate_family_hint"
+      ],
+      "why_it_matters": "当前缺乏足够的外部证据来支撑 seed 自带的家族提示。",
+      "limitation": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+      "exact_fact_text": "seed 自带的家族提示 Possible cloud-storage exfil candidate 是否有更多外部证据支撑？"
+    },
+    {
+      "claim": "事件起点",
+      "source_ids": [
+        "event:evt-602"
+      ],
+      "supporting_event_ids": [
+        "event:evt-602"
+      ],
+      "why_it_matters": "该节点是事件主线中的关键事实，用于支撑时序推进和范围判断。",
+      "limitation": "该节点需要与其他证据共同使用，不能脱离上下文单独定性。",
+      "exact_fact_text": "2026-06-03 16:40:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，Seed JA4 alert observed a suspicious TLS session to a rare storage edge.，源地址 `10.90.2.44`"
+    }
+  ],
+  "scope_role_matrix": [
+    {
+      "object": "ws-rnd-04",
+      "role": "confirmed_affected_asset",
+      "source_ids": [
+        "object:OBJ-01"
+      ],
+      "exact_fact_text": "对象 `ws-rnd-04`，类型为资产，当前角色为种子资产，种子告警首先落在该资产上。；当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。",
+      "how_to_write": "confirmed_affected_asset"
+    },
+    {
+      "object": "ws-rnd-09",
+      "role": "candidate_asset",
+      "source_ids": [
+        "object:OBJ-02"
+      ],
+      "exact_fact_text": "对象 `ws-rnd-09`，类型为资产，当前角色为待确认关联资产，当前仍需独立验证是否真正受影响。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。",
+      "how_to_write": "candidate_asset"
+    },
+    {
+      "object": "198.51.100.144",
+      "role": "external_infrastructure",
+      "source_ids": [
+        "object:OBJ-03"
+      ],
+      "exact_fact_text": "对象 `198.51.100.144`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选地址。",
+      "how_to_write": "external_infrastructure"
+    },
+    {
+      "object": "files-sync-share.net",
+      "role": "external_infrastructure",
+      "source_ids": [
+        "object:OBJ-04"
+      ],
+      "exact_fact_text": "对象 `files-sync-share.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。",
+      "how_to_write": "external_infrastructure"
+    }
+  ],
+  "counterarguments_and_boundaries": [
+    {
+      "claim": "显式反证检查未发现足以降级当前判断的明确背景解释。",
+      "source_ids": [
+        "claim:CL-04"
+      ],
+      "why_it_matters": "表明当前判断具有一定的合理性。",
+      "limitation": "尽管如此，仍需继续关注潜在的背景解释。",
+      "exact_fact_text": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。"
+    }
+  ],
+  "action_rationale": [
+    {
+      "action": "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。",
+      "source_ids": [
+        "action:1"
+      ],
+      "why_it_matters": "有助于进一步确认事件性质和影响范围。",
+      "exact_fact_text": "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。"
+    },
+    {
+      "action": "继续围绕同域名 / 同 dst_ip / 同 JA4 搜索更宽时间窗内的关联事件。",
+      "source_ids": [
+        "action:2"
+      ],
+      "why_it_matters": "有助于扩大事件范围和确认事件性质。",
+      "exact_fact_text": "继续围绕同域名 / 同 dst_ip / 同 JA4 搜索更宽时间窗内的关联事件。"
+    },
+    {
+      "action": "把关联资产 ws-rnd-09 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。",
+      "source_ids": [
+        "action:3"
+      ],
+      "why_it_matters": "有助于确认事件范围和影响程度。",
+      "exact_fact_text": "把关联资产 ws-rnd-09 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。"
+    }
+  ],
+  "section_briefs": [],
+  "reportable_limits": [
+    {
+      "limitation": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "source_ids": [
+        "gap:expand_cluster_scope"
+      ],
+      "exact_fact_text": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。"
+    },
+    {
+      "limitation": "关联资产 ws-rnd-09 是否真正受影响？",
+      "source_ids": [
+        "gap:related_assets_review"
+      ],
+      "exact_fact_text": "关联资产 ws-rnd-09 是否真正受影响？"
+    }
+  ]
+}
