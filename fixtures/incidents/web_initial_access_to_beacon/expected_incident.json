@@ -1,5 +1,23 @@
 {
   "fixture_case": "web_initial_access_to_beacon",
   "expected_status": "confirmed_incident",
-  "expected_headline": "单资产疑似 Possible web-shell beacon 事件"
+  "affected_assets": [
+    "web-app-01",
+    "app-db-01"
+  ],
+  "related_assets": [
+    "web-app-03"
+  ],
+  "external_indicators": [
+    "198.51.100.88",
+    "cdn-auth-check.net",
+    "api-cdn-auth-check.net"
+  ],
+  "expected_stages": [
+    "initial-access",
+    "command-and-control",
+    "execution",
+    "lateral-movement"
+  ],
+  "analyst_expectation": "The report should explain the web exploit to web-shell, PowerShell, C2, and database-server expansion path while keeping web-app-03 as a candidate boundary."
 }

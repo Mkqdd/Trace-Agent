@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Tuple
 
 from .evidence_store import build_evidence_store, build_legacy_evidence_contract
 from .report_agent import run_report_material_loop
-from .report_agent_writer import render_polished_body_from_materials
+from .report_agent_writer import build_report_writer_brief, render_polished_body_from_writer_brief
 from .report_fact_cards import build_report_fact_cards
 from .report_polish_validator import validate_report_polish
 from .report_source_bundle import build_report_source_bundle
@@ -4535,6 +4535,7 @@ def render_incident_report_with_llm(
         outline=outline,
     )
     report_writer_materials: Dict[str, Any] = {}
+    report_writer_brief: Dict[str, Any] = {}
     report_material_loop_trace: Dict[str, Any] = {}
     report_agent_error = ""
     if use_report_agent_materials is None:
@@ -4547,6 +4548,7 @@ def render_incident_report_with_llm(
             {
                 "report_source_bundle": report_source_bundle,
                 "report_writer_materials": report_writer_materials,
+                "report_writer_brief": report_writer_brief,
                 "report_material_loop_trace": report_material_loop_trace,
                 "report_agent_error": report_agent_error,
                 "report_agent_materials_enabled": bool(use_report_agent_materials),
@@ -4580,7 +4582,8 @@ def render_incident_report_with_llm(
             loop_status = str(report_material_loop_trace.get("status") or "")
             loop_validation = report_material_loop_trace.get("validation") or {}
             if loop_validation.get("ok"):
-                body = render_polished_body_from_materials(llm, report_writer_materials)
+                report_writer_brief = build_report_writer_brief(report_writer_materials)
+                body = render_polished_body_from_writer_brief(llm, report_writer_brief)
                 if body.strip():
                     validation = validate_report_polish(body, report_fact_cards)
                     return _with_report_agent_artifacts({

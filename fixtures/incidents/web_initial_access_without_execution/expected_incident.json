@@ -1,7 +1,11 @@
 {
-  "verdict": "needs_review",
+  "fixture_case": "web_initial_access_without_execution",
+  "expected_status": "needs_review",
   "affected_assets": [
     "web-app-02"
+  ],
+  "related_assets": [
+    "web-app-05"
   ],
   "external_indicators": [
     "198.51.100.177",
@@ -12,5 +16,5 @@
     "initial-access",
     "command-and-control"
   ],
-  "analyst_expectation": "Suspicious exploit attempts plus beacon-style traffic without host execution should remain a review case until execution is corroborated."
+  "analyst_expectation": "This fixture should remain needs_review despite many web and network signals: the agent must not invent host-side execution, lateral movement, or confirmed spread from web-app-05."
 }

@@ -11,101 +11,112 @@
 - 如果当前没有已确认受影响资产，可以写调查锚点和处置焦点，但不要把调查起点改写成已确认影响范围。
 
 ## Header Packet
-- 事件标题：web-app-02 Possible web-shell beacon 调查报告
-- 分析窗口：2026-06-24 14:54:00 UTC 至 2026-06-24 15:10:00 UTC
+- 事件标题：web-app-02 Possible web beacon without host corroboration 调查报告
+- 分析窗口：2026-06-24 14:50:00 UTC 至 2026-06-24 15:50:00 UTC
 - 最终结论：可疑事件，建议继续复核
 - 严重度：中
 - 研判把握：高
 - 已确认受影响范围：当前尚无已确认受影响资产
-- 一句话结论：web-app-02 围绕 198.51.100.177、auth-edge-panel.net 已形成需要继续收敛的异常事件链。
+- 一句话结论：web-app-02 围绕 198.51.100.177、auth-edge-panel.net 已出现连续异常迹象，但 web-app-05 仍需独立确认。
 
 ## Verdict Packet
-- 结论陈述：web-app-02 围绕 198.51.100.177、auth-edge-panel.net 已形成需要继续收敛的异常事件链。
+- 结论陈述：web-app-02 围绕 198.51.100.177、auth-edge-panel.net 已出现连续异常迹象，但 web-app-05 仍需独立确认。
 
 ## Scope Packet
 - 已确认受影响对象：当前尚无已确认受影响资产
+- 待确认对象：web-app-05
 
 ## Constraint Packet
-- 边界陈述：该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。
-- 未闭合问题：是否存在主机侧执行、持久化或横向移动证据？；仍需围绕当前关键关联指标开展一轮扩线核查，确认是否存在同指标的更大范围复现。；seed 自带的家族提示 Possible web-shell beacon 是否有更多外部证据支撑？
+- 边界陈述：当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。
+- 未闭合问题：是否存在主机侧执行、持久化或横向移动证据？；关联资产 web-app-05 是否真正受影响？；seed 自带的家族提示 Possible web beacon without host corroboration 是否有更多外部证据支撑？
+- 反证与替代解释：显式反证检查发现 4 条更接近维护、更新、补丁或备份背景的事件。
 
 ## Action Packet
 - 立即动作：优先隔离或重点监控资产：web-app-02；在边界和代理设备上排查并封禁外部基础设施：198.51.100.177、auth-edge-panel.net
-- 下一步动作：优先补查：是否存在主机侧执行、持久化或横向移动证据
+- 下一步动作：继续核实待确认关联资产 web-app-05；优先补查：是否存在主机侧执行、持久化或横向移动证据
 
 ## Fact Catalog
 ### 已确认事件事实
-- `fact-event-evt-801` [关键事件]：2026-06-24 14:54:00 UTC 资产 `web-app-02` 出现关联事件 `Public-facing web server received suspicious exploit requests against the admin portal before outbound TLS traffic began.`。；书写边界：不要脱离上下文单独放大这条事实
-- `fact-event-evt-802` [异常起点]：2026-06-24 14:58:30 UTC 资产 `web-app-02` 解析域名 `auth-edge-panel.net`。；书写边界：单次解析不足以独立定性
-- `fact-event-evt-803` [落地外联]：2026-06-24 15:02:00 UTC 资产 `web-app-02` 对外通信 `auth-edge-panel.net / 198.51.100.177`。；书写边界：仍需结合复现或主机侧线索共同定性
+- `fact-event-evt-901` [关键事件]：2026-06-24 14:50:00 UTC 资产 `web-app-02` 出现关联事件 `Public-facing web server received exploit requests against the admin portal before outbound TLS traffic began.`。；书写边界：不要脱离上下文单独放大这条事实
+- `fact-event-evt-902` [关键事件]：2026-06-24 14:54:00 UTC 资产 `web-app-02` 出现关联事件 `A second wave of admin-portal exploit requests used a different source ASN and payload family.`。；书写边界：不要脱离上下文单独放大这条事实
+- `fact-event-evt-903` [异常起点]：2026-06-24 14:58:30 UTC 资产 `web-app-02` 解析域名 `auth-edge-panel.net`。；书写边界：单次解析不足以独立定性
+- `fact-event-evt-904` [落地外联]：2026-06-24 15:02:00 UTC 资产 `web-app-02` 对外通信 `auth-edge-panel.net / 198.51.100.177`。；书写边界：仍需结合复现或主机侧线索共同定性
+### 待确认事件事实
+- `fact-event-evt-911` [待确认扩展]：2026-06-24 15:30:00 UTC 资产 `web-app-05` 与 `cdn-auth-edge.net` 出现待确认关联命中。；书写边界：未独立验证，不能并入已确认范围
+- `fact-event-evt-912` [待确认扩展]：2026-06-24 15:32:20 UTC 资产 `web-app-05` 与 `cdn-auth-edge.net / 198.51.100.177` 出现待确认关联命中。；书写边界：未独立验证，不能并入已确认范围
 ### 背景事件事实
-- `fact-event-evt-805` [背景反证]：2026-06-24 15:10:00 UTC 资产 `web-app-02` 当前出现仅用于边界说明的背景事件 `cdn-auth-edge.net`。；书写边界：只能帮助收窄边界，不能单独推翻主结论
+- `fact-event-evt-906` [背景反证]：2026-06-24 15:10:00 UTC 资产 `web-app-02` 当前出现仅用于边界说明的背景事件 `cdn-auth-edge.net`。；书写边界：只能帮助收窄边界，不能单独推翻主结论
 ### 调查锚点对象
 - `fact-scope-obj-01` [调查锚点]：对象 `web-app-02` 当前作为调查锚点保留在主调查链中。；书写边界：作为起点表述，不等于单点即可完成定性，也不要写成已确认受影响范围
 ### 待确认范围对象
-- `fact-scope-obj-07` [待确认对象]：对象 `cdn-auth-edge.net` 当前作为候选扩展对象保留为待确认范围。；书写边界：仍需独立验证，不能直接升格
-- `fact-scope-obj-08` [待确认对象]：对象 `t13d1517h2_22adbe210bc1_11cae1281e22` 当前作为候选扩展对象保留为待确认范围。；书写边界：仍需独立验证，不能直接升格
+- `fact-scope-obj-02` [待确认对象]：对象 `web-app-05` 当前作为待确认关联资产保留为待确认范围。；书写边界：保持待确认，不写成已确认受影响
+- `fact-scope-obj-12` [待确认对象]：对象 `cdn-auth-edge.net` 当前作为候选扩展对象保留为待确认范围。；书写边界：仍需独立验证，不能直接升格
+- `fact-scope-obj-13` [待确认对象]：对象 `t13d1517h2_22adbe210bc1_11cae1281e22` 当前作为候选扩展对象保留为待确认范围。；书写边界：仍需独立验证，不能直接升格
+- `fact-scope-obj-11` [待确认对象]：对象 `web-app-04` 当前作为候选扩展对象保留为待确认范围。；书写边界：仍需独立验证，不能直接升格
 ### 已确认关联基础设施
-- `fact-scope-obj-02` [已确认关联基础设施]：对象 `198.51.100.177` 当前作为已确认关联基础设施纳入主证据链。；书写边界：只应写入外联判断或边界封禁动作，不写成已确认受影响范围
-- `fact-scope-obj-03` [已确认关联基础设施]：对象 `auth-edge-panel.net` 当前作为已确认关联基础设施纳入主证据链。；书写边界：只应写入外联判断或边界封禁动作，不写成已确认受影响范围
+- `fact-scope-obj-03` [已确认关联基础设施]：对象 `198.51.100.177` 当前作为已确认关联基础设施纳入主证据链。；书写边界：只应写入外联判断或边界封禁动作，不写成已确认受影响范围
+- `fact-scope-obj-04` [已确认关联基础设施]：对象 `auth-edge-panel.net` 当前作为已确认关联基础设施纳入主证据链。；书写边界：只应写入外联判断或边界封禁动作，不写成已确认受影响范围
+### 反证事实
+- `fact-counter-cl-06` [替代解释]：显式反证检查发现 4 条更接近维护、更新、补丁或备份背景的事件。；书写边界：要解释为何不足以推翻主判断，而不是只罗列背景事件
 ### 缺口事实
 - `fact-gap-execution_gap` [交付边界]：当前仍需对“是否存在主机侧执行、持久化或横向移动证据？”补充独立确认。；书写边界：限制范围继续扩大，但不否定当前主结论
-- `fact-gap-expand_cluster_scope` [交付边界]：当前仍需对“仍需围绕当前关键关联指标开展一轮扩线核查，确认是否存在同指标的更大范围复现。”补充独立确认。；书写边界：限制范围继续扩大，但不否定当前主结论
-- `fact-gap-validate_family_hint` [交付边界]：当前仍需对“seed 自带的家族提示 Possible web-shell beacon 是否有更多外部证据支撑？”补充独立确认。；书写边界：限制范围继续扩大，但不否定当前主结论
+- `fact-gap-related_assets_review` [交付边界]：当前仍需对“关联资产 web-app-05 是否真正受影响？”补充独立确认。；书写边界：限制范围继续扩大，但不否定当前主结论
+- `fact-gap-validate_family_hint` [交付边界]：当前仍需对“seed 自带的家族提示 Possible web beacon without host corroboration 是否有更多外部证据支撑？”补充独立确认。；书写边界：限制范围继续扩大，但不否定当前主结论
 ### 动作依据事实
 - `fact-action-01` [处置动作]：优先隔离或重点监控资产：web-app-02；书写边界：动作需回扣前文证据或边界判断
 - `fact-action-02` [处置动作]：在边界和代理设备上排查并封禁外部基础设施：198.51.100.177、auth-edge-panel.net；书写边界：动作需回扣前文证据或边界判断
-- `fact-action-03` [处置动作]：优先补查：是否存在主机侧执行、持久化或横向移动证据；书写边界：动作需回扣前文证据或边界判断
+- `fact-action-03` [处置动作]：继续核实待确认关联资产 web-app-05；书写边界：动作需回扣前文证据或边界判断
+- `fact-action-04` [处置动作]：优先补查：是否存在主机侧执行、持久化或横向移动证据；书写边界：动作需回扣前文证据或边界判断
 
 ## Section Fact Map
 ### 首页摘要
 - 本节目标：只收敛结论、严重度、把握度、已确认受影响范围和立即动作，不展开附录型对象清单；如果当前只有调查锚点而没有已确认受影响资产，不要把调查锚点改写成已确认影响范围。
 - 可引用 packets：verdict_packet；scope_packet；action_packet
-- 优先引用事实 ID（按顺序）：fact-event-evt-801；fact-event-evt-802；fact-event-evt-803；fact-scope-obj-01；fact-scope-obj-02
+- 优先引用事实 ID（按顺序）：fact-event-evt-901；fact-event-evt-902；fact-event-evt-903；fact-scope-obj-01；fact-scope-obj-03
 ### 1. 事件背景与已知线索
 - 本节目标：说明事件为什么进入调查、调查起点资产是什么、初始异常是什么，以及当前最关键的外部基础设施是什么。
 - 可引用 packets：verdict_packet；scope_packet
-- 优先引用事实 ID（按顺序）：fact-event-evt-802；fact-event-evt-803；fact-scope-obj-01；fact-scope-obj-02；fact-scope-obj-03
+- 优先引用事实 ID（按顺序）：fact-event-evt-903；fact-event-evt-904；fact-scope-obj-01；fact-scope-obj-03；fact-scope-obj-04
 ### 2. 范围界定与调查假设
 - 本节目标：说明调查锚点、已确认受影响范围和待确认对象各落在哪里，以及为什么边界停在这里。
 - 可引用 packets：scope_packet；constraint_packet
-- 优先引用事实 ID（按顺序）：fact-scope-obj-01；fact-scope-obj-02；fact-scope-obj-03；fact-scope-obj-07；fact-gap-execution_gap
+- 优先引用事实 ID（按顺序）：fact-scope-obj-01；fact-scope-obj-03；fact-scope-obj-04；fact-scope-obj-02；fact-gap-execution_gap；fact-counter-cl-06
 ### 3. 对象覆盖策略与关键实体
 - 本节目标：区分调查锚点、已确认受影响对象、待确认对象、核心外部基础设施和背景指标，只点关键对象。
 - 可引用 packets：scope_packet
-- 优先引用事实 ID（按顺序）：fact-scope-obj-01；fact-scope-obj-07；fact-scope-obj-02；fact-scope-obj-03
+- 优先引用事实 ID（按顺序）：fact-scope-obj-01；fact-scope-obj-02；fact-scope-obj-03；fact-scope-obj-04
 ### 4. 事件机制分解
 - 本节目标：按推进关系解释事件从异常通信到执行/横向的主链，不逐条重放所有时间点。
 - 可引用 packets：verdict_packet；scope_packet
-- 优先引用事实 ID（按顺序）：fact-event-evt-802；fact-event-evt-803
+- 优先引用事实 ID（按顺序）：fact-event-evt-903；fact-event-evt-904
 ### 5. 关键证据与异常事实
 - 本节目标：只抓最关键的支撑事实与反证边界，写清它们为什么改变判断。
 - 可引用 packets：verdict_packet；constraint_packet
-- 优先引用事实 ID（按顺序）：fact-event-evt-803
+- 优先引用事实 ID（按顺序）：fact-event-evt-904；fact-counter-cl-06
 ### 6. 时序特征与行为模式
 - 本节目标：只保留少量关键时间节点，并说明这些节点对判断意味着什么。
 - 可引用 packets：verdict_packet；constraint_packet
-- 优先引用事实 ID（按顺序）：fact-event-evt-802；fact-event-evt-803；fact-event-evt-805
+- 优先引用事实 ID（按顺序）：fact-event-evt-903；fact-event-evt-904；fact-event-evt-906
 ### 7. 传播与关联分析
 - 本节目标：说明哪些关联已经进入主判断，哪些扩线结果仍只是候选或边界说明，不要把调查锚点直接写成范围扩大。
 - 可引用 packets：scope_packet；constraint_packet
-- 优先引用事实 ID（按顺序）：fact-scope-obj-07
+- 优先引用事实 ID（按顺序）：fact-event-evt-911；fact-event-evt-912；fact-scope-obj-02
 ### 8. 影响分析
 - 本节目标：说明已确认受影响范围、已确认异常行为和仍待确认部分之间的区别；如果没有已确认受影响资产，必须写成“当前尚无已确认受影响资产；已观察到的异常行为主要落在调查锚点”，不要使用“影响范围仅限于调查锚点”这类表述。
 - 可引用 packets：verdict_packet；scope_packet；action_packet
-- 优先引用事实 ID（按顺序）：fact-scope-obj-01；fact-scope-obj-07；fact-scope-obj-02；fact-scope-obj-03；fact-event-evt-803
+- 优先引用事实 ID（按顺序）：fact-scope-obj-01；fact-scope-obj-02；fact-scope-obj-03；fact-scope-obj-04；fact-event-evt-904
 ### 9. 证据链摘要与观测缺口
 - 本节目标：说明判断上限、当前仍未闭合的缺口，以及为什么这些缺口没有推翻主判断。
 - 可引用 packets：constraint_packet
-- 优先引用事实 ID（按顺序）：fact-gap-execution_gap；fact-gap-expand_cluster_scope；fact-gap-validate_family_hint
+- 优先引用事实 ID（按顺序）：fact-gap-execution_gap；fact-gap-related_assets_review；fact-gap-validate_family_hint；fact-counter-cl-06；fact-event-evt-911；fact-event-evt-912
 ### 10. 结论与后续建议
 - 本节目标：按立即处置、短期核查、持续复核三类写动作建议，并回扣前文证据边界。
 - 可引用 packets：verdict_packet；action_packet；constraint_packet
-- 优先引用事实 ID（按顺序）：fact-scope-obj-01；fact-scope-obj-02；fact-scope-obj-03；fact-gap-execution_gap；fact-gap-expand_cluster_scope；fact-action-01；fact-action-02；fact-action-03
+- 优先引用事实 ID（按顺序）：fact-scope-obj-01；fact-scope-obj-03；fact-scope-obj-04；fact-gap-execution_gap；fact-gap-related_assets_review；fact-action-01；fact-action-02；fact-action-03；fact-action-04
 ### 11. 技术附录提示
 - 本节目标：只提示附录里有哪些技术明细可以进一步查阅，不重复附录内容。
 - 可引用 packets：scope_packet；constraint_packet
-- 优先引用事实 ID（按顺序）：fact-gap-execution_gap
+- 优先引用事实 ID（按顺序）：fact-counter-cl-06；fact-gap-execution_gap
 
 ## Writing Priorities
 - 第1、2、4、5、7、8、9节默认写成连续短段落，不要把正文写成 fact card 清单。

@@ -1,19 +1,37 @@
 {
-  "verdict_status": "needs_review",
-  "min_event_count": 5,
+  "verdict_status": "confirmed_incident",
+  "min_event_count": 13,
   "must_include_assets": [
-    "ws-rnd-04",
+    "ws-rnd-04"
+  ],
+  "must_include_related_assets": [
     "ws-rnd-09"
   ],
   "must_include_domains": [
-    "files-sync-share.net"
+    "files-sync-share.net",
+    "api.files-sync-share.net"
   ],
   "must_include_stages": [
+    "command-and-control",
     "execution",
     "exfiltration"
   ],
+  "min_counterevidence_count": 2,
+  "min_positive_signal_count": 6,
   "timeline_contains": [
-    "Archive utility",
-    "outbound HTTPS upload"
+    "RND-Q2-prototype.zip",
+    "large outbound HTTPS upload",
+    "DLP recorded"
+  ],
+  "report_contains": [
+    "RND-Q2-prototype.zip",
+    "files-sync-share.net",
+    "640 MB"
+  ],
+  "report_not_contains": [],
+  "appendix_contains": [
+    "ws-rnd-09",
+    "filesync-cdn.example",
+    "company-my.sharepoint.com"
   ]
 }

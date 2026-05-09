@@ -6,7 +6,8 @@
   "confidence_band": "较高",
   "confirmed_scope": [],
   "candidate_scope": [
-    "ws-legal-09"
+    "ws-legal-09",
+    "ws-legal-12"
   ],
   "blocking_gaps": [],
   "non_blocking_gaps": [
@@ -19,25 +20,40 @@
       "delivery_blocking": false,
       "actionable_now": false,
       "blocks_delivery_now": false,
+      "gate_type": "reportable_limit",
       "next_best_question": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
     },
     {
       "gap_id": "related_assets_review",
-      "question": "关联资产 ws-legal-09 是否真正受影响？",
+      "question": "关联资产 ws-legal-09、ws-legal-12 是否真正受影响？",
       "priority": "medium",
       "status": "unresolved_but_deliverable",
-      "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+      "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
       "delivery_blocking": true,
       "actionable_now": false,
       "blocks_delivery_now": false,
-      "next_best_question": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+      "gate_type": "reportable_limit",
+      "next_best_question": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
+    },
+    {
+      "gap_id": "validate_family_hint",
+      "question": "seed 自带的家族提示 Suspicious shared-infra beacon requiring review 是否有更多外部证据支撑？",
+      "priority": "low",
+      "status": "unresolved_but_deliverable",
+      "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+      "delivery_blocking": false,
+      "actionable_now": false,
+      "blocks_delivery_now": false,
+      "gate_type": "reportable_limit",
+      "next_best_question": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
     }
   ],
   "next_best_questions": [
     "是否存在主机侧执行、持久化或横向移动证据？",
-    "关联资产 ws-legal-09 是否真正受影响？"
+    "关联资产 ws-legal-09、ws-legal-12 是否真正受影响？",
+    "seed 自带的家族提示 Suspicious shared-infra beacon requiring review 是否有更多外部证据支撑？"
   ],
-  "reviewer_rationale": "最小事件链、交付材料和反证检查均已到位，可按待人工复核结论交付。",
+  "reviewer_rationale": "最小事件链已达到待复核报告门槛；剩余问题应按未决边界呈现。",
   "insufficient_progress_signals": [
     "当前还没有形成稳定的已确认影响范围。"
   ],
@@ -48,8 +64,10 @@
     "severity": "中危",
     "rationale": [
       "当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。",
+      "seed alert 自带家族/工具提示：Suspicious shared-infra beacon requiring review。",
       "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。",
-      "最小事件链、交付材料和反证检查均已到位，可按待人工复核结论交付。"
+      "同时也存在可解释为背景活动的信号，因此暂未自动推进为确认事件。",
+      "最小事件链已达到待复核报告门槛；剩余问题应按未决边界呈现。"
     ],
     "delivery_ready": true,
     "blocked_by": [],
@@ -63,62 +81,90 @@
     "severity": "中危",
     "rationale": [
       "当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。",
-      "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。"
+      "seed alert 自带家族/工具提示：Suspicious shared-infra beacon requiring review。",
+      "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。",
+      "同时也存在可解释为背景活动的信号，因此暂未自动推进为确认事件。"
     ]
   },
   "readiness": {
     "ready_for_delivery": true,
-    "summary": "最小事件链、交付材料和反证检查均已到位，可按待人工复核结论交付。",
+    "summary": "最小事件链已达到待复核报告门槛；剩余问题应按未决边界呈现。",
     "checks": [
       {
         "id": "context_built",
         "ok": true,
         "reason": "已围绕 seed alert 建立最小上下文。",
-        "delivery_blocking": true
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
       },
       {
         "id": "cluster_built",
         "ok": true,
         "reason": "事件簇规模已经足以支撑时间线和范围判断。",
-        "delivery_blocking": true
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
       },
       {
         "id": "candidate_events_grounded",
         "ok": true,
         "reason": "当前没有仍待单独 grounding 的候选事件。",
-        "delivery_blocking": true
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
       },
       {
         "id": "timeline_built",
         "ok": true,
         "reason": "已形成时间线，可解释关键观察的先后关系。",
-        "delivery_blocking": true
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
       },
       {
         "id": "scope_assessed",
         "ok": true,
         "reason": "当前事件范围已经落到资产或核心外部指示物上。",
-        "delivery_blocking": true
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
       },
       {
         "id": "evidence_chain_ready",
         "ok": true,
         "reason": "当前已经具备最小支撑证据链，并且事件范围能够落到具体外部指示物。",
-        "delivery_blocking": true
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
       },
       {
         "id": "counterevidence_checked",
         "ok": true,
         "reason": "已执行显式反证检查。",
-        "delivery_blocking": true
+        "delivery_blocking": false,
+        "gate_type": "reportable_limit",
+        "suggested_report_boundary": "",
+        "actionable_now": false
       },
       {
         "id": "supplemental_context_reviewed",
         "ok": true,
         "reason": "已执行至少一次情报或结构化整理动作，可支撑 deterministic report 生成。",
-        "delivery_blocking": true
+        "delivery_blocking": false,
+        "gate_type": "reviewer_judgment",
+        "suggested_report_boundary": "",
+        "actionable_now": false
       }
     ],
-    "blocking_checks": []
+    "blocking_checks": [],
+    "reviewer_judgment_checks": [],
+    "reportable_limit_checks": []
   }
 }

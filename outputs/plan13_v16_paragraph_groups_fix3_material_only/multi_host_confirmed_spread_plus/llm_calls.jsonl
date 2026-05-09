@@ -1,0 +1,1 @@
+{"call_id": "13fbfd431bfc", "event": "start", "extra": {}, "payload": {"message_count": 2, "messages": [{"bytes": 19900, "index": 0, "sha1": "e775d34b4181", "type": "SystemMessage"}, {"bytes": 39930, "index": 1, "sha1": "5afcb23a39e6", "type": "HumanMessage"}], "total_bytes": 59830}, "role": "report_material_loop", "step_index": null, "ts": 1778223930.1761}

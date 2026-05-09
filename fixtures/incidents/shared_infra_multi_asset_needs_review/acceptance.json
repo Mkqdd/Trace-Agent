@@ -1,16 +1,17 @@
 {
   "verdict_status": "needs_review",
-  "min_event_count": 5,
+  "min_event_count": 12,
   "must_include_assets": [
-    "ws-legal-03",
-    "ws-legal-09"
+    "ws-legal-03"
   ],
   "must_include_related_assets": [
-    "ws-legal-09"
+    "ws-legal-09",
+    "ws-legal-12"
   ],
   "must_include_domains": [
     "auth-queue-sync.net",
-    "cdn-auth-queue.net"
+    "cdn-auth-queue.net",
+    "login-queue-cdn.net"
   ],
   "must_include_stages": [
     "command-and-control"
@@ -21,19 +22,27 @@
     "exfiltration"
   ],
   "max_suspected_asset_count": 1,
-  "min_positive_signal_count": 2,
+  "min_counterevidence_count": 2,
+  "min_positive_signal_count": 3,
   "open_questions_contains": [
-    "ws-legal-09 是否真正受影响"
+    "是否真正受影响"
+  ],
+  "timeline_contains": [
+    "shared hosting IP",
+    "second workstation",
+    "second rare queue-themed domain"
   ],
   "report_contains": [
     "待人工复核",
-    "待复核关联资产 ws-legal-09"
+    "ws-legal-09",
+    "auth-queue-sync.net"
   ],
   "report_not_contains": [
     "按已成立安全事件处置"
   ],
-  "timeline_contains": [
-    "shared infrastructure",
-    "second workstation contacted a sibling domain"
+  "appendix_contains": [
+    "identity-cache.vendor.example",
+    "legal-docs-cdn.example",
+    "login-queue-cdn.net"
   ]
 }

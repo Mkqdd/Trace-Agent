@@ -1,5 +1,21 @@
 {
   "fixture_case": "suspected_exfil_after_execution",
-  "expected_status": "needs_review",
-  "expected_note": "execution plus possible exfil without enough confirmation to auto-close as confirmed"
+  "expected_status": "confirmed_incident",
+  "affected_assets": [
+    "ws-rnd-04"
+  ],
+  "related_assets": [
+    "ws-rnd-09"
+  ],
+  "external_indicators": [
+    "198.51.100.144",
+    "files-sync-share.net",
+    "api.files-sync-share.net"
+  ],
+  "expected_stages": [
+    "command-and-control",
+    "execution",
+    "exfiltration"
+  ],
+  "analyst_expectation": "The report should confirm a single-primary-asset execution-to-exfil chain while keeping ws-rnd-09 and shared CDN traffic as candidate or boundary context."
 }

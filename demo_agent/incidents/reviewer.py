@@ -42,12 +42,27 @@ def _confidence_band(value: Any) -> str:
     return "低"
 
 
-def _readiness_check(check_id: str, ok: bool, reason: str, *, delivery_blocking: bool = True) -> Dict[str, Any]:
+def _readiness_check(
+    check_id: str,
+    ok: bool,
+    reason: str,
+    *,
+    delivery_blocking: bool = True,
+    gate_type: str = "",
+    suggested_report_boundary: str = "",
+    actionable_now: bool = False,
+) -> Dict[str, Any]:
+    normalized_gate_type = str(gate_type or "").strip()
+    if not normalized_gate_type:
+        normalized_gate_type = "hard_blocker" if delivery_blocking else "reviewer_judgment"
     return {
         "id": check_id,
         "ok": bool(ok),
         "reason": str(reason or "").strip(),
         "delivery_blocking": bool(delivery_blocking),
+        "gate_type": normalized_gate_type,
+        "suggested_report_boundary": str(suggested_report_boundary or "").strip(),
+        "actionable_now": bool(actionable_now),
     }
 
 
@@ -225,7 +240,7 @@ def build_reviewer_input(incident: Dict[str, Any], evidence_store: Dict[str, Any
     }
 
 
-def _gap_blocks_delivery(gap: Dict[str, Any]) -> bool:
+def _gap_blocks_delivery(gap: Dict[str, Any], *, provisional_status: str = "") -> bool:
     status = str(gap.get("legacy_status") or gap.get("status") or "").strip().lower()
     if not bool(gap.get("delivery_blocking")):
         return False
@@ -235,11 +250,27 @@ def _gap_blocks_delivery(gap: Dict[str, Any]) -> bool:
         return False
     if status in {"stalled", "open_unaddressable"} and bool(gap.get("reportable_if_unresolved")) and not bool(gap.get("actionable_now")):
         return False
+    gap_type = str(gap.get("gap_type") or "").strip()
+    materiality = str(gap.get("materiality") or "").strip()
+    if gap_type in {"context", "asset_identity"}:
+        return True
+    if materiality in {"boundary_sensitive", "confidence_supporting"} or bool(gap.get("reportable_if_unresolved")):
+        return False
+    normalized_status = str(provisional_status or "").strip()
+    if normalized_status != "monitor_only" and gap_type in {"counterevidence", "report_structuring"}:
+        return False
+    if normalized_status == "confirmed_incident" and gap_type in {
+        "candidate_grounding",
+        "cluster_scope",
+        "scope_expansion",
+        "external_context",
+    }:
+        return False
     return True
 
 
-def _gap_is_boundary_only(gap: Dict[str, Any]) -> bool:
-    return bool(gap.get("delivery_blocking")) and not _gap_blocks_delivery(gap)
+def _gap_is_boundary_only(gap: Dict[str, Any], *, provisional_status: str = "") -> bool:
+    return bool(gap.get("delivery_blocking")) and not _gap_blocks_delivery(gap, provisional_status=provisional_status)
 
 
 def _gap_affects_candidate_boundary(gap: Dict[str, Any]) -> bool:
@@ -252,14 +283,17 @@ def _gap_affects_candidate_boundary(gap: Dict[str, Any]) -> bool:
     }
 
 
-def _gap_view(gap: Dict[str, Any], *, blocks_delivery: bool) -> Dict[str, Any]:
+def _gap_view(gap: Dict[str, Any], *, blocks_delivery: bool, provisional_status: str = "") -> Dict[str, Any]:
     raw_status = str(gap.get("status") or "").strip() or "open"
     view_status = raw_status
     status_reason = str(gap.get("status_reason") or "").strip()
-    if _gap_is_boundary_only(gap):
+    gate_type = "hard_blocker" if blocks_delivery else "reportable_limit"
+    if _gap_is_boundary_only(gap, provisional_status=provisional_status):
         view_status = "unresolved_but_deliverable"
         if not status_reason:
             status_reason = "该 gap 当前只限制边界说明，不再阻塞核心结论交付。"
+    if not blocks_delivery and str(gap.get("gap_type") or "").strip() == "report_structuring":
+        gate_type = "reviewer_judgment"
     return {
         "gap_id": str(gap.get("gap_id") or gap.get("id") or "").strip(),
         "question": str(gap.get("question") or "").strip(),
@@ -269,6 +303,7 @@ def _gap_view(gap: Dict[str, Any], *, blocks_delivery: bool) -> Dict[str, Any]:
         "delivery_blocking": bool(gap.get("delivery_blocking")),
         "actionable_now": bool(gap.get("actionable_now")),
         "blocks_delivery_now": bool(blocks_delivery),
+        "gate_type": gate_type,
         "next_best_question": str(
             gap.get("next_best_query")
             or ((status_reason if not bool(gap.get("actionable_now")) else "") or gap.get("question") or "")
@@ -294,12 +329,17 @@ def _candidate_grounding_check(
             "candidate_events_grounded",
             False,
             f"仍有 {len(candidate_events)} 条候选扩线事件没有完成独立验证。",
+            suggested_report_boundary="候选扩线仍会影响交付结论，不能把相关对象写成已确认影响范围。",
+            actionable_now=True,
         )
     if boundary_related_carryable:
         return _readiness_check(
             "candidate_events_grounded",
-            True,
+            False,
             "仍有候选事件未独立验证，但它们当前只限制扩展边界，不再阻塞核心结论交付。",
+            delivery_blocking=False,
+            gate_type="reportable_limit",
+            suggested_report_boundary="候选事件只能写入待确认范围或报告边界，不能并入已确认传播结论。",
         )
     return _readiness_check(
         "candidate_events_grounded",
@@ -366,6 +406,10 @@ def _reviewer_readiness(
     provisional = dict(reviewer_input.get("provisional_assessment") or {})
     provisional_status = str(provisional.get("status") or "").strip() or "needs_review"
     candidate_events = _candidate_events(evidence_store)
+    counterevidence_reviewed = bool(runtime_summary.get("counterevidence_reviewed"))
+    supplemental_context_reviewed = bool(runtime_summary.get("supplemental_context_reviewed"))
+    counterevidence_blocks = provisional_status == "monitor_only"
+    counterevidence_gate_type = "hard_blocker" if counterevidence_blocks else "reportable_limit"
 
     checks = [
         _readiness_check(
@@ -400,28 +444,62 @@ def _reviewer_readiness(
         _evidence_chain_check(provisional_status, evidence_store, confirmed_scope, runtime_summary),
         _readiness_check(
             "counterevidence_checked",
-            bool(runtime_summary.get("counterevidence_reviewed")),
+            counterevidence_reviewed,
             "已执行显式反证检查。"
-            if bool(runtime_summary.get("counterevidence_reviewed"))
-            else "尚未执行显式反证检查。",
+            if counterevidence_reviewed
+            else (
+                "尚未执行显式反证检查；这会限制反证边界，但不应单独推翻已成立的主证据链。"
+                if not counterevidence_blocks
+                else "若要稳定降级为观察，仍需要显式反证检查。"
+            ),
+            delivery_blocking=counterevidence_blocks,
+            gate_type=counterevidence_gate_type,
+            suggested_report_boundary=(
+                ""
+                if counterevidence_reviewed
+                else "报告应说明维护窗口、补丁、备份或共享基线等反证检查尚未闭合。"
+            ),
+            actionable_now=not counterevidence_reviewed,
         ),
         _readiness_check(
             "supplemental_context_reviewed",
-            bool(runtime_summary.get("supplemental_context_reviewed")),
+            supplemental_context_reviewed,
             "已执行至少一次情报或结构化整理动作，可支撑 deterministic report 生成。"
-            if bool(runtime_summary.get("supplemental_context_reviewed"))
-            else "仍缺少情报或结构化整理动作，报告材料尚未收束。",
+            if supplemental_context_reviewed
+            else "仍缺少情报或结构化整理动作；这是报告厚度和背景解释风险，不是核心证据链硬阻断。",
+            delivery_blocking=False,
+            gate_type="reviewer_judgment",
+            suggested_report_boundary=(
+                ""
+                if supplemental_context_reviewed
+                else "报告应避免超出已有事件事实推断外部归因或背景情报。"
+            ),
+            actionable_now=not supplemental_context_reviewed,
         ),
     ]
     blocking_checks = [item for item in checks if not bool(item.get("ok")) and bool(item.get("delivery_blocking", True))]
+    reviewer_judgment_checks = [
+        item
+        for item in checks
+        if not bool(item.get("ok"))
+        and not bool(item.get("delivery_blocking", True))
+        and str(item.get("gate_type") or "").strip() == "reviewer_judgment"
+    ]
+    reportable_limit_checks = [
+        item
+        for item in checks
+        if not bool(item.get("ok"))
+        and not bool(item.get("delivery_blocking", True))
+        and str(item.get("gate_type") or "").strip() == "reportable_limit"
+    ]
     ready_for_delivery = not blocking_checks and not effective_blocking_gaps
     if ready_for_delivery:
         if provisional_status == "confirmed_incident":
-            summary = "主支撑证据、反证检查与报告材料均已到位，可按确认事件交付。"
+            summary = "主支撑证据和范围已达到确认事件交付门槛；剩余候选扩线、反证或背景材料应作为报告边界呈现。"
         elif provisional_status == "monitor_only":
             summary = "反证链路和背景解释已经完成交付级核查，可按降级观察交付。"
         else:
-            summary = "最小事件链、交付材料和反证检查均已到位，可按待人工复核结论交付。"
+            summary = "最小事件链已达到待复核报告门槛；剩余问题应按未决边界呈现。"
     else:
         failure_reasons = [
             str(item.get("reason") or "").strip()
@@ -440,6 +518,8 @@ def _reviewer_readiness(
         "summary": summary,
         "checks": checks,
         "blocking_checks": blocking_checks,
+        "reviewer_judgment_checks": reviewer_judgment_checks,
+        "reportable_limit_checks": reportable_limit_checks,
     }
 
 
@@ -502,16 +582,23 @@ def build_delivery_decision(evidence_store: Dict[str, Any], reviewer_input: Dict
     objects = _evidence_objects(evidence_store)
     gaps = _evidence_gaps(evidence_store)
     open_gaps = [gap for gap in gaps if str(gap.get("status") or "").strip() != "closed"]
-    effective_blocking_gap_rows = [gap for gap in open_gaps if _gap_blocks_delivery(gap)]
-    carryable_gap_rows = [gap for gap in open_gaps if _gap_is_boundary_only(gap)]
-    blocking_gaps = [_gap_view(gap, blocks_delivery=True) for gap in effective_blocking_gap_rows]
+    provisional_status = str(provisional.get("status") or "").strip() or "needs_review"
+    effective_blocking_gap_rows = [
+        gap for gap in open_gaps if _gap_blocks_delivery(gap, provisional_status=provisional_status)
+    ]
+    carryable_gap_rows = [
+        gap for gap in open_gaps if _gap_is_boundary_only(gap, provisional_status=provisional_status)
+    ]
+    blocking_gaps = [
+        _gap_view(gap, blocks_delivery=True, provisional_status=provisional_status)
+        for gap in effective_blocking_gap_rows
+    ]
     non_blocking_gaps = [
-        _gap_view(gap, blocks_delivery=False)
+        _gap_view(gap, blocks_delivery=False, provisional_status=provisional_status)
         for gap in open_gaps
         if gap not in effective_blocking_gap_rows
     ]
 
-    provisional_status = str(provisional.get("status") or "").strip() or "needs_review"
     confirmed_scope = _asset_scope(objects, roles={"seed_asset", "affected_asset"}, confirmed_only=True)
     seed_scope = set(_asset_scope(objects, roles={"seed_asset"}, confirmed_only=False))
     candidate_scope = [

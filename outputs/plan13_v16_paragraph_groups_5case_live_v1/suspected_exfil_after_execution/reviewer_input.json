@@ -1,0 +1,71 @@
+{
+  "schema_version": "reviewer-input-v1",
+  "provisional_assessment": {
+    "status": "needs_review",
+    "status_label": "待人工复核",
+    "confidence": 66,
+    "severity": "中危",
+    "rationale": [
+      "当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。",
+      "seed alert 自带家族/工具提示：Possible cloud-storage exfil candidate。",
+      "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。"
+    ]
+  },
+  "runtime_summary": {
+    "context_built": true,
+    "cluster_built": true,
+    "timeline_built": true,
+    "scope_assessed": true,
+    "counterevidence_reviewed": true,
+    "supplemental_context_reviewed": true,
+    "candidate_event_count": 0,
+    "observed_event_count": 5,
+    "consecutive_low_value_steps": 0,
+    "recent_low_novelty_count": 1,
+    "stop_reason": "delivery_ready",
+    "budget_usage": {
+      "max_steps": 8,
+      "remaining_steps": 3,
+      "max_tool_calls": 12,
+      "remaining_tool_calls": 7,
+      "max_event_queries": 8,
+      "remaining_event_queries": 4,
+      "max_intel_queries": 4,
+      "remaining_intel_queries": 3
+    }
+  },
+  "session_trace_summary": {
+    "stop_reason": "delivery_ready",
+    "consecutive_low_value_steps": 0,
+    "recent_tool_effects": [
+      {
+        "step_index": 3,
+        "tool_name": "expand_asset_scope",
+        "novelty_score": 1,
+        "summary": "新增 1 条 claim"
+      },
+      {
+        "step_index": 4,
+        "tool_name": "check_counterevidence",
+        "novelty_score": 2,
+        "summary": "新增 1 条 claim；关闭 1 个 gap"
+      },
+      {
+        "step_index": 5,
+        "tool_name": "extract_claim_candidates_from_page",
+        "novelty_score": 8,
+        "summary": "新增 5 条 claim；关闭 1 个 gap；达到可交付状态"
+      }
+    ],
+    "budget_usage": {
+      "max_steps": 8,
+      "remaining_steps": 3,
+      "max_tool_calls": 12,
+      "remaining_tool_calls": 7,
+      "max_event_queries": 8,
+      "remaining_event_queries": 4,
+      "max_intel_queries": 4,
+      "remaining_intel_queries": 3
+    }
+  }
+}

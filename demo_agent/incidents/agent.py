@@ -44,10 +44,10 @@ from ..services.api.llm_observability import invoke_llm_with_trace
 
 
 DEFAULT_BUDGETS = {
-    "max_steps": 8,
+    "max_steps": 10,
     "max_tool_calls": 12,
     "max_event_queries": 8,
-    "max_intel_queries": 4,
+    "max_intel_queries": 5,
     "max_runtime_s": 120,
 }
 
@@ -230,13 +230,14 @@ Trace-Agent 是一个面向安全告警调查的事件研判代理；investigato
 
 输入契约：
 - seed、review_context、finish_request 是唯一事实来源；缺失字段视为 unknown，不得脑补。
-- review_context.acceptance_state 是交付门槛视图；只有其中明确 deliverable_now 为 true，且没有可行动 blocking gap / blocking_checks 时，才可以接受 finish。
-- 如果仍存在可行动 material gap，只能说明“为什么不能 finish”和“剩余不确定性是什么”，不能建议具体工具或参数。
+- review_context.acceptance_state 是交付门槛视图；hard blocking gap / blocking_checks 不能被越过。
+- 若剩余问题已经标记为 reportable、boundary、reviewer_judgment 或 blocks_delivery_now=false，你可以接受 finish，但必须在 reason/next_round_feedback 中说明它们应进入报告边界。
+- 如果仍存在 hard blocking material gap，只能说明“为什么不能 finish”和“剩余不确定性是什么”，不能建议具体工具或参数。
 
 冲突优先级：
 1. 事实边界：不得新增事实，不得基于 case 名、预期答案或经验模板判断。
-2. 交付门槛：acceptance_state.deliverable_now / readiness.ready_for_delivery 与 blocking gap/check 优先于 investigator 的主观 finish 理由。
-3. 候选边界：candidate 未 grounding 时，不能当作 confirmed 交付。
+2. 硬阻断：hard blocking gap/check 优先于 investigator 的主观 finish 理由。
+3. 候选边界：candidate 未 grounding 时，不能当作 confirmed 交付；但可以作为待确认范围或报告边界交付。
 4. 职责边界：只能接受或拒绝 finish；不能输出 next_action tool。
 
 输出要求：
@@ -248,7 +249,7 @@ Trace-Agent 是一个面向安全告警调查的事件研判代理；investigato
 - stop_recommendation 必须包含 should_stop 和 reason；should_stop 只是建议，最终是否停止由 stop gate 决定。
 
 合法输出示例：
-{{"decision":"not_deliverable","deliverable_now":false,"blocking_gaps":[{{"gap_id":"candidate_grounding","reason":"候选事件仍未完成 grounding，不能进入 confirmed 证据链。"}}],"next_round_feedback":["finish 过早：下一轮应先解释 candidate_grounding 是否能闭合，或将其明确降为报告边界。"],"stop_recommendation":{{"should_stop":false,"reason":"仍有可行动 blocking gap。"}},"reason":"当前仍存在可行动的候选验证缺口。"}}
+{{"decision":"not_deliverable","deliverable_now":false,"blocking_gaps":[{{"gap_id":"build_context","reason":"缺少最小上下文，无法判断 seed 是否孤立。"}}],"next_round_feedback":["finish 过早：当前仍存在 hard blocking gap，不能只写成报告边界。"],"stop_recommendation":{{"should_stop":false,"reason":"仍有 hard blocking gap。"}},"reason":"当前还没有达到可交付的事实基础。"}}
 {{"decision":"deliverable","deliverable_now":true,"blocking_gaps":[],"next_round_feedback":[],"stop_recommendation":{{"should_stop":true,"reason":"当前没有可行动 blocking gap，剩余问题可作为报告边界。"}},"reason":"当前已达到交付门槛，可以结束调查。"}}
 """.strip()
 POST_ACTION_REVIEWER_SYSTEM_PROMPT = """
@@ -1869,7 +1870,8 @@ def _acceptance_state(
         if str(gap.get("status") or "").strip() in {"reportable_unresolved", "unresolved_but_deliverable"}
         or (bool(gap.get("delivery_blocking")) and not bool(gap.get("blocks_delivery_now", True)))
     ]
-    preferred_stop = approved and not blocking_checks and not blocking_material_gaps
+    deliverable_now = approved and not blocking_checks and not blocking_material_gaps
+    preferred_stop = deliverable_now and not actionable_gaps
     if preferred_stop:
         if material_gaps:
             reason = "当前已满足可交付条件；剩余问题要么不可由现有工具继续缩小，要么更适合作为报告未决事项。"
@@ -1878,6 +1880,8 @@ def _acceptance_state(
     elif ready_for_delivery and blocking_material_gaps:
         gap_titles = "；".join(str(item.get("question") or "").strip() for item in blocking_material_gaps[:2])
         reason = f"虽然已接近交付，但仍存在可由当前工具继续缩小的关键问题：{gap_titles}"
+    elif deliverable_now and actionable_gaps:
+        reason = "当前结论已经可交付，但仍有可行动的候选边界、反证或结构化补强项；它们不应降级主结论，但在预算和增量允许时仍可继续缩小。"
     elif ready_for_delivery and material_gaps:
         reason = "虽然仍有未决问题，但它们当前更适合作为报告未决事项记录，而不是继续补充低增量证据。"
     else:
@@ -1896,7 +1900,7 @@ def _acceptance_state(
     )
     return {
         "preferred_stop": preferred_stop,
-        "deliverable_now": preferred_stop,
+        "deliverable_now": deliverable_now,
         "preferred_stop_reason": reason,
         "ready_for_delivery": ready_for_delivery,
         "open_question_count": len(material_gaps),
@@ -2166,12 +2170,10 @@ def _canonical_blocking_gaps(material_gaps: List[Dict[str, Any]]) -> List[Dict[s
     prioritized = [
         dict(item)
         for item in material_gaps
-        if bool(item.get("delivery_blocking")) and bool(item.get("actionable_now"))
+        if bool(item.get("delivery_blocking"))
+        and bool(item.get("actionable_now"))
+        and bool(item.get("blocks_delivery_now", item.get("delivery_blocking")))
     ]
-    if not prioritized:
-        prioritized = [dict(item) for item in material_gaps if bool(item.get("actionable_now"))]
-    if not prioritized:
-        prioritized = [dict(item) for item in material_gaps if str(item.get("status") or "").strip() != "reportable_unresolved"]
     rows: List[Dict[str, Any]] = []
     for item in prioritized[:3]:
         rows.append(
@@ -2182,6 +2184,7 @@ def _canonical_blocking_gaps(material_gaps: List[Dict[str, Any]]) -> List[Dict[s
                 "status": str(item.get("status") or "").strip(),
                 "delivery_blocking": bool(item.get("delivery_blocking")),
                 "actionable_now": bool(item.get("actionable_now")),
+                "blocks_delivery_now": bool(item.get("blocks_delivery_now", item.get("delivery_blocking"))),
                 "reason": str(item.get("status_reason") or "").strip() or str(item.get("question") or "").strip(),
                 "actionable_tools": unique_preserve_order(list(item.get("actionable_tools") or []))[:4],
             }
@@ -4744,16 +4747,21 @@ def _review_finish_request(
         decision = str(parsed.get("decision") or "").strip().lower()
         if decision not in {"deliverable", "not_deliverable"}:
             decision = "not_deliverable"
-        parsed_deliverable_now = bool(parsed.get("deliverable_now")) and decision == "deliverable"
-        if parsed_deliverable_now and not bool(acceptance_state.get("deliverable_now")):
-            decision = "not_deliverable"
-            parsed_deliverable_now = False
         canonical_gap_map = _merged_gap_map(
             list(finalized.get("gap_ledger") or []),
             list(incident_state.get("gap_ledger") or []),
             list(acceptance_state.get("material_gaps") or []),
         )
         blocking_gaps = _normalize_blocking_gap_rows(parsed.get("blocking_gaps"), canonical_gap_map)
+        hard_finish_blocked = bool(acceptance_state.get("blocking_checks")) or bool(
+            acceptance_state.get("blocking_actionable_gaps")
+        )
+        parsed_deliverable_now = bool(parsed.get("deliverable_now")) and decision == "deliverable"
+        if parsed_deliverable_now and hard_finish_blocked:
+            decision = "not_deliverable"
+            parsed_deliverable_now = False
+            if not blocking_gaps:
+                blocking_gaps = _canonical_blocking_gaps(list(acceptance_state.get("material_gaps") or []))
         if not parsed_deliverable_now and not blocking_gaps:
             blocking_gaps = _canonical_blocking_gaps(list(acceptance_state.get("material_gaps") or []))
         stop_raw = parsed.get("stop_recommendation") or {}
@@ -8034,6 +8042,7 @@ def run_incident_agent_case(
         "report_polish_error": rendered_report.get("report_polish_error") or "",
         "report_source_bundle": rendered_report.get("report_source_bundle") or {},
         "report_writer_materials": rendered_report.get("report_writer_materials") or {},
+        "report_writer_brief": rendered_report.get("report_writer_brief") or {},
         "report_material_loop_trace": rendered_report.get("report_material_loop_trace") or {},
         "report_agent_error": rendered_report.get("report_agent_error") or "",
         "report_agent_materials_enabled": bool(rendered_report.get("report_agent_materials_enabled")),

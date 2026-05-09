@@ -5,12 +5,12 @@
   "ready_for_delivery_at_stop": true,
   "actionable_path_at_stop": false,
   "blocking_gap_count_at_stop": 0,
-  "tool_history_length": 5,
+  "tool_history_length": 6,
   "agent_round_count": 0,
   "reviewer_round_count": 0,
   "reviewer_replacement_count": 0,
   "execution_source_counts": {
-    "selector": 5
+    "selector": 6
   },
   "invalid_proposal_count": 0,
   "duplicate_deterministic_call_count": 0,
@@ -19,7 +19,7 @@
   "prompt_payload_bytes": {
     "agent_total": 0,
     "reviewer_total": 0,
-    "agent_context_v1_preview_total": 45018,
+    "agent_context_v1_preview_total": 60054,
     "total": 0
   }
 }

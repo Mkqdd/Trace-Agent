@@ -1,19 +1,40 @@
 {
   "verdict_status": "confirmed_incident",
-  "min_event_count": 5,
+  "min_event_count": 14,
   "must_include_assets": [
-    "web-app-01"
+    "web-app-01",
+    "app-db-01"
+  ],
+  "must_include_related_assets": [
+    "web-app-03"
   ],
   "must_include_domains": [
-    "cdn-auth-check.net"
+    "cdn-auth-check.net",
+    "api-cdn-auth-check.net"
   ],
   "must_include_stages": [
     "initial-access",
     "command-and-control",
-    "execution"
+    "execution",
+    "lateral-movement"
   ],
+  "min_counterevidence_count": 2,
+  "min_positive_signal_count": 6,
   "timeline_contains": [
     "exploit requests",
-    "PowerShell launcher"
+    "shell.aspx",
+    "SMB connection"
+  ],
+  "report_contains": [
+    "app-db-01",
+    "cdn-auth-check.net"
+  ],
+  "report_not_contains": [
+    "当前没有阻塞交付的关键缺口"
+  ],
+  "appendix_contains": [
+    "web-app-03",
+    "scanner-cdn.example",
+    "api-cdn-auth-check.net"
   ]
 }

@@ -1,18 +1,22 @@
 {
-  "verdict": "needs_review",
+  "fixture_case": "shared_infra_multi_asset_needs_review",
+  "expected_status": "needs_review",
   "affected_assets": [
     "ws-legal-03"
   ],
   "related_assets": [
-    "ws-legal-09"
+    "ws-legal-09",
+    "ws-legal-12"
   ],
   "external_indicators": [
     "198.51.100.131",
+    "203.0.113.131",
     "auth-queue-sync.net",
-    "cdn-auth-queue.net"
+    "cdn-auth-queue.net",
+    "login-queue-cdn.net"
   ],
   "expected_stages": [
     "command-and-control"
   ],
-  "analyst_expectation": "A second asset touching the same suspicious infrastructure through one weak signal should stay in related scope, not auto-upgrade the case to confirmed spread."
+  "analyst_expectation": "This fixture should force the material agent to keep shared-infrastructure expansion as needs_review: ws-legal-09 and ws-legal-12 are related/candidate context, not confirmed affected assets."
 }

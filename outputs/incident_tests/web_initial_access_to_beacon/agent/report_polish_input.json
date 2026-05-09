@@ -3,7 +3,7 @@
   "source_mode": "fact_cards_v2",
   "audience": "运维人员与安全运营协同对象",
   "goal": "在不引入新事实的前提下，基于统一事实卡和结论 packet 写成更像分析师交付给运维的中文 Markdown 报告。",
-  "fact_card_count": 16,
+  "fact_card_count": 35,
   "packet_refs": [
     "verdict_packet",
     "scope_packet",
@@ -11,63 +11,79 @@
     "action_packet"
   ],
   "report_header": {
-    "title": "web-app-01 Possible web-shell beacon 调查报告",
-    "analysis_window": "2026-05-11 14:02:00 UTC 至 2026-05-11 14:23:00 UTC",
+    "title": "web-app-01 Confirmed web initial access to beacon chain 调查报告",
+    "analysis_window": "2026-05-11 14:02:00 UTC 至 2026-05-11 14:55:00 UTC",
     "final_verdict": "确认安全事件",
     "severity": "高",
     "confidence": "高",
-    "confirmed_scope": "web-app-01",
-    "one_sentence_summary": "web-app-01 围绕 198.51.100.88、cdn-auth-check.net 已形成可以稳定交付的异常链。"
+    "confirmed_scope": "web-app-01、app-db-01",
+    "one_sentence_summary": "web-app-01、app-db-01 围绕 198.51.100.88、cdn-auth-check.net 已形成可以稳定交付的异常链。"
   },
   "packets": {
     "verdict_packet": {
       "severity": "高",
       "confidence": "高",
-      "conclusion_statement": "web-app-01 围绕 198.51.100.88、cdn-auth-check.net 已形成可以稳定交付的异常链。",
+      "conclusion_statement": "web-app-01、app-db-01 围绕 198.51.100.88、cdn-auth-check.net 已形成可以稳定交付的异常链。",
       "supporting_fact_ids": [
         "fact-event-evt-301",
-        "fact-event-evt-302",
         "fact-event-evt-303",
-        "fact-scope-obj-01",
+        "fact-event-evt-304",
         "fact-scope-obj-02",
-        "fact-scope-obj-03"
+        "fact-scope-obj-04",
+        "fact-scope-obj-05",
+        "fact-counter-cl-09"
       ]
     },
     "scope_packet": {
       "confirmed_entities": [
-        "web-app-01"
+        "web-app-01",
+        "app-db-01"
+      ],
+      "candidate_entities": [
+        "web-app-03"
       ],
       "supporting_fact_ids": [
         "fact-scope-obj-02",
+        "fact-scope-obj-04",
+        "fact-scope-obj-05",
         "fact-scope-obj-03",
-        "fact-scope-obj-07"
+        "fact-scope-obj-12",
+        "fact-scope-obj-13"
       ]
     },
     "constraint_packet": {
       "blocking_gaps": [
-        "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。"
+        "扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？"
       ],
-      "boundary_statement": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+      "counterevidence": [
+        "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。"
+      ],
+      "boundary_statement": "当前确认范围收敛在 web-app-01、app-db-01；web-app-03 保持待确认状态。",
       "supporting_fact_ids": [
-        "fact-gap-expand_cluster_scope"
+        "fact-gap-validate_candidate_events",
+        "fact-counter-cl-09",
+        "fact-event-evt-313",
+        "fact-event-evt-316"
       ]
     },
     "action_packet": {
       "immediate_actions": [
-        "优先隔离或重点监控已确认受影响资产：web-app-01",
+        "优先隔离或重点监控已确认受影响资产：web-app-01、app-db-01",
         "在边界和代理设备上排查并封禁外部基础设施：198.51.100.88、cdn-auth-check.net"
       ],
       "next_steps": [
-        "优先补查：仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现"
+        "继续核实待确认关联资产 web-app-03",
+        "优先补查：扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围"
       ],
       "supporting_fact_ids": [
-        "fact-scope-obj-01",
         "fact-scope-obj-02",
-        "fact-scope-obj-03",
-        "fact-gap-expand_cluster_scope",
+        "fact-scope-obj-04",
+        "fact-scope-obj-05",
+        "fact-gap-validate_candidate_events",
         "fact-action-01",
         "fact-action-02",
-        "fact-action-03"
+        "fact-action-03",
+        "fact-action-04"
       ]
     }
   },
@@ -79,12 +95,12 @@
           "fact_id": "fact-event-evt-301",
           "fact_type": "event",
           "status": "confirmed",
-          "summary_line": "2026-05-11 14:02:00 UTC 资产 `web-app-01` 出现关联事件 `Public-facing web server received suspicious exploit requests against the login endpoint before external TLS traffic began.`。",
+          "summary_line": "2026-05-11 14:02:00 UTC 资产 `web-app-01` 出现关联事件 `Public-facing web server received exploit requests against the login endpoint before external TLS traffic began.`。",
           "reporting_focus": "关键事件",
           "boundary_note": "不要脱离上下文单独放大这条事实"
         },
         {
-          "fact_id": "fact-event-evt-302",
+          "fact_id": "fact-event-evt-303",
           "fact_type": "event",
           "status": "confirmed",
           "summary_line": "2026-05-11 14:07:30 UTC 资产 `web-app-01` 解析域名 `cdn-auth-check.net`。",
@@ -92,7 +108,7 @@
           "boundary_note": "单次解析不足以独立定性"
         },
         {
-          "fact_id": "fact-event-evt-303",
+          "fact_id": "fact-event-evt-304",
           "fact_type": "event",
           "status": "confirmed",
           "summary_line": "2026-05-11 14:12:00 UTC 资产 `web-app-01` 对外通信 `cdn-auth-check.net / 198.51.100.88`。",
@@ -100,12 +116,62 @@
           "boundary_note": "仍需结合复现或主机侧线索共同定性"
         },
         {
-          "fact_id": "fact-event-evt-305",
+          "fact_id": "fact-event-evt-307",
           "fact_type": "event",
           "status": "confirmed",
-          "summary_line": "2026-05-11 14:23:00 UTC 资产 `web-app-01` 出现执行迹象 `PowerShell launcher executed under w3wp after suspicious outbound TLS traffic began.`。",
+          "summary_line": "2026-05-11 14:18:10 UTC 资产 `web-app-01` 出现执行迹象 `相关主机执行活动`。",
           "reporting_focus": "主机升级",
           "boundary_note": "可确认风险升级，但仍缺少更细载荷细节"
+        },
+        {
+          "fact_id": "fact-event-evt-309",
+          "fact_type": "event",
+          "status": "confirmed",
+          "summary_line": "2026-05-11 14:24:20 UTC 资产 `web-app-01` 访问内网目标 `10.60.2.34`。",
+          "reporting_focus": "横向推进",
+          "boundary_note": "说明内网推进，但要结合对象角色说明实际影响范围"
+        },
+        {
+          "fact_id": "fact-event-evt-311",
+          "fact_type": "event",
+          "status": "confirmed",
+          "summary_line": "2026-05-11 14:31:30 UTC 资产 `app-db-01` 对外通信 `cdn-auth-check.net / 198.51.100.88`。",
+          "reporting_focus": "跨资产复现",
+          "boundary_note": "要结合时序或主机线索，避免把共享基础设施直接写成确认感染"
+        }
+      ]
+    },
+    {
+      "group_title": "待确认事件事实",
+      "facts": [
+        {
+          "fact_id": "fact-event-evt-313",
+          "fact_type": "event",
+          "status": "candidate",
+          "summary_line": "2026-05-11 14:42:00 UTC 资产 `web-app-03` 与 `api-cdn-auth-check.net` 出现待确认关联命中。",
+          "reporting_focus": "待确认扩展",
+          "boundary_note": "未独立验证，不能并入已确认范围"
+        },
+        {
+          "fact_id": "fact-event-evt-316",
+          "fact_type": "event",
+          "status": "candidate",
+          "summary_line": "2026-05-11 14:55:00 UTC 资产 `web-app-01` 与 `主机侧上下文线索` 出现待确认关联命中。",
+          "reporting_focus": "待确认扩展",
+          "boundary_note": "未独立验证，不能并入已确认范围"
+        }
+      ]
+    },
+    {
+      "group_title": "背景事件事实",
+      "facts": [
+        {
+          "fact_id": "fact-event-evt-302",
+          "fact_type": "event",
+          "status": "background",
+          "summary_line": "2026-05-11 14:04:40 UTC 资产 `web-app-01` 当前出现仅用于边界说明的背景事件 `WAF telemetry also showed generic scanner payloads blocked earlier in the same window.`。",
+          "reporting_focus": "背景反证",
+          "boundary_note": "只能帮助收窄边界，不能单独推翻主结论"
         }
       ]
     },
@@ -123,10 +189,39 @@
       ]
     },
     {
+      "group_title": "已确认受影响对象",
+      "facts": [
+        {
+          "fact_id": "fact-scope-obj-02",
+          "fact_type": "scope",
+          "status": "confirmed",
+          "summary_line": "对象 `app-db-01` 当前作为已确认受影响资产纳入已确认影响范围。",
+          "reporting_focus": "已确认受影响资产",
+          "boundary_note": "说明对象已进入已确认影响范围，但不要替代具体证据链"
+        }
+      ]
+    },
+    {
       "group_title": "待确认范围对象",
       "facts": [
         {
-          "fact_id": "fact-scope-obj-07",
+          "fact_id": "fact-scope-obj-03",
+          "fact_type": "scope",
+          "status": "candidate",
+          "summary_line": "对象 `web-app-03` 当前作为待确认关联资产保留为待确认范围。",
+          "reporting_focus": "待确认对象",
+          "boundary_note": "保持待确认，不写成已确认受影响"
+        },
+        {
+          "fact_id": "fact-scope-obj-12",
+          "fact_type": "scope",
+          "status": "candidate",
+          "summary_line": "对象 `api-cdn-auth-check.net` 当前作为候选扩展对象保留为待确认范围。",
+          "reporting_focus": "待确认对象",
+          "boundary_note": "仍需独立验证，不能直接升格"
+        },
+        {
+          "fact_id": "fact-scope-obj-13",
           "fact_type": "scope",
           "status": "candidate",
           "summary_line": "对象 `t13d1517h2_91adbe210bc1_7cae1281e991` 当前作为候选扩展对象保留为待确认范围。",
@@ -139,7 +234,7 @@
       "group_title": "已确认关联基础设施",
       "facts": [
         {
-          "fact_id": "fact-scope-obj-02",
+          "fact_id": "fact-scope-obj-04",
           "fact_type": "scope",
           "status": "confirmed",
           "summary_line": "对象 `198.51.100.88` 当前作为已确认关联基础设施纳入主证据链。",
@@ -147,7 +242,7 @@
           "boundary_note": "只应写入外联判断或边界封禁动作，不写成已确认受影响范围"
         },
         {
-          "fact_id": "fact-scope-obj-03",
+          "fact_id": "fact-scope-obj-05",
           "fact_type": "scope",
           "status": "confirmed",
           "summary_line": "对象 `cdn-auth-check.net` 当前作为已确认关联基础设施纳入主证据链。",
@@ -157,13 +252,26 @@
       ]
     },
     {
+      "group_title": "反证事实",
+      "facts": [
+        {
+          "fact_id": "fact-counter-cl-09",
+          "fact_type": "counterevidence",
+          "status": "background",
+          "summary_line": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+          "reporting_focus": "替代解释",
+          "boundary_note": "要解释为何不足以推翻主判断，而不是只罗列背景事件"
+        }
+      ]
+    },
+    {
       "group_title": "缺口事实",
       "facts": [
         {
-          "fact_id": "fact-gap-expand_cluster_scope",
+          "fact_id": "fact-gap-validate_candidate_events",
           "fact_type": "gap",
           "status": "candidate",
-          "summary_line": "当前仍需对“仍需围绕当前关键关联指标开展一轮扩线核查，确认是否存在同指标的更大范围复现。”补充独立确认。",
+          "summary_line": "当前仍需对“扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？”补充独立确认。",
           "reporting_focus": "交付边界",
           "boundary_note": "限制范围继续扩大，但不否定当前主结论"
         }
@@ -176,7 +284,7 @@
           "fact_id": "fact-action-01",
           "fact_type": "action_basis",
           "status": "confirmed",
-          "summary_line": "优先隔离或重点监控已确认受影响资产：web-app-01",
+          "summary_line": "优先隔离或重点监控已确认受影响资产：web-app-01、app-db-01",
           "reporting_focus": "处置动作",
           "boundary_note": "动作需回扣前文证据或边界判断"
         },
@@ -192,7 +300,15 @@
           "fact_id": "fact-action-03",
           "fact_type": "action_basis",
           "status": "confirmed",
-          "summary_line": "优先补查：仍需围绕当前关键关联指标开展一轮扩线核查，确认是否存在同指标的更大范围复现",
+          "summary_line": "继续核实待确认关联资产 web-app-03",
+          "reporting_focus": "处置动作",
+          "boundary_note": "动作需回扣前文证据或边界判断"
+        },
+        {
+          "fact_id": "fact-action-04",
+          "fact_type": "action_basis",
+          "status": "confirmed",
+          "summary_line": "优先补查：扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围",
           "reporting_focus": "处置动作",
           "boundary_note": "动作需回扣前文证据或边界判断"
         }
@@ -211,10 +327,10 @@
       ],
       "allowed_fact_ids": [
         "fact-event-evt-301",
-        "fact-event-evt-302",
         "fact-event-evt-303",
-        "fact-scope-obj-01",
-        "fact-scope-obj-02"
+        "fact-event-evt-304",
+        "fact-scope-obj-02",
+        "fact-scope-obj-04"
       ]
     },
     {
@@ -226,11 +342,11 @@
         "scope_packet"
       ],
       "allowed_fact_ids": [
-        "fact-event-evt-302",
         "fact-event-evt-303",
+        "fact-event-evt-304",
         "fact-scope-obj-01",
-        "fact-scope-obj-02",
-        "fact-scope-obj-03"
+        "fact-scope-obj-04",
+        "fact-scope-obj-05"
       ]
     },
     {
@@ -244,9 +360,11 @@
       "allowed_fact_ids": [
         "fact-scope-obj-01",
         "fact-scope-obj-02",
+        "fact-scope-obj-04",
+        "fact-scope-obj-05",
         "fact-scope-obj-03",
-        "fact-scope-obj-07",
-        "fact-gap-expand_cluster_scope"
+        "fact-gap-validate_candidate_events",
+        "fact-counter-cl-09"
       ]
     },
     {
@@ -258,9 +376,10 @@
       ],
       "allowed_fact_ids": [
         "fact-scope-obj-01",
-        "fact-scope-obj-07",
         "fact-scope-obj-02",
-        "fact-scope-obj-03"
+        "fact-scope-obj-03",
+        "fact-scope-obj-04",
+        "fact-scope-obj-05"
       ]
     },
     {
@@ -272,9 +391,11 @@
         "scope_packet"
       ],
       "allowed_fact_ids": [
-        "fact-event-evt-302",
         "fact-event-evt-303",
-        "fact-event-evt-305"
+        "fact-event-evt-304",
+        "fact-event-evt-307",
+        "fact-event-evt-309",
+        "fact-event-evt-311"
       ]
     },
     {
@@ -286,8 +407,11 @@
         "constraint_packet"
       ],
       "allowed_fact_ids": [
-        "fact-event-evt-303",
-        "fact-event-evt-305"
+        "fact-event-evt-304",
+        "fact-event-evt-311",
+        "fact-event-evt-307",
+        "fact-event-evt-309",
+        "fact-counter-cl-09"
       ]
     },
     {
@@ -299,9 +423,11 @@
         "constraint_packet"
       ],
       "allowed_fact_ids": [
-        "fact-event-evt-302",
         "fact-event-evt-303",
-        "fact-event-evt-305"
+        "fact-event-evt-304",
+        "fact-event-evt-307",
+        "fact-event-evt-311",
+        "fact-event-evt-302"
       ]
     },
     {
@@ -313,7 +439,11 @@
         "constraint_packet"
       ],
       "allowed_fact_ids": [
-        "fact-scope-obj-07"
+        "fact-event-evt-309",
+        "fact-event-evt-311",
+        "fact-event-evt-313",
+        "fact-event-evt-316",
+        "fact-scope-obj-03"
       ]
     },
     {
@@ -327,10 +457,12 @@
       ],
       "allowed_fact_ids": [
         "fact-scope-obj-01",
-        "fact-scope-obj-07",
         "fact-scope-obj-02",
         "fact-scope-obj-03",
-        "fact-event-evt-305"
+        "fact-scope-obj-04",
+        "fact-scope-obj-05",
+        "fact-event-evt-311",
+        "fact-event-evt-309"
       ]
     },
     {
@@ -341,7 +473,10 @@
         "constraint_packet"
       ],
       "allowed_fact_ids": [
-        "fact-gap-expand_cluster_scope"
+        "fact-gap-validate_candidate_events",
+        "fact-counter-cl-09",
+        "fact-event-evt-313",
+        "fact-event-evt-316"
       ]
     },
     {
@@ -354,13 +489,14 @@
         "constraint_packet"
       ],
       "allowed_fact_ids": [
-        "fact-scope-obj-01",
         "fact-scope-obj-02",
-        "fact-scope-obj-03",
-        "fact-gap-expand_cluster_scope",
+        "fact-scope-obj-04",
+        "fact-scope-obj-05",
+        "fact-gap-validate_candidate_events",
         "fact-action-01",
         "fact-action-02",
-        "fact-action-03"
+        "fact-action-03",
+        "fact-action-04"
       ]
     },
     {
@@ -372,7 +508,8 @@
         "constraint_packet"
       ],
       "allowed_fact_ids": [
-        "fact-gap-expand_cluster_scope"
+        "fact-counter-cl-09",
+        "fact-gap-validate_candidate_events"
       ]
     }
   ],

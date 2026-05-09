@@ -1,0 +1,786 @@
+{
+  "schema_version": "report-writer-materials-v1",
+  "source_inventory": [
+    {
+      "source_id": "verdict:delivery",
+      "source_type": "verdict",
+      "status": "",
+      "summary": "可疑事件，建议继续复核；事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。；seed alert 自带家族/工具提示：Suspected multi-host beacon spread。；已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。；交付门槛尚未满足：仍有 2 条候选扩线事件没有完成独立验证。；尚未执行显式反证检查。；仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。；仍需显式检查维护窗口、补丁、备份或共享基线等反证。"
+    },
+    {
+      "source_id": "object:OBJ-01",
+      "source_type": "object",
+      "status": "已确认",
+      "summary": "对象 `ws-eng-02`，类型为资产，当前角色为种子资产，种子告警首先落在该资产上。；当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。"
+    },
+    {
+      "source_id": "object:OBJ-02",
+      "source_type": "object",
+      "status": "已确认",
+      "summary": "对象 `ws-eng-05`，类型为资产，当前角色为已确认受影响资产，当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；事件聚类中仍需独立验证的候选资产。"
+    },
+    {
+      "source_id": "object:OBJ-03",
+      "source_type": "object",
+      "status": "待确认",
+      "summary": "对象 `ws-eng-09`，类型为资产，当前角色为待确认关联资产，当前仍需独立验证是否真正受影响。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；事件聚类中仍需独立验证的候选资产。"
+    },
+    {
+      "source_id": "object:OBJ-04",
+      "source_type": "object",
+      "status": "已确认",
+      "summary": "对象 `203.0.113.77`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选地址。"
+    },
+    {
+      "source_id": "object:OBJ-05",
+      "source_type": "object",
+      "status": "已确认",
+      "summary": "对象 `sync-cdn-notify.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。"
+    },
+    {
+      "source_id": "event:evt-801",
+      "source_type": "event",
+      "status": "confirmed",
+      "summary": "2026-07-14 01:04:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net`，The seed workstation resolved a rare domain shortly before the suspicious TLS session.，源地址 `10.70.3.12`"
+    },
+    {
+      "source_id": "event:evt-802",
+      "source_type": "event",
+      "status": "confirmed",
+      "summary": "2026-07-14 01:10:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，Seed JA4 alert matched a suspicious TLS beacon to rare external infrastructure.，源地址 `10.70.3.12`"
+    },
+    {
+      "source_id": "event:evt-803",
+      "source_type": "event",
+      "status": "confirmed",
+      "summary": "2026-07-14 01:14:20 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，The seed workstation reconnected to the same C2 infrastructure after the alert.，源地址 `10.70.3.12`"
+    },
+    {
+      "source_id": "event:evt-804",
+      "source_type": "event",
+      "status": "confirmed",
+      "summary": "2026-07-14 01:18:00 UTC，资产 `ws-eng-02`，Suspicious rundll32.exe launched a loader DLL from a user-writable path shortly after the beacon sequence.，源地址 `10.70.3.12`"
+    },
+    {
+      "source_id": "event:evt-805",
+      "source_type": "event",
+      "status": "confirmed",
+      "summary": "2026-07-14 01:21:10 UTC，资产 `ws-eng-02`，关联对象 `10.70.3.45`，PsExec remote service creation from ws-eng-02 to ws-eng-05 followed the seed beacon traffic.，源地址 `10.70.3.12`"
+    },
+    {
+      "source_id": "event:evt-808",
+      "source_type": "event",
+      "status": "confirmed",
+      "summary": "2026-07-14 01:28:40 UTC，资产 `ws-eng-05`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，A second workstation contacted the original beacon infrastructure minutes after the remote-service event.，源地址 `10.70.3.45`"
+    },
+    {
+      "source_id": "object:OBJ-16",
+      "source_type": "object",
+      "status": "待确认",
+      "summary": "对象 `ws-lab-02`，类型为资产，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选资产。"
+    },
+    {
+      "source_id": "event:evt-809",
+      "source_type": "event",
+      "status": "candidate",
+      "summary": "候选事件（尚未独立验证）：2026-07-14 01:32:10 UTC，资产 `ws-eng-05`，关联对象 `cdn-notify-edge.net`，The second workstation resolved a secondary rare domain that did not appear in the seed alert.，源地址 `10.70.3.45`"
+    },
+    {
+      "source_id": "event:evt-813",
+      "source_type": "event",
+      "status": "candidate",
+      "summary": "候选事件（尚未独立验证）：2026-07-14 01:47:30 UTC，资产 `ws-eng-09`，关联对象 `cdn-notify-edge.net / 198.51.100.44`，A third workstation contacted the secondary infrastructure after the WMI activity, indicating likely onward spread.，源地址 `10.70.3.90`"
+    },
+    {
+      "source_id": "gap:expand_cluster_scope",
+      "source_type": "gap",
+      "status": "open",
+      "summary": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。"
+    },
+    {
+      "source_id": "gap:validate_candidate_events",
+      "source_type": "gap",
+      "status": "reportable_unresolved",
+      "summary": "扩线得到的 2 条关联事件尚未完成独立验证，是否应并入主事件范围？"
+    },
+    {
+      "source_id": "gap:check_counterevidence",
+      "source_type": "gap",
+      "status": "open",
+      "summary": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。"
+    },
+    {
+      "source_id": "action:1",
+      "source_type": "action",
+      "status": "",
+      "summary": "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。"
+    },
+    {
+      "source_id": "action:2",
+      "source_type": "action",
+      "status": "",
+      "summary": "继续围绕同域名 / 同 dst_ip / 同 JA4 搜索更宽时间窗内的关联事件。"
+    },
+    {
+      "source_id": "action:3",
+      "source_type": "action",
+      "status": "",
+      "summary": "优先核验新扩出的关联事件是否存在独立命中，不要只因为共享基础设施就直接并入主证据链。"
+    },
+    {
+      "source_id": "action:4",
+      "source_type": "action",
+      "status": "",
+      "summary": "把关联资产 ws-eng-09 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。"
+    },
+    {
+      "source_id": "claim:CL-01",
+      "source_type": "claim",
+      "status": "supporting",
+      "summary": "检索到 6 条偏可疑事件，围绕 sync-cdn-notify.net、203.0.113.77、10.70.3.45 展开。"
+    },
+    {
+      "source_id": "claim:CL-02",
+      "source_type": "claim",
+      "status": "candidate",
+      "summary": "扩线检索到 9 条可疑关联事件，围绕 sync-cdn-notify.net、cdn-notify-edge.net、203.0.113.77 展开；当前先作为待验证候选线索。"
+    },
+    {
+      "source_id": "claim:CL-05",
+      "source_type": "claim",
+      "status": "candidate",
+      "summary": "扩线检索到 10 条可疑关联事件，围绕 sync-cdn-notify.net、cdn-notify-edge.net、203.0.113.77 展开；当前先作为待验证候选线索。"
+    }
+  ],
+  "report_plan": {
+    "schema_version": "report-plan-v1",
+    "title": "安全事件调查报告",
+    "planning_rationale": "此案例涉及多资产、候选扩线、核心外部基础设施及背景事件，因此需要涵盖调查起点、范围、证据判断、关联范围、反证与边界、结论与行动。timeline_process 独立成章，因为存在时序推进。relationship_scope 独立成章，因为需要详细说明已确认资产、候选对象、核心外部基础设施及其边界关系。",
+    "sections": [
+      {
+        "section_type": "investigation_entry",
+        "secondary_section_types": [],
+        "title": "调查起点与已知线索",
+        "question_to_answer": "为什么这起告警值得调查？",
+        "mode": "full",
+        "must_include": [],
+        "must_not_repeat": [],
+        "source_ids": [
+          "verdict:delivery"
+        ],
+        "boundary_notes": []
+      },
+      {
+        "section_type": "scope_hypothesis",
+        "secondary_section_types": [],
+        "title": "调查范围与研判假设",
+        "question_to_answer": "这轮调查准备证明什么、排除什么？",
+        "mode": "full",
+        "must_include": [],
+        "must_not_repeat": [],
+        "source_ids": [
+          "object:OBJ-01",
+          "object:OBJ-02",
+          "object:OBJ-03",
+          "object:OBJ-04",
+          "object:OBJ-05"
+        ],
+        "boundary_notes": []
+      },
+      {
+        "section_type": "timeline_process",
+        "secondary_section_types": [],
+        "title": "事件过程与行为模式",
+        "question_to_answer": "事件如何推进，是否形成可解释的行为模式？",
+        "mode": "full",
+        "must_include": [],
+        "must_not_repeat": [],
+        "source_ids": [
+          "event:evt-801",
+          "event:evt-802",
+          "event:evt-803",
+          "event:evt-804",
+          "event:evt-805",
+          "event:evt-808"
+        ],
+        "boundary_notes": []
+      },
+      {
+        "section_type": "evidence_judgment",
+        "secondary_section_types": [],
+        "title": "关键事实与证据判断",
+        "question_to_answer": "当前判断主要站在哪些证据上？",
+        "mode": "full",
+        "must_include": [],
+        "must_not_repeat": [],
+        "source_ids": [
+          "event:evt-801",
+          "event:evt-802",
+          "event:evt-803",
+          "event:evt-804",
+          "event:evt-805",
+          "event:evt-808"
+        ],
+        "boundary_notes": []
+      },
+      {
+        "section_type": "relationship_scope",
+        "secondary_section_types": [],
+        "title": "关联范围与候选边界",
+        "question_to_answer": "事件如何扩线，哪些关联已经确认，哪些仍是候选？",
+        "mode": "full",
+        "must_include": [],
+        "must_not_repeat": [],
+        "source_ids": [
+          "object:OBJ-03",
+          "object:OBJ-04",
+          "object:OBJ-05",
+          "object:OBJ-16",
+          "event:evt-809",
+          "event:evt-813"
+        ],
+        "boundary_notes": []
+      },
+      {
+        "section_type": "counterevidence_limits",
+        "secondary_section_types": [],
+        "title": "反证、缺口与结论边界",
+        "question_to_answer": "当前结论被什么限制，哪些更强结论暂时不能写？",
+        "mode": "full",
+        "must_include": [],
+        "must_not_repeat": [],
+        "source_ids": [
+          "gap:expand_cluster_scope",
+          "gap:validate_candidate_events",
+          "gap:check_counterevidence"
+        ],
+        "boundary_notes": []
+      },
+      {
+        "section_type": "conclusion_actions",
+        "secondary_section_types": [],
+        "title": "结论与后续动作",
+        "question_to_answer": "最终判断是什么，接下来怎么做？",
+        "mode": "full",
+        "must_include": [],
+        "must_not_repeat": [],
+        "source_ids": [
+          "action:1",
+          "action:2",
+          "action:3",
+          "action:4"
+        ],
+        "boundary_notes": []
+      }
+    ],
+    "appendix_note": "技术细节、IOC/IOA、关键对象清单、观测引用、证据细目和待补缺口详见技术附录。"
+  },
+  "case_thesis": {
+    "candidate_scope": [
+      "ws-eng-09"
+    ],
+    "conclusion": "可疑事件，建议继续复核",
+    "confidence": "中",
+    "confirmed_scope": [
+      "ws-eng-02",
+      "ws-eng-05"
+    ],
+    "exact_fact_text": "可疑事件，建议继续复核；事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。；seed alert 自带家族/工具提示：Suspected multi-host beacon spread。；已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。；交付门槛尚未满足：仍有 2 条候选扩线事件没有完成独立验证。；尚未执行显式反证检查。；仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。；仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+    "severity": "中",
+    "source_ids": [
+      "verdict:delivery"
+    ],
+    "why_not_stronger_or_broader": "仍有 2 条候选扩线事件没有完成独立验证，尚未执行显式反证检查。",
+    "why_this_judgment_holds": "事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。"
+  },
+  "narrative_spine": [
+    {
+      "source_ids": [
+        "event:evt-801",
+        "event:evt-802"
+      ],
+      "reader_fact_text": "调查起点为 ws-eng-02 上的可疑 TLS 会话。",
+      "why_it_matters": "这是事件的触发点，提供了初步的恶意活动迹象。",
+      "limitation": "需要进一步确认是否存在横向移动或其他资产受影响。",
+      "exact_fact_text": "2026-07-14 01:04:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net`，The seed workstation resolved a rare domain shortly before the suspicious TLS session.，源地址 `10.70.3.12`；2026-07-14 01:10:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，Seed JA4 alert matched a suspicious TLS beacon to rare external infrastructure.，源地址 `10.70.3.12`"
+    },
+    {
+      "source_ids": [
+        "event:evt-804",
+        "event:evt-805"
+      ],
+      "reader_fact_text": "ws-eng-02 上的可疑执行活动和横向移动到 ws-eng-05。",
+      "why_it_matters": "这表明了潜在的横向移动行为，增加了事件的复杂性和影响范围。",
+      "limitation": "需要进一步验证横向移动的具体性质和影响。",
+      "exact_fact_text": "2026-07-14 01:18:00 UTC，资产 `ws-eng-02`，Suspicious rundll32.exe launched a loader DLL from a user-writable path shortly after the beacon sequence.，源地址 `10.70.3.12`；2026-07-14 01:21:10 UTC，资产 `ws-eng-02`，关联对象 `10.70.3.45`，PsExec remote service creation from ws-eng-02 to ws-eng-05 followed the seed beacon traffic.，源地址 `10.70.3.12`"
+    },
+    {
+      "source_ids": [
+        "event:evt-808",
+        "event:evt-809"
+      ],
+      "reader_fact_text": "ws-eng-05 上的可疑活动和候选扩线到 ws-eng-09。",
+      "why_it_matters": "这显示了潜在的进一步扩散，但需要独立验证。",
+      "limitation": "候选扩线事件尚未独立验证，不能直接并入主证据链。",
+      "exact_fact_text": "2026-07-14 01:28:40 UTC，资产 `ws-eng-05`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，A second workstation contacted the original beacon infrastructure minutes after the remote-service event.，源地址 `10.70.3.45`；候选事件（尚未独立验证）：2026-07-14 01:32:10 UTC，资产 `ws-eng-05`，关联对象 `cdn-notify-edge.net`，The second workstation resolved a secondary rare domain that did not appear in the seed alert.，源地址 `10.70.3.45`"
+    },
+    {
+      "source_ids": [
+        "gap:expand_cluster_scope",
+        "gap:validate_candidate_events"
+      ],
+      "reader_fact_text": "存在未闭合的缺口，限制了更强结论的得出。",
+      "why_it_matters": "这些缺口影响了结论的确定性，需要进一步调查。",
+      "limitation": "未闭合的缺口限制了结论的强度。",
+      "exact_fact_text": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。；扩线得到的 2 条关联事件尚未完成独立验证，是否应并入主事件范围？"
+    }
+  ],
+  "evidence_argument_map": [
+    {
+      "source_ids": [
+        "event:evt-801",
+        "event:evt-802",
+        "event:evt-804",
+        "event:evt-805"
+      ],
+      "reader_fact_text": "ws-eng-02 上的可疑 TLS 会话和横向移动到 ws-eng-05。",
+      "why_it_matters": "这些事件支持了事件成立的初步判断。",
+      "limitation": "需要进一步验证横向移动的具体性质和影响。",
+      "exact_fact_text": "2026-07-14 01:04:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net`，The seed workstation resolved a rare domain shortly before the suspicious TLS session.，源地址 `10.70.3.12`；2026-07-14 01:10:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，Seed JA4 alert matched a suspicious TLS beacon to rare external infrastructure.，源地址 `10.70.3.12`；2026-07-14 01:18:00 UTC，资产 `ws-eng-02`，Suspicious rundll32.exe launched a loader DLL from a user-writable path shortly after the beacon sequence.，源地址 `10.70.3.12`；2026-07-14 01:21:10 UTC，资产 `ws-eng-02`，关联对象 `10.70.3.45`，PsExec remote service creation from ws-eng-02 to ws-eng-05 followed the seed beacon traffic.，源地址 `10.70.3.12`"
+    },
+    {
+      "source_ids": [
+        "event:evt-808"
+      ],
+      "reader_fact_text": "ws-eng-05 上的可疑活动和候选扩线到 ws-eng-09。",
+      "why_it_matters": "这些事件显示了潜在的进一步扩散，但需要独立验证。",
+      "limitation": "候选扩线事件尚未独立验证，不能直接并入主证据链。",
+      "exact_fact_text": "2026-07-14 01:28:40 UTC，资产 `ws-eng-05`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，A second workstation contacted the original beacon infrastructure minutes after the remote-service event.，源地址 `10.70.3.45`"
+    },
+    {
+      "source_ids": [
+        "gap:expand_cluster_scope",
+        "gap:validate_candidate_events"
+      ],
+      "reader_fact_text": "存在未闭合的缺口，限制了更强结论的得出。",
+      "why_it_matters": "这些缺口影响了结论的确定性，需要进一步调查。",
+      "limitation": "未闭合的缺口限制了结论的强度。",
+      "exact_fact_text": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。；扩线得到的 2 条关联事件尚未完成独立验证，是否应并入主事件范围？"
+    },
+    {
+      "claim": "关键事件节点",
+      "source_ids": [
+        "event:evt-801",
+        "event:evt-802"
+      ],
+      "supporting_event_ids": [
+        "event:evt-801",
+        "event:evt-802"
+      ],
+      "why_it_matters": "该节点是事件主线中的关键事实，用于支撑时序推进和范围判断。",
+      "limitation": "该节点需要与其他证据共同使用，不能脱离上下文单独定性。",
+      "exact_fact_text": "2026-07-14 01:04:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net`，The seed workstation resolved a rare domain shortly before the suspicious TLS session.，源地址 `10.70.3.12`；2026-07-14 01:10:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，Seed JA4 alert matched a suspicious TLS beacon to rare external infrastructure.，源地址 `10.70.3.12`"
+    }
+  ],
+  "scope_role_matrix": [
+    {
+      "source_ids": [
+        "object:OBJ-01",
+        "object:OBJ-02"
+      ],
+      "reader_fact_text": "ws-eng-02 和 ws-eng-05 是已确认受影响资产。",
+      "why_it_matters": "这些资产已被确认受到恶意活动的影响。",
+      "limitation": "需要进一步验证横向移动的具体性质和影响。",
+      "exact_fact_text": "对象 `ws-eng-02`，类型为资产，当前角色为种子资产，种子告警首先落在该资产上。；当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；对象 `ws-eng-05`，类型为资产，当前角色为已确认受影响资产，当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；事件聚类中仍需独立验证的候选资产。",
+      "role": "confirmed_affected_asset",
+      "how_to_write": "confirmed_affected_asset"
+    },
+    {
+      "source_ids": [
+        "object:OBJ-03"
+      ],
+      "reader_fact_text": "ws-eng-09 是候选对象。",
+      "why_it_matters": "这些对象可能受到影响，但需要进一步验证。",
+      "limitation": "候选对象尚未独立验证，不能直接并入已确认范围。",
+      "exact_fact_text": "对象 `ws-eng-09`，类型为资产，当前角色为待确认关联资产，当前仍需独立验证是否真正受影响。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；事件聚类中仍需独立验证的候选资产。",
+      "role": "candidate_asset",
+      "how_to_write": "candidate_asset"
+    },
+    {
+      "source_ids": [
+        "object:OBJ-04",
+        "object:OBJ-05"
+      ],
+      "reader_fact_text": "203.0.113.77 和 sync-cdn-notify.net 是核心外部基础设施。",
+      "why_it_matters": "这些基础设施与事件有关，但需要进一步确认其作用。",
+      "limitation": "核心外部基础设施的作用需要进一步确认。",
+      "exact_fact_text": "对象 `203.0.113.77`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选地址。；对象 `sync-cdn-notify.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。",
+      "role": "external_infrastructure",
+      "how_to_write": "external_infrastructure"
+    }
+  ],
+  "counterarguments_and_boundaries": [
+    {
+      "source_ids": [
+        "gap:expand_cluster_scope",
+        "gap:validate_candidate_events",
+        "gap:check_counterevidence"
+      ],
+      "reader_fact_text": "存在未闭合的缺口，限制了更强结论的得出。",
+      "why_it_matters": "这些缺口影响了结论的确定性，需要进一步调查。",
+      "limitation": "未闭合的缺口限制了结论的强度。",
+      "exact_fact_text": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。；扩线得到的 2 条关联事件尚未完成独立验证，是否应并入主事件范围？；仍需显式检查维护窗口、补丁、备份或共享基线等反证。"
+    }
+  ],
+  "action_rationale": [
+    {
+      "source_ids": [
+        "action:1",
+        "action:2",
+        "action:3",
+        "action:4"
+      ],
+      "reader_fact_text": "建议采取行动以确认是否存在执行、持久化或横向移动证据。",
+      "why_it_matters": "这些行动有助于进一步验证事件的性质和影响。",
+      "limitation": "需要进一步验证横向移动的具体性质和影响。",
+      "exact_fact_text": "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。；继续围绕同域名 / 同 dst_ip / 同 JA4 搜索更宽时间窗内的关联事件。；优先核验新扩出的关联事件是否存在独立命中，不要只因为共享基础设施就直接并入主证据链。；把关联资产 ws-eng-09 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。",
+      "action": "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。；继续围绕相同域名、目标 IP 和 JA4 通信指纹 搜索更宽时间窗内的关联事件。；优先核验新扩出的关联事件是否存在独立命中，不要只因为共享基础设施就直接并入主证据链。；把关联资产 ws-eng-09 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。",
+      "reader_action": "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。；继续围绕相同域名、目标 IP 和 JA4 通信指纹 搜索更宽时间窗内的关联事件。；优先核验新扩出的关联事件是否存在独立命中，不要只因为共享基础设施就直接并入主证据链。；把关联资产 ws-eng-09 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。"
+    }
+  ],
+  "section_briefs": [
+    {
+      "section_type": "investigation_entry",
+      "source_ids": [
+        "verdict:delivery"
+      ],
+      "key_facts": [
+        {
+          "source_ids": [
+            "verdict:delivery"
+          ],
+          "fact_role": "调查起点",
+          "reader_fact_text": "调查始于 ws-eng-02 上的可疑 TLS 会话。",
+          "why_it_matters": "这是事件的触发点，表明存在潜在威胁。",
+          "limitation": "需要进一步确认是否存在横向移动或其他资产受影响。",
+          "exact_fact_text": "可疑事件，建议继续复核；事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。；seed alert 自带家族/工具提示：Suspected multi-host beacon spread。；已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。；交付门槛尚未满足：仍有 2 条候选扩线事件没有完成独立验证。；尚未执行显式反证检查。；仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。；仍需显式检查维护窗口、补丁、备份或共享基线等反证。"
+        },
+        {
+          "source_ids": [
+            "event:evt-801",
+            "event:evt-802"
+          ],
+          "fact_role": "初始线索",
+          "reader_fact_text": "ws-eng-02 上的可疑 TLS 会话。",
+          "why_it_matters": "这些线索提供了事件的初步证据。",
+          "limitation": "需要进一步确认是否存在横向移动或其他资产受影响。",
+          "exact_fact_text": "2026-07-14 01:04:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net`，The seed workstation resolved a rare domain shortly before the suspicious TLS session.，源地址 `10.70.3.12`；2026-07-14 01:10:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，Seed JA4 alert matched a suspicious TLS beacon to rare external infrastructure.，源地址 `10.70.3.12`"
+        },
+        {
+          "source_ids": [
+            "event:evt-804",
+            "event:evt-805"
+          ],
+          "fact_role": "推进线索",
+          "reader_fact_text": "ws-eng-02 上的可疑执行活动和横向移动到 ws-eng-05。",
+          "why_it_matters": "这些线索显示了事件的进展。",
+          "limitation": "需要进一步验证横向移动的具体性质和影响。",
+          "exact_fact_text": "2026-07-14 01:18:00 UTC，资产 `ws-eng-02`，Suspicious rundll32.exe launched a loader DLL from a user-writable path shortly after the beacon sequence.，源地址 `10.70.3.12`；2026-07-14 01:21:10 UTC，资产 `ws-eng-02`，关联对象 `10.70.3.45`，PsExec remote service creation from ws-eng-02 to ws-eng-05 followed the seed beacon traffic.，源地址 `10.70.3.12`"
+        }
+      ],
+      "exact_fact_text": "可疑事件，建议继续复核；事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。；seed alert 自带家族/工具提示：Suspected multi-host beacon spread。；已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。；交付门槛尚未满足：仍有 2 条候选扩线事件没有完成独立验证。；尚未执行显式反证检查。；仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。；仍需显式检查维护窗口、补丁、备份或共享基线等反证。"
+    },
+    {
+      "section_type": "scope_hypothesis",
+      "source_ids": [
+        "object:OBJ-01",
+        "object:OBJ-02",
+        "object:OBJ-03",
+        "object:OBJ-04",
+        "object:OBJ-05"
+      ],
+      "key_facts": [
+        {
+          "source_ids": [
+            "object:OBJ-01",
+            "object:OBJ-02"
+          ],
+          "fact_role": "已确认范围",
+          "reader_fact_text": "ws-eng-02 和 ws-eng-05 是已确认受影响资产。",
+          "why_it_matters": "这些资产已被确认受到恶意活动的影响。",
+          "limitation": "需要进一步验证横向移动的具体性质和影响。",
+          "exact_fact_text": "对象 `ws-eng-02`，类型为资产，当前角色为种子资产，种子告警首先落在该资产上。；当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；对象 `ws-eng-05`，类型为资产，当前角色为已确认受影响资产，当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；事件聚类中仍需独立验证的候选资产。"
+        },
+        {
+          "source_ids": [
+            "object:OBJ-03"
+          ],
+          "fact_role": "候选扩线",
+          "reader_fact_text": "ws-eng-09 是候选对象。",
+          "why_it_matters": "这些对象可能受到影响，但需要进一步验证。",
+          "limitation": "候选对象尚未独立验证，不能直接并入已确认范围。",
+          "exact_fact_text": "对象 `ws-eng-09`，类型为资产，当前角色为待确认关联资产，当前仍需独立验证是否真正受影响。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；事件聚类中仍需独立验证的候选资产。"
+        },
+        {
+          "source_ids": [
+            "object:OBJ-04",
+            "object:OBJ-05"
+          ],
+          "fact_role": "外部基础设施",
+          "reader_fact_text": "203.0.113.77 和 sync-cdn-notify.net 是核心外部基础设施。",
+          "why_it_matters": "这些基础设施与事件有关，但需要进一步确认其作用。",
+          "limitation": "核心外部基础设施的作用需要进一步确认。",
+          "exact_fact_text": "对象 `203.0.113.77`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选地址。；对象 `sync-cdn-notify.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。"
+        }
+      ],
+      "exact_fact_text": "对象 `ws-eng-02`，类型为资产，当前角色为种子资产，种子告警首先落在该资产上。；当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；对象 `ws-eng-05`，类型为资产，当前角色为已确认受影响资产，当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；事件聚类中仍需独立验证的候选资产。；对象 `ws-eng-09`，类型为资产，当前角色为待确认关联资产，当前仍需独立验证是否真正受影响。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；事件聚类中仍需独立验证的候选资产。；对象 `203.0.113.77`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选地址。"
+    },
+    {
+      "section_type": "timeline_process",
+      "source_ids": [
+        "event:evt-801",
+        "event:evt-802",
+        "event:evt-803",
+        "event:evt-804",
+        "event:evt-805",
+        "event:evt-808",
+        "event:evt-809",
+        "event:evt-813"
+      ],
+      "key_facts": [
+        {
+          "source_ids": [
+            "event:evt-801",
+            "event:evt-802"
+          ],
+          "fact_role": "起点",
+          "reader_fact_text": "ws-eng-02 上的可疑 TLS 会话。",
+          "why_it_matters": "这是事件的触发点，提供了初步的恶意活动迹象。",
+          "limitation": "需要进一步确认是否存在横向移动或其他资产受影响。",
+          "exact_fact_text": "2026-07-14 01:04:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net`，The seed workstation resolved a rare domain shortly before the suspicious TLS session.，源地址 `10.70.3.12`；2026-07-14 01:10:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，Seed JA4 alert matched a suspicious TLS beacon to rare external infrastructure.，源地址 `10.70.3.12`"
+        },
+        {
+          "source_ids": [
+            "event:evt-804",
+            "event:evt-805"
+          ],
+          "fact_role": "推进",
+          "reader_fact_text": "ws-eng-02 上的可疑执行活动和横向移动到 ws-eng-05。",
+          "why_it_matters": "这表明了潜在的横向移动行为，增加了事件的复杂性和影响范围。",
+          "limitation": "需要进一步验证横向移动的具体性质和影响。",
+          "exact_fact_text": "2026-07-14 01:18:00 UTC，资产 `ws-eng-02`，Suspicious rundll32.exe launched a loader DLL from a user-writable path shortly after the beacon sequence.，源地址 `10.70.3.12`；2026-07-14 01:21:10 UTC，资产 `ws-eng-02`，关联对象 `10.70.3.45`，PsExec remote service creation from ws-eng-02 to ws-eng-05 followed the seed beacon traffic.，源地址 `10.70.3.12`"
+        },
+        {
+          "source_ids": [
+            "event:evt-808",
+            "event:evt-809"
+          ],
+          "fact_role": "扩线",
+          "reader_fact_text": "ws-eng-05 上的可疑活动和候选扩线到 ws-eng-09。",
+          "why_it_matters": "这显示了潜在的进一步扩散，但需要独立验证。",
+          "limitation": "候选扩线事件尚未独立验证，不能直接并入主证据链。",
+          "exact_fact_text": "2026-07-14 01:28:40 UTC，资产 `ws-eng-05`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，A second workstation contacted the original beacon infrastructure minutes after the remote-service event.，源地址 `10.70.3.45`；候选事件（尚未独立验证）：2026-07-14 01:32:10 UTC，资产 `ws-eng-05`，关联对象 `cdn-notify-edge.net`，The second workstation resolved a secondary rare domain that did not appear in the seed alert.，源地址 `10.70.3.45`"
+        }
+      ],
+      "exact_fact_text": "2026-07-14 01:04:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net`，The seed workstation resolved a rare domain shortly before the suspicious TLS session.，源地址 `10.70.3.12`；2026-07-14 01:10:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，Seed JA4 alert matched a suspicious TLS beacon to rare external infrastructure.，源地址 `10.70.3.12`；2026-07-14 01:14:20 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，The seed workstation reconnected to the same C2 infrastructure after the alert.，源地址 `10.70.3.12`；2026-07-14 01:18:00 UTC，资产 `ws-eng-02`，Suspicious rundll32.exe launched a loader DLL from a user-writable path shortly after the beacon sequence.，源地址 `10.70.3.12`"
+    },
+    {
+      "section_type": "evidence_judgment",
+      "source_ids": [
+        "event:evt-801",
+        "event:evt-802",
+        "event:evt-803",
+        "event:evt-804",
+        "event:evt-805",
+        "event:evt-808",
+        "event:evt-809",
+        "event:evt-813",
+        "claim:CL-01",
+        "claim:CL-02",
+        "claim:CL-05"
+      ],
+      "key_facts": [
+        {
+          "source_ids": [
+            "event:evt-801",
+            "event:evt-802"
+          ],
+          "fact_role": "主支撑证据",
+          "reader_fact_text": "ws-eng-02 上的可疑 TLS 会话。",
+          "why_it_matters": "这是事件的触发点，提供了初步的恶意活动迹象。",
+          "limitation": "需要进一步确认是否存在横向移动或其他资产受影响。",
+          "exact_fact_text": "2026-07-14 01:04:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net`，The seed workstation resolved a rare domain shortly before the suspicious TLS session.，源地址 `10.70.3.12`；2026-07-14 01:10:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，Seed JA4 alert matched a suspicious TLS beacon to rare external infrastructure.，源地址 `10.70.3.12`"
+        },
+        {
+          "source_ids": [
+            "event:evt-804",
+            "event:evt-805"
+          ],
+          "fact_role": "范围证据",
+          "reader_fact_text": "ws-eng-02 上的可疑执行活动和横向移动到 ws-eng-05。",
+          "why_it_matters": "这表明了潜在的横向移动行为，增加了事件的复杂性和影响范围。",
+          "limitation": "需要进一步验证横向移动的具体性质和影响。",
+          "exact_fact_text": "2026-07-14 01:18:00 UTC，资产 `ws-eng-02`，Suspicious rundll32.exe launched a loader DLL from a user-writable path shortly after the beacon sequence.，源地址 `10.70.3.12`；2026-07-14 01:21:10 UTC，资产 `ws-eng-02`，关联对象 `10.70.3.45`，PsExec remote service creation from ws-eng-02 to ws-eng-05 followed the seed beacon traffic.，源地址 `10.70.3.12`"
+        },
+        {
+          "source_ids": [
+            "event:evt-808",
+            "event:evt-809"
+          ],
+          "fact_role": "边界证据",
+          "reader_fact_text": "ws-eng-05 上的可疑活动和候选扩线到 ws-eng-09。",
+          "why_it_matters": "这显示了潜在的进一步扩散，但需要独立验证。",
+          "limitation": "候选扩线事件尚未独立验证，不能直接并入主证据链。",
+          "exact_fact_text": "2026-07-14 01:28:40 UTC，资产 `ws-eng-05`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，A second workstation contacted the original beacon infrastructure minutes after the remote-service event.，源地址 `10.70.3.45`；候选事件（尚未独立验证）：2026-07-14 01:32:10 UTC，资产 `ws-eng-05`，关联对象 `cdn-notify-edge.net`，The second workstation resolved a secondary rare domain that did not appear in the seed alert.，源地址 `10.70.3.45`"
+        }
+      ],
+      "exact_fact_text": "2026-07-14 01:04:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net`，The seed workstation resolved a rare domain shortly before the suspicious TLS session.，源地址 `10.70.3.12`；2026-07-14 01:10:00 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，Seed JA4 alert matched a suspicious TLS beacon to rare external infrastructure.，源地址 `10.70.3.12`；2026-07-14 01:14:20 UTC，资产 `ws-eng-02`，关联对象 `sync-cdn-notify.net / 203.0.113.77`，The seed workstation reconnected to the same C2 infrastructure after the alert.，源地址 `10.70.3.12`；2026-07-14 01:18:00 UTC，资产 `ws-eng-02`，Suspicious rundll32.exe launched a loader DLL from a user-writable path shortly after the beacon sequence.，源地址 `10.70.3.12`"
+    },
+    {
+      "section_type": "relationship_scope",
+      "source_ids": [
+        "object:OBJ-03",
+        "object:OBJ-04",
+        "object:OBJ-05",
+        "object:OBJ-16",
+        "event:evt-809",
+        "event:evt-813",
+        "claim:CL-02",
+        "claim:CL-05"
+      ],
+      "key_facts": [
+        {
+          "source_ids": [
+            "object:OBJ-01",
+            "object:OBJ-02"
+          ],
+          "fact_role": "已确认范围",
+          "reader_fact_text": "ws-eng-02 和 ws-eng-05 是已确认受影响资产。",
+          "why_it_matters": "这些资产已被确认受到恶意活动的影响。",
+          "limitation": "需要进一步验证横向移动的具体性质和影响。",
+          "exact_fact_text": "对象 `ws-eng-02`，类型为资产，当前角色为种子资产，种子告警首先落在该资产上。；当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；对象 `ws-eng-05`，类型为资产，当前角色为已确认受影响资产，当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；事件聚类中仍需独立验证的候选资产。"
+        },
+        {
+          "source_ids": [
+            "object:OBJ-03"
+          ],
+          "fact_role": "候选扩线",
+          "reader_fact_text": "ws-eng-09 是候选对象。",
+          "why_it_matters": "这些对象可能受到影响，但需要进一步验证。",
+          "limitation": "候选对象尚未独立验证，不能直接并入已确认范围。",
+          "exact_fact_text": "对象 `ws-eng-09`，类型为资产，当前角色为待确认关联资产，当前仍需独立验证是否真正受影响。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；事件聚类中仍需独立验证的候选资产。"
+        },
+        {
+          "source_ids": [
+            "object:OBJ-04",
+            "object:OBJ-05"
+          ],
+          "fact_role": "外部基础设施",
+          "reader_fact_text": "203.0.113.77 和 sync-cdn-notify.net 是核心外部基础设施。",
+          "why_it_matters": "这些基础设施与事件有关，但需要进一步确认其作用。",
+          "limitation": "核心外部基础设施的作用需要进一步确认。",
+          "exact_fact_text": "对象 `203.0.113.77`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选地址。；对象 `sync-cdn-notify.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。"
+        }
+      ],
+      "exact_fact_text": "对象 `ws-eng-09`，类型为资产，当前角色为待确认关联资产，当前仍需独立验证是否真正受影响。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。；事件聚类中仍需独立验证的候选资产。；对象 `203.0.113.77`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选地址。；对象 `sync-cdn-notify.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。；对象 `ws-lab-02`，类型为资产，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选资产。"
+    },
+    {
+      "section_type": "counterevidence_limits",
+      "source_ids": [
+        "gap:expand_cluster_scope",
+        "gap:validate_candidate_events",
+        "gap:check_counterevidence"
+      ],
+      "key_facts": [
+        {
+          "source_ids": [
+            "gap:expand_cluster_scope"
+          ],
+          "fact_role": "未闭合缺口",
+          "reader_fact_text": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+          "why_it_matters": "这个缺口限制了我们对事件范围的理解。",
+          "limitation": "未闭合的缺口限制了结论的强度。",
+          "exact_fact_text": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。"
+        },
+        {
+          "source_ids": [
+            "gap:validate_candidate_events"
+          ],
+          "fact_role": "未闭合缺口",
+          "reader_fact_text": "扩线得到的 2 条关联事件尚未完成独立验证，是否应并入主事件范围？",
+          "why_it_matters": "这个缺口限制了我们对事件范围的理解。",
+          "limitation": "未闭合的缺口限制了结论的强度。",
+          "exact_fact_text": "扩线得到的 2 条关联事件尚未完成独立验证，是否应并入主事件范围？"
+        },
+        {
+          "source_ids": [
+            "gap:check_counterevidence"
+          ],
+          "fact_role": "未闭合缺口",
+          "reader_fact_text": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+          "why_it_matters": "这个缺口限制了我们对事件范围的理解。",
+          "limitation": "未闭合的缺口限制了结论的强度。",
+          "exact_fact_text": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。"
+        }
+      ],
+      "exact_fact_text": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。；扩线得到的 2 条关联事件尚未完成独立验证，是否应并入主事件范围？；仍需显式检查维护窗口、补丁、备份或共享基线等反证。"
+    },
+    {
+      "section_type": "conclusion_actions",
+      "source_ids": [
+        "action:1",
+        "action:2",
+        "action:3",
+        "action:4"
+      ],
+      "key_facts": [
+        {
+          "source_ids": [
+            "action:1"
+          ],
+          "fact_role": "行动建议",
+          "reader_fact_text": "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。",
+          "why_it_matters": "这些行动有助于进一步验证事件的影响。",
+          "limitation": "需要进一步验证横向移动的具体性质和影响。",
+          "exact_fact_text": "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。"
+        },
+        {
+          "source_ids": [
+            "action:2"
+          ],
+          "fact_role": "行动建议",
+          "reader_fact_text": "继续围绕同域名 / 同 dst_ip / 同 JA4 搜索更宽时间窗内的关联事件。",
+          "why_it_matters": "这些行动有助于扩大事件的调查范围。",
+          "limitation": "需要进一步验证横向移动的具体性质和影响。",
+          "exact_fact_text": "继续围绕同域名 / 同 dst_ip / 同 JA4 搜索更宽时间窗内的关联事件。"
+        },
+        {
+          "source_ids": [
+            "action:3"
+          ],
+          "fact_role": "行动建议",
+          "reader_fact_text": "优先核验新扩出的关联事件是否存在独立命中，不要只因为共享基础设施就直接并入主证据链。",
+          "why_it_matters": "这些行动有助于确保证据链的完整性。",
+          "limitation": "需要进一步验证横向移动的具体性质和影响。",
+          "exact_fact_text": "优先核验新扩出的关联事件是否存在独立命中，不要只因为共享基础设施就直接并入主证据链。"
+        },
+        {
+          "source_ids": [
+            "action:4"
+          ],
+          "fact_role": "行动建议",
+          "reader_fact_text": "把关联资产 ws-eng-09 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。",
+          "why_it_matters": "这些行动有助于确定候选对象的真实性质。",
+          "limitation": "需要进一步验证横向移动的具体性质和影响。",
+          "exact_fact_text": "把关联资产 ws-eng-09 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。"
+        }
+      ],
+      "exact_fact_text": "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。；继续围绕同域名 / 同 dst_ip / 同 JA4 搜索更宽时间窗内的关联事件。；优先核验新扩出的关联事件是否存在独立命中，不要只因为共享基础设施就直接并入主证据链。；把关联资产 ws-eng-09 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。"
+    }
+  ],
+  "reportable_limits": [
+    "候选事件尚未独立验证，不能直接并入主证据链。",
+    "存在未闭合的缺口，限制了更强结论的得出。",
+    "需要进一步验证横向移动的具体性质和影响。"
+  ]
+}

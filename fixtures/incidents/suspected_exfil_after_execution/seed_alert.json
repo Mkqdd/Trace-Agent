@@ -7,7 +7,7 @@
     "type": "JA4",
     "value": "t13d190900_44ac2200b3c1_ab11cd22ee44"
   },
-  "info": "Possible cloud-storage exfil candidate",
+  "info": "Suspected cloud-storage exfil chain",
   "reference": "fixture",
   "update_time": "2026-06-03 16:40:00"
 }

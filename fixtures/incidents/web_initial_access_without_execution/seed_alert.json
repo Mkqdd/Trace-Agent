@@ -7,7 +7,7 @@
     "type": "JA4",
     "value": "t13d1517h2_22adbe210bc1_11cae1281e22"
   },
-  "info": "Possible web-shell beacon",
+  "info": "Possible web beacon without host corroboration",
   "reference": "fixture",
   "update_time": "2026-06-24 15:02:00"
 }

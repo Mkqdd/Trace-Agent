@@ -146,6 +146,7 @@ def _run_one_incident_agent(
     report_polish_error = str(result.get("report_polish_error") or "")
     report_source_bundle = result.get("report_source_bundle") or {}
     report_writer_materials = result.get("report_writer_materials") or {}
+    report_writer_brief = result.get("report_writer_brief") or {}
     report_material_loop_trace = result.get("report_material_loop_trace") or {}
     report_agent_error = str(result.get("report_agent_error") or "")
     report_outline = result.get("report_outline") or {}
@@ -174,6 +175,8 @@ def _run_one_incident_agent(
         save_json(out_dir / "report_source_bundle.json", report_source_bundle)
     if report_writer_materials:
         save_json(out_dir / "report_writer_materials.json", report_writer_materials)
+    if report_writer_brief:
+        save_json(out_dir / "report_writer_brief.json", report_writer_brief)
     if report_material_loop_trace:
         save_json(out_dir / "report_material_loop_trace.json", report_material_loop_trace)
     if report_agent_error.strip():
@@ -224,6 +227,8 @@ def _run_one_incident_agent(
         response["report_source_bundle_path"] = str((out_dir / "report_source_bundle.json").resolve())
     if report_writer_materials:
         response["report_writer_materials_path"] = str((out_dir / "report_writer_materials.json").resolve())
+    if report_writer_brief:
+        response["report_writer_brief_path"] = str((out_dir / "report_writer_brief.json").resolve())
     if report_material_loop_trace:
         response["report_material_loop_trace_path"] = str((out_dir / "report_material_loop_trace.json").resolve())
     if report_agent_error.strip():

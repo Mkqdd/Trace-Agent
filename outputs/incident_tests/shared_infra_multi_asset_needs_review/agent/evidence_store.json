@@ -9,7 +9,7 @@
       "grounding_status": "",
       "source_type": "trace_store.seed_context",
       "source_ref": "",
-      "summary": "检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开。",
+      "summary": "检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、198.51.100.131 展开。",
       "status": "ok",
       "raw_status": "ok",
       "provenance": "local_observation",
@@ -22,7 +22,9 @@
         "evt-701",
         "evt-702",
         "evt-703",
-        "evt-704"
+        "evt-704",
+        "evt-705",
+        "evt-706"
       ],
       "boundary_event_ids": [],
       "derived_entities": {
@@ -46,7 +48,7 @@
         ]
       },
       "claim_texts": [
-        "检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开。"
+        "检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、198.51.100.131 展开。"
       ],
       "confidence": 69
     },
@@ -54,11 +56,53 @@
       "id": "obs-002",
       "observation_id": "obs-002",
       "tool_name": "expand_asset_scope",
-      "relation": "candidate",
+      "relation": "counterevidence",
       "grounding_status": "",
       "source_type": "trace_store.asset_context",
       "source_ref": "",
-      "summary": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "summary": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "status": "ok",
+      "raw_status": "ok",
+      "provenance": "counterevidence",
+      "event_ids": [
+        "evt-708"
+      ],
+      "checked_event_ids": [
+        "evt-706",
+        "evt-707",
+        "evt-708",
+        "evt-715"
+      ],
+      "boundary_event_ids": [],
+      "derived_entities": {
+        "asset_ids": [
+          "ws-legal-09"
+        ],
+        "src_ips": [
+          "10.44.1.29"
+        ],
+        "dst_ips": [
+          "198.51.100.131"
+        ],
+        "domains": [
+          "cdn-auth-queue.net",
+          "identity-cache.vendor.example"
+        ]
+      },
+      "claim_texts": [
+        "检索到 1 条更接近维护、更新或正常基线的事件。"
+      ],
+      "confidence": 35
+    },
+    {
+      "id": "obs-003",
+      "observation_id": "obs-003",
+      "tool_name": "search_related_events",
+      "relation": "candidate",
+      "grounding_status": "",
+      "source_type": "trace_store.related_events",
+      "source_ref": "",
+      "summary": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
       "status": "ok",
       "raw_status": "ok",
       "provenance": "local_observation",
@@ -72,72 +116,51 @@
         "evt-702",
         "evt-703",
         "evt-704",
-        "evt-705"
+        "evt-705",
+        "evt-706",
+        "evt-707",
+        "evt-708",
+        "evt-709",
+        "evt-710",
+        "evt-711",
+        "evt-712",
+        "evt-713",
+        "evt-714",
+        "evt-715"
       ],
       "boundary_event_ids": [],
       "derived_entities": {
         "asset_ids": [
           "ws-legal-03",
-          "ws-legal-09"
+          "ws-legal-09",
+          "ws-legal-12"
         ],
         "src_ips": [
           "10.44.1.18",
-          "10.44.1.29"
+          "10.44.1.29",
+          "10.44.1.42"
         ],
         "dst_ips": [
-          "198.51.100.131"
+          "198.51.100.131",
+          "20.190.160.22",
+          "203.0.113.131"
         ],
         "domains": [
           "auth-queue-sync.net",
-          "cdn-auth-queue.net"
+          "cdn-auth-queue.net",
+          "identity-cache.vendor.example",
+          "legal-docs-cdn.example",
+          "login.microsoftonline.com",
+          "login-queue-cdn.net"
         ],
         "fingerprints": [
           "t13d190900_7711aa22bb33_9911ccddee77"
         ]
       },
       "claim_texts": [
-        "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。"
+        "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。"
       ],
-      "confidence": 69
-    },
-    {
-      "id": "obs-003",
-      "observation_id": "obs-003",
-      "tool_name": "expand_asset_scope",
-      "relation": "candidate",
-      "grounding_status": "",
-      "source_type": "trace_store.asset_context",
-      "source_ref": "",
-      "summary": "扩线检索到 1 条可疑关联事件，围绕 cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
-      "status": "ok",
-      "raw_status": "ok",
-      "provenance": "local_observation",
-      "event_ids": [
-        "evt-704"
-      ],
-      "checked_event_ids": [
-        "evt-704",
-        "evt-705"
-      ],
-      "boundary_event_ids": [],
-      "derived_entities": {
-        "asset_ids": [
-          "ws-legal-09"
-        ],
-        "src_ips": [
-          "10.44.1.29"
-        ],
-        "dst_ips": [
-          "198.51.100.131"
-        ],
-        "domains": [
-          "cdn-auth-queue.net"
-        ]
-      },
-      "claim_texts": [
-        "扩线检索到 1 条可疑关联事件，围绕 cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。"
-      ],
-      "confidence": 41
+      "confidence": 90
     },
     {
       "id": "obs-004",
@@ -147,7 +170,7 @@
       "grounding_status": "",
       "source_type": "trace_store.related_events",
       "source_ref": "",
-      "summary": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "summary": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
       "status": "ok",
       "raw_status": "ok",
       "provenance": "local_observation",
@@ -161,95 +184,174 @@
         "evt-702",
         "evt-703",
         "evt-704",
-        "evt-705"
+        "evt-705",
+        "evt-706",
+        "evt-707",
+        "evt-708",
+        "evt-709",
+        "evt-710",
+        "evt-711",
+        "evt-712",
+        "evt-713",
+        "evt-714",
+        "evt-715"
       ],
       "boundary_event_ids": [],
       "derived_entities": {
         "asset_ids": [
           "ws-legal-03",
-          "ws-legal-09"
+          "ws-legal-09",
+          "ws-legal-12"
         ],
         "src_ips": [
           "10.44.1.18",
-          "10.44.1.29"
+          "10.44.1.29",
+          "10.44.1.42"
         ],
         "dst_ips": [
-          "198.51.100.131"
+          "198.51.100.131",
+          "20.190.160.22",
+          "203.0.113.131"
         ],
         "domains": [
           "auth-queue-sync.net",
-          "cdn-auth-queue.net"
+          "cdn-auth-queue.net",
+          "identity-cache.vendor.example",
+          "legal-docs-cdn.example",
+          "login.microsoftonline.com",
+          "login-queue-cdn.net"
         ],
         "fingerprints": [
           "t13d190900_7711aa22bb33_9911ccddee77"
         ]
       },
       "claim_texts": [
-        "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。"
+        "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。"
       ],
-      "confidence": 69
+      "confidence": 90
     },
     {
       "id": "obs-005",
       "observation_id": "obs-005",
-      "tool_name": "check_counterevidence",
-      "relation": "context",
+      "tool_name": "expand_asset_scope",
+      "relation": "counterevidence",
       "grounding_status": "",
       "source_type": "trace_store.asset_context",
       "source_ref": "",
-      "summary": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。",
+      "summary": "检索到 1 条更接近维护、更新或正常基线的事件。",
       "status": "ok",
       "raw_status": "ok",
       "provenance": "counterevidence",
       "event_ids": [
-        "evt-701",
-        "evt-702",
-        "evt-703",
-        "evt-704",
-        "evt-705"
+        "evt-708"
+      ],
+      "checked_event_ids": [
+        "evt-706",
+        "evt-707",
+        "evt-708",
+        "evt-709",
+        "evt-715"
+      ],
+      "boundary_event_ids": [],
+      "derived_entities": {
+        "asset_ids": [
+          "ws-legal-09",
+          "ws-legal-12"
+        ],
+        "src_ips": [
+          "10.44.1.29",
+          "10.44.1.42"
+        ],
+        "dst_ips": [
+          "198.51.100.131"
+        ],
+        "domains": [
+          "cdn-auth-queue.net",
+          "identity-cache.vendor.example",
+          "legal-docs-cdn.example"
+        ]
+      },
+      "claim_texts": [
+        "检索到 1 条更接近维护、更新或正常基线的事件。"
+      ],
+      "confidence": 39
+    },
+    {
+      "id": "obs-006",
+      "observation_id": "obs-006",
+      "tool_name": "check_counterevidence",
+      "relation": "counterevidence",
+      "grounding_status": "",
+      "source_type": "trace_store.asset_context",
+      "source_ref": "",
+      "summary": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+      "status": "ok",
+      "raw_status": "ok",
+      "provenance": "counterevidence",
+      "event_ids": [
+        "evt-708",
+        "evt-711",
+        "evt-712"
       ],
       "checked_event_ids": [
         "evt-701",
         "evt-702",
         "evt-703",
         "evt-704",
-        "evt-705"
+        "evt-705",
+        "evt-706",
+        "evt-707",
+        "evt-708",
+        "evt-709",
+        "evt-711",
+        "evt-712",
+        "evt-713",
+        "evt-714",
+        "evt-715"
       ],
       "boundary_event_ids": [],
       "derived_entities": {
         "asset_ids": [
           "ws-legal-03",
-          "ws-legal-09"
+          "ws-legal-09",
+          "ws-legal-12"
         ],
         "src_ips": [
           "10.44.1.18",
-          "10.44.1.29"
+          "10.44.1.29",
+          "10.44.1.42"
         ],
         "dst_ips": [
-          "198.51.100.131"
+          "198.51.100.131",
+          "20.190.160.22",
+          "203.0.113.131"
         ],
         "domains": [
           "auth-queue-sync.net",
-          "cdn-auth-queue.net"
+          "cdn-auth-queue.net",
+          "identity-cache.vendor.example",
+          "legal-docs-cdn.example",
+          "login.microsoftonline.com",
+          "login-queue-cdn.net"
         ],
         "fingerprints": [
           "t13d190900_7711aa22bb33_9911ccddee77"
         ]
       },
       "claim_texts": [
-        "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。"
+        "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。"
       ],
-      "confidence": 48
+      "confidence": 78
     },
     {
-      "id": "obs-006",
-      "observation_id": "obs-006",
+      "id": "obs-007",
+      "observation_id": "obs-007",
       "tool_name": "extract_claim_candidates_from_page",
       "relation": "context",
       "grounding_status": "",
       "source_type": "internal_digest",
       "source_ref": "",
-      "summary": "从内部调查摘要中整理出 5 条 claim，用于结构化报告而不是新增外部证据。",
+      "summary": "从内部调查摘要中整理出 8 条 claim，用于结构化报告而不是新增外部证据。",
       "status": "ok",
       "raw_status": "ok",
       "provenance": "analyst_note",
@@ -266,28 +368,28 @@
           "cdn-auth-queue.net"
         ],
         "families": [
-          "198.51.100.131"
+          "Suspicious shared-infra beacon requiring review"
         ]
       },
       "claim_texts": [
-        "- candidate: 扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
-        "- supporting: 检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开。",
-        "- candidate: 扩线检索到 1 条可疑关联事件，围绕 cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
-        "- src=10.44.1.18 dst=198.51.100.131 fp=t13d190900_7711aa22bb33_9911ccddee77",
-        "- benign: 围绕 198.51.100.131、auth-queue-sync.net 的通信可能存在正常背景解释 (score=0)",
-        "从内部调查摘要中整理出 5 条 claim，用于结构化报告而不是新增外部证据。"
+        "- primary: ws-legal-03 疑似 Suspicious shared-infra beacon requiring review 相关事件 (score=3)",
+        "- family_hint=Suspicious shared-infra beacon requiring review",
+        "- A second workstation contacted cdn-auth-queue.net on the same shared IP, but only through one weak network signal.",
+        "- The seed workstation resolved auth-queue-sync.net, a rare domain mapped to a shared hosting IP, before the alert.",
+        "- Seed JA4 alert observed an unusual TLS session to auth-queue-sync.net on shared infrastructure.",
+        "从内部调查摘要中整理出 8 条 claim，用于结构化报告而不是新增外部证据。"
       ],
       "confidence": 70
     },
     {
-      "id": "obs-007",
-      "observation_id": "obs-007",
+      "id": "obs-008",
+      "observation_id": "obs-008",
       "tool_name": "search_related_events",
       "relation": "candidate",
       "grounding_status": "",
       "source_type": "trace_store.related_events",
       "source_ref": "",
-      "summary": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "summary": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
       "status": "ok",
       "raw_status": "ok",
       "provenance": "local_observation",
@@ -301,33 +403,51 @@
         "evt-702",
         "evt-703",
         "evt-704",
-        "evt-705"
+        "evt-705",
+        "evt-706",
+        "evt-707",
+        "evt-708",
+        "evt-709",
+        "evt-710",
+        "evt-711",
+        "evt-712",
+        "evt-713",
+        "evt-714",
+        "evt-715"
       ],
       "boundary_event_ids": [],
       "derived_entities": {
         "asset_ids": [
           "ws-legal-03",
-          "ws-legal-09"
+          "ws-legal-09",
+          "ws-legal-12"
         ],
         "src_ips": [
           "10.44.1.18",
-          "10.44.1.29"
+          "10.44.1.29",
+          "10.44.1.42"
         ],
         "dst_ips": [
-          "198.51.100.131"
+          "198.51.100.131",
+          "20.190.160.22",
+          "203.0.113.131"
         ],
         "domains": [
           "auth-queue-sync.net",
-          "cdn-auth-queue.net"
+          "cdn-auth-queue.net",
+          "identity-cache.vendor.example",
+          "legal-docs-cdn.example",
+          "login.microsoftonline.com",
+          "login-queue-cdn.net"
         ],
         "fingerprints": [
           "t13d190900_7711aa22bb33_9911ccddee77"
         ]
       },
       "claim_texts": [
-        "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。"
+        "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。"
       ],
-      "confidence": 69
+      "confidence": 90
     }
   ],
   "objects": [
@@ -372,6 +492,25 @@
       "object_id": "OBJ-02"
     },
     {
+      "value": "ws-legal-12",
+      "object_type": "asset",
+      "type_label": "资产",
+      "current_role": "related_asset",
+      "role_label": "待确认关联资产",
+      "roles": [
+        "related_asset",
+        "expansion_candidate"
+      ],
+      "status": "待确认",
+      "in_evidence_chain": false,
+      "notes": [
+        "当前仍需独立验证是否真正受影响。",
+        "事件中出现过的资产对象。",
+        "当前 pivot 里出现的扩线候选资产。"
+      ],
+      "object_id": "OBJ-03"
+    },
+    {
       "value": "198.51.100.131",
       "object_type": "IP",
       "type_label": "IP",
@@ -379,15 +518,17 @@
       "role_label": "核心外部基础设施",
       "roles": [
         "core_external_indicator",
+        "contextual_indicator",
         "expansion_candidate"
       ],
       "status": "已确认",
       "in_evidence_chain": true,
       "notes": [
         "当前主证据链中反复出现的关键对象。",
+        "用于补充边界或背景解释的对象。",
         "当前 pivot 里出现的扩线候选地址。"
       ],
-      "object_id": "OBJ-03"
+      "object_id": "OBJ-04"
     },
     {
       "value": "auth-queue-sync.net",
@@ -397,33 +538,71 @@
       "role_label": "核心外部基础设施",
       "roles": [
         "core_external_indicator",
+        "contextual_indicator",
         "expansion_candidate"
       ],
       "status": "已确认",
       "in_evidence_chain": true,
       "notes": [
         "当前主证据链中反复出现的关键对象。",
-        "当前 pivot 里出现的扩线候选域名。"
-      ],
-      "object_id": "OBJ-04"
-    },
-    {
-      "value": "cdn-auth-queue.net",
-      "object_type": "domain",
-      "type_label": "域名",
-      "current_role": "core_external_indicator",
-      "role_label": "核心外部基础设施",
-      "roles": [
-        "core_external_indicator",
-        "expansion_candidate"
-      ],
-      "status": "已确认",
-      "in_evidence_chain": true,
-      "notes": [
-        "当前主证据链中反复出现的关键对象。",
+        "用于补充边界或背景解释的对象。",
         "当前 pivot 里出现的扩线候选域名。"
       ],
       "object_id": "OBJ-05"
+    },
+    {
+      "value": "20.190.160.22",
+      "object_type": "IP",
+      "type_label": "IP",
+      "current_role": "contextual_indicator",
+      "role_label": "背景/上下文指标",
+      "roles": [
+        "contextual_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "用于补充边界或背景解释的对象。",
+        "当前 pivot 里出现的扩线候选地址。"
+      ],
+      "object_id": "OBJ-06"
+    },
+    {
+      "value": "identity-cache.vendor.example",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "contextual_indicator",
+      "role_label": "背景/上下文指标",
+      "roles": [
+        "contextual_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "用于补充边界或背景解释的对象。",
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-07"
+    },
+    {
+      "value": "login.microsoftonline.com",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "contextual_indicator",
+      "role_label": "背景/上下文指标",
+      "roles": [
+        "contextual_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "用于补充边界或背景解释的对象。",
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-08"
     },
     {
       "value": "t13d190900_7711aa22bb33_9911ccddee77",
@@ -439,7 +618,23 @@
       "notes": [
         "种子告警命中的关键通信指纹。"
       ],
-      "object_id": "OBJ-06"
+      "object_id": "OBJ-09"
+    },
+    {
+      "value": "Suspicious shared-infra beacon requiring review",
+      "object_type": "family",
+      "type_label": "家族提示",
+      "current_role": "family_hint",
+      "role_label": "家族/工具提示",
+      "roles": [
+        "family_hint"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "辅助解释本案的家族或工具背景，不直接等于强归因。"
+      ],
+      "object_id": "OBJ-10"
     },
     {
       "value": "10.44.1.18",
@@ -456,7 +651,7 @@
         "事件链中出现的内部地址。",
         "当前 pivot 里出现的扩线候选地址。"
       ],
-      "object_id": "OBJ-07"
+      "object_id": "OBJ-11"
     },
     {
       "value": "10.44.1.29",
@@ -472,7 +667,87 @@
       "notes": [
         "事件链中出现的内部地址。"
       ],
-      "object_id": "OBJ-08"
+      "object_id": "OBJ-12"
+    },
+    {
+      "value": "10.44.1.42",
+      "object_type": "internal_ip",
+      "type_label": "内网 IP",
+      "current_role": "related_internal_address",
+      "role_label": "关联内部地址",
+      "roles": [
+        "related_internal_address"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "事件链中出现的内部地址。"
+      ],
+      "object_id": "OBJ-13"
+    },
+    {
+      "value": "203.0.113.131",
+      "object_type": "IP",
+      "type_label": "IP",
+      "current_role": "expansion_candidate",
+      "role_label": "扩展查询候选",
+      "roles": [
+        "expansion_candidate"
+      ],
+      "status": "待确认",
+      "in_evidence_chain": false,
+      "notes": [
+        "当前 pivot 里出现的扩线候选地址。"
+      ],
+      "object_id": "OBJ-14"
+    },
+    {
+      "value": "cdn-auth-queue.net",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "expansion_candidate",
+      "role_label": "扩展查询候选",
+      "roles": [
+        "expansion_candidate"
+      ],
+      "status": "待确认",
+      "in_evidence_chain": false,
+      "notes": [
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-15"
+    },
+    {
+      "value": "legal-docs-cdn.example",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "expansion_candidate",
+      "role_label": "扩展查询候选",
+      "roles": [
+        "expansion_candidate"
+      ],
+      "status": "待确认",
+      "in_evidence_chain": false,
+      "notes": [
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-16"
+    },
+    {
+      "value": "login-queue-cdn.net",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "expansion_candidate",
+      "role_label": "扩展查询候选",
+      "roles": [
+        "expansion_candidate"
+      ],
+      "status": "待确认",
+      "in_evidence_chain": false,
+      "notes": [
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-17"
     },
     {
       "value": "t13d190900_7711aa22bb33_9911ccddee77",
@@ -488,13 +763,13 @@
       "notes": [
         "当前 pivot 里出现的扩线候选指纹。"
       ],
-      "object_id": "OBJ-09"
+      "object_id": "OBJ-18"
     }
   ],
   "claims": [
     {
       "claim_id": "CL-01",
-      "text": "检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开。",
+      "text": "检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、198.51.100.131 展开。",
       "relation": "supporting",
       "provenance": "local_observation",
       "observation_ids": [
@@ -510,11 +785,25 @@
     },
     {
       "claim_id": "CL-02",
-      "text": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "text": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "relation": "counterevidence",
+      "provenance": "counterevidence",
+      "observation_ids": [
+        "obs-002"
+      ],
+      "event_ids": [
+        "evt-708"
+      ],
+      "source_refs": [],
+      "confidence": 35
+    },
+    {
+      "claim_id": "CL-03",
+      "text": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
       "relation": "candidate",
       "provenance": "local_observation",
       "observation_ids": [
-        "obs-002"
+        "obs-003"
       ],
       "event_ids": [
         "evt-702",
@@ -522,25 +811,11 @@
         "evt-704"
       ],
       "source_refs": [],
-      "confidence": 69
-    },
-    {
-      "claim_id": "CL-03",
-      "text": "扩线检索到 1 条可疑关联事件，围绕 cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
-      "relation": "candidate",
-      "provenance": "local_observation",
-      "observation_ids": [
-        "obs-003"
-      ],
-      "event_ids": [
-        "evt-704"
-      ],
-      "source_refs": [],
-      "confidence": 41
+      "confidence": 90
     },
     {
       "claim_id": "CL-04",
-      "text": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "text": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
       "relation": "candidate",
       "provenance": "local_observation",
       "observation_ids": [
@@ -552,45 +827,45 @@
         "evt-704"
       ],
       "source_refs": [],
-      "confidence": 69
+      "confidence": 90
     },
     {
       "claim_id": "CL-05",
-      "text": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。",
-      "relation": "context",
+      "text": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "relation": "counterevidence",
       "provenance": "counterevidence",
       "observation_ids": [
         "obs-005"
       ],
       "event_ids": [
-        "evt-701",
-        "evt-702",
-        "evt-703",
-        "evt-704",
-        "evt-705"
+        "evt-708"
       ],
       "source_refs": [],
-      "confidence": 48
+      "confidence": 39
     },
     {
       "claim_id": "CL-06",
-      "text": "- candidate: 扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
-      "relation": "context",
-      "provenance": "analyst_note",
+      "text": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+      "relation": "counterevidence",
+      "provenance": "counterevidence",
       "observation_ids": [
         "obs-006"
       ],
-      "event_ids": [],
+      "event_ids": [
+        "evt-708",
+        "evt-711",
+        "evt-712"
+      ],
       "source_refs": [],
-      "confidence": 70
+      "confidence": 78
     },
     {
       "claim_id": "CL-07",
-      "text": "- supporting: 检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开。",
+      "text": "- primary: ws-legal-03 疑似 Suspicious shared-infra beacon requiring review 相关事件 (score=3)",
       "relation": "context",
       "provenance": "analyst_note",
       "observation_ids": [
-        "obs-006"
+        "obs-007"
       ],
       "event_ids": [],
       "source_refs": [],
@@ -598,11 +873,11 @@
     },
     {
       "claim_id": "CL-08",
-      "text": "- candidate: 扩线检索到 1 条可疑关联事件，围绕 cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "text": "- family_hint=Suspicious shared-infra beacon requiring review",
       "relation": "context",
       "provenance": "analyst_note",
       "observation_ids": [
-        "obs-006"
+        "obs-007"
       ],
       "event_ids": [],
       "source_refs": [],
@@ -610,11 +885,11 @@
     },
     {
       "claim_id": "CL-09",
-      "text": "- src=10.44.1.18 dst=198.51.100.131 fp=t13d190900_7711aa22bb33_9911ccddee77",
+      "text": "- A second workstation contacted cdn-auth-queue.net on the same shared IP, but only through one weak network signal.",
       "relation": "context",
       "provenance": "analyst_note",
       "observation_ids": [
-        "obs-006"
+        "obs-007"
       ],
       "event_ids": [],
       "source_refs": [],
@@ -622,11 +897,11 @@
     },
     {
       "claim_id": "CL-10",
-      "text": "- benign: 围绕 198.51.100.131、auth-queue-sync.net 的通信可能存在正常背景解释 (score=0)",
+      "text": "- The seed workstation resolved auth-queue-sync.net, a rare domain mapped to a shared hosting IP, before the alert.",
       "relation": "context",
       "provenance": "analyst_note",
       "observation_ids": [
-        "obs-006"
+        "obs-007"
       ],
       "event_ids": [],
       "source_refs": [],
@@ -634,11 +909,11 @@
     },
     {
       "claim_id": "CL-11",
-      "text": "从内部调查摘要中整理出 5 条 claim，用于结构化报告而不是新增外部证据。",
+      "text": "- Seed JA4 alert observed an unusual TLS session to auth-queue-sync.net on shared infrastructure.",
       "relation": "context",
       "provenance": "analyst_note",
       "observation_ids": [
-        "obs-006"
+        "obs-007"
       ],
       "event_ids": [],
       "source_refs": [],
@@ -646,11 +921,23 @@
     },
     {
       "claim_id": "CL-12",
-      "text": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "text": "从内部调查摘要中整理出 8 条 claim，用于结构化报告而不是新增外部证据。",
+      "relation": "context",
+      "provenance": "analyst_note",
+      "observation_ids": [
+        "obs-007"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "confidence": 70
+    },
+    {
+      "claim_id": "CL-13",
+      "text": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
       "relation": "candidate",
       "provenance": "local_observation",
       "observation_ids": [
-        "obs-007"
+        "obs-008"
       ],
       "event_ids": [
         "evt-702",
@@ -658,15 +945,15 @@
         "evt-704"
       ],
       "source_refs": [],
-      "confidence": 69
+      "confidence": 90
     }
   ],
   "hypotheses": {
     "stages": [
       "command-and-control"
     ],
-    "primary": "当前主支撑信号仍集中在 ws-legal-03；ws-legal-09 仅表现出共享基础设施上的弱关联，暂时不能按扩散处理。",
-    "positive_summary": "目前最强的支撑来自 ws-legal-03 围绕 198.51.100.131、auth-queue-sync.net、cdn-auth-queue.net 的重复通信，但这条链还没有延伸到执行或扩散层。",
+    "primary": "当前主支撑信号仍集中在 ws-legal-03；ws-legal-09、ws-legal-12 仅表现出共享基础设施上的弱关联，暂时不能按扩散处理。",
+    "positive_summary": "目前最强的支撑来自 ws-legal-03 围绕 198.51.100.131、auth-queue-sync.net 的重复通信，但这条链还没有延伸到执行或扩散层。",
     "negative_summary": ""
   },
   "gaps": [
@@ -689,13 +976,13 @@
     },
     {
       "gap_id": "related_assets_review",
-      "question": "关联资产 ws-legal-09 是否真正受影响？",
+      "question": "关联资产 ws-legal-09、ws-legal-12 是否真正受影响？",
       "gap_type": "scope_expansion",
       "priority": "medium",
       "status": "unresolved_but_deliverable",
       "status_label": "可交付但未完全闭合",
       "legacy_status": "reportable_unresolved",
-      "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+      "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
       "materiality": "boundary_sensitive",
       "delivery_blocking": true,
       "actionable_now": false,
@@ -704,7 +991,25 @@
         "cluster_expand",
         "scope"
       ],
-      "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+      "next_best_query": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
+    },
+    {
+      "gap_id": "validate_family_hint",
+      "question": "seed 自带的家族提示 Suspicious shared-infra beacon requiring review 是否有更多外部证据支撑？",
+      "gap_type": "family_validation",
+      "priority": "low",
+      "status": "unresolved_but_deliverable",
+      "status_label": "可交付但未完全闭合",
+      "legacy_status": "reportable_unresolved",
+      "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+      "materiality": "confidence_supporting",
+      "delivery_blocking": false,
+      "actionable_now": false,
+      "actionable_tools": [
+        "family_validation",
+        "external_intel"
+      ],
+      "next_best_query": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
     },
     {
       "gap_id": "expand_cluster_scope",
@@ -796,24 +1101,6 @@
         "asset_scope"
       ],
       "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
-    },
-    {
-      "gap_id": "ground_infra",
-      "question": "仍需补足外部基础设施、域名或家族背景。",
-      "gap_type": "external_context",
-      "priority": "medium",
-      "status": "closed",
-      "status_label": "已闭合",
-      "legacy_status": "closed",
-      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
-      "materiality": "delivery_blocking",
-      "delivery_blocking": true,
-      "actionable_now": false,
-      "actionable_tools": [
-        "infra_context",
-        "external_intel"
-      ],
-      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
     }
   ],
   "coverage": {
@@ -822,18 +1109,24 @@
       "ws-legal-03"
     ],
     "related_assets": [
-      "ws-legal-09"
+      "ws-legal-09",
+      "ws-legal-12"
     ],
     "primary_external_indicators": [
       "198.51.100.131",
-      "auth-queue-sync.net",
-      "cdn-auth-queue.net"
+      "auth-queue-sync.net"
     ],
-    "contextual_external_indicators": [],
-    "event_count": 5,
+    "contextual_external_indicators": [
+      "198.51.100.131",
+      "20.190.160.22",
+      "identity-cache.vendor.example",
+      "auth-queue-sync.net",
+      "login.microsoftonline.com"
+    ],
+    "event_count": 15,
     "time_window": {
-      "start": "2026-06-20T10:08:00Z",
-      "end": "2026-06-20T10:42:00Z"
+      "start": "2026-06-20T10:04:30Z",
+      "end": "2026-06-20T11:18:00Z"
     },
     "current_boundary": ""
   },
@@ -844,8 +1137,8 @@
       "role": "context",
       "asset_id": "ws-legal-03",
       "kind": "dns",
-      "ts": "2026-06-20T10:08:00Z",
-      "summary": "The seed workstation resolved a rare domain before the suspicious TLS alert fired.",
+      "ts": "2026-06-20T10:04:30Z",
+      "summary": "The seed workstation resolved auth-queue-sync.net, a rare domain mapped to a shared hosting IP, before the alert.",
       "domain": "auth-queue-sync.net",
       "dst_ip": "",
       "stages": [],
@@ -860,7 +1153,7 @@
       "asset_id": "ws-legal-03",
       "kind": "alert",
       "ts": "2026-06-20T10:12:00Z",
-      "summary": "Seed JA4 alert observed a suspicious TLS session to rare shared infrastructure.",
+      "summary": "Seed JA4 alert observed an unusual TLS session to auth-queue-sync.net on shared infrastructure.",
       "domain": "auth-queue-sync.net",
       "dst_ip": "198.51.100.131",
       "stages": [],
@@ -875,25 +1168,26 @@
       "asset_id": "ws-legal-03",
       "kind": "flow",
       "ts": "2026-06-20T10:16:20Z",
-      "summary": "The seed workstation reconnected to the same shared infrastructure after the alert.",
+      "summary": "The seed workstation reconnected to the same auth-queue-sync.net endpoint after the seed alert.",
       "domain": "auth-queue-sync.net",
       "dst_ip": "198.51.100.131",
       "stages": [
         "command-and-control"
       ],
       "tags": [
-        "command-and-control"
+        "command-and-control",
+        "beacon"
       ],
       "classification": "suspicious"
     },
     {
       "id": "evt-704",
       "role": "supporting",
-      "asset_id": "ws-legal-09",
+      "asset_id": "ws-legal-03",
       "kind": "flow",
-      "ts": "2026-06-20T10:39:00Z",
-      "summary": "A second workstation contacted a sibling domain on the same external IP, but only through one weak network signal.",
-      "domain": "cdn-auth-queue.net",
+      "ts": "2026-06-20T10:21:40Z",
+      "summary": "A second short TLS session from ws-legal-03 reused the same domain and JA4-adjacent shared hosting path.",
+      "domain": "auth-queue-sync.net",
       "dst_ip": "198.51.100.131",
       "stages": [
         "command-and-control"
@@ -906,15 +1200,169 @@
     {
       "id": "evt-705",
       "role": "context",
+      "asset_id": "ws-legal-03",
+      "kind": "asset_context",
+      "ts": "2026-06-20T10:24:00Z",
+      "summary": "Endpoint coverage for ws-legal-03 did not include command-line telemetry during the relevant window.",
+      "domain": "",
+      "dst_ip": "",
+      "stages": [],
+      "tags": [
+        "telemetry-gap"
+      ],
+      "classification": "unknown"
+    },
+    {
+      "id": "evt-706",
+      "role": "context",
+      "asset_id": "ws-legal-09",
+      "kind": "flow",
+      "ts": "2026-06-20T10:39:00Z",
+      "summary": "A second workstation contacted cdn-auth-queue.net on the same shared IP, but only through one weak network signal.",
+      "domain": "cdn-auth-queue.net",
+      "dst_ip": "198.51.100.131",
+      "stages": [],
+      "tags": [
+        "rare"
+      ],
+      "classification": "unknown"
+    },
+    {
+      "id": "evt-707",
+      "role": "context",
       "asset_id": "ws-legal-09",
       "kind": "dns",
       "ts": "2026-06-20T10:42:00Z",
-      "summary": "The second workstation later resolved the sibling domain pointing to the same shared infrastructure.",
+      "summary": "The second workstation resolved a sibling domain pointing to the same shared infrastructure.",
       "domain": "cdn-auth-queue.net",
       "dst_ip": "",
       "stages": [],
       "tags": [
         "rare"
+      ],
+      "classification": "unknown"
+    },
+    {
+      "id": "evt-708",
+      "role": "counterevidence",
+      "asset_id": "ws-legal-09",
+      "kind": "flow",
+      "ts": "2026-06-20T10:46:10Z",
+      "summary": "The same workstation also used a sanctioned identity-cache vendor domain on the shared hosting IP.",
+      "domain": "identity-cache.vendor.example",
+      "dst_ip": "198.51.100.131",
+      "stages": [],
+      "tags": [
+        "shared-hosting",
+        "browser-sso"
+      ],
+      "classification": "benign"
+    },
+    {
+      "id": "evt-709",
+      "role": "context",
+      "asset_id": "ws-legal-12",
+      "kind": "flow",
+      "ts": "2026-06-20T10:49:30Z",
+      "summary": "A legal-document review workstation touched the same IP through a different business SaaS domain, suggesting shared infrastructure.",
+      "domain": "legal-docs-cdn.example",
+      "dst_ip": "198.51.100.131",
+      "stages": [],
+      "tags": [
+        "shared-hosting"
+      ],
+      "classification": "unknown"
+    },
+    {
+      "id": "evt-710",
+      "role": "counterevidence",
+      "asset_id": "",
+      "kind": "infra_context",
+      "ts": "2026-06-20T10:52:00Z",
+      "summary": "Passive infrastructure context showed the IP hosted multiple unrelated customer domains during the same week.",
+      "domain": "auth-queue-sync.net",
+      "dst_ip": "198.51.100.131",
+      "stages": [],
+      "tags": [
+        "shared-hosting",
+        "external-context"
+      ],
+      "classification": "benign"
+    },
+    {
+      "id": "evt-711",
+      "role": "counterevidence",
+      "asset_id": "ws-legal-03",
+      "kind": "asset_context",
+      "ts": "2026-06-20T10:55:00Z",
+      "summary": "An approved SSO browser extension update on ws-legal-03 overlapped the first suspicious TLS session.",
+      "domain": "",
+      "dst_ip": "",
+      "stages": [],
+      "tags": [
+        "browser-update",
+        "maintenance"
+      ],
+      "classification": "benign"
+    },
+    {
+      "id": "evt-712",
+      "role": "counterevidence",
+      "asset_id": "ws-legal-03",
+      "kind": "flow",
+      "ts": "2026-06-20T11:01:20Z",
+      "summary": "Normal Microsoft identity traffic from ws-legal-03 appeared in the same SSO workflow window.",
+      "domain": "login.microsoftonline.com",
+      "dst_ip": "20.190.160.22",
+      "stages": [],
+      "tags": [
+        "identity",
+        "baseline"
+      ],
+      "classification": "benign"
+    },
+    {
+      "id": "evt-713",
+      "role": "context",
+      "asset_id": "ws-legal-03",
+      "kind": "dns",
+      "ts": "2026-06-20T11:08:30Z",
+      "summary": "The seed workstation later resolved a second rare queue-themed domain, but it did not share the seed IP.",
+      "domain": "login-queue-cdn.net",
+      "dst_ip": "",
+      "stages": [],
+      "tags": [
+        "rare"
+      ],
+      "classification": "unknown"
+    },
+    {
+      "id": "evt-714",
+      "role": "context",
+      "asset_id": "ws-legal-03",
+      "kind": "flow",
+      "ts": "2026-06-20T11:11:00Z",
+      "summary": "A single TLS connection to the second queue-themed domain remained an unresolved follow-on indicator without host corroboration.",
+      "domain": "login-queue-cdn.net",
+      "dst_ip": "203.0.113.131",
+      "stages": [],
+      "tags": [
+        "rare"
+      ],
+      "classification": "unknown"
+    },
+    {
+      "id": "evt-715",
+      "role": "context",
+      "asset_id": "ws-legal-09",
+      "kind": "asset_context",
+      "ts": "2026-06-20T11:18:00Z",
+      "summary": "EDR coverage for ws-legal-09 did not include command-line telemetry in this window, limiting scope confirmation.",
+      "domain": "",
+      "dst_ip": "",
+      "stages": [],
+      "tags": [
+        "telemetry-gap"
       ],
       "classification": "unknown"
     }
@@ -937,18 +1385,18 @@
         "obs-002"
       ],
       "event_ids": [
-        "evt-702",
-        "evt-703",
-        "evt-704"
+        "evt-708"
       ],
       "source_refs": [],
-      "provenance": "local_observation"
+      "provenance": "counterevidence"
     },
     "CL-03": {
       "observation_ids": [
         "obs-003"
       ],
       "event_ids": [
+        "evt-702",
+        "evt-703",
         "evt-704"
       ],
       "source_refs": [],
@@ -971,11 +1419,7 @@
         "obs-005"
       ],
       "event_ids": [
-        "evt-701",
-        "evt-702",
-        "evt-703",
-        "evt-704",
-        "evt-705"
+        "evt-708"
       ],
       "source_refs": [],
       "provenance": "counterevidence"
@@ -984,13 +1428,17 @@
       "observation_ids": [
         "obs-006"
       ],
-      "event_ids": [],
+      "event_ids": [
+        "evt-708",
+        "evt-711",
+        "evt-712"
+      ],
       "source_refs": [],
-      "provenance": "analyst_note"
+      "provenance": "counterevidence"
     },
     "CL-07": {
       "observation_ids": [
-        "obs-006"
+        "obs-007"
       ],
       "event_ids": [],
       "source_refs": [],
@@ -998,7 +1446,7 @@
     },
     "CL-08": {
       "observation_ids": [
-        "obs-006"
+        "obs-007"
       ],
       "event_ids": [],
       "source_refs": [],
@@ -1006,7 +1454,7 @@
     },
     "CL-09": {
       "observation_ids": [
-        "obs-006"
+        "obs-007"
       ],
       "event_ids": [],
       "source_refs": [],
@@ -1014,7 +1462,7 @@
     },
     "CL-10": {
       "observation_ids": [
-        "obs-006"
+        "obs-007"
       ],
       "event_ids": [],
       "source_refs": [],
@@ -1022,7 +1470,7 @@
     },
     "CL-11": {
       "observation_ids": [
-        "obs-006"
+        "obs-007"
       ],
       "event_ids": [],
       "source_refs": [],
@@ -1031,6 +1479,14 @@
     "CL-12": {
       "observation_ids": [
         "obs-007"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "provenance": "analyst_note"
+    },
+    "CL-13": {
+      "observation_ids": [
+        "obs-008"
       ],
       "event_ids": [
         "evt-702",
@@ -1084,6 +1540,25 @@
       "object_id": "OBJ-02"
     },
     {
+      "value": "ws-legal-12",
+      "object_type": "asset",
+      "type_label": "资产",
+      "current_role": "related_asset",
+      "role_label": "待确认关联资产",
+      "roles": [
+        "related_asset",
+        "expansion_candidate"
+      ],
+      "status": "待确认",
+      "in_evidence_chain": false,
+      "notes": [
+        "当前仍需独立验证是否真正受影响。",
+        "事件中出现过的资产对象。",
+        "当前 pivot 里出现的扩线候选资产。"
+      ],
+      "object_id": "OBJ-03"
+    },
+    {
       "value": "198.51.100.131",
       "object_type": "IP",
       "type_label": "IP",
@@ -1091,15 +1566,17 @@
       "role_label": "核心外部基础设施",
       "roles": [
         "core_external_indicator",
+        "contextual_indicator",
         "expansion_candidate"
       ],
       "status": "已确认",
       "in_evidence_chain": true,
       "notes": [
         "当前主证据链中反复出现的关键对象。",
+        "用于补充边界或背景解释的对象。",
         "当前 pivot 里出现的扩线候选地址。"
       ],
-      "object_id": "OBJ-03"
+      "object_id": "OBJ-04"
     },
     {
       "value": "auth-queue-sync.net",
@@ -1109,33 +1586,71 @@
       "role_label": "核心外部基础设施",
       "roles": [
         "core_external_indicator",
+        "contextual_indicator",
         "expansion_candidate"
       ],
       "status": "已确认",
       "in_evidence_chain": true,
       "notes": [
         "当前主证据链中反复出现的关键对象。",
-        "当前 pivot 里出现的扩线候选域名。"
-      ],
-      "object_id": "OBJ-04"
-    },
-    {
-      "value": "cdn-auth-queue.net",
-      "object_type": "domain",
-      "type_label": "域名",
-      "current_role": "core_external_indicator",
-      "role_label": "核心外部基础设施",
-      "roles": [
-        "core_external_indicator",
-        "expansion_candidate"
-      ],
-      "status": "已确认",
-      "in_evidence_chain": true,
-      "notes": [
-        "当前主证据链中反复出现的关键对象。",
+        "用于补充边界或背景解释的对象。",
         "当前 pivot 里出现的扩线候选域名。"
       ],
       "object_id": "OBJ-05"
+    },
+    {
+      "value": "20.190.160.22",
+      "object_type": "IP",
+      "type_label": "IP",
+      "current_role": "contextual_indicator",
+      "role_label": "背景/上下文指标",
+      "roles": [
+        "contextual_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "用于补充边界或背景解释的对象。",
+        "当前 pivot 里出现的扩线候选地址。"
+      ],
+      "object_id": "OBJ-06"
+    },
+    {
+      "value": "identity-cache.vendor.example",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "contextual_indicator",
+      "role_label": "背景/上下文指标",
+      "roles": [
+        "contextual_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "用于补充边界或背景解释的对象。",
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-07"
+    },
+    {
+      "value": "login.microsoftonline.com",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "contextual_indicator",
+      "role_label": "背景/上下文指标",
+      "roles": [
+        "contextual_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "用于补充边界或背景解释的对象。",
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-08"
     },
     {
       "value": "t13d190900_7711aa22bb33_9911ccddee77",
@@ -1151,7 +1666,23 @@
       "notes": [
         "种子告警命中的关键通信指纹。"
       ],
-      "object_id": "OBJ-06"
+      "object_id": "OBJ-09"
+    },
+    {
+      "value": "Suspicious shared-infra beacon requiring review",
+      "object_type": "family",
+      "type_label": "家族提示",
+      "current_role": "family_hint",
+      "role_label": "家族/工具提示",
+      "roles": [
+        "family_hint"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "辅助解释本案的家族或工具背景，不直接等于强归因。"
+      ],
+      "object_id": "OBJ-10"
     },
     {
       "value": "10.44.1.18",
@@ -1168,7 +1699,7 @@
         "事件链中出现的内部地址。",
         "当前 pivot 里出现的扩线候选地址。"
       ],
-      "object_id": "OBJ-07"
+      "object_id": "OBJ-11"
     },
     {
       "value": "10.44.1.29",
@@ -1184,7 +1715,87 @@
       "notes": [
         "事件链中出现的内部地址。"
       ],
-      "object_id": "OBJ-08"
+      "object_id": "OBJ-12"
+    },
+    {
+      "value": "10.44.1.42",
+      "object_type": "internal_ip",
+      "type_label": "内网 IP",
+      "current_role": "related_internal_address",
+      "role_label": "关联内部地址",
+      "roles": [
+        "related_internal_address"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "事件链中出现的内部地址。"
+      ],
+      "object_id": "OBJ-13"
+    },
+    {
+      "value": "203.0.113.131",
+      "object_type": "IP",
+      "type_label": "IP",
+      "current_role": "expansion_candidate",
+      "role_label": "扩展查询候选",
+      "roles": [
+        "expansion_candidate"
+      ],
+      "status": "待确认",
+      "in_evidence_chain": false,
+      "notes": [
+        "当前 pivot 里出现的扩线候选地址。"
+      ],
+      "object_id": "OBJ-14"
+    },
+    {
+      "value": "cdn-auth-queue.net",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "expansion_candidate",
+      "role_label": "扩展查询候选",
+      "roles": [
+        "expansion_candidate"
+      ],
+      "status": "待确认",
+      "in_evidence_chain": false,
+      "notes": [
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-15"
+    },
+    {
+      "value": "legal-docs-cdn.example",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "expansion_candidate",
+      "role_label": "扩展查询候选",
+      "roles": [
+        "expansion_candidate"
+      ],
+      "status": "待确认",
+      "in_evidence_chain": false,
+      "notes": [
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-16"
+    },
+    {
+      "value": "login-queue-cdn.net",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "expansion_candidate",
+      "role_label": "扩展查询候选",
+      "roles": [
+        "expansion_candidate"
+      ],
+      "status": "待确认",
+      "in_evidence_chain": false,
+      "notes": [
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-17"
     },
     {
       "value": "t13d190900_7711aa22bb33_9911ccddee77",
@@ -1200,7 +1811,7 @@
       "notes": [
         "当前 pivot 里出现的扩线候选指纹。"
       ],
-      "object_id": "OBJ-09"
+      "object_id": "OBJ-18"
     }
   ],
   "evidence_gaps": [
@@ -1223,13 +1834,13 @@
     },
     {
       "gap_id": "related_assets_review",
-      "question": "关联资产 ws-legal-09 是否真正受影响？",
+      "question": "关联资产 ws-legal-09、ws-legal-12 是否真正受影响？",
       "gap_type": "scope_expansion",
       "priority": "medium",
       "status": "unresolved_but_deliverable",
       "status_label": "可交付但未完全闭合",
       "legacy_status": "reportable_unresolved",
-      "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+      "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
       "materiality": "boundary_sensitive",
       "delivery_blocking": true,
       "actionable_now": false,
@@ -1238,7 +1849,25 @@
         "cluster_expand",
         "scope"
       ],
-      "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+      "next_best_query": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
+    },
+    {
+      "gap_id": "validate_family_hint",
+      "question": "seed 自带的家族提示 Suspicious shared-infra beacon requiring review 是否有更多外部证据支撑？",
+      "gap_type": "family_validation",
+      "priority": "low",
+      "status": "unresolved_but_deliverable",
+      "status_label": "可交付但未完全闭合",
+      "legacy_status": "reportable_unresolved",
+      "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+      "materiality": "confidence_supporting",
+      "delivery_blocking": false,
+      "actionable_now": false,
+      "actionable_tools": [
+        "family_validation",
+        "external_intel"
+      ],
+      "next_best_query": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
     },
     {
       "gap_id": "expand_cluster_scope",
@@ -1330,24 +1959,6 @@
         "asset_scope"
       ],
       "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
-    },
-    {
-      "gap_id": "ground_infra",
-      "question": "仍需补足外部基础设施、域名或家族背景。",
-      "gap_type": "external_context",
-      "priority": "medium",
-      "status": "closed",
-      "status_label": "已闭合",
-      "legacy_status": "closed",
-      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
-      "materiality": "delivery_blocking",
-      "delivery_blocking": true,
-      "actionable_now": false,
-      "actionable_tools": [
-        "infra_context",
-        "external_intel"
-      ],
-      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
     }
   ],
   "citation_map": {
@@ -1368,18 +1979,18 @@
         "obs-002"
       ],
       "event_ids": [
-        "evt-702",
-        "evt-703",
-        "evt-704"
+        "evt-708"
       ],
       "source_refs": [],
-      "provenance": "local_observation"
+      "provenance": "counterevidence"
     },
     "CL-03": {
       "observation_ids": [
         "obs-003"
       ],
       "event_ids": [
+        "evt-702",
+        "evt-703",
         "evt-704"
       ],
       "source_refs": [],
@@ -1402,11 +2013,7 @@
         "obs-005"
       ],
       "event_ids": [
-        "evt-701",
-        "evt-702",
-        "evt-703",
-        "evt-704",
-        "evt-705"
+        "evt-708"
       ],
       "source_refs": [],
       "provenance": "counterevidence"
@@ -1415,13 +2022,17 @@
       "observation_ids": [
         "obs-006"
       ],
-      "event_ids": [],
+      "event_ids": [
+        "evt-708",
+        "evt-711",
+        "evt-712"
+      ],
       "source_refs": [],
-      "provenance": "analyst_note"
+      "provenance": "counterevidence"
     },
     "CL-07": {
       "observation_ids": [
-        "obs-006"
+        "obs-007"
       ],
       "event_ids": [],
       "source_refs": [],
@@ -1429,7 +2040,7 @@
     },
     "CL-08": {
       "observation_ids": [
-        "obs-006"
+        "obs-007"
       ],
       "event_ids": [],
       "source_refs": [],
@@ -1437,7 +2048,7 @@
     },
     "CL-09": {
       "observation_ids": [
-        "obs-006"
+        "obs-007"
       ],
       "event_ids": [],
       "source_refs": [],
@@ -1445,7 +2056,7 @@
     },
     "CL-10": {
       "observation_ids": [
-        "obs-006"
+        "obs-007"
       ],
       "event_ids": [],
       "source_refs": [],
@@ -1453,7 +2064,7 @@
     },
     "CL-11": {
       "observation_ids": [
-        "obs-006"
+        "obs-007"
       ],
       "event_ids": [],
       "source_refs": [],
@@ -1462,6 +2073,14 @@
     "CL-12": {
       "observation_ids": [
         "obs-007"
+      ],
+      "event_ids": [],
+      "source_refs": [],
+      "provenance": "analyst_note"
+    },
+    "CL-13": {
+      "observation_ids": [
+        "obs-008"
       ],
       "event_ids": [
         "evt-702",
@@ -1476,30 +2095,83 @@
     "seed_ts": "2026-06-20 10:12:00",
     "asset_ids": [
       "ws-legal-03",
-      "ws-legal-09"
+      "ws-legal-09",
+      "ws-legal-12"
     ],
     "src_ips": [
       "10.44.1.18",
-      "10.44.1.29"
+      "10.44.1.29",
+      "10.44.1.42"
     ],
     "dst_ips": [
       "198.51.100.131",
+      "20.190.160.22",
+      "203.0.113.131",
       "10.44.1.18"
     ],
     "domains": [
       "auth-queue-sync.net",
-      "cdn-auth-queue.net"
+      "cdn-auth-queue.net",
+      "identity-cache.vendor.example",
+      "legal-docs-cdn.example",
+      "login.microsoftonline.com",
+      "login-queue-cdn.net"
     ],
     "fingerprints": [
       "t13d190900_7711aa22bb33_9911ccddee77"
     ]
   },
-  "counterevidence": [],
+  "counterevidence": [
+    {
+      "claim_id": "CL-02",
+      "text": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "relation": "counterevidence",
+      "provenance": "counterevidence",
+      "observation_ids": [
+        "obs-002"
+      ],
+      "event_ids": [
+        "evt-708"
+      ],
+      "source_refs": [],
+      "confidence": 35
+    },
+    {
+      "claim_id": "CL-05",
+      "text": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "relation": "counterevidence",
+      "provenance": "counterevidence",
+      "observation_ids": [
+        "obs-005"
+      ],
+      "event_ids": [
+        "evt-708"
+      ],
+      "source_refs": [],
+      "confidence": 39
+    },
+    {
+      "claim_id": "CL-06",
+      "text": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+      "relation": "counterevidence",
+      "provenance": "counterevidence",
+      "observation_ids": [
+        "obs-006"
+      ],
+      "event_ids": [
+        "evt-708",
+        "evt-711",
+        "evt-712"
+      ],
+      "source_refs": [],
+      "confidence": 78
+    }
+  ],
   "runtime_snapshot": {
     "known_events": [
       {
         "id": "evt-701",
-        "ts": "2026-06-20T10:08:00Z",
+        "ts": "2026-06-20T10:04:30Z",
         "kind": "dns",
         "asset_id": "ws-legal-03",
         "src_ip": "10.44.1.18",
@@ -1511,7 +2183,7 @@
         "tags": [
           "rare"
         ],
-        "summary": "The seed workstation resolved a rare domain before the suspicious TLS alert fired."
+        "summary": "The seed workstation resolved auth-queue-sync.net, a rare domain mapped to a shared hosting IP, before the alert."
       },
       {
         "id": "evt-702",
@@ -1526,7 +2198,7 @@
         "tags": [
           "outlier"
         ],
-        "summary": "Seed JA4 alert observed a suspicious TLS session to rare shared infrastructure."
+        "summary": "Seed JA4 alert observed an unusual TLS session to auth-queue-sync.net on shared infrastructure."
       },
       {
         "id": "evt-703",
@@ -1539,12 +2211,40 @@
         "domain": "auth-queue-sync.net",
         "classification": "suspicious",
         "tags": [
-          "command-and-control"
+          "command-and-control",
+          "beacon"
         ],
-        "summary": "The seed workstation reconnected to the same shared infrastructure after the alert."
+        "summary": "The seed workstation reconnected to the same auth-queue-sync.net endpoint after the seed alert."
       },
       {
         "id": "evt-704",
+        "ts": "2026-06-20T10:21:40Z",
+        "kind": "flow",
+        "asset_id": "ws-legal-03",
+        "src_ip": "10.44.1.18",
+        "dst_ip": "198.51.100.131",
+        "dst_port": 443,
+        "domain": "auth-queue-sync.net",
+        "classification": "suspicious",
+        "tags": [
+          "command-and-control"
+        ],
+        "summary": "A second short TLS session from ws-legal-03 reused the same domain and JA4-adjacent shared hosting path."
+      },
+      {
+        "id": "evt-705",
+        "ts": "2026-06-20T10:24:00Z",
+        "kind": "asset_context",
+        "asset_id": "ws-legal-03",
+        "src_ip": "10.44.1.18",
+        "classification": "unknown",
+        "tags": [
+          "telemetry-gap"
+        ],
+        "summary": "Endpoint coverage for ws-legal-03 did not include command-line telemetry during the relevant window."
+      },
+      {
+        "id": "evt-706",
         "ts": "2026-06-20T10:39:00Z",
         "kind": "flow",
         "asset_id": "ws-legal-09",
@@ -1552,14 +2252,14 @@
         "dst_ip": "198.51.100.131",
         "dst_port": 443,
         "domain": "cdn-auth-queue.net",
-        "classification": "suspicious",
+        "classification": "unknown",
         "tags": [
-          "command-and-control"
+          "rare"
         ],
-        "summary": "A second workstation contacted a sibling domain on the same external IP, but only through one weak network signal."
+        "summary": "A second workstation contacted cdn-auth-queue.net on the same shared IP, but only through one weak network signal."
       },
       {
-        "id": "evt-705",
+        "id": "evt-707",
         "ts": "2026-06-20T10:42:00Z",
         "kind": "dns",
         "asset_id": "ws-legal-09",
@@ -1572,7 +2272,123 @@
         "tags": [
           "rare"
         ],
-        "summary": "The second workstation later resolved the sibling domain pointing to the same shared infrastructure."
+        "summary": "The second workstation resolved a sibling domain pointing to the same shared infrastructure."
+      },
+      {
+        "id": "evt-708",
+        "ts": "2026-06-20T10:46:10Z",
+        "kind": "flow",
+        "asset_id": "ws-legal-09",
+        "src_ip": "10.44.1.29",
+        "dst_ip": "198.51.100.131",
+        "dst_port": 443,
+        "domain": "identity-cache.vendor.example",
+        "classification": "benign",
+        "tags": [
+          "shared-hosting",
+          "browser-sso"
+        ],
+        "summary": "The same workstation also used a sanctioned identity-cache vendor domain on the shared hosting IP."
+      },
+      {
+        "id": "evt-715",
+        "ts": "2026-06-20T11:18:00Z",
+        "kind": "asset_context",
+        "asset_id": "ws-legal-09",
+        "src_ip": "10.44.1.29",
+        "classification": "unknown",
+        "tags": [
+          "telemetry-gap"
+        ],
+        "summary": "EDR coverage for ws-legal-09 did not include command-line telemetry in this window, limiting scope confirmation."
+      },
+      {
+        "id": "evt-709",
+        "ts": "2026-06-20T10:49:30Z",
+        "kind": "flow",
+        "asset_id": "ws-legal-12",
+        "src_ip": "10.44.1.42",
+        "dst_ip": "198.51.100.131",
+        "dst_port": 443,
+        "domain": "legal-docs-cdn.example",
+        "classification": "unknown",
+        "tags": [
+          "shared-hosting"
+        ],
+        "summary": "A legal-document review workstation touched the same IP through a different business SaaS domain, suggesting shared infrastructure."
+      },
+      {
+        "id": "evt-710",
+        "ts": "2026-06-20T10:52:00Z",
+        "kind": "infra_context",
+        "dst_ip": "198.51.100.131",
+        "domain": "auth-queue-sync.net",
+        "classification": "benign",
+        "tags": [
+          "shared-hosting",
+          "external-context"
+        ],
+        "summary": "Passive infrastructure context showed the IP hosted multiple unrelated customer domains during the same week."
+      },
+      {
+        "id": "evt-711",
+        "ts": "2026-06-20T10:55:00Z",
+        "kind": "asset_context",
+        "asset_id": "ws-legal-03",
+        "src_ip": "10.44.1.18",
+        "classification": "benign",
+        "tags": [
+          "browser-update",
+          "maintenance"
+        ],
+        "summary": "An approved SSO browser extension update on ws-legal-03 overlapped the first suspicious TLS session."
+      },
+      {
+        "id": "evt-712",
+        "ts": "2026-06-20T11:01:20Z",
+        "kind": "flow",
+        "asset_id": "ws-legal-03",
+        "src_ip": "10.44.1.18",
+        "dst_ip": "20.190.160.22",
+        "dst_port": 443,
+        "domain": "login.microsoftonline.com",
+        "classification": "benign",
+        "tags": [
+          "identity",
+          "baseline"
+        ],
+        "summary": "Normal Microsoft identity traffic from ws-legal-03 appeared in the same SSO workflow window."
+      },
+      {
+        "id": "evt-713",
+        "ts": "2026-06-20T11:08:30Z",
+        "kind": "dns",
+        "asset_id": "ws-legal-03",
+        "src_ip": "10.44.1.18",
+        "domain": "login-queue-cdn.net",
+        "answers": [
+          "203.0.113.131"
+        ],
+        "classification": "unknown",
+        "tags": [
+          "rare"
+        ],
+        "summary": "The seed workstation later resolved a second rare queue-themed domain, but it did not share the seed IP."
+      },
+      {
+        "id": "evt-714",
+        "ts": "2026-06-20T11:11:00Z",
+        "kind": "flow",
+        "asset_id": "ws-legal-03",
+        "src_ip": "10.44.1.18",
+        "dst_ip": "203.0.113.131",
+        "dst_port": 443,
+        "domain": "login-queue-cdn.net",
+        "classification": "unknown",
+        "tags": [
+          "rare"
+        ],
+        "summary": "A single TLS connection to the second queue-themed domain remained an unresolved follow-on indicator without host corroboration."
       }
     ],
     "evidence_ledger": [
@@ -1583,7 +2399,7 @@
         "grounding_status": "",
         "source_type": "trace_store.seed_context",
         "source_ref": "",
-        "summary": "检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开。",
+        "summary": "检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、198.51.100.131 展开。",
         "event_ids": [
           "evt-702",
           "evt-703",
@@ -1593,26 +2409,58 @@
           "evt-701",
           "evt-702",
           "evt-703",
-          "evt-704"
+          "evt-704",
+          "evt-705",
+          "evt-706"
         ],
         "boundary_event_ids": [],
         "claim_texts": [
-          "检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开。"
+          "检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、198.51.100.131 展开。"
         ],
         "confidence": 69,
         "supports_hypothesis": [
-          "primary"
+          "primary",
+          "secondary"
         ],
         "contradicts_hypothesis": []
       },
       {
         "observation_id": "obs-002",
         "tool_name": "expand_asset_scope",
-        "relation": "candidate",
+        "relation": "counterevidence",
         "grounding_status": "",
         "source_type": "trace_store.asset_context",
         "source_ref": "",
-        "summary": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+        "summary": "检索到 1 条更接近维护、更新或正常基线的事件。",
+        "event_ids": [
+          "evt-708"
+        ],
+        "checked_event_ids": [
+          "evt-706",
+          "evt-707",
+          "evt-708",
+          "evt-715"
+        ],
+        "boundary_event_ids": [],
+        "claim_texts": [
+          "检索到 1 条更接近维护、更新或正常基线的事件。"
+        ],
+        "confidence": 35,
+        "supports_hypothesis": [
+          "benign"
+        ],
+        "contradicts_hypothesis": [
+          "primary"
+        ]
+      },
+      {
+        "observation_id": "obs-003",
+        "tool_name": "search_related_events",
+        "relation": "candidate",
+        "grounding_status": "",
+        "source_type": "trace_store.related_events",
+        "source_ref": "",
+        "summary": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
         "event_ids": [
           "evt-702",
           "evt-703",
@@ -1623,40 +2471,25 @@
           "evt-702",
           "evt-703",
           "evt-704",
-          "evt-705"
+          "evt-705",
+          "evt-706",
+          "evt-707",
+          "evt-708",
+          "evt-709",
+          "evt-710",
+          "evt-711",
+          "evt-712",
+          "evt-713",
+          "evt-714",
+          "evt-715"
         ],
         "boundary_event_ids": [],
         "claim_texts": [
-          "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。"
+          "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。"
         ],
-        "confidence": 69,
+        "confidence": 90,
         "supports_hypothesis": [
           "secondary",
-          "secondary"
-        ],
-        "contradicts_hypothesis": []
-      },
-      {
-        "observation_id": "obs-003",
-        "tool_name": "expand_asset_scope",
-        "relation": "candidate",
-        "grounding_status": "",
-        "source_type": "trace_store.asset_context",
-        "source_ref": "",
-        "summary": "扩线检索到 1 条可疑关联事件，围绕 cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
-        "event_ids": [
-          "evt-704"
-        ],
-        "checked_event_ids": [
-          "evt-704",
-          "evt-705"
-        ],
-        "boundary_event_ids": [],
-        "claim_texts": [
-          "扩线检索到 1 条可疑关联事件，围绕 cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。"
-        ],
-        "confidence": 41,
-        "supports_hypothesis": [
           "secondary"
         ],
         "contradicts_hypothesis": []
@@ -1668,7 +2501,7 @@
         "grounding_status": "",
         "source_type": "trace_store.related_events",
         "source_ref": "",
-        "summary": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+        "summary": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
         "event_ids": [
           "evt-702",
           "evt-703",
@@ -1679,13 +2512,23 @@
           "evt-702",
           "evt-703",
           "evt-704",
-          "evt-705"
+          "evt-705",
+          "evt-706",
+          "evt-707",
+          "evt-708",
+          "evt-709",
+          "evt-710",
+          "evt-711",
+          "evt-712",
+          "evt-713",
+          "evt-714",
+          "evt-715"
         ],
         "boundary_event_ids": [],
         "claim_texts": [
-          "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。"
+          "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。"
         ],
-        "confidence": 69,
+        "confidence": 90,
         "supports_hypothesis": [
           "secondary",
           "secondary"
@@ -1694,63 +2537,104 @@
       },
       {
         "observation_id": "obs-005",
-        "tool_name": "check_counterevidence",
-        "relation": "context",
+        "tool_name": "expand_asset_scope",
+        "relation": "counterevidence",
         "grounding_status": "",
         "source_type": "trace_store.asset_context",
         "source_ref": "",
-        "summary": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。",
+        "summary": "检索到 1 条更接近维护、更新或正常基线的事件。",
         "event_ids": [
-          "evt-701",
-          "evt-702",
-          "evt-703",
-          "evt-704",
-          "evt-705"
+          "evt-708"
+        ],
+        "checked_event_ids": [
+          "evt-706",
+          "evt-707",
+          "evt-708",
+          "evt-709",
+          "evt-715"
+        ],
+        "boundary_event_ids": [],
+        "claim_texts": [
+          "检索到 1 条更接近维护、更新或正常基线的事件。"
+        ],
+        "confidence": 39,
+        "supports_hypothesis": [
+          "benign"
+        ],
+        "contradicts_hypothesis": [
+          "primary"
+        ]
+      },
+      {
+        "observation_id": "obs-006",
+        "tool_name": "check_counterevidence",
+        "relation": "counterevidence",
+        "grounding_status": "",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+        "event_ids": [
+          "evt-708",
+          "evt-711",
+          "evt-712"
         ],
         "checked_event_ids": [
           "evt-701",
           "evt-702",
           "evt-703",
           "evt-704",
-          "evt-705"
+          "evt-705",
+          "evt-706",
+          "evt-707",
+          "evt-708",
+          "evt-709",
+          "evt-711",
+          "evt-712",
+          "evt-713",
+          "evt-714",
+          "evt-715"
         ],
         "boundary_event_ids": [],
         "claim_texts": [
-          "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。"
+          "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。"
         ],
-        "confidence": 48,
-        "supports_hypothesis": [],
-        "contradicts_hypothesis": []
+        "confidence": 78,
+        "supports_hypothesis": [
+          "benign"
+        ],
+        "contradicts_hypothesis": [
+          "primary"
+        ]
       },
       {
-        "observation_id": "obs-006",
+        "observation_id": "obs-007",
         "tool_name": "extract_claim_candidates_from_page",
         "relation": "context",
         "grounding_status": "",
         "source_type": "internal_digest",
         "source_ref": "",
-        "summary": "从内部调查摘要中整理出 5 条 claim，用于结构化报告而不是新增外部证据。",
+        "summary": "从内部调查摘要中整理出 8 条 claim，用于结构化报告而不是新增外部证据。",
         "event_ids": [],
         "checked_event_ids": [],
         "boundary_event_ids": [],
         "claim_texts": [
-          "- candidate: 扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
-          "- supporting: 检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开。",
-          "- candidate: 扩线检索到 1 条可疑关联事件，围绕 cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
-          "- src=10.44.1.18 dst=198.51.100.131 fp=t13d190900_7711aa22bb33_9911ccddee77"
+          "- primary: ws-legal-03 疑似 Suspicious shared-infra beacon requiring review 相关事件 (score=3)",
+          "- family_hint=Suspicious shared-infra beacon requiring review",
+          "- A second workstation contacted cdn-auth-queue.net on the same shared IP, but only through one weak network signal.",
+          "- The seed workstation resolved auth-queue-sync.net, a rare domain mapped to a shared hosting IP, before the alert."
         ],
         "confidence": 70,
         "supports_hypothesis": [],
         "contradicts_hypothesis": []
       },
       {
-        "observation_id": "obs-007",
+        "observation_id": "obs-008",
         "tool_name": "search_related_events",
         "relation": "candidate",
         "grounding_status": "",
         "source_type": "trace_store.related_events",
         "source_ref": "",
-        "summary": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+        "summary": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
         "event_ids": [
           "evt-702",
           "evt-703",
@@ -1761,13 +2645,23 @@
           "evt-702",
           "evt-703",
           "evt-704",
-          "evt-705"
+          "evt-705",
+          "evt-706",
+          "evt-707",
+          "evt-708",
+          "evt-709",
+          "evt-710",
+          "evt-711",
+          "evt-712",
+          "evt-713",
+          "evt-714",
+          "evt-715"
         ],
         "boundary_event_ids": [],
         "claim_texts": [
-          "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、cdn-auth-queue.net、198.51.100.131 展开；当前先作为待验证候选线索。"
+          "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。"
         ],
-        "confidence": 69,
+        "confidence": 90,
         "supports_hypothesis": [
           "secondary",
           "secondary"
@@ -1780,46 +2674,71 @@
         "evt-701",
         "evt-702",
         "evt-703",
-        "evt-704"
+        "evt-704",
+        "evt-705",
+        "evt-706"
       ],
-      "minimal_event_count": 4
+      "minimal_event_count": 6
     },
     "entity_hints": {
       "seed_asset": "ws-legal-03",
       "assets": [
         "ws-legal-03",
-        "ws-legal-09"
+        "ws-legal-09",
+        "ws-legal-12"
       ],
       "observed_assets": [
         "ws-legal-03",
-        "ws-legal-09"
+        "ws-legal-09",
+        "ws-legal-12"
       ],
       "suspected_assets": [
         "ws-legal-03"
       ],
       "related_assets": [
-        "ws-legal-09"
+        "ws-legal-09",
+        "ws-legal-12"
       ],
       "internal_ips": [
         "10.44.1.18",
-        "10.44.1.29"
+        "10.44.1.29",
+        "10.44.1.42"
       ],
       "external_ips": [
-        "198.51.100.131"
+        "198.51.100.131",
+        "20.190.160.22",
+        "203.0.113.131"
       ],
       "primary_external_ips": [
-        "198.51.100.131"
+        "198.51.100.131",
+        "20.190.160.22",
+        "203.0.113.131"
       ],
-      "contextual_external_ips": [],
+      "contextual_external_ips": [
+        "198.51.100.131",
+        "20.190.160.22"
+      ],
       "domains": [
         "auth-queue-sync.net",
-        "cdn-auth-queue.net"
+        "cdn-auth-queue.net",
+        "identity-cache.vendor.example",
+        "legal-docs-cdn.example",
+        "login.microsoftonline.com",
+        "login-queue-cdn.net"
       ],
       "primary_domains": [
         "auth-queue-sync.net",
-        "cdn-auth-queue.net"
+        "cdn-auth-queue.net",
+        "identity-cache.vendor.example",
+        "legal-docs-cdn.example",
+        "login.microsoftonline.com",
+        "login-queue-cdn.net"
       ],
-      "contextual_domains": [],
+      "contextual_domains": [
+        "identity-cache.vendor.example",
+        "auth-queue-sync.net",
+        "login.microsoftonline.com"
+      ],
       "users": []
     },
     "gap_ledger": [
@@ -1838,20 +2757,13 @@
           "确认是否存在主机侧执行线索",
           "或保留为主机侧待确认事项"
         ],
-        "attempt_count": 4,
-        "material_attempt_count": 1,
+        "attempt_count": 5,
+        "material_attempt_count": 2,
         "editorial_only_attempt_count": 1,
         "zero_delta_attempt_count": 2,
-        "last_attempt_step": 7,
+        "last_attempt_step": 8,
         "last_attempt_tool": "search_related_events",
         "recent_attempts": [
-          {
-            "step_index": 3,
-            "tool_name": "expand_asset_scope",
-            "material_score": 0,
-            "editorial_score": 1,
-            "summary": "新增 1 条 claim"
-          },
           {
             "step_index": 4,
             "tool_name": "search_related_events",
@@ -1860,7 +2772,14 @@
             "summary": "没有新增实质信息"
           },
           {
-            "step_index": 7,
+            "step_index": 5,
+            "tool_name": "expand_asset_scope",
+            "material_score": 0,
+            "editorial_score": 1,
+            "summary": "新增 1 条 claim"
+          },
+          {
+            "step_index": 8,
             "tool_name": "search_related_events",
             "material_score": 0,
             "editorial_score": 0,
@@ -1873,13 +2792,13 @@
         "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
         "actionable_now": false,
         "first_seen_step": 1,
-        "last_seen_step": 7,
+        "last_seen_step": 8,
         "closed_step": null
       },
       {
         "id": "related_assets_review",
         "priority": "medium",
-        "question": "关联资产 ws-legal-09 是否真正受影响？",
+        "question": "关联资产 ws-legal-09、ws-legal-12 是否真正受影响？",
         "gap_type": "scope_expansion",
         "materiality": "boundary_sensitive",
         "tool_capability_hints": [
@@ -1893,20 +2812,13 @@
           "确认关联资产是否进入同一事件范围",
           "或收敛为报告边界说明"
         ],
-        "attempt_count": 3,
-        "material_attempt_count": 0,
+        "attempt_count": 5,
+        "material_attempt_count": 2,
         "editorial_only_attempt_count": 1,
         "zero_delta_attempt_count": 2,
-        "last_attempt_step": 7,
+        "last_attempt_step": 8,
         "last_attempt_tool": "search_related_events",
         "recent_attempts": [
-          {
-            "step_index": 3,
-            "tool_name": "expand_asset_scope",
-            "material_score": 0,
-            "editorial_score": 1,
-            "summary": "新增 1 条 claim"
-          },
           {
             "step_index": 4,
             "tool_name": "search_related_events",
@@ -1915,7 +2827,14 @@
             "summary": "没有新增实质信息"
           },
           {
-            "step_index": 7,
+            "step_index": 5,
+            "tool_name": "expand_asset_scope",
+            "material_score": 0,
+            "editorial_score": 1,
+            "summary": "新增 1 条 claim"
+          },
+          {
+            "step_index": 8,
             "tool_name": "search_related_events",
             "material_score": 0,
             "editorial_score": 0,
@@ -1925,10 +2844,42 @@
         "addressable_tools": [],
         "actionable_tools": [],
         "status": "reportable_unresolved",
-        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+        "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
         "actionable_now": false,
-        "first_seen_step": 2,
-        "last_seen_step": 7,
+        "first_seen_step": 1,
+        "last_seen_step": 8,
+        "closed_step": null
+      },
+      {
+        "id": "validate_family_hint",
+        "priority": "low",
+        "question": "seed 自带的家族提示 Suspicious shared-infra beacon requiring review 是否有更多外部证据支撑？",
+        "gap_type": "family_validation",
+        "materiality": "confidence_supporting",
+        "tool_capability_hints": [
+          "family_validation",
+          "external_intel"
+        ],
+        "delivery_blocking": false,
+        "reportable_if_unresolved": true,
+        "closure_criteria": [
+          "补足家族提示支撑",
+          "或明确仅作弱提示引用"
+        ],
+        "attempt_count": 0,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 0,
+        "zero_delta_attempt_count": 0,
+        "last_attempt_step": 0,
+        "last_attempt_tool": "",
+        "recent_attempts": [],
+        "addressable_tools": [],
+        "actionable_tools": [],
+        "status": "reportable_unresolved",
+        "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+        "actionable_now": false,
+        "first_seen_step": 1,
+        "last_seen_step": 8,
         "closed_step": null
       },
       {
@@ -1947,26 +2898,19 @@
           "至少完成一次基于当前 pivot 的扩线搜索",
           "确认是否存在更多同指标复现或明确当前范围已经收敛"
         ],
-        "attempt_count": 3,
-        "material_attempt_count": 1,
+        "attempt_count": 4,
+        "material_attempt_count": 2,
         "editorial_only_attempt_count": 1,
         "zero_delta_attempt_count": 1,
-        "last_attempt_step": 4,
-        "last_attempt_tool": "search_related_events",
+        "last_attempt_step": 5,
+        "last_attempt_tool": "expand_asset_scope",
         "recent_attempts": [
           {
-            "step_index": 2,
-            "tool_name": "expand_asset_scope",
-            "material_score": 1,
-            "editorial_score": 1,
-            "summary": "新增 1 条事件；新增 1 条 claim"
-          },
-          {
             "step_index": 3,
-            "tool_name": "expand_asset_scope",
-            "material_score": 0,
+            "tool_name": "search_related_events",
+            "material_score": 6,
             "editorial_score": 1,
-            "summary": "新增 1 条 claim"
+            "summary": "新增 6 条事件；新增 1 条 claim"
           },
           {
             "step_index": 4,
@@ -1974,6 +2918,13 @@
             "material_score": 0,
             "editorial_score": 0,
             "summary": "没有新增实质信息"
+          },
+          {
+            "step_index": 5,
+            "tool_name": "expand_asset_scope",
+            "material_score": 0,
+            "editorial_score": 1,
+            "summary": "新增 1 条 claim"
           }
         ],
         "addressable_tools": [],
@@ -1982,8 +2933,8 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "actionable_now": false,
         "first_seen_step": 1,
-        "last_seen_step": 7,
-        "closed_step": 7
+        "last_seen_step": 8,
+        "closed_step": 8
       },
       {
         "id": "structure_evidence",
@@ -2015,8 +2966,8 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "actionable_now": false,
         "first_seen_step": 1,
-        "last_seen_step": 7,
-        "closed_step": 6
+        "last_seen_step": 8,
+        "closed_step": 7
       },
       {
         "id": "check_counterevidence",
@@ -2047,8 +2998,8 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "actionable_now": false,
         "first_seen_step": 1,
-        "last_seen_step": 7,
-        "closed_step": 5
+        "last_seen_step": 8,
+        "closed_step": 6
       },
       {
         "id": "build_context",
@@ -2079,7 +3030,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "actionable_now": false,
         "first_seen_step": 1,
-        "last_seen_step": 7,
+        "last_seen_step": 8,
         "closed_step": 1
       },
       {
@@ -2111,39 +3062,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "actionable_now": false,
         "first_seen_step": 1,
-        "last_seen_step": 7,
-        "closed_step": 1
-      },
-      {
-        "id": "ground_infra",
-        "priority": "medium",
-        "question": "仍需补足外部基础设施、域名或家族背景。",
-        "gap_type": "external_context",
-        "materiality": "delivery_blocking",
-        "tool_capability_hints": [
-          "infra_context",
-          "external_intel"
-        ],
-        "delivery_blocking": true,
-        "reportable_if_unresolved": false,
-        "closure_criteria": [
-          "补足外部基础设施背景",
-          "支持当前结论的可解释性"
-        ],
-        "attempt_count": 0,
-        "material_attempt_count": 0,
-        "editorial_only_attempt_count": 0,
-        "zero_delta_attempt_count": 0,
-        "last_attempt_step": 0,
-        "last_attempt_tool": "",
-        "recent_attempts": [],
-        "addressable_tools": [],
-        "actionable_tools": [],
-        "status": "closed",
-        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
-        "actionable_now": false,
-        "first_seen_step": 1,
-        "last_seen_step": 7,
+        "last_seen_step": 8,
         "closed_step": 1
       }
     ],
@@ -2151,19 +3070,27 @@
       "seed_ts": "2026-06-20 10:12:00",
       "asset_ids": [
         "ws-legal-03",
-        "ws-legal-09"
+        "ws-legal-09",
+        "ws-legal-12"
       ],
       "src_ips": [
         "10.44.1.18",
-        "10.44.1.29"
+        "10.44.1.29",
+        "10.44.1.42"
       ],
       "dst_ips": [
         "198.51.100.131",
+        "20.190.160.22",
+        "203.0.113.131",
         "10.44.1.18"
       ],
       "domains": [
         "auth-queue-sync.net",
-        "cdn-auth-queue.net"
+        "cdn-auth-queue.net",
+        "identity-cache.vendor.example",
+        "legal-docs-cdn.example",
+        "login.microsoftonline.com",
+        "login-queue-cdn.net"
       ],
       "fingerprints": [
         "t13d190900_7711aa22bb33_9911ccddee77"
@@ -2176,7 +3103,9 @@
       "severity": "中危",
       "rationale": [
         "当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。",
-        "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。"
+        "seed alert 自带家族/工具提示：Suspicious shared-infra beacon requiring review。",
+        "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。",
+        "同时也存在可解释为背景活动的信号，因此暂未自动推进为确认事件。"
       ]
     },
     "provisional_verdict": {
@@ -2186,7 +3115,9 @@
       "severity": "中危",
       "rationale": [
         "当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。",
-        "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。"
+        "seed alert 自带家族/工具提示：Suspicious shared-infra beacon requiring review。",
+        "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。",
+        "同时也存在可解释为背景活动的信号，因此暂未自动推进为确认事件。"
       ]
     },
     "source_contract": "runtime_snapshot_v1"

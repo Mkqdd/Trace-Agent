@@ -1,0 +1,46 @@
+{
+  "schema_version": "report-polish-validation-v1",
+  "applied": true,
+  "status": "hard_fail",
+  "summary": "发现 3 条 hard-fail 和 0 条 soft-warn。",
+  "issue_counts": {
+    "hard_fail": 3,
+    "soft_warn": 0
+  },
+  "issues": [
+    {
+      "severity": "hard_fail",
+      "code": "unsupported_event_tuple",
+      "section": "事件过程与行为模式",
+      "sentence": "2026-07-14 01:18:00 UTC，资产 `ws-eng-02`，可疑 rundll32.exe 在信标序列后从用户可写路径启动 loader DLL，源地址 `10.70.3.12`。这一事实表明了可疑执行线索的存在，但需要结合其他证据才能得出更强结论。",
+      "message": "正文出现了事实卡中不存在的 时间-主体-对象 事件组合。",
+      "evidence": [
+        "2026-07-14 01:18:00 UTC",
+        "ws-eng-02",
+        "10.70.3.12"
+      ]
+    },
+    {
+      "severity": "hard_fail",
+      "code": "unsupported_event_tuple",
+      "section": "关键事实与证据判断",
+      "sentence": "2026-07-14 01:18:00 UTC，资产 `ws-eng-02`，可疑 rundll32.exe 在信标序列后从用户可写路径启动 loader DLL，源地址 `10.70.3.12`。这一事实表明了可疑执行线索的存在，但需要结合其他证据才能得出更强结论。",
+      "message": "正文出现了事实卡中不存在的 时间-主体-对象 事件组合。",
+      "evidence": [
+        "2026-07-14 01:18:00 UTC",
+        "ws-eng-02",
+        "10.70.3.12"
+      ]
+    },
+    {
+      "severity": "hard_fail",
+      "code": "unknown_ip",
+      "section": "反证、缺口与结论边界",
+      "sentence": "候选事件（尚未独立验证）：2026-07-14 01:36:00 UTC，资产 `ws-eng-05`，关联对象 `cdn-notify-edge.net / 198.51.100.44`，第二台工作站在连接原始信标主机后，通过 TLS 转向第二个外部 IP，源地址 `110.70.3.45`。这一事实提供了待确认扩线或边界线索，但需要进一步验证。",
+      "message": "正文引用了事实卡中不存在的 IP `110.70.3.45`。",
+      "evidence": [
+        "110.70.3.45"
+      ]
+    }
+  ]
+}

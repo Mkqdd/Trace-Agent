@@ -9,21 +9,33 @@
       "grounding_status": "",
       "source_type": "trace_store.seed_context",
       "source_ref": "",
-      "summary": "检索到 3 条偏可疑事件，围绕 files-sync-share.net、198.51.100.144 展开。",
+      "summary": "检索到 9 条偏可疑事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开。",
       "status": "ok",
       "raw_status": "ok",
       "provenance": "local_observation",
       "event_ids": [
         "evt-602",
         "evt-603",
-        "evt-604"
+        "evt-604",
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610"
       ],
       "checked_event_ids": [
         "evt-601",
         "evt-602",
         "evt-603",
         "evt-604",
-        "evt-605"
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610",
+        "evt-611"
       ],
       "boundary_event_ids": [],
       "derived_entities": {
@@ -39,34 +51,36 @@
           "198.51.100.144"
         ],
         "domains": [
-          "files-sync-share.net"
+          "files-sync-share.net",
+          "api.files-sync-share.net"
         ],
         "fingerprints": [
           "t13d190900_44ac2200b3c1_ab11cd22ee44"
         ]
       },
       "claim_texts": [
-        "检索到 3 条偏可疑事件，围绕 files-sync-share.net、198.51.100.144 展开。"
+        "检索到 9 条偏可疑事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开。"
       ],
-      "confidence": 69
+      "confidence": 90
     },
     {
       "id": "obs-002",
       "observation_id": "obs-002",
       "tool_name": "expand_asset_scope",
-      "relation": "context",
+      "relation": "counterevidence",
       "grounding_status": "",
       "source_type": "trace_store.asset_context",
       "source_ref": "",
-      "summary": "检索到 1 条上下文事件，当前主要用于扩边界和补足范围。",
+      "summary": "检索到 1 条更接近维护、更新或正常基线的事件。",
       "status": "ok",
       "raw_status": "ok",
-      "provenance": "local_observation",
+      "provenance": "counterevidence",
       "event_ids": [
-        "evt-605"
+        "evt-612"
       ],
       "checked_event_ids": [
-        "evt-605"
+        "evt-611",
+        "evt-612"
       ],
       "boundary_event_ids": [],
       "derived_entities": {
@@ -84,9 +98,9 @@
         ]
       },
       "claim_texts": [
-        "检索到 1 条上下文事件，当前主要用于扩边界和补足范围。"
+        "检索到 1 条更接近维护、更新或正常基线的事件。"
       ],
-      "confidence": 29
+      "confidence": 35
     },
     {
       "id": "obs-003",
@@ -96,134 +110,233 @@
       "grounding_status": "",
       "source_type": "trace_store.related_events",
       "source_ref": "",
-      "summary": "扩线检索到 3 条可疑关联事件，围绕 files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
+      "summary": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
       "status": "ok",
       "raw_status": "ok",
       "provenance": "local_observation",
       "event_ids": [
         "evt-602",
         "evt-603",
-        "evt-604"
+        "evt-604",
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610",
+        "evt-614"
       ],
       "checked_event_ids": [
         "evt-601",
         "evt-602",
         "evt-603",
         "evt-604",
-        "evt-605"
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610",
+        "evt-611",
+        "evt-612",
+        "evt-613",
+        "evt-614",
+        "evt-615"
       ],
       "boundary_event_ids": [],
       "derived_entities": {
         "asset_ids": [
           "ws-rnd-04",
-          "ws-rnd-09"
+          "ws-rnd-09",
+          "ws-rnd-12"
         ],
         "src_ips": [
           "10.90.2.44",
-          "10.90.2.49"
+          "10.90.2.49",
+          "10.90.8.12"
         ],
         "dst_ips": [
-          "198.51.100.144"
+          "198.51.100.144",
+          "13.107.136.9"
         ],
         "domains": [
-          "files-sync-share.net"
+          "files-sync-share.net",
+          "api.files-sync-share.net",
+          "company-my.sharepoint.com",
+          "filesync-cdn.example"
         ],
         "fingerprints": [
           "t13d190900_44ac2200b3c1_ab11cd22ee44"
         ]
       },
       "claim_texts": [
-        "扩线检索到 3 条可疑关联事件，围绕 files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。"
+        "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。"
       ],
-      "confidence": 69
+      "confidence": 90
     },
     {
       "id": "obs-004",
       "observation_id": "obs-004",
-      "tool_name": "check_counterevidence",
-      "relation": "context",
+      "tool_name": "search_related_events",
+      "relation": "candidate",
       "grounding_status": "",
-      "source_type": "trace_store.asset_context",
+      "source_type": "trace_store.related_events",
       "source_ref": "",
-      "summary": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。",
+      "summary": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
       "status": "ok",
       "raw_status": "ok",
-      "provenance": "counterevidence",
+      "provenance": "local_observation",
       "event_ids": [
-        "evt-601",
         "evt-602",
         "evt-603",
         "evt-604",
-        "evt-605"
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610",
+        "evt-614"
       ],
       "checked_event_ids": [
         "evt-601",
         "evt-602",
         "evt-603",
         "evt-604",
-        "evt-605"
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610",
+        "evt-611",
+        "evt-612",
+        "evt-613",
+        "evt-614",
+        "evt-615"
       ],
       "boundary_event_ids": [],
       "derived_entities": {
         "asset_ids": [
           "ws-rnd-04",
-          "ws-rnd-09"
+          "ws-rnd-09",
+          "ws-rnd-12"
         ],
         "src_ips": [
           "10.90.2.44",
-          "10.90.2.49"
+          "10.90.2.49",
+          "10.90.8.12"
         ],
         "dst_ips": [
-          "198.51.100.144"
+          "198.51.100.144",
+          "13.107.136.9"
         ],
         "domains": [
-          "files-sync-share.net"
+          "files-sync-share.net",
+          "api.files-sync-share.net",
+          "company-my.sharepoint.com",
+          "filesync-cdn.example"
         ],
         "fingerprints": [
           "t13d190900_44ac2200b3c1_ab11cd22ee44"
         ]
       },
       "claim_texts": [
-        "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。"
+        "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。"
       ],
-      "confidence": 48
+      "confidence": 90
     },
     {
       "id": "obs-005",
       "observation_id": "obs-005",
-      "tool_name": "extract_claim_candidates_from_page",
+      "tool_name": "ground_candidate_event",
       "relation": "context",
-      "grounding_status": "",
-      "source_type": "internal_digest",
-      "source_ref": "",
-      "summary": "从内部调查摘要中整理出 7 条 claim，用于结构化报告而不是新增外部证据。",
+      "grounding_status": "context_only",
+      "source_type": "candidate_grounding",
+      "source_ref": "candidate_event:evt-614",
+      "summary": "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。",
       "status": "ok",
       "raw_status": "ok",
-      "provenance": "analyst_note",
-      "event_ids": [],
-      "checked_event_ids": [],
+      "provenance": "external_intel",
+      "event_ids": [
+        "evt-614"
+      ],
+      "checked_event_ids": [
+        "evt-614"
+      ],
+      "boundary_event_ids": [
+        "evt-614"
+      ],
+      "derived_entities": {},
+      "claim_texts": [
+        "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。"
+      ],
+      "confidence": 28
+    },
+    {
+      "id": "obs-006",
+      "observation_id": "obs-006",
+      "tool_name": "check_counterevidence",
+      "relation": "counterevidence",
+      "grounding_status": "",
+      "source_type": "trace_store.asset_context",
+      "source_ref": "",
+      "summary": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+      "status": "ok",
+      "raw_status": "ok",
+      "provenance": "counterevidence",
+      "event_ids": [
+        "evt-612",
+        "evt-613",
+        "evt-615"
+      ],
+      "checked_event_ids": [
+        "evt-601",
+        "evt-602",
+        "evt-603",
+        "evt-604",
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610",
+        "evt-611",
+        "evt-612",
+        "evt-613",
+        "evt-614",
+        "evt-615"
+      ],
       "boundary_event_ids": [],
       "derived_entities": {
-        "dst_ips": [
+        "asset_ids": [
+          "ws-rnd-04",
+          "ws-rnd-09",
+          "ws-rnd-12"
+        ],
+        "src_ips": [
           "10.90.2.44",
-          "198.51.100.144"
+          "10.90.2.49",
+          "10.90.8.12"
+        ],
+        "dst_ips": [
+          "198.51.100.144",
+          "13.107.136.9"
         ],
         "domains": [
-          "files-sync-share.net"
+          "files-sync-share.net",
+          "api.files-sync-share.net",
+          "company-my.sharepoint.com",
+          "filesync-cdn.example"
         ],
-        "families": [
-          "Possible cloud-storage exfil candidate"
+        "fingerprints": [
+          "t13d190900_44ac2200b3c1_ab11cd22ee44"
         ]
       },
       "claim_texts": [
-        "- primary: ws-rnd-04 疑似 Possible cloud-storage exfil candidate 相关事件 (score=3)",
-        "- family_hint=Possible cloud-storage exfil candidate",
-        "- src=10.90.2.44 dst=198.51.100.144 fp=t13d190900_44ac2200b3c1_ab11cd22ee44",
-        "- candidate: 扩线检索到 3 条可疑关联事件，围绕 files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
-        "- benign: 围绕 198.51.100.144、files-sync-share.net 的通信可能存在正常背景解释 (score=0)",
-        "从内部调查摘要中整理出 7 条 claim，用于结构化报告而不是新增外部证据。"
+        "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。"
       ],
-      "confidence": 70
+      "confidence": 78
     }
   ],
   "objects": [
@@ -244,7 +357,8 @@
         "种子告警首先落在该资产上。",
         "当前已纳入主证据链的资产。",
         "事件中出现过的资产对象。",
-        "当前 pivot 里出现的扩线候选资产。"
+        "当前 pivot 里出现的扩线候选资产。",
+        "候选事件缺少可独立验证指示物，当前只作为上下文边界保留。"
       ],
       "object_id": "OBJ-01"
     },
@@ -275,18 +389,20 @@
       "role_label": "核心外部基础设施",
       "roles": [
         "core_external_indicator",
+        "contextual_indicator",
         "expansion_candidate"
       ],
       "status": "已确认",
       "in_evidence_chain": true,
       "notes": [
         "当前主证据链中反复出现的关键对象。",
+        "用于补充边界或背景解释的对象。",
         "当前 pivot 里出现的扩线候选地址。"
       ],
       "object_id": "OBJ-03"
     },
     {
-      "value": "files-sync-share.net",
+      "value": "api.files-sync-share.net",
       "object_type": "domain",
       "type_label": "域名",
       "current_role": "core_external_indicator",
@@ -304,6 +420,78 @@
       "object_id": "OBJ-04"
     },
     {
+      "value": "files-sync-share.net",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "core_external_indicator",
+      "role_label": "核心外部基础设施",
+      "roles": [
+        "core_external_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "当前主证据链中反复出现的关键对象。",
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-05"
+    },
+    {
+      "value": "13.107.136.9",
+      "object_type": "IP",
+      "type_label": "IP",
+      "current_role": "contextual_indicator",
+      "role_label": "背景/上下文指标",
+      "roles": [
+        "contextual_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "用于补充边界或背景解释的对象。",
+        "当前 pivot 里出现的扩线候选地址。"
+      ],
+      "object_id": "OBJ-06"
+    },
+    {
+      "value": "company-my.sharepoint.com",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "contextual_indicator",
+      "role_label": "背景/上下文指标",
+      "roles": [
+        "contextual_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "用于补充边界或背景解释的对象。",
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-07"
+    },
+    {
+      "value": "filesync-cdn.example",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "contextual_indicator",
+      "role_label": "背景/上下文指标",
+      "roles": [
+        "contextual_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "用于补充边界或背景解释的对象。",
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-08"
+    },
+    {
       "value": "t13d190900_44ac2200b3c1_ab11cd22ee44",
       "object_type": "JA4",
       "type_label": "JA4",
@@ -317,10 +505,10 @@
       "notes": [
         "种子告警命中的关键通信指纹。"
       ],
-      "object_id": "OBJ-05"
+      "object_id": "OBJ-09"
     },
     {
-      "value": "Possible cloud-storage exfil candidate",
+      "value": "Suspected cloud-storage exfil chain",
       "object_type": "family",
       "type_label": "家族提示",
       "current_role": "family_hint",
@@ -333,7 +521,7 @@
       "notes": [
         "辅助解释本案的家族或工具背景，不直接等于强归因。"
       ],
-      "object_id": "OBJ-06"
+      "object_id": "OBJ-10"
     },
     {
       "value": "10.90.2.44",
@@ -347,10 +535,9 @@
       "status": "已确认",
       "in_evidence_chain": true,
       "notes": [
-        "事件链中出现的内部地址。",
-        "当前 pivot 里出现的扩线候选地址。"
+        "事件链中出现的内部地址。"
       ],
-      "object_id": "OBJ-07"
+      "object_id": "OBJ-11"
     },
     {
       "value": "10.90.2.49",
@@ -366,7 +553,39 @@
       "notes": [
         "事件链中出现的内部地址。"
       ],
-      "object_id": "OBJ-08"
+      "object_id": "OBJ-12"
+    },
+    {
+      "value": "10.90.8.12",
+      "object_type": "internal_ip",
+      "type_label": "内网 IP",
+      "current_role": "related_internal_address",
+      "role_label": "关联内部地址",
+      "roles": [
+        "related_internal_address"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "事件链中出现的内部地址。"
+      ],
+      "object_id": "OBJ-13"
+    },
+    {
+      "value": "ws-rnd-12",
+      "object_type": "asset",
+      "type_label": "资产",
+      "current_role": "expansion_candidate",
+      "role_label": "扩展查询候选",
+      "roles": [
+        "expansion_candidate"
+      ],
+      "status": "待确认",
+      "in_evidence_chain": false,
+      "notes": [
+        "当前 pivot 里出现的扩线候选资产。"
+      ],
+      "object_id": "OBJ-14"
     },
     {
       "value": "t13d190900_44ac2200b3c1_ab11cd22ee44",
@@ -382,13 +601,13 @@
       "notes": [
         "当前 pivot 里出现的扩线候选指纹。"
       ],
-      "object_id": "OBJ-09"
+      "object_id": "OBJ-15"
     }
   ],
   "claims": [
     {
       "claim_id": "CL-01",
-      "text": "检索到 3 条偏可疑事件，围绕 files-sync-share.net、198.51.100.144 展开。",
+      "text": "检索到 9 条偏可疑事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开。",
       "relation": "supporting",
       "provenance": "local_observation",
       "observation_ids": [
@@ -397,28 +616,34 @@
       "event_ids": [
         "evt-602",
         "evt-603",
-        "evt-604"
+        "evt-604",
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610"
       ],
       "source_refs": [],
-      "confidence": 69
+      "confidence": 90
     },
     {
       "claim_id": "CL-02",
-      "text": "检索到 1 条上下文事件，当前主要用于扩边界和补足范围。",
-      "relation": "context",
-      "provenance": "local_observation",
+      "text": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "relation": "counterevidence",
+      "provenance": "counterevidence",
       "observation_ids": [
         "obs-002"
       ],
       "event_ids": [
-        "evt-605"
+        "evt-612"
       ],
       "source_refs": [],
-      "confidence": 29
+      "confidence": 35
     },
     {
       "claim_id": "CL-03",
-      "text": "扩线检索到 3 条可疑关联事件，围绕 files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
+      "text": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
       "relation": "candidate",
       "provenance": "local_observation",
       "observation_ids": [
@@ -427,168 +652,123 @@
       "event_ids": [
         "evt-602",
         "evt-603",
-        "evt-604"
+        "evt-604",
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610",
+        "evt-614"
       ],
       "source_refs": [],
-      "confidence": 69
+      "confidence": 90
     },
     {
       "claim_id": "CL-04",
-      "text": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。",
-      "relation": "context",
-      "provenance": "counterevidence",
+      "text": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
+      "relation": "candidate",
+      "provenance": "local_observation",
       "observation_ids": [
         "obs-004"
       ],
       "event_ids": [
-        "evt-601",
         "evt-602",
         "evt-603",
         "evt-604",
-        "evt-605"
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610",
+        "evt-614"
       ],
       "source_refs": [],
-      "confidence": 48
+      "confidence": 90
     },
     {
       "claim_id": "CL-05",
-      "text": "- primary: ws-rnd-04 疑似 Possible cloud-storage exfil candidate 相关事件 (score=3)",
+      "text": "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。",
       "relation": "context",
-      "provenance": "analyst_note",
+      "provenance": "external_intel",
       "observation_ids": [
         "obs-005"
       ],
-      "event_ids": [],
-      "source_refs": [],
-      "confidence": 70
+      "event_ids": [
+        "evt-614"
+      ],
+      "source_refs": [
+        "candidate_event:evt-614"
+      ],
+      "confidence": 28
     },
     {
       "claim_id": "CL-06",
-      "text": "- family_hint=Possible cloud-storage exfil candidate",
-      "relation": "context",
-      "provenance": "analyst_note",
+      "text": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+      "relation": "counterevidence",
+      "provenance": "counterevidence",
       "observation_ids": [
-        "obs-005"
+        "obs-006"
       ],
-      "event_ids": [],
-      "source_refs": [],
-      "confidence": 70
-    },
-    {
-      "claim_id": "CL-07",
-      "text": "- src=10.90.2.44 dst=198.51.100.144 fp=t13d190900_44ac2200b3c1_ab11cd22ee44",
-      "relation": "context",
-      "provenance": "analyst_note",
-      "observation_ids": [
-        "obs-005"
+      "event_ids": [
+        "evt-612",
+        "evt-613",
+        "evt-615"
       ],
-      "event_ids": [],
       "source_refs": [],
-      "confidence": 70
-    },
-    {
-      "claim_id": "CL-08",
-      "text": "- candidate: 扩线检索到 3 条可疑关联事件，围绕 files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
-      "relation": "context",
-      "provenance": "analyst_note",
-      "observation_ids": [
-        "obs-005"
-      ],
-      "event_ids": [],
-      "source_refs": [],
-      "confidence": 70
-    },
-    {
-      "claim_id": "CL-09",
-      "text": "- benign: 围绕 198.51.100.144、files-sync-share.net 的通信可能存在正常背景解释 (score=0)",
-      "relation": "context",
-      "provenance": "analyst_note",
-      "observation_ids": [
-        "obs-005"
-      ],
-      "event_ids": [],
-      "source_refs": [],
-      "confidence": 70
-    },
-    {
-      "claim_id": "CL-10",
-      "text": "从内部调查摘要中整理出 7 条 claim，用于结构化报告而不是新增外部证据。",
-      "relation": "context",
-      "provenance": "analyst_note",
-      "observation_ids": [
-        "obs-005"
-      ],
-      "event_ids": [],
-      "source_refs": [],
-      "confidence": 70
+      "confidence": 78
     }
   ],
   "hypotheses": {
     "stages": [
+      "command-and-control",
       "execution",
       "exfiltration"
     ],
-    "primary": "当前主支撑信号仍集中在 ws-rnd-04；ws-rnd-09 仅表现出共享基础设施上的弱关联，暂时不能按扩散处理。",
-    "positive_summary": "目前最强的支撑来自 ws-rnd-04 围绕 198.51.100.144、files-sync-share.net 的重复通信以及后续主机侧执行线索；但执行细节、载荷或影响范围仍不足以直接推进为确认事件。",
+    "primary": "ws-rnd-04 围绕 198.51.100.144、files-sync-share.net、api.files-sync-share.net 的重复外联已经延伸到主机侧执行，事件闭环已经基本形成。",
+    "positive_summary": "ws-rnd-04 先围绕 198.51.100.144、files-sync-share.net、api.files-sync-share.net 形成重复外联，随后又出现主机侧执行痕迹，因此判断已经超过单点命中。",
     "negative_summary": ""
   },
   "gaps": [
     {
-      "gap_id": "expand_cluster_scope",
-      "question": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
-      "gap_type": "cluster_scope",
-      "priority": "high",
-      "status": "unresolved_but_deliverable",
-      "status_label": "可交付但未完全闭合",
-      "legacy_status": "reportable_unresolved",
-      "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+      "gap_id": "check_counterevidence",
+      "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "gap_type": "counterevidence",
+      "priority": "medium",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
       "materiality": "delivery_blocking",
       "delivery_blocking": true,
       "actionable_now": false,
       "actionable_tools": [
-        "search_related_events",
-        "cluster_expand",
-        "scope"
+        "counterevidence",
+        "background_validation"
       ],
-      "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
     },
     {
-      "gap_id": "related_assets_review",
-      "question": "关联资产 ws-rnd-09 是否真正受影响？",
-      "gap_type": "scope_expansion",
-      "priority": "medium",
-      "status": "unresolved_but_deliverable",
-      "status_label": "可交付但未完全闭合",
-      "legacy_status": "reportable_unresolved",
-      "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
-      "materiality": "boundary_sensitive",
+      "gap_id": "validate_candidate_events",
+      "question": "扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？",
+      "gap_type": "candidate_grounding",
+      "priority": "high",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+      "materiality": "delivery_blocking",
       "delivery_blocking": true,
       "actionable_now": false,
       "actionable_tools": [
-        "search_related_events",
-        "asset_scope",
-        "cluster_expand",
-        "scope"
+        "candidate_grounding",
+        "local_intel",
+        "external_intel",
+        "infra_context",
+        "structured_intel"
       ],
-      "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
-    },
-    {
-      "gap_id": "validate_family_hint",
-      "question": "seed 自带的家族提示 Possible cloud-storage exfil candidate 是否有更多外部证据支撑？",
-      "gap_type": "family_validation",
-      "priority": "low",
-      "status": "unresolved_but_deliverable",
-      "status_label": "可交付但未完全闭合",
-      "legacy_status": "reportable_unresolved",
-      "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
-      "materiality": "confidence_supporting",
-      "delivery_blocking": false,
-      "actionable_now": false,
-      "actionable_tools": [
-        "family_validation",
-        "external_intel"
-      ],
-      "next_best_query": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
     },
     {
       "gap_id": "structure_evidence",
@@ -610,10 +790,10 @@
       "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
     },
     {
-      "gap_id": "check_counterevidence",
-      "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
-      "gap_type": "counterevidence",
-      "priority": "medium",
+      "gap_id": "expand_cluster_scope",
+      "question": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "gap_type": "cluster_scope",
+      "priority": "high",
       "status": "closed",
       "status_label": "已闭合",
       "legacy_status": "closed",
@@ -622,8 +802,8 @@
       "delivery_blocking": true,
       "actionable_now": false,
       "actionable_tools": [
-        "counterevidence",
-        "background_validation"
+        "cluster_expand",
+        "scope"
       ],
       "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
     },
@@ -679,6 +859,24 @@
         "asset_scope"
       ],
       "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
+    },
+    {
+      "gap_id": "validate_family_hint",
+      "question": "seed 自带的家族提示 Suspected cloud-storage exfil chain 是否有更多外部证据支撑？",
+      "gap_type": "family_validation",
+      "priority": "low",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+      "materiality": "confidence_supporting",
+      "delivery_blocking": false,
+      "actionable_now": false,
+      "actionable_tools": [
+        "family_validation",
+        "external_intel"
+      ],
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
     }
   ],
   "coverage": {
@@ -691,13 +889,19 @@
     ],
     "primary_external_indicators": [
       "198.51.100.144",
-      "files-sync-share.net"
+      "files-sync-share.net",
+      "api.files-sync-share.net"
     ],
-    "contextual_external_indicators": [],
-    "event_count": 5,
+    "contextual_external_indicators": [
+      "13.107.136.9",
+      "198.51.100.144",
+      "company-my.sharepoint.com",
+      "filesync-cdn.example"
+    ],
+    "event_count": 15,
     "time_window": {
-      "start": "2026-06-03T16:34:00Z",
-      "end": "2026-06-03T17:05:00Z"
+      "start": "2026-06-03T16:28:00Z",
+      "end": "2026-06-03T17:24:40Z"
     },
     "current_boundary": ""
   },
@@ -708,8 +912,8 @@
       "role": "context",
       "asset_id": "ws-rnd-04",
       "kind": "dns",
-      "ts": "2026-06-03T16:34:00Z",
-      "summary": "The workstation resolved a rare storage domain shortly before the seed alert fired.",
+      "ts": "2026-06-03T16:28:00Z",
+      "summary": "The R&D workstation resolved files-sync-share.net, a rare storage-themed domain, before the seed alert.",
       "domain": "files-sync-share.net",
       "dst_ip": "",
       "stages": [],
@@ -720,26 +924,63 @@
     },
     {
       "id": "evt-602",
+      "role": "supporting",
+      "asset_id": "ws-rnd-04",
+      "kind": "flow",
+      "ts": "2026-06-03T16:34:20Z",
+      "summary": "The workstation opened a short TLS session to the rare storage edge before the larger transfer sequence.",
+      "domain": "files-sync-share.net",
+      "dst_ip": "198.51.100.144",
+      "stages": [
+        "command-and-control"
+      ],
+      "tags": [
+        "command-and-control"
+      ],
+      "classification": "suspicious"
+    },
+    {
+      "id": "evt-603",
       "role": "seed",
       "asset_id": "ws-rnd-04",
       "kind": "alert",
       "ts": "2026-06-03T16:40:00Z",
-      "summary": "Seed JA4 alert observed a suspicious TLS session to a rare storage edge.",
+      "summary": "Seed JA4 alert matched a suspicious TLS beacon to the rare storage edge.",
       "domain": "files-sync-share.net",
       "dst_ip": "198.51.100.144",
-      "stages": [],
-      "tags": [
-        "outlier"
+      "stages": [
+        "command-and-control"
       ],
-      "classification": "needs_review"
+      "tags": [
+        "command-and-control",
+        "beacon"
+      ],
+      "classification": "malicious"
     },
     {
-      "id": "evt-603",
+      "id": "evt-604",
       "role": "supporting",
       "asset_id": "ws-rnd-04",
-      "kind": "alert",
+      "kind": "process",
+      "ts": "2026-06-03T16:42:30Z",
+      "summary": "PowerShell launched from the user profile and invoked a staging script under C:\\Users\\analyst\\AppData\\Roaming\\sync.ps1.",
+      "domain": "",
+      "dst_ip": "",
+      "stages": [
+        "execution"
+      ],
+      "tags": [
+        "execution"
+      ],
+      "classification": "suspicious"
+    },
+    {
+      "id": "evt-605",
+      "role": "supporting",
+      "asset_id": "ws-rnd-04",
+      "kind": "process",
       "ts": "2026-06-03T16:44:00Z",
-      "summary": "Archive utility spawned on the workstation shortly before the outbound transfer.",
+      "summary": "Archive utility 7z.exe created RND-Q2-prototype.zip from a project workspace shortly before outbound transfer.",
       "domain": "",
       "dst_ip": "",
       "stages": [
@@ -752,29 +993,98 @@
       "classification": "suspicious"
     },
     {
-      "id": "evt-604",
+      "id": "evt-606",
+      "role": "supporting",
+      "asset_id": "ws-rnd-04",
+      "kind": "file",
+      "ts": "2026-06-03T16:45:40Z",
+      "summary": "The newly created RND-Q2-prototype.zip was staged under C:\\Users\\Public\\Music\\cache.dat for transfer.",
+      "domain": "",
+      "dst_ip": "",
+      "stages": [
+        "exfiltration"
+      ],
+      "tags": [
+        "exfiltration"
+      ],
+      "classification": "suspicious"
+    },
+    {
+      "id": "evt-607",
       "role": "supporting",
       "asset_id": "ws-rnd-04",
       "kind": "flow",
       "ts": "2026-06-03T16:47:00Z",
-      "summary": "A large outbound HTTPS upload followed the archive creation, but DLP visibility is incomplete.",
+      "summary": "A large outbound HTTPS upload to files-sync-share.net followed the archive creation, with roughly 640 MB sent.",
       "domain": "files-sync-share.net",
       "dst_ip": "198.51.100.144",
       "stages": [
         "exfiltration"
       ],
       "tags": [
-        "rare"
+        "exfiltration",
+        "upload"
       ],
-      "classification": "unknown"
+      "classification": "suspicious"
     },
     {
-      "id": "evt-605",
+      "id": "evt-608",
+      "role": "supporting",
+      "asset_id": "ws-rnd-04",
+      "kind": "dlp",
+      "ts": "2026-06-03T16:50:10Z",
+      "summary": "DLP recorded the encrypted outbound transfer size but could not inspect the archive contents.",
+      "domain": "files-sync-share.net",
+      "dst_ip": "198.51.100.144",
+      "stages": [
+        "exfiltration"
+      ],
+      "tags": [
+        "exfiltration",
+        "telemetry-gap"
+      ],
+      "classification": "needs_review"
+    },
+    {
+      "id": "evt-609",
+      "role": "supporting",
+      "asset_id": "ws-rnd-04",
+      "kind": "dns",
+      "ts": "2026-06-03T16:52:30Z",
+      "summary": "The same workstation resolved api.files-sync-share.net, a sibling domain on the same storage edge.",
+      "domain": "api.files-sync-share.net",
+      "dst_ip": "",
+      "stages": [],
+      "tags": [
+        "rare"
+      ],
+      "classification": "suspicious"
+    },
+    {
+      "id": "evt-610",
+      "role": "supporting",
+      "asset_id": "ws-rnd-04",
+      "kind": "flow",
+      "ts": "2026-06-03T16:55:00Z",
+      "summary": "A follow-on TLS session used the sibling API domain after the large upload completed.",
+      "domain": "api.files-sync-share.net",
+      "dst_ip": "198.51.100.144",
+      "stages": [
+        "command-and-control",
+        "exfiltration"
+      ],
+      "tags": [
+        "command-and-control"
+      ],
+      "classification": "suspicious"
+    },
+    {
+      "id": "evt-611",
       "role": "context",
       "asset_id": "ws-rnd-09",
       "kind": "flow",
       "ts": "2026-06-03T17:05:00Z",
-      "summary": "A second workstation briefly connected to the same storage edge, but only once and without host evidence.",
+      "summary": "A second R&D workstation briefly connected to the same storage edge, but only once and without host corroboration.",
       "domain": "files-sync-share.net",
       "dst_ip": "198.51.100.144",
       "stages": [],
@@ -782,6 +1092,71 @@
         "rare"
       ],
       "classification": "unknown"
+    },
+    {
+      "id": "evt-612",
+      "role": "counterevidence",
+      "asset_id": "ws-rnd-09",
+      "kind": "asset_context",
+      "ts": "2026-06-03T17:08:20Z",
+      "summary": "ws-rnd-09 had an approved backup job running in the same hour, explaining some storage-oriented traffic.",
+      "domain": "",
+      "dst_ip": "",
+      "stages": [],
+      "tags": [
+        "backup",
+        "baseline"
+      ],
+      "classification": "benign"
+    },
+    {
+      "id": "evt-613",
+      "role": "counterevidence",
+      "asset_id": "ws-rnd-04",
+      "kind": "flow",
+      "ts": "2026-06-03T17:12:00Z",
+      "summary": "Normal corporate SharePoint sync traffic from ws-rnd-04 was also present during the investigation window.",
+      "domain": "company-my.sharepoint.com",
+      "dst_ip": "13.107.136.9",
+      "stages": [],
+      "tags": [
+        "cloud-sync",
+        "baseline"
+      ],
+      "classification": "benign"
+    },
+    {
+      "id": "evt-614",
+      "role": "context",
+      "asset_id": "ws-rnd-04",
+      "kind": "asset_context",
+      "ts": "2026-06-03T17:18:00Z",
+      "summary": "EDR did not preserve the full PowerShell command line, limiting reconstruction of the staging script.",
+      "domain": "",
+      "dst_ip": "",
+      "stages": [
+        "execution"
+      ],
+      "tags": [
+        "telemetry-gap"
+      ],
+      "classification": "unknown"
+    },
+    {
+      "id": "evt-615",
+      "role": "counterevidence",
+      "asset_id": "ws-rnd-12",
+      "kind": "flow",
+      "ts": "2026-06-03T17:24:40Z",
+      "summary": "A lab workstation reached the same IP through a different vendor CDN domain, indicating the IP is not uniquely malicious.",
+      "domain": "filesync-cdn.example",
+      "dst_ip": "198.51.100.144",
+      "stages": [],
+      "tags": [
+        "shared-hosting",
+        "unrelated"
+      ],
+      "classification": "benign"
     }
   ],
   "provenance_index": {
@@ -792,7 +1167,13 @@
       "event_ids": [
         "evt-602",
         "evt-603",
-        "evt-604"
+        "evt-604",
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610"
       ],
       "source_refs": [],
       "provenance": "local_observation"
@@ -802,10 +1183,10 @@
         "obs-002"
       ],
       "event_ids": [
-        "evt-605"
+        "evt-612"
       ],
       "source_refs": [],
-      "provenance": "local_observation"
+      "provenance": "counterevidence"
     },
     "CL-03": {
       "observation_ids": [
@@ -814,7 +1195,14 @@
       "event_ids": [
         "evt-602",
         "evt-603",
-        "evt-604"
+        "evt-604",
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610",
+        "evt-614"
       ],
       "source_refs": [],
       "provenance": "local_observation"
@@ -824,62 +1212,43 @@
         "obs-004"
       ],
       "event_ids": [
-        "evt-601",
         "evt-602",
         "evt-603",
         "evt-604",
-        "evt-605"
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610",
+        "evt-614"
       ],
       "source_refs": [],
-      "provenance": "counterevidence"
+      "provenance": "local_observation"
     },
     "CL-05": {
       "observation_ids": [
         "obs-005"
       ],
-      "event_ids": [],
-      "source_refs": [],
-      "provenance": "analyst_note"
+      "event_ids": [
+        "evt-614"
+      ],
+      "source_refs": [
+        "candidate_event:evt-614"
+      ],
+      "provenance": "external_intel"
     },
     "CL-06": {
       "observation_ids": [
-        "obs-005"
+        "obs-006"
       ],
-      "event_ids": [],
-      "source_refs": [],
-      "provenance": "analyst_note"
-    },
-    "CL-07": {
-      "observation_ids": [
-        "obs-005"
+      "event_ids": [
+        "evt-612",
+        "evt-613",
+        "evt-615"
       ],
-      "event_ids": [],
       "source_refs": [],
-      "provenance": "analyst_note"
-    },
-    "CL-08": {
-      "observation_ids": [
-        "obs-005"
-      ],
-      "event_ids": [],
-      "source_refs": [],
-      "provenance": "analyst_note"
-    },
-    "CL-09": {
-      "observation_ids": [
-        "obs-005"
-      ],
-      "event_ids": [],
-      "source_refs": [],
-      "provenance": "analyst_note"
-    },
-    "CL-10": {
-      "observation_ids": [
-        "obs-005"
-      ],
-      "event_ids": [],
-      "source_refs": [],
-      "provenance": "analyst_note"
+      "provenance": "counterevidence"
     }
   },
   "version": "runtime-v1",
@@ -901,7 +1270,8 @@
         "种子告警首先落在该资产上。",
         "当前已纳入主证据链的资产。",
         "事件中出现过的资产对象。",
-        "当前 pivot 里出现的扩线候选资产。"
+        "当前 pivot 里出现的扩线候选资产。",
+        "候选事件缺少可独立验证指示物，当前只作为上下文边界保留。"
       ],
       "object_id": "OBJ-01"
     },
@@ -932,18 +1302,20 @@
       "role_label": "核心外部基础设施",
       "roles": [
         "core_external_indicator",
+        "contextual_indicator",
         "expansion_candidate"
       ],
       "status": "已确认",
       "in_evidence_chain": true,
       "notes": [
         "当前主证据链中反复出现的关键对象。",
+        "用于补充边界或背景解释的对象。",
         "当前 pivot 里出现的扩线候选地址。"
       ],
       "object_id": "OBJ-03"
     },
     {
-      "value": "files-sync-share.net",
+      "value": "api.files-sync-share.net",
       "object_type": "domain",
       "type_label": "域名",
       "current_role": "core_external_indicator",
@@ -961,6 +1333,78 @@
       "object_id": "OBJ-04"
     },
     {
+      "value": "files-sync-share.net",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "core_external_indicator",
+      "role_label": "核心外部基础设施",
+      "roles": [
+        "core_external_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "当前主证据链中反复出现的关键对象。",
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-05"
+    },
+    {
+      "value": "13.107.136.9",
+      "object_type": "IP",
+      "type_label": "IP",
+      "current_role": "contextual_indicator",
+      "role_label": "背景/上下文指标",
+      "roles": [
+        "contextual_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "用于补充边界或背景解释的对象。",
+        "当前 pivot 里出现的扩线候选地址。"
+      ],
+      "object_id": "OBJ-06"
+    },
+    {
+      "value": "company-my.sharepoint.com",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "contextual_indicator",
+      "role_label": "背景/上下文指标",
+      "roles": [
+        "contextual_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "用于补充边界或背景解释的对象。",
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-07"
+    },
+    {
+      "value": "filesync-cdn.example",
+      "object_type": "domain",
+      "type_label": "域名",
+      "current_role": "contextual_indicator",
+      "role_label": "背景/上下文指标",
+      "roles": [
+        "contextual_indicator",
+        "expansion_candidate"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "用于补充边界或背景解释的对象。",
+        "当前 pivot 里出现的扩线候选域名。"
+      ],
+      "object_id": "OBJ-08"
+    },
+    {
       "value": "t13d190900_44ac2200b3c1_ab11cd22ee44",
       "object_type": "JA4",
       "type_label": "JA4",
@@ -974,10 +1418,10 @@
       "notes": [
         "种子告警命中的关键通信指纹。"
       ],
-      "object_id": "OBJ-05"
+      "object_id": "OBJ-09"
     },
     {
-      "value": "Possible cloud-storage exfil candidate",
+      "value": "Suspected cloud-storage exfil chain",
       "object_type": "family",
       "type_label": "家族提示",
       "current_role": "family_hint",
@@ -990,7 +1434,7 @@
       "notes": [
         "辅助解释本案的家族或工具背景，不直接等于强归因。"
       ],
-      "object_id": "OBJ-06"
+      "object_id": "OBJ-10"
     },
     {
       "value": "10.90.2.44",
@@ -1004,10 +1448,9 @@
       "status": "已确认",
       "in_evidence_chain": true,
       "notes": [
-        "事件链中出现的内部地址。",
-        "当前 pivot 里出现的扩线候选地址。"
+        "事件链中出现的内部地址。"
       ],
-      "object_id": "OBJ-07"
+      "object_id": "OBJ-11"
     },
     {
       "value": "10.90.2.49",
@@ -1023,7 +1466,39 @@
       "notes": [
         "事件链中出现的内部地址。"
       ],
-      "object_id": "OBJ-08"
+      "object_id": "OBJ-12"
+    },
+    {
+      "value": "10.90.8.12",
+      "object_type": "internal_ip",
+      "type_label": "内网 IP",
+      "current_role": "related_internal_address",
+      "role_label": "关联内部地址",
+      "roles": [
+        "related_internal_address"
+      ],
+      "status": "已确认",
+      "in_evidence_chain": true,
+      "notes": [
+        "事件链中出现的内部地址。"
+      ],
+      "object_id": "OBJ-13"
+    },
+    {
+      "value": "ws-rnd-12",
+      "object_type": "asset",
+      "type_label": "资产",
+      "current_role": "expansion_candidate",
+      "role_label": "扩展查询候选",
+      "roles": [
+        "expansion_candidate"
+      ],
+      "status": "待确认",
+      "in_evidence_chain": false,
+      "notes": [
+        "当前 pivot 里出现的扩线候选资产。"
+      ],
+      "object_id": "OBJ-14"
     },
     {
       "value": "t13d190900_44ac2200b3c1_ab11cd22ee44",
@@ -1039,66 +1514,48 @@
       "notes": [
         "当前 pivot 里出现的扩线候选指纹。"
       ],
-      "object_id": "OBJ-09"
+      "object_id": "OBJ-15"
     }
   ],
   "evidence_gaps": [
     {
-      "gap_id": "expand_cluster_scope",
-      "question": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
-      "gap_type": "cluster_scope",
-      "priority": "high",
-      "status": "unresolved_but_deliverable",
-      "status_label": "可交付但未完全闭合",
-      "legacy_status": "reportable_unresolved",
-      "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+      "gap_id": "check_counterevidence",
+      "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "gap_type": "counterevidence",
+      "priority": "medium",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
       "materiality": "delivery_blocking",
       "delivery_blocking": true,
       "actionable_now": false,
       "actionable_tools": [
-        "search_related_events",
-        "cluster_expand",
-        "scope"
+        "counterevidence",
+        "background_validation"
       ],
-      "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
     },
     {
-      "gap_id": "related_assets_review",
-      "question": "关联资产 ws-rnd-09 是否真正受影响？",
-      "gap_type": "scope_expansion",
-      "priority": "medium",
-      "status": "unresolved_but_deliverable",
-      "status_label": "可交付但未完全闭合",
-      "legacy_status": "reportable_unresolved",
-      "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
-      "materiality": "boundary_sensitive",
+      "gap_id": "validate_candidate_events",
+      "question": "扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？",
+      "gap_type": "candidate_grounding",
+      "priority": "high",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+      "materiality": "delivery_blocking",
       "delivery_blocking": true,
       "actionable_now": false,
       "actionable_tools": [
-        "search_related_events",
-        "asset_scope",
-        "cluster_expand",
-        "scope"
+        "candidate_grounding",
+        "local_intel",
+        "external_intel",
+        "infra_context",
+        "structured_intel"
       ],
-      "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
-    },
-    {
-      "gap_id": "validate_family_hint",
-      "question": "seed 自带的家族提示 Possible cloud-storage exfil candidate 是否有更多外部证据支撑？",
-      "gap_type": "family_validation",
-      "priority": "low",
-      "status": "unresolved_but_deliverable",
-      "status_label": "可交付但未完全闭合",
-      "legacy_status": "reportable_unresolved",
-      "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
-      "materiality": "confidence_supporting",
-      "delivery_blocking": false,
-      "actionable_now": false,
-      "actionable_tools": [
-        "family_validation",
-        "external_intel"
-      ],
-      "next_best_query": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
     },
     {
       "gap_id": "structure_evidence",
@@ -1120,10 +1577,10 @@
       "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
     },
     {
-      "gap_id": "check_counterevidence",
-      "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
-      "gap_type": "counterevidence",
-      "priority": "medium",
+      "gap_id": "expand_cluster_scope",
+      "question": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "gap_type": "cluster_scope",
+      "priority": "high",
       "status": "closed",
       "status_label": "已闭合",
       "legacy_status": "closed",
@@ -1132,8 +1589,8 @@
       "delivery_blocking": true,
       "actionable_now": false,
       "actionable_tools": [
-        "counterevidence",
-        "background_validation"
+        "cluster_expand",
+        "scope"
       ],
       "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
     },
@@ -1189,6 +1646,24 @@
         "asset_scope"
       ],
       "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
+    },
+    {
+      "gap_id": "validate_family_hint",
+      "question": "seed 自带的家族提示 Suspected cloud-storage exfil chain 是否有更多外部证据支撑？",
+      "gap_type": "family_validation",
+      "priority": "low",
+      "status": "closed",
+      "status_label": "已闭合",
+      "legacy_status": "closed",
+      "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+      "materiality": "confidence_supporting",
+      "delivery_blocking": false,
+      "actionable_now": false,
+      "actionable_tools": [
+        "family_validation",
+        "external_intel"
+      ],
+      "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
     }
   ],
   "citation_map": {
@@ -1199,7 +1674,13 @@
       "event_ids": [
         "evt-602",
         "evt-603",
-        "evt-604"
+        "evt-604",
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610"
       ],
       "source_refs": [],
       "provenance": "local_observation"
@@ -1209,10 +1690,10 @@
         "obs-002"
       ],
       "event_ids": [
-        "evt-605"
+        "evt-612"
       ],
       "source_refs": [],
-      "provenance": "local_observation"
+      "provenance": "counterevidence"
     },
     "CL-03": {
       "observation_ids": [
@@ -1221,7 +1702,14 @@
       "event_ids": [
         "evt-602",
         "evt-603",
-        "evt-604"
+        "evt-604",
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610",
+        "evt-614"
       ],
       "source_refs": [],
       "provenance": "local_observation"
@@ -1231,91 +1719,108 @@
         "obs-004"
       ],
       "event_ids": [
-        "evt-601",
         "evt-602",
         "evt-603",
         "evt-604",
-        "evt-605"
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610",
+        "evt-614"
       ],
       "source_refs": [],
-      "provenance": "counterevidence"
+      "provenance": "local_observation"
     },
     "CL-05": {
       "observation_ids": [
         "obs-005"
       ],
-      "event_ids": [],
-      "source_refs": [],
-      "provenance": "analyst_note"
+      "event_ids": [
+        "evt-614"
+      ],
+      "source_refs": [
+        "candidate_event:evt-614"
+      ],
+      "provenance": "external_intel"
     },
     "CL-06": {
       "observation_ids": [
-        "obs-005"
+        "obs-006"
       ],
-      "event_ids": [],
-      "source_refs": [],
-      "provenance": "analyst_note"
-    },
-    "CL-07": {
-      "observation_ids": [
-        "obs-005"
+      "event_ids": [
+        "evt-612",
+        "evt-613",
+        "evt-615"
       ],
-      "event_ids": [],
       "source_refs": [],
-      "provenance": "analyst_note"
-    },
-    "CL-08": {
-      "observation_ids": [
-        "obs-005"
-      ],
-      "event_ids": [],
-      "source_refs": [],
-      "provenance": "analyst_note"
-    },
-    "CL-09": {
-      "observation_ids": [
-        "obs-005"
-      ],
-      "event_ids": [],
-      "source_refs": [],
-      "provenance": "analyst_note"
-    },
-    "CL-10": {
-      "observation_ids": [
-        "obs-005"
-      ],
-      "event_ids": [],
-      "source_refs": [],
-      "provenance": "analyst_note"
+      "provenance": "counterevidence"
     }
   },
   "pivots": {
     "seed_ts": "2026-06-03 16:40:00",
     "asset_ids": [
       "ws-rnd-04",
-      "ws-rnd-09"
+      "ws-rnd-09",
+      "ws-rnd-12"
     ],
     "src_ips": [
       "10.90.2.44",
-      "10.90.2.49"
+      "10.90.2.49",
+      "10.90.8.12"
     ],
     "dst_ips": [
       "198.51.100.144",
-      "10.90.2.44"
+      "13.107.136.9"
     ],
     "domains": [
-      "files-sync-share.net"
+      "files-sync-share.net",
+      "api.files-sync-share.net",
+      "company-my.sharepoint.com",
+      "filesync-cdn.example"
     ],
     "fingerprints": [
       "t13d190900_44ac2200b3c1_ab11cd22ee44"
     ]
   },
-  "counterevidence": [],
+  "counterevidence": [
+    {
+      "claim_id": "CL-02",
+      "text": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "relation": "counterevidence",
+      "provenance": "counterevidence",
+      "observation_ids": [
+        "obs-002"
+      ],
+      "event_ids": [
+        "evt-612"
+      ],
+      "source_refs": [],
+      "confidence": 35
+    },
+    {
+      "claim_id": "CL-06",
+      "text": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+      "relation": "counterevidence",
+      "provenance": "counterevidence",
+      "observation_ids": [
+        "obs-006"
+      ],
+      "event_ids": [
+        "evt-612",
+        "evt-613",
+        "evt-615"
+      ],
+      "source_refs": [],
+      "confidence": 78
+    }
+  ],
   "runtime_snapshot": {
     "known_events": [
       {
         "id": "evt-601",
-        "ts": "2026-06-03T16:34:00Z",
+        "ts": "2026-06-03T16:28:00Z",
         "kind": "dns",
         "asset_id": "ws-rnd-04",
         "src_ip": "10.90.2.44",
@@ -1327,10 +1832,25 @@
         "tags": [
           "rare"
         ],
-        "summary": "The workstation resolved a rare storage domain shortly before the seed alert fired."
+        "summary": "The R&D workstation resolved files-sync-share.net, a rare storage-themed domain, before the seed alert."
       },
       {
         "id": "evt-602",
+        "ts": "2026-06-03T16:34:20Z",
+        "kind": "flow",
+        "asset_id": "ws-rnd-04",
+        "src_ip": "10.90.2.44",
+        "dst_ip": "198.51.100.144",
+        "dst_port": 443,
+        "domain": "files-sync-share.net",
+        "classification": "suspicious",
+        "tags": [
+          "command-and-control"
+        ],
+        "summary": "The workstation opened a short TLS session to the rare storage edge before the larger transfer sequence."
+      },
+      {
+        "id": "evt-603",
         "ts": "2026-06-03T16:40:00Z",
         "kind": "alert",
         "asset_id": "ws-rnd-04",
@@ -1338,26 +1858,51 @@
         "dst_ip": "198.51.100.144",
         "domain": "files-sync-share.net",
         "ja4": "t13d190900_44ac2200b3c1_ab11cd22ee44",
-        "classification": "needs_review",
+        "classification": "malicious",
         "tags": [
-          "outlier"
+          "command-and-control",
+          "beacon"
         ],
-        "summary": "Seed JA4 alert observed a suspicious TLS session to a rare storage edge."
+        "summary": "Seed JA4 alert matched a suspicious TLS beacon to the rare storage edge."
       },
       {
-        "id": "evt-603",
-        "ts": "2026-06-03T16:44:00Z",
-        "kind": "alert",
+        "id": "evt-604",
+        "ts": "2026-06-03T16:42:30Z",
+        "kind": "process",
         "asset_id": "ws-rnd-04",
         "src_ip": "10.90.2.44",
         "classification": "suspicious",
         "tags": [
           "execution"
         ],
-        "summary": "Archive utility spawned on the workstation shortly before the outbound transfer."
+        "summary": "PowerShell launched from the user profile and invoked a staging script under C:\\Users\\analyst\\AppData\\Roaming\\sync.ps1."
       },
       {
-        "id": "evt-604",
+        "id": "evt-605",
+        "ts": "2026-06-03T16:44:00Z",
+        "kind": "process",
+        "asset_id": "ws-rnd-04",
+        "src_ip": "10.90.2.44",
+        "classification": "suspicious",
+        "tags": [
+          "execution"
+        ],
+        "summary": "Archive utility 7z.exe created RND-Q2-prototype.zip from a project workspace shortly before outbound transfer."
+      },
+      {
+        "id": "evt-606",
+        "ts": "2026-06-03T16:45:40Z",
+        "kind": "file",
+        "asset_id": "ws-rnd-04",
+        "src_ip": "10.90.2.44",
+        "classification": "suspicious",
+        "tags": [
+          "exfiltration"
+        ],
+        "summary": "The newly created RND-Q2-prototype.zip was staged under C:\\Users\\Public\\Music\\cache.dat for transfer."
+      },
+      {
+        "id": "evt-607",
         "ts": "2026-06-03T16:47:00Z",
         "kind": "flow",
         "asset_id": "ws-rnd-04",
@@ -1365,14 +1910,62 @@
         "dst_ip": "198.51.100.144",
         "dst_port": 443,
         "domain": "files-sync-share.net",
-        "classification": "unknown",
+        "bytes_out": 671088640,
+        "classification": "suspicious",
+        "tags": [
+          "exfiltration",
+          "upload"
+        ],
+        "summary": "A large outbound HTTPS upload to files-sync-share.net followed the archive creation, with roughly 640 MB sent."
+      },
+      {
+        "id": "evt-608",
+        "ts": "2026-06-03T16:50:10Z",
+        "kind": "dlp",
+        "asset_id": "ws-rnd-04",
+        "src_ip": "10.90.2.44",
+        "dst_ip": "198.51.100.144",
+        "domain": "files-sync-share.net",
+        "classification": "needs_review",
+        "tags": [
+          "exfiltration",
+          "telemetry-gap"
+        ],
+        "summary": "DLP recorded the encrypted outbound transfer size but could not inspect the archive contents."
+      },
+      {
+        "id": "evt-609",
+        "ts": "2026-06-03T16:52:30Z",
+        "kind": "dns",
+        "asset_id": "ws-rnd-04",
+        "src_ip": "10.90.2.44",
+        "domain": "api.files-sync-share.net",
+        "answers": [
+          "198.51.100.144"
+        ],
+        "classification": "suspicious",
         "tags": [
           "rare"
         ],
-        "summary": "A large outbound HTTPS upload followed the archive creation, but DLP visibility is incomplete."
+        "summary": "The same workstation resolved api.files-sync-share.net, a sibling domain on the same storage edge."
       },
       {
-        "id": "evt-605",
+        "id": "evt-610",
+        "ts": "2026-06-03T16:55:00Z",
+        "kind": "flow",
+        "asset_id": "ws-rnd-04",
+        "src_ip": "10.90.2.44",
+        "dst_ip": "198.51.100.144",
+        "dst_port": 443,
+        "domain": "api.files-sync-share.net",
+        "classification": "suspicious",
+        "tags": [
+          "command-and-control"
+        ],
+        "summary": "A follow-on TLS session used the sibling API domain after the large upload completed."
+      },
+      {
+        "id": "evt-611",
         "ts": "2026-06-03T17:05:00Z",
         "kind": "flow",
         "asset_id": "ws-rnd-09",
@@ -1384,7 +1977,64 @@
         "tags": [
           "rare"
         ],
-        "summary": "A second workstation briefly connected to the same storage edge, but only once and without host evidence."
+        "summary": "A second R&D workstation briefly connected to the same storage edge, but only once and without host corroboration."
+      },
+      {
+        "id": "evt-612",
+        "ts": "2026-06-03T17:08:20Z",
+        "kind": "asset_context",
+        "asset_id": "ws-rnd-09",
+        "src_ip": "10.90.2.49",
+        "classification": "benign",
+        "tags": [
+          "backup",
+          "baseline"
+        ],
+        "summary": "ws-rnd-09 had an approved backup job running in the same hour, explaining some storage-oriented traffic."
+      },
+      {
+        "id": "evt-613",
+        "ts": "2026-06-03T17:12:00Z",
+        "kind": "flow",
+        "asset_id": "ws-rnd-04",
+        "src_ip": "10.90.2.44",
+        "dst_ip": "13.107.136.9",
+        "dst_port": 443,
+        "domain": "company-my.sharepoint.com",
+        "classification": "benign",
+        "tags": [
+          "cloud-sync",
+          "baseline"
+        ],
+        "summary": "Normal corporate SharePoint sync traffic from ws-rnd-04 was also present during the investigation window."
+      },
+      {
+        "id": "evt-614",
+        "ts": "2026-06-03T17:18:00Z",
+        "kind": "asset_context",
+        "asset_id": "ws-rnd-04",
+        "src_ip": "10.90.2.44",
+        "classification": "unknown",
+        "tags": [
+          "telemetry-gap"
+        ],
+        "summary": "EDR did not preserve the full PowerShell command line, limiting reconstruction of the staging script."
+      },
+      {
+        "id": "evt-615",
+        "ts": "2026-06-03T17:24:40Z",
+        "kind": "flow",
+        "asset_id": "ws-rnd-12",
+        "src_ip": "10.90.8.12",
+        "dst_ip": "198.51.100.144",
+        "dst_port": 443,
+        "domain": "filesync-cdn.example",
+        "classification": "benign",
+        "tags": [
+          "shared-hosting",
+          "unrelated"
+        ],
+        "summary": "A lab workstation reached the same IP through a different vendor CDN domain, indicating the IP is not uniquely malicious."
       }
     ],
     "evidence_ledger": [
@@ -1395,24 +2045,36 @@
         "grounding_status": "",
         "source_type": "trace_store.seed_context",
         "source_ref": "",
-        "summary": "检索到 3 条偏可疑事件，围绕 files-sync-share.net、198.51.100.144 展开。",
+        "summary": "检索到 9 条偏可疑事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开。",
         "event_ids": [
           "evt-602",
           "evt-603",
-          "evt-604"
+          "evt-604",
+          "evt-605",
+          "evt-606",
+          "evt-607",
+          "evt-608",
+          "evt-609",
+          "evt-610"
         ],
         "checked_event_ids": [
           "evt-601",
           "evt-602",
           "evt-603",
           "evt-604",
-          "evt-605"
+          "evt-605",
+          "evt-606",
+          "evt-607",
+          "evt-608",
+          "evt-609",
+          "evt-610",
+          "evt-611"
         ],
         "boundary_event_ids": [],
         "claim_texts": [
-          "检索到 3 条偏可疑事件，围绕 files-sync-share.net、198.51.100.144 展开。"
+          "检索到 9 条偏可疑事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开。"
         ],
-        "confidence": 69,
+        "confidence": 90,
         "supports_hypothesis": [
           "primary",
           "secondary"
@@ -1422,24 +2084,29 @@
       {
         "observation_id": "obs-002",
         "tool_name": "expand_asset_scope",
-        "relation": "context",
+        "relation": "counterevidence",
         "grounding_status": "",
         "source_type": "trace_store.asset_context",
         "source_ref": "",
-        "summary": "检索到 1 条上下文事件，当前主要用于扩边界和补足范围。",
+        "summary": "检索到 1 条更接近维护、更新或正常基线的事件。",
         "event_ids": [
-          "evt-605"
+          "evt-612"
         ],
         "checked_event_ids": [
-          "evt-605"
+          "evt-611",
+          "evt-612"
         ],
         "boundary_event_ids": [],
         "claim_texts": [
-          "检索到 1 条上下文事件，当前主要用于扩边界和补足范围。"
+          "检索到 1 条更接近维护、更新或正常基线的事件。"
         ],
-        "confidence": 29,
-        "supports_hypothesis": [],
-        "contradicts_hypothesis": []
+        "confidence": 35,
+        "supports_hypothesis": [
+          "benign"
+        ],
+        "contradicts_hypothesis": [
+          "primary"
+        ]
       },
       {
         "observation_id": "obs-003",
@@ -1448,24 +2115,41 @@
         "grounding_status": "",
         "source_type": "trace_store.related_events",
         "source_ref": "",
-        "summary": "扩线检索到 3 条可疑关联事件，围绕 files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
+        "summary": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
         "event_ids": [
           "evt-602",
           "evt-603",
-          "evt-604"
+          "evt-604",
+          "evt-605",
+          "evt-606",
+          "evt-607",
+          "evt-608",
+          "evt-609",
+          "evt-610",
+          "evt-614"
         ],
         "checked_event_ids": [
           "evt-601",
           "evt-602",
           "evt-603",
           "evt-604",
-          "evt-605"
+          "evt-605",
+          "evt-606",
+          "evt-607",
+          "evt-608",
+          "evt-609",
+          "evt-610",
+          "evt-611",
+          "evt-612",
+          "evt-613",
+          "evt-614",
+          "evt-615"
         ],
         "boundary_event_ids": [],
         "claim_texts": [
-          "扩线检索到 3 条可疑关联事件，围绕 files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。"
+          "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。"
         ],
-        "confidence": 69,
+        "confidence": 90,
         "supports_hypothesis": [
           "secondary",
           "secondary"
@@ -1474,54 +2158,117 @@
       },
       {
         "observation_id": "obs-004",
-        "tool_name": "check_counterevidence",
-        "relation": "context",
+        "tool_name": "search_related_events",
+        "relation": "candidate",
         "grounding_status": "",
-        "source_type": "trace_store.asset_context",
+        "source_type": "trace_store.related_events",
         "source_ref": "",
-        "summary": "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。",
+        "summary": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
         "event_ids": [
-          "evt-601",
           "evt-602",
           "evt-603",
           "evt-604",
-          "evt-605"
+          "evt-605",
+          "evt-606",
+          "evt-607",
+          "evt-608",
+          "evt-609",
+          "evt-610",
+          "evt-614"
         ],
         "checked_event_ids": [
           "evt-601",
           "evt-602",
           "evt-603",
           "evt-604",
-          "evt-605"
+          "evt-605",
+          "evt-606",
+          "evt-607",
+          "evt-608",
+          "evt-609",
+          "evt-610",
+          "evt-611",
+          "evt-612",
+          "evt-613",
+          "evt-614",
+          "evt-615"
         ],
         "boundary_event_ids": [],
         "claim_texts": [
-          "显式反证检查覆盖了 5 条同资产上下文，未发现足以降级当前判断的明确背景解释。"
+          "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。"
         ],
-        "confidence": 48,
-        "supports_hypothesis": [],
+        "confidence": 90,
+        "supports_hypothesis": [
+          "secondary",
+          "secondary"
+        ],
         "contradicts_hypothesis": []
       },
       {
         "observation_id": "obs-005",
-        "tool_name": "extract_claim_candidates_from_page",
+        "tool_name": "ground_candidate_event",
         "relation": "context",
-        "grounding_status": "",
-        "source_type": "internal_digest",
-        "source_ref": "",
-        "summary": "从内部调查摘要中整理出 7 条 claim，用于结构化报告而不是新增外部证据。",
-        "event_ids": [],
-        "checked_event_ids": [],
-        "boundary_event_ids": [],
-        "claim_texts": [
-          "- primary: ws-rnd-04 疑似 Possible cloud-storage exfil candidate 相关事件 (score=3)",
-          "- family_hint=Possible cloud-storage exfil candidate",
-          "- src=10.90.2.44 dst=198.51.100.144 fp=t13d190900_44ac2200b3c1_ab11cd22ee44",
-          "- candidate: 扩线检索到 3 条可疑关联事件，围绕 files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。"
+        "grounding_status": "context_only",
+        "source_type": "candidate_grounding",
+        "source_ref": "candidate_event:evt-614",
+        "summary": "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。",
+        "event_ids": [
+          "evt-614"
         ],
-        "confidence": 70,
+        "checked_event_ids": [
+          "evt-614"
+        ],
+        "boundary_event_ids": [
+          "evt-614"
+        ],
+        "claim_texts": [
+          "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。"
+        ],
+        "confidence": 28,
         "supports_hypothesis": [],
         "contradicts_hypothesis": []
+      },
+      {
+        "observation_id": "obs-006",
+        "tool_name": "check_counterevidence",
+        "relation": "counterevidence",
+        "grounding_status": "",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+        "event_ids": [
+          "evt-612",
+          "evt-613",
+          "evt-615"
+        ],
+        "checked_event_ids": [
+          "evt-601",
+          "evt-602",
+          "evt-603",
+          "evt-604",
+          "evt-605",
+          "evt-606",
+          "evt-607",
+          "evt-608",
+          "evt-609",
+          "evt-610",
+          "evt-611",
+          "evt-612",
+          "evt-613",
+          "evt-614",
+          "evt-615"
+        ],
+        "boundary_event_ids": [],
+        "claim_texts": [
+          "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。"
+        ],
+        "confidence": 78,
+        "supports_hypothesis": [
+          "benign"
+        ],
+        "contradicts_hypothesis": [
+          "primary"
+        ]
       }
     ],
     "context_bundle": {
@@ -1530,9 +2277,15 @@
         "evt-602",
         "evt-603",
         "evt-604",
-        "evt-605"
+        "evt-605",
+        "evt-606",
+        "evt-607",
+        "evt-608",
+        "evt-609",
+        "evt-610",
+        "evt-611"
       ],
-      "minimal_event_count": 5
+      "minimal_event_count": 11
     },
     "entity_hints": {
       "seed_asset": "ws-rnd-04",
@@ -1542,7 +2295,8 @@
       ],
       "observed_assets": [
         "ws-rnd-04",
-        "ws-rnd-09"
+        "ws-rnd-09",
+        "ws-rnd-12"
       ],
       "suspected_assets": [
         "ws-rnd-04"
@@ -1552,139 +2306,55 @@
       ],
       "internal_ips": [
         "10.90.2.44",
-        "10.90.2.49"
+        "10.90.2.49",
+        "10.90.8.12"
       ],
       "external_ips": [
-        "198.51.100.144"
+        "198.51.100.144",
+        "13.107.136.9"
       ],
       "primary_external_ips": [
+        "198.51.100.144",
+        "13.107.136.9"
+      ],
+      "contextual_external_ips": [
+        "13.107.136.9",
         "198.51.100.144"
       ],
-      "contextual_external_ips": [],
       "domains": [
-        "files-sync-share.net"
+        "files-sync-share.net",
+        "api.files-sync-share.net",
+        "company-my.sharepoint.com",
+        "filesync-cdn.example"
       ],
       "primary_domains": [
-        "files-sync-share.net"
+        "files-sync-share.net",
+        "api.files-sync-share.net",
+        "company-my.sharepoint.com",
+        "filesync-cdn.example"
       ],
-      "contextual_domains": [],
+      "contextual_domains": [
+        "company-my.sharepoint.com",
+        "filesync-cdn.example"
+      ],
       "users": []
     },
     "gap_ledger": [
       {
-        "id": "expand_cluster_scope",
-        "priority": "high",
-        "question": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
-        "gap_type": "cluster_scope",
+        "id": "check_counterevidence",
+        "priority": "medium",
+        "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+        "gap_type": "counterevidence",
         "materiality": "delivery_blocking",
         "tool_capability_hints": [
-          "cluster_expand",
-          "scope"
+          "counterevidence",
+          "background_validation"
         ],
         "delivery_blocking": true,
-        "reportable_if_unresolved": true,
+        "reportable_if_unresolved": false,
         "closure_criteria": [
-          "至少完成一次基于当前 pivot 的扩线搜索",
-          "确认是否存在更多同指标复现或明确当前范围已经收敛"
-        ],
-        "attempt_count": 2,
-        "material_attempt_count": 0,
-        "editorial_only_attempt_count": 2,
-        "zero_delta_attempt_count": 0,
-        "last_attempt_step": 3,
-        "last_attempt_tool": "search_related_events",
-        "recent_attempts": [
-          {
-            "step_index": 2,
-            "tool_name": "expand_asset_scope",
-            "material_score": 0,
-            "editorial_score": 1,
-            "summary": "新增 1 条 claim"
-          },
-          {
-            "step_index": 3,
-            "tool_name": "search_related_events",
-            "material_score": 0,
-            "editorial_score": 1,
-            "summary": "新增 1 条 claim"
-          }
-        ],
-        "addressable_tools": [
-          "search_related_events"
-        ],
-        "actionable_tools": [],
-        "status": "reportable_unresolved",
-        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
-        "actionable_now": false,
-        "first_seen_step": 1,
-        "last_seen_step": 5,
-        "closed_step": null
-      },
-      {
-        "id": "related_assets_review",
-        "priority": "medium",
-        "question": "关联资产 ws-rnd-09 是否真正受影响？",
-        "gap_type": "scope_expansion",
-        "materiality": "boundary_sensitive",
-        "tool_capability_hints": [
-          "asset_scope",
-          "cluster_expand",
-          "scope"
-        ],
-        "delivery_blocking": true,
-        "reportable_if_unresolved": true,
-        "closure_criteria": [
-          "确认关联资产是否进入同一事件范围",
-          "或收敛为报告边界说明"
-        ],
-        "attempt_count": 2,
-        "material_attempt_count": 0,
-        "editorial_only_attempt_count": 2,
-        "zero_delta_attempt_count": 0,
-        "last_attempt_step": 3,
-        "last_attempt_tool": "search_related_events",
-        "recent_attempts": [
-          {
-            "step_index": 2,
-            "tool_name": "expand_asset_scope",
-            "material_score": 0,
-            "editorial_score": 1,
-            "summary": "新增 1 条 claim"
-          },
-          {
-            "step_index": 3,
-            "tool_name": "search_related_events",
-            "material_score": 0,
-            "editorial_score": 1,
-            "summary": "新增 1 条 claim"
-          }
-        ],
-        "addressable_tools": [
-          "search_related_events"
-        ],
-        "actionable_tools": [],
-        "status": "reportable_unresolved",
-        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
-        "actionable_now": false,
-        "first_seen_step": 1,
-        "last_seen_step": 5,
-        "closed_step": null
-      },
-      {
-        "id": "validate_family_hint",
-        "priority": "low",
-        "question": "seed 自带的家族提示 Possible cloud-storage exfil candidate 是否有更多外部证据支撑？",
-        "gap_type": "family_validation",
-        "materiality": "confidence_supporting",
-        "tool_capability_hints": [
-          "family_validation",
-          "external_intel"
-        ],
-        "delivery_blocking": false,
-        "reportable_if_unresolved": true,
-        "closure_criteria": [
-          "补足家族提示支撑",
-          "或明确仅作弱提示引用"
+          "完成显式反证检查",
+          "明确是否存在降级解释"
         ],
         "attempt_count": 0,
         "material_attempt_count": 0,
@@ -1695,12 +2365,47 @@
         "recent_attempts": [],
         "addressable_tools": [],
         "actionable_tools": [],
-        "status": "reportable_unresolved",
-        "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+        "status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "actionable_now": false,
         "first_seen_step": 1,
-        "last_seen_step": 5,
-        "closed_step": null
+        "last_seen_step": 6,
+        "closed_step": 6
+      },
+      {
+        "id": "validate_candidate_events",
+        "priority": "high",
+        "question": "扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？",
+        "gap_type": "candidate_grounding",
+        "materiality": "delivery_blocking",
+        "tool_capability_hints": [
+          "candidate_grounding",
+          "local_intel",
+          "external_intel",
+          "infra_context",
+          "structured_intel"
+        ],
+        "delivery_blocking": true,
+        "reportable_if_unresolved": true,
+        "closure_criteria": [
+          "对候选事件完成独立 grounding",
+          "明确哪些事件进入主证据链，哪些仅保留为上下文/边界"
+        ],
+        "attempt_count": 0,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 0,
+        "zero_delta_attempt_count": 0,
+        "last_attempt_step": 0,
+        "last_attempt_tool": "",
+        "recent_attempts": [],
+        "addressable_tools": [],
+        "actionable_tools": [],
+        "status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+        "actionable_now": false,
+        "first_seen_step": 3,
+        "last_seen_step": 6,
+        "closed_step": 5
       },
       {
         "id": "structure_evidence",
@@ -1732,39 +2437,54 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "actionable_now": false,
         "first_seen_step": 1,
-        "last_seen_step": 5,
+        "last_seen_step": 6,
         "closed_step": 5
       },
       {
-        "id": "check_counterevidence",
-        "priority": "medium",
-        "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
-        "gap_type": "counterevidence",
+        "id": "expand_cluster_scope",
+        "priority": "high",
+        "question": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+        "gap_type": "cluster_scope",
         "materiality": "delivery_blocking",
         "tool_capability_hints": [
-          "counterevidence",
-          "background_validation"
+          "cluster_expand",
+          "scope"
         ],
         "delivery_blocking": true,
-        "reportable_if_unresolved": false,
+        "reportable_if_unresolved": true,
         "closure_criteria": [
-          "完成显式反证检查",
-          "明确是否存在降级解释"
+          "至少完成一次基于当前 pivot 的扩线搜索",
+          "确认是否存在更多同指标复现或明确当前范围已经收敛"
         ],
-        "attempt_count": 0,
-        "material_attempt_count": 0,
+        "attempt_count": 2,
+        "material_attempt_count": 2,
         "editorial_only_attempt_count": 0,
         "zero_delta_attempt_count": 0,
-        "last_attempt_step": 0,
-        "last_attempt_tool": "",
-        "recent_attempts": [],
+        "last_attempt_step": 3,
+        "last_attempt_tool": "search_related_events",
+        "recent_attempts": [
+          {
+            "step_index": 2,
+            "tool_name": "expand_asset_scope",
+            "material_score": 1,
+            "editorial_score": 1,
+            "summary": "新增 1 条事件；新增 1 条 claim"
+          },
+          {
+            "step_index": 3,
+            "tool_name": "search_related_events",
+            "material_score": 3,
+            "editorial_score": 1,
+            "summary": "新增 3 条事件；新增 1 条 claim"
+          }
+        ],
         "addressable_tools": [],
         "actionable_tools": [],
         "status": "closed",
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "actionable_now": false,
         "first_seen_step": 1,
-        "last_seen_step": 5,
+        "last_seen_step": 6,
         "closed_step": 4
       },
       {
@@ -1795,7 +2515,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "actionable_now": false,
         "first_seen_step": 1,
-        "last_seen_step": 5,
+        "last_seen_step": 6,
         "closed_step": 1
       },
       {
@@ -1827,7 +2547,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "actionable_now": false,
         "first_seen_step": 1,
-        "last_seen_step": 5,
+        "last_seen_step": 6,
         "closed_step": 1
       },
       {
@@ -1859,7 +2579,39 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "actionable_now": false,
         "first_seen_step": 1,
-        "last_seen_step": 5,
+        "last_seen_step": 6,
+        "closed_step": 1
+      },
+      {
+        "id": "validate_family_hint",
+        "priority": "low",
+        "question": "seed 自带的家族提示 Suspected cloud-storage exfil chain 是否有更多外部证据支撑？",
+        "gap_type": "family_validation",
+        "materiality": "confidence_supporting",
+        "tool_capability_hints": [
+          "family_validation",
+          "external_intel"
+        ],
+        "delivery_blocking": false,
+        "reportable_if_unresolved": true,
+        "closure_criteria": [
+          "补足家族提示支撑",
+          "或明确仅作弱提示引用"
+        ],
+        "attempt_count": 0,
+        "material_attempt_count": 0,
+        "editorial_only_attempt_count": 0,
+        "zero_delta_attempt_count": 0,
+        "last_attempt_step": 0,
+        "last_attempt_tool": "",
+        "recent_attempts": [],
+        "addressable_tools": [],
+        "actionable_tools": [],
+        "status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+        "actionable_now": false,
+        "first_seen_step": 1,
+        "last_seen_step": 6,
         "closed_step": 1
       }
     ],
@@ -1867,42 +2619,47 @@
       "seed_ts": "2026-06-03 16:40:00",
       "asset_ids": [
         "ws-rnd-04",
-        "ws-rnd-09"
+        "ws-rnd-09",
+        "ws-rnd-12"
       ],
       "src_ips": [
         "10.90.2.44",
-        "10.90.2.49"
+        "10.90.2.49",
+        "10.90.8.12"
       ],
       "dst_ips": [
         "198.51.100.144",
-        "10.90.2.44"
+        "13.107.136.9"
       ],
       "domains": [
-        "files-sync-share.net"
+        "files-sync-share.net",
+        "api.files-sync-share.net",
+        "company-my.sharepoint.com",
+        "filesync-cdn.example"
       ],
       "fingerprints": [
         "t13d190900_44ac2200b3c1_ab11cd22ee44"
       ]
     },
     "analysis_verdict": {
-      "status": "needs_review",
-      "status_label": "待人工复核",
-      "confidence": 66,
-      "severity": "中危",
+      "status": "confirmed_incident",
+      "status_label": "确认事件",
+      "confidence": 94,
+      "severity": "高危",
       "rationale": [
-        "当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。",
-        "seed alert 自带家族/工具提示：Possible cloud-storage exfil candidate。",
+        "事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。",
+        "seed alert 自带家族/工具提示：Suspected cloud-storage exfil chain。",
         "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。"
       ]
     },
     "provisional_verdict": {
-      "status": "needs_review",
-      "status_label": "待人工复核",
-      "confidence": 66,
-      "severity": "中危",
+      "status": "confirmed_incident",
+      "status_label": "确认事件",
+      "confidence": 94,
+      "severity": "高危",
       "rationale": [
-        "当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。",
-        "seed alert 自带家族/工具提示：Possible cloud-storage exfil candidate。",
+        "事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。",
+        "seed alert 自带家族/工具提示：Suspected cloud-storage exfil chain。",
         "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。"
       ]
     },
