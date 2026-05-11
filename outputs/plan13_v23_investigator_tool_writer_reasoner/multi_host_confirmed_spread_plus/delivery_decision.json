@@ -1,0 +1,152 @@
+{
+  "schema_version": "delivery-decision-v1",
+  "approved": true,
+  "delivery_status": "confirmed_incident",
+  "delivery_status_label": "确认安全事件",
+  "confidence_band": "高",
+  "confirmed_scope": [
+    "ws-eng-02",
+    "ws-eng-05"
+  ],
+  "candidate_scope": [
+    "ws-eng-09"
+  ],
+  "blocking_gaps": [],
+  "non_blocking_gaps": [
+    {
+      "gap_id": "validate_candidate_events",
+      "question": "扩线得到的 3 条关联事件尚未完成独立验证，是否应并入主事件范围？",
+      "priority": "high",
+      "status": "unresolved_but_deliverable",
+      "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+      "delivery_blocking": true,
+      "actionable_now": false,
+      "blocks_delivery_now": false,
+      "gate_type": "reportable_limit",
+      "next_best_question": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+    }
+  ],
+  "next_best_questions": [
+    "扩线得到的 3 条关联事件尚未完成独立验证，是否应并入主事件范围？"
+  ],
+  "reviewer_rationale": "主支撑证据和范围已达到确认事件交付门槛；剩余候选扩线、反证或背景材料应作为报告边界呈现。",
+  "insufficient_progress_signals": [],
+  "delivery_verdict": {
+    "status": "confirmed_incident",
+    "status_label": "确认安全事件",
+    "confidence": 94,
+    "severity": "高危",
+    "rationale": [
+      "事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。",
+      "seed alert 自带家族/工具提示：Suspected multi-host beacon spread。",
+      "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。",
+      "主支撑证据和范围已达到确认事件交付门槛；剩余候选扩线、反证或背景材料应作为报告边界呈现。"
+    ],
+    "delivery_ready": true,
+    "blocked_by": [],
+    "provisional_status": "confirmed_incident",
+    "provisional_status_label": "确认事件"
+  },
+  "analysis_verdict": {
+    "status": "confirmed_incident",
+    "status_label": "确认事件",
+    "confidence": 94,
+    "severity": "高危",
+    "rationale": [
+      "事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。",
+      "seed alert 自带家族/工具提示：Suspected multi-host beacon spread。",
+      "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。"
+    ]
+  },
+  "readiness": {
+    "ready_for_delivery": true,
+    "summary": "主支撑证据和范围已达到确认事件交付门槛；剩余候选扩线、反证或背景材料应作为报告边界呈现。",
+    "checks": [
+      {
+        "id": "context_built",
+        "ok": true,
+        "reason": "已围绕 seed alert 建立最小上下文。",
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
+      },
+      {
+        "id": "cluster_built",
+        "ok": true,
+        "reason": "事件簇规模已经足以支撑时间线和范围判断。",
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
+      },
+      {
+        "id": "candidate_events_grounded",
+        "ok": false,
+        "reason": "仍有候选事件未独立验证，但它们当前只限制扩展边界，不再阻塞核心结论交付。",
+        "delivery_blocking": false,
+        "gate_type": "reportable_limit",
+        "suggested_report_boundary": "候选事件只能写入待确认范围或报告边界，不能并入已确认传播结论。",
+        "actionable_now": false
+      },
+      {
+        "id": "timeline_built",
+        "ok": true,
+        "reason": "已形成时间线，可解释关键观察的先后关系。",
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
+      },
+      {
+        "id": "scope_assessed",
+        "ok": true,
+        "reason": "当前事件范围已经落到资产或核心外部指示物上。",
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
+      },
+      {
+        "id": "evidence_chain_ready",
+        "ok": true,
+        "reason": "确认事件前至少需要执行、横向移动、外传等高风险阶段，或已经保守收敛到多资产范围，目前该条件已满足。",
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
+      },
+      {
+        "id": "counterevidence_checked",
+        "ok": true,
+        "reason": "已执行显式反证检查。",
+        "delivery_blocking": false,
+        "gate_type": "reportable_limit",
+        "suggested_report_boundary": "",
+        "actionable_now": false
+      },
+      {
+        "id": "supplemental_context_reviewed",
+        "ok": true,
+        "reason": "已执行至少一次情报或结构化整理动作，可支撑 deterministic report 生成。",
+        "delivery_blocking": false,
+        "gate_type": "reviewer_judgment",
+        "suggested_report_boundary": "",
+        "actionable_now": false
+      }
+    ],
+    "blocking_checks": [],
+    "reviewer_judgment_checks": [],
+    "reportable_limit_checks": [
+      {
+        "id": "candidate_events_grounded",
+        "ok": false,
+        "reason": "仍有候选事件未独立验证，但它们当前只限制扩展边界，不再阻塞核心结论交付。",
+        "delivery_blocking": false,
+        "gate_type": "reportable_limit",
+        "suggested_report_boundary": "候选事件只能写入待确认范围或报告边界，不能并入已确认传播结论。",
+        "actionable_now": false
+      }
+    ]
+  }
+}

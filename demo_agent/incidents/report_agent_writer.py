@@ -6,6 +6,10 @@ from typing import Any, Dict, Iterable, List, Tuple
 
 from ..services.api.llm_observability import invoke_llm_with_trace
 from .report_agent_tools import source_fact_indexes
+from .report_text_quality import (
+    is_low_information_evidence_label,
+    is_meta_material_text as _is_meta_conclusion_text,
+)
 
 
 def _json(value: Any) -> str:
@@ -119,43 +123,13 @@ def _reader_clean_text(value: Any) -> str:
     return text
 
 
-LOW_INFORMATION_EVIDENCE_LABELS = {
-    "suspicious",
-    "malicious",
-    "benign",
-    "confirmed",
-    "candidate",
-    "needs_review",
-    "unknown",
-    "主支撑证据",
-    "范围证据",
-    "边界证据",
-    "章节事实",
-    "关键事件事实",
-    "可疑",
-    "恶意",
-}
-
-META_CONCLUSION_MARKERS = {
-    "生成报告材料",
-    "证据包保守生成",
-    "只能依据已整理",
-}
-
-
 def _is_low_information_evidence_text(value: Any) -> bool:
     text = _reader_clean_text(value)
     if not text:
         return True
-    lowered = text.lower()
-    if lowered in LOW_INFORMATION_EVIDENCE_LABELS or text in LOW_INFORMATION_EVIDENCE_LABELS:
+    if is_low_information_evidence_label(text):
         return True
     return len(text) <= 3
-
-
-def _is_meta_conclusion_text(value: Any) -> bool:
-    text = _reader_clean_text(value)
-    return bool(text and any(marker in text for marker in META_CONCLUSION_MARKERS))
 
 
 def _first_useful_evidence_text(item: Dict[str, Any]) -> str:
@@ -687,6 +661,117 @@ def build_report_writer_brief(materials: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def _compact_prompt_fact_snapshot(snapshot: Dict[str, Any]) -> Dict[str, Any]:
+    entry = _as_dict(snapshot)
+    compact = {
+        "fact_id": _text(entry.get("fact_id")),
+        "fact_type": _text(entry.get("fact_type")),
+        "status": _text(entry.get("status")),
+        "classification": _text(entry.get("classification")),
+        "time": _text(entry.get("time")),
+        "asset": _text(entry.get("asset")),
+        "objects": _as_list(entry.get("objects"))[:6],
+        "fact_text": _reader_clean_text(entry.get("fact_text") or entry.get("reader_fact_text") or entry.get("exact_fact_text")),
+        "reporting_focus": _reader_clean_text(entry.get("reporting_focus")),
+        "candidate_or_boundary": bool(entry.get("candidate_or_boundary")),
+    }
+    return {key: value for key, value in compact.items() if value not in ["", [], {}]}
+
+
+def build_report_writer_prompt_brief(writer_brief: Dict[str, Any]) -> Dict[str, Any]:
+    """Build the compact brief sent to the LLM writer.
+
+    The full writer brief remains the debug artifact. The prompt brief keeps
+    only section-routed fact snapshots so the writer sees the facts it is
+    allowed to expand without paying for a duplicate full catalog.
+    """
+
+    source = _as_dict(writer_brief)
+    used_fact_ids: List[str] = []
+    section_fact_map: List[Dict[str, Any]] = []
+    for raw_section in _as_list(source.get("section_fact_map")):
+        section = _as_dict(raw_section)
+        paragraph_plan: List[Dict[str, Any]] = []
+        section_fact_ids: List[str] = []
+        for raw_plan in _as_list(section.get("paragraph_plan")):
+            plan = _as_dict(raw_plan)
+            snapshots = [
+                _compact_prompt_fact_snapshot(_as_dict(snapshot))
+                for snapshot in _as_list(plan.get("fact_snapshots"))
+            ]
+            snapshots = [snapshot for snapshot in snapshots if _text(snapshot.get("fact_id"))]
+            if not snapshots:
+                continue
+            fact_ids = _dedupe(
+                _text(snapshot.get("fact_id"))
+                for snapshot in snapshots
+                if _text(snapshot.get("fact_id"))
+            )
+            section_fact_ids.extend(fact_ids)
+            used_fact_ids.extend(fact_ids)
+            paragraph_plan.append(
+                {
+                    "group_id": _text(plan.get("group_id")),
+                    "paragraph_role": _reader_clean_text(plan.get("paragraph_role")),
+                    "paragraph_claim": _reader_clean_text(plan.get("paragraph_claim")),
+                    "fact_ids": fact_ids,
+                    "write_focus": _reader_clean_text(plan.get("write_focus")),
+                    "contrast_or_boundary": _reader_clean_text(plan.get("contrast_or_boundary")),
+                    "must_not_repeat": _reader_clean_text(plan.get("must_not_repeat")),
+                    "fact_snapshots": snapshots,
+                }
+            )
+        section_fact_map.append(
+            {
+                "section_type": _text(section.get("section_type")),
+                "title": _text(section.get("title")),
+                "question_to_answer": _reader_clean_text(section.get("question_to_answer")),
+                "mode": _text(section.get("mode")),
+                "must_include": _as_list(section.get("must_include"))[:4],
+                "must_not_repeat": _as_list(section.get("must_not_repeat"))[:4],
+                "boundary_notes": _as_list(section.get("boundary_notes"))[:4],
+                "allowed_fact_ids": _dedupe(section_fact_ids),
+                "fact_roles_to_cover": _as_list(section.get("fact_roles_to_cover"))[:6],
+                "minimum_fact_count_to_cover": section.get("minimum_fact_count_to_cover"),
+                "minimum_distinct_fact_roles": section.get("minimum_distinct_fact_roles"),
+                "paragraph_target": section.get("paragraph_target"),
+                "complex_section": bool(section.get("complex_section")),
+                "paragraph_plan": paragraph_plan,
+            }
+        )
+
+    used_fact_id_set = set(_dedupe(used_fact_ids))
+    constraints = _as_dict(source.get("writing_constraints"))
+    compact_constraints = {
+        "global_rules": _as_list(constraints.get("global_rules")),
+        "candidate_or_boundary_fact_ids": [
+            fact_id
+            for fact_id in _as_list(constraints.get("candidate_or_boundary_fact_ids"))
+            if _text(fact_id) in used_fact_id_set
+        ],
+        "external_infrastructure_fact_ids": [
+            fact_id
+            for fact_id in _as_list(constraints.get("external_infrastructure_fact_ids"))
+            if _text(fact_id) in used_fact_id_set
+        ],
+        "action_fact_ids": [
+            fact_id
+            for fact_id in _as_list(constraints.get("action_fact_ids"))
+            if _text(fact_id) in used_fact_id_set
+        ],
+    }
+
+    return {
+        "schema_version": "report-writer-prompt-brief-v1",
+        "source_brief_schema_version": _text(source.get("schema_version")),
+        "source_material_schema_version": _text(source.get("source_material_schema_version")),
+        "header_packet": _as_dict(source.get("header_packet")),
+        "section_fact_map": section_fact_map,
+        "writing_constraints": compact_constraints,
+        "appendix_note": _reader_clean_text(source.get("appendix_note")),
+    }
+
+
 def _strip_disallowed_subheadings(markdown: str) -> str:
     lines: List[str] = []
     previous_blank = False
@@ -833,12 +918,13 @@ def _normalize_writer_markdown(markdown: str, writer_brief: Dict[str, Any]) -> s
     return expanded.strip()
 
 
-REPORT_AGENT_WRITER_SYSTEM_PROMPT = """你是 Trace-Agent 的安全事件报告 writer。你只基于 report_writer_brief 写中文 Markdown 正文，读者是运维人员和安全运营协同对象。
+REPORT_AGENT_WRITER_SYSTEM_PROMPT = """你是 Trace-Agent 的安全事件报告 writer。你只基于 report_writer_prompt_brief 写中文 Markdown 正文，读者是运维人员和安全运营协同对象。
 
 输入契约：
-- report_writer_brief 是确定性编译产物，没有新增事实。你只能使用 header_packet、fact_catalog、section_fact_map、writing_constraints、appendix_note、used_source_inventory。
-- Fact Catalog 是事实库；Section Fact Map 是章节取材权限表。每节只能使用本节 allowed_fact_ids 对应的 fact，不能从其他章节借事实。
-- fact_catalog 保存完整原子事实；section_fact_map.paragraph_plan 是段落组计划。每个 plan item 包含 group_id、paragraph_role、paragraph_claim、write_focus、contrast_or_boundary、must_not_repeat 和 fact_snapshots。
+- report_writer_prompt_brief 是从完整 report_writer_brief 确定性压缩出的写作输入，没有新增事实。你只能使用 header_packet、section_fact_map、writing_constraints、appendix_note。
+- 完整 fact_catalog 已保存为调试 artifact，不会在 prompt 里重复展开；section_fact_map.paragraph_plan[*].fact_snapshots 是本次写作的事实库。
+- Section Fact Map 是章节取材权限表。每节只能使用本节 allowed_fact_ids 和 paragraph_plan.fact_snapshots 对应的 fact，不能从其他章节借事实。
+- section_fact_map.paragraph_plan 是段落组计划。每个 plan item 包含 group_id、paragraph_role、paragraph_claim、write_focus、contrast_or_boundary、must_not_repeat 和 fact_snapshots。
 - fact_snapshots 是从 fact_catalog 确定性复制的事实快照；它可以包含 fact_text、exact_fact_text、time、asset、objects、status、candidate_or_boundary。它不是新增事实。
 - 不得新增 brief 中没有的新 IOC、新资产、新时间、新动作、新阶段或新结论。
 
@@ -880,22 +966,24 @@ REPORT_AGENT_WRITER_SYSTEM_PROMPT = """你是 Trace-Agent 的安全事件报告 
 def render_polished_body_from_writer_brief(llm: Any, writer_brief: Dict[str, Any]) -> str:
     from langchain_core.prompts import ChatPromptTemplate
 
+    prompt_brief = build_report_writer_prompt_brief(writer_brief)
+
     prompt = ChatPromptTemplate.from_messages(
         [
             ("system", REPORT_AGENT_WRITER_SYSTEM_PROMPT),
             (
                 "user",
-                "请仅基于以下 report_writer_brief 生成完整 Markdown 正文。\n"
+                "请仅基于以下 report_writer_prompt_brief 生成完整 Markdown 正文。\n"
                 "硬性要求：正文必须按 section_fact_map 全部展开；每节只能使用 allowed_fact_ids；禁止输出 question_to_answer 原句；complex_section=true 的章节按 paragraph_target 写够段落；timeline_process 必须覆盖该节全部 paragraph_plan.fact_snapshots 中的时间戳，不能省略候选节点；evidence_judgment、relationship_scope、counterevidence_limits 至少覆盖该节 3 条 allowed facts；如果 fact_roles_to_cover 足够多，还要覆盖不同事实角色；总长度目标 2400 到 4200 中文字。\n"
                 "段落硬约束：每个 paragraph_plan item 写成一个自然段，段落之间用空行分开；段落要覆盖该 item 的全部 fact_snapshots，并围绕 paragraph_claim / write_focus / contrast_or_boundary 组织，不要退回一条 fact 一段，也不要把多个 paragraph group 合并成摘要。\n"
-                "{writer_brief_json}",
+                "{writer_prompt_brief_json}",
             ),
         ]
     )
     writer = llm.bind(max_tokens=2800, temperature=0) if hasattr(llm, "bind") else llm
     response = invoke_llm_with_trace(
         writer,
-        prompt.format_messages(writer_brief_json=_json(writer_brief)),
+        prompt.format_messages(writer_prompt_brief_json=_json(prompt_brief)),
         role="report_agent_writer",
     )
     return _normalize_writer_markdown(str(getattr(response, "content", "") or "").strip(), writer_brief)

@@ -3,6 +3,11 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, Iterable, List, Tuple
 
+from .report_text_quality import (
+    is_low_information_evidence_label as _is_low_information_evidence_claim,
+    is_meta_material_text as _is_meta_material_text,
+)
+
 
 SOURCE_NAMESPACES = {"obs", "event", "claim", "object", "gap", "action", "verdict"}
 REPORT_SECTION_TYPES = {
@@ -56,27 +61,6 @@ BLAND_ROUTE_MARKERS = {
     "这些未闭合问题限制更强结论",
     "背景事件提供替代解释或共享基础设施边界",
     "本段只承担当前章节",
-}
-LOW_INFORMATION_EVIDENCE_CLAIMS = {
-    "suspicious",
-    "malicious",
-    "benign",
-    "confirmed",
-    "candidate",
-    "needs_review",
-    "unknown",
-    "主支撑证据",
-    "范围证据",
-    "边界证据",
-    "章节事实",
-    "关键事件事实",
-    "可疑",
-    "恶意",
-}
-META_MATERIAL_TEXT_MARKERS = {
-    "生成报告材料",
-    "证据包保守生成",
-    "只能依据已整理",
 }
 COMPLEX_DENSE_SECTION_TYPES = {
     "timeline_process",
@@ -148,18 +132,6 @@ def _is_bland_route_text(value: Any) -> bool:
     if any(marker in text for marker in BLAND_ROUTE_MARKERS):
         return True
     return len(text) < 4
-
-
-def _is_low_information_evidence_claim(value: Any) -> bool:
-    text = _text(value)
-    if not text:
-        return False
-    return text in LOW_INFORMATION_EVIDENCE_CLAIMS or text.lower() in LOW_INFORMATION_EVIDENCE_CLAIMS
-
-
-def _is_meta_material_text(value: Any) -> bool:
-    text = _text(value)
-    return bool(text and any(marker in text for marker in META_MATERIAL_TEXT_MARKERS))
 
 
 def _contains_placeholder(value: Any) -> bool:

@@ -21,6 +21,10 @@ demo_agent/.env.example
 - `LLM_API_KEY`
 - `LLM_BASE_URL`
 - `LLM_MODEL`
+- 调查层 `investigator` 默认使用供应商的 `tool` 模型；如需回到通用模型，可设置 `INCIDENT_AGENT_INVESTIGATOR_MODEL=chat`。
+- `INCIDENT_AGENT_TOOL_MODEL`：可选，覆盖调查/材料路由类 LLM 调用使用的模型，例如 `tool`。
+- `INCIDENT_AGENT_REASONER_MODEL`：可选，覆盖 writer/reviewer 类 LLM 调用使用的模型，例如 `reasoner`。
+- `INCIDENT_AGENT_INVESTIGATOR_MODEL`、`INCIDENT_AGENT_REPORT_MATERIAL_MODEL`、`INCIDENT_AGENT_WRITER_MODEL`、`INCIDENT_AGENT_REVIEWER_MODEL`：可选，按具体角色覆盖模型；优先级高于上面的分组模型。
 - `INCIDENT_AGENT_ENABLE_LLM`
 - `INCIDENT_AGENT_DECISION_MODE`
 - `INCIDENT_AGENT_LIVE_INTEL`

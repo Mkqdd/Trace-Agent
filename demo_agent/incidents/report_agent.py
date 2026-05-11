@@ -13,6 +13,7 @@ from .report_agent_tools import (
     source_fact_indexes,
     validate_report_writer_materials,
 )
+from .report_text_quality import is_meta_material_text as _is_meta_material_text
 
 
 def _text(value: Any) -> str:
@@ -56,6 +57,110 @@ AGENT_PARAGRAPH_GROUP_SECTION_TYPES = {
     "counterevidence_limits",
 }
 
+PLAN_DECISIONS = {
+    "accept_deterministic_plan",
+    "modify_deterministic_plan",
+    "replace_with_agent_plan",
+}
+
+
+def _report_plan_origin(report_plan: Dict[str, Any]) -> str:
+    plan = _dict(report_plan)
+    explicit = _text(plan.get("plan_origin"))
+    if explicit in {
+        "agent_authored",
+        "agent_modified_deterministic",
+        "agent_accepted_deterministic",
+        "agent_requested_plan_modify_without_plan_patch",
+        "agent_requested_plan_replace_without_plan_patch",
+        "deterministic_base",
+        "missing",
+    }:
+        return explicit
+    rationale = _text(plan.get("planning_rationale"))
+    if "工程兜底计划" in rationale:
+        return "deterministic_base"
+    return "agent_authored" if plan else "missing"
+
+
+def classify_material_route_status(*, plan_origin: str, raw_has_paragraph_groups: bool) -> str:
+    """Return an honest report-material route status for trace consumers."""
+
+    origin = _text(plan_origin) or "missing"
+    if origin == "deterministic_base":
+        return (
+            "deterministic_plan_with_agent_route"
+            if raw_has_paragraph_groups
+            else "deterministic_base_with_conservative_route"
+        )
+    if origin == "agent_accepted_deterministic":
+        return (
+            "agent_accepted_deterministic_plan_with_route"
+            if raw_has_paragraph_groups
+            else "agent_accepted_deterministic_plan_with_conservative_route"
+        )
+    if origin == "agent_modified_deterministic":
+        return (
+            "agent_modified_plan_with_route"
+            if raw_has_paragraph_groups
+            else "agent_modified_plan_with_conservative_route"
+        )
+    if origin == "agent_requested_plan_modify_without_plan_patch":
+        return (
+            "agent_requested_plan_modify_without_plan_patch_with_route"
+            if raw_has_paragraph_groups
+            else "agent_requested_plan_modify_without_plan_patch_with_conservative_route"
+        )
+    if origin == "agent_requested_plan_replace_without_plan_patch":
+        return (
+            "agent_requested_plan_replace_without_plan_patch_with_route"
+            if raw_has_paragraph_groups
+            else "agent_requested_plan_replace_without_plan_patch_with_conservative_route"
+        )
+    if origin == "agent_authored":
+        return (
+            "agent_authored_materials"
+            if raw_has_paragraph_groups
+            else "agent_plan_with_conservative_paragraph_groups"
+        )
+    return "submitted_with_unknown_plan_origin"
+
+
+def _normalize_plan_decision(value: Any) -> Dict[str, Any]:
+    item = _dict(value)
+    decision = _text(item.get("decision"))
+    if decision not in PLAN_DECISIONS:
+        return {}
+    result = {
+        "decision": decision,
+        "reason": _text(item.get("reason"))[:300],
+        "source_ids": _dedupe_texts(_list(item.get("source_ids")))[:8],
+    }
+    sections = [_text(section) for section in _list(item.get("sections_to_change")) if _text(section)]
+    if sections:
+        result["sections_to_change"] = sections[:8]
+    return {key: value for key, value in result.items() if value not in ["", [], {}]}
+
+
+def _plan_origin_from_decision(
+    plan_decision: Dict[str, Any],
+    *,
+    submitted_report_plan: bool,
+    current_plan_origin: str,
+) -> str:
+    decision = _text(plan_decision.get("decision"))
+    if decision == "accept_deterministic_plan":
+        return "agent_accepted_deterministic"
+    if decision == "modify_deterministic_plan" and submitted_report_plan:
+        return "agent_modified_deterministic"
+    if decision == "modify_deterministic_plan":
+        return "agent_requested_plan_modify_without_plan_patch"
+    if decision == "replace_with_agent_plan" and submitted_report_plan:
+        return "agent_authored"
+    if decision == "replace_with_agent_plan":
+        return "agent_requested_plan_replace_without_plan_patch"
+    return current_plan_origin
+
 
 def _is_placeholder_text(value: Any) -> bool:
     return _text(value) in {"...", "……", "<...>", "TODO", "TBD"}
@@ -80,18 +185,6 @@ def _reader_friendly_text(value: Any) -> str:
     text = text.replace("同域名 / 相同目标 IP / 相同 JA3 通信指纹", "相同域名、目标 IP 和 JA3 通信指纹")
     text = text.replace("同域名/相同目标 IP/相同 JA3 通信指纹", "相同域名、目标 IP 和 JA3 通信指纹")
     return text
-
-
-META_MATERIAL_TEXT_MARKERS = {
-    "生成报告材料",
-    "证据包保守生成",
-    "只能依据已整理",
-}
-
-
-def _is_meta_material_text(value: Any) -> bool:
-    text = _text(value)
-    return bool(text and any(marker in text for marker in META_MATERIAL_TEXT_MARKERS))
 
 
 def _source_derived_verdict_text(header: Dict[str, Any]) -> str:
@@ -519,6 +612,7 @@ REPORT_AGENT_SYSTEM_PROMPT = """你是 Trace-Agent 的 report material agent。�
 
 材料契约：
 - schema_version 必须是 report-writer-materials-v2。
+- 如果系统提供 deterministic suggested plan，你必须输出 plan_decision，明确 accept_deterministic_plan / modify_deterministic_plan / replace_with_agent_plan 之一，并写 reason 和 source_ids。
 - report_plan.sections 决定章节；section_briefs 必须与 report_plan.sections 的 section_type 顺序一一对应。
 - key_facts 只是 fact coverage 明细：每条只写 fact_ids、source_ids、fact_role、why_it_matters、limitation、use_for。
 - paragraph_groups 是 writer 主要写作计划：每组必须写 group_id、paragraph_role、paragraph_claim、fact_ids 或 source_ids、write_focus、contrast_or_boundary、must_not_repeat。
@@ -548,7 +642,7 @@ REPORT_AGENT_SYSTEM_PROMPT = """你是 Trace-Agent 的 report material agent。�
 {"action":"tool","tool_calls":[{"tool_name":"get_timeline","params":{"mode":"core"}}],"reason":"..."}
 
 2. 提交材料或 patch：
-{"action":"submit","materials":{"schema_version":"report-writer-materials-v2","source_inventory":[],"section_briefs":[{"section_type":"relationship_scope","source_ids":["object:..."],"paragraph_groups":[{"group_id":"relationship_scope-g1","paragraph_role":"已确认范围","paragraph_claim":"本段说明哪些对象能进入确认范围，哪些不能并入。","fact_ids":["fact-object-..."],"source_ids":["object:..."],"write_focus":"说明确认/候选/外部基础设施边界。","contrast_or_boundary":"不要重复 timeline_process 的事件推进。","must_not_repeat":"不要把候选对象写成已确认受影响资产。"}]}]}}
+{"action":"submit","materials":{"schema_version":"report-writer-materials-v2","source_inventory":[],"plan_decision":{"decision":"accept_deterministic_plan","reason":"...","source_ids":["verdict:delivery"]},"section_briefs":[{"section_type":"relationship_scope","source_ids":["object:..."],"paragraph_groups":[{"group_id":"relationship_scope-g1","paragraph_role":"已确认范围","paragraph_claim":"本段说明哪些对象能进入确认范围，哪些不能并入。","fact_ids":["fact-object-..."],"source_ids":["object:..."],"write_focus":"说明确认/候选/外部基础设施边界。","contrast_or_boundary":"不要重复 timeline_process 的事件推进。","must_not_repeat":"不要把候选对象写成已确认受影响资产。"}]}]}}
 """
 
 
@@ -598,8 +692,13 @@ def _build_round_user_prompt(
             )
             if _text(row.get("section_type")) in required_patch_sections
         ]
-        route_context = {
-            "report_plan": _compact_report_plan_for_prompt(_dict(draft_materials.get("report_plan"))),
+        planning_workbench = {
+            "deterministic_suggested_plan": _compact_report_plan_for_prompt(_dict(draft_materials.get("report_plan"))),
+            "plan_decision_options": [
+                "accept_deterministic_plan",
+                "modify_deterministic_plan",
+                "replace_with_agent_plan",
+            ],
             "patch_required_section_types": required_patch_sections,
             "section_routes": compact_routes,
             "complexity_hints": _complexity_hints_from_tool_results(tool_results),
@@ -613,11 +712,16 @@ def _build_round_user_prompt(
         }
         return (
             f"当前是 report material loop 第 {round_index}/{max_rounds} 轮。\n"
-            f"force_submit={str(force_submit).lower()}。本轮优先尝试提交 paragraph_groups route patch。\n\n"
+            f"force_submit={str(force_submit).lower()}。本轮优先尝试提交 plan_decision + paragraph_groups route patch。\n\n"
             "本轮不要调用工具，不要重吐完整 materials，不要输出 source_fact_catalog、reader_fact_text 或 exact_fact_text。\n"
-            "只提交需要合并到 draft 的 materials patch，优先只包含 section_briefs；系统会保留 draft 中其他字段和未提交的简单章节。\n\n"
+            "只提交需要合并到 draft 的 materials patch，必须包含 plan_decision 和 section_briefs；系统会保留 draft 中其他字段和未提交的简单章节。\n\n"
+            "你必须先判断 deterministic_suggested_plan 是否合理：\n"
+            "- accept_deterministic_plan：章节选择和顺序合理，只需要补强 paragraph_groups。\n"
+            "- modify_deterministic_plan：需要调整部分章节；此时必须同时提交 report_plan.sections 的修改 patch。\n"
+            "- replace_with_agent_plan：deterministic plan 不适合本案；此时必须提交完整 report_plan.sections。\n"
+            "plan_decision 必须包含 decision、reason、source_ids；reason 只解释章节取舍，不写新事实。\n\n"
             "你只需要提交 patch_required_section_types 中列出的复杂章节；简单章节会沿用 deterministic conservative groups。\n"
-            "如果无法比 deterministic route 更稳定地补强 paragraph_groups，可以提交 {\"action\":\"submit\",\"materials\":{}} 接受当前 draft。\n"
+            "如果无法比 deterministic route 更稳定地补强 paragraph_groups，可以提交 plan_decision=accept_deterministic_plan 并保留当前章节；不要提交空 materials。\n"
             "每个提交的 section_briefs 条目至少包含 section_type、source_ids、paragraph_groups；key_facts 可省略，系统会沿用 draft。\n"
             "每个 paragraph_group 必须包含 group_id、paragraph_role、paragraph_claim、fact_ids/source_ids、write_focus、contrast_or_boundary、must_not_repeat。\n"
             "复杂章节建议 3 到 5 组；每组优先引用 2 到 4 个 fact_id。\n"
@@ -625,14 +729,17 @@ def _build_round_user_prompt(
             "paragraph_claim/write_focus 每项最多约 40 个中文字符；不要复制 fact_hints 中的时间、IP、域名、资产串，事实细节只保留在 fact_ids/source_ids。\n"
             "同一章节内禁止重复 paragraph_claim；重复主题要拆成不同论证目的。\n"
             "同一 fact 跨章节复用时，paragraph_role 或 paragraph_claim 必须体现不同论证目的。\n\n"
-            "可用 route context（只能复制其中已有 fact_ids/source_ids，不要改写为新事实）：\n"
-            f"{_json(route_context)}\n\n"
+            "planning_workbench 不展示 deterministic conservative paragraph_groups 的原文；conservative_group_count 只是已有兜底组数量，不是可复制范例。\n"
+            "请只根据 key_facts 和 fact_hints 重新组织段落论证。\n\n"
+            "planning_workbench（只能复制其中已有 fact_ids/source_ids，不要改写为新事实）：\n"
+            f"{_json(planning_workbench)}\n\n"
             "本轮必须修复的问题：\n"
             f"{_json(feedback)}\n\n"
             "输出格式示例：\n"
             "{\n"
             '  "action": "submit",\n'
             '  "materials": {\n'
+            '    "plan_decision": {"decision": "accept_deterministic_plan", "reason": "...", "source_ids": ["verdict:delivery"]},\n'
             '    "section_briefs": [\n'
             '      {"section_type": "timeline_process", "source_ids": ["event:..."], "paragraph_groups": [{"group_id": "timeline_process-g1", "paragraph_role": "...", "paragraph_claim": "...", "fact_ids": ["fact-event-..."], "source_ids": ["event:..."], "write_focus": "...", "contrast_or_boundary": "...", "must_not_repeat": "..."}]}\n'
             "    ]\n"
@@ -817,25 +924,16 @@ def _compact_section_routes_for_patch_prompt(
                     "fact_hints": fact_hints_for(fact),
                 }
             )
-        paragraph_groups: List[Dict[str, Any]] = []
-        for raw_group in _list(brief.get("paragraph_groups"))[:6]:
-            group = _dict(raw_group)
-            paragraph_groups.append(
-                {
-                    "group_id": _text(group.get("group_id")),
-                    "paragraph_role": _text(group.get("paragraph_role"))[:60],
-                    "paragraph_claim": _text(group.get("paragraph_claim"))[:120],
-                    "fact_ids": _list(group.get("fact_ids"))[:6],
-                    "source_ids": _list(group.get("source_ids"))[:6],
-                    "fact_hints": fact_hints_for(group),
-                }
-            )
+        # Do not expose conservative paragraph group text in the route-patch workbench.
+        # The material agent otherwise tends to copy placeholder claims like "事件推进节点"
+        # instead of authoring its own argument plan from the fact hints.
+        conservative_group_count = len(_list(brief.get("paragraph_groups")))
         rows.append(
             {
                 "section_type": section_type,
                 "source_ids": _list(brief.get("source_ids"))[:6],
                 "key_facts": key_facts,
-                "paragraph_groups": paragraph_groups,
+                "conservative_group_count": conservative_group_count,
             }
         )
     return rows
@@ -1436,6 +1534,7 @@ def _fallback_report_plan(
     )
     return {
         "schema_version": "report-plan-v1",
+        "plan_origin": "deterministic_base",
         "title": title or "安全事件调查报告",
         "planning_rationale": "工程兜底计划：仅在 report material agent 未能提交可用 report_plan 时使用，保证失败路径仍可生成保守报告；正常路径不使用该计划替 agent 选择章节。",
         "sections": [section for section in sections if _list(section.get("source_ids"))],
@@ -1501,6 +1600,7 @@ def _normalize_report_plan(materials: Dict[str, Any], bundle: Dict[str, Any], ti
         )
     normalized = {
         "schema_version": "report-plan-v1",
+        "plan_origin": _report_plan_origin(raw_plan),
         "title": _text(raw_plan.get("title")) or title or "安全事件调查报告",
         "planning_rationale": _text(raw_plan.get("planning_rationale")) or "由 report material agent 基于材料选择章节。",
         "sections": normalized_sections,
@@ -2483,7 +2583,9 @@ def _repair_materials_contract(
     bundle: Dict[str, Any],
     previous_materials: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    repaired = _normalize_source_ids_in_material(_merge_material_patch(_dict(materials), _dict(previous_materials)))
+    submitted_materials = _dict(materials)
+    submitted_report_plan = bool(_list(_dict(submitted_materials.get("report_plan")).get("sections")))
+    repaired = _normalize_source_ids_in_material(_merge_material_patch(submitted_materials, _dict(previous_materials)))
     source_index = source_index_for_materials(bundle)
     source_fact_catalog = build_source_fact_catalog(bundle)
     repaired = _drop_unknown_source_ids(repaired, source_index)
@@ -2567,6 +2669,18 @@ def _repair_materials_contract(
         bundle,
         title=_text(header.get("title") or header.get("case_title")),
     )
+    plan_decision = _normalize_plan_decision(repaired.get("plan_decision"))
+    if plan_decision:
+        report_plan = _dict(repaired.get("report_plan"))
+        current_origin = _report_plan_origin(report_plan)
+        report_plan["plan_origin"] = _plan_origin_from_decision(
+            plan_decision,
+            submitted_report_plan=submitted_report_plan,
+            current_plan_origin=current_origin,
+        )
+        report_plan["plan_decision"] = plan_decision
+        repaired["plan_decision"] = plan_decision
+        repaired["report_plan"] = report_plan
     _preserve_previous_material_lists(repaired, _dict(previous_materials))
     _merge_previous_section_briefs(repaired, _dict(previous_materials))
     _materialize_section_fact_routes(repaired, source_fact_catalog)
@@ -2660,7 +2774,7 @@ def run_report_material_loop(
         {
             "code": "patch_route_from_deterministic_draft",
             "severity": "instruction",
-            "message_for_agent": "系统已给出 deterministic base materials。下一轮优先提交 route patch：为复杂章节 timeline_process/evidence_judgment/relationship_scope/counterevidence_limits 补充 paragraph_groups，说明每段的 paragraph_role、paragraph_claim、fact_ids/source_ids、write_focus、contrast_or_boundary、must_not_repeat；简单章节可由系统沿用 conservative groups；不要重吐完整 source_fact_catalog 或事实文本。如果无法稳定补强 route，提交空 materials 接受 deterministic route 也可以。",
+            "message_for_agent": "系统已给出 deterministic suggested plan 和 base materials。下一轮优先提交 plan_decision + route patch：先判断 accept/modify/replace deterministic plan，再为复杂章节 timeline_process/evidence_judgment/relationship_scope/counterevidence_limits 补充 paragraph_groups，说明每段的 paragraph_role、paragraph_claim、fact_ids/source_ids、write_focus、contrast_or_boundary、must_not_repeat；简单章节可由系统沿用 conservative groups；不要重吐完整 source_fact_catalog 或事实文本。",
             "suggested_next_action": "submit_route_patch",
         }
     ]
@@ -2780,8 +2894,16 @@ def run_report_material_loop(
                     agent_paragraph_group_sections
                 )
                 raw_has_groups = _submitted_patch_has_paragraph_groups(raw_action_materials, materials) or cumulative_has_groups
+                plan_origin = _report_plan_origin(_dict(materials.get("report_plan")))
+                route_status = classify_material_route_status(
+                    plan_origin=plan_origin,
+                    raw_has_paragraph_groups=raw_has_groups,
+                )
                 trace["rounds"][-1]["raw_agent_paragraph_groups"] = raw_has_groups
                 trace["rounds"][-1]["agent_paragraph_group_sections"] = sorted(agent_paragraph_group_sections)
+                trace["rounds"][-1]["plan_origin"] = plan_origin
+                trace["rounds"][-1]["plan_decision"] = _dict(_dict(materials.get("report_plan")).get("plan_decision"))
+                trace["rounds"][-1]["route_status"] = route_status
                 if not raw_has_groups:
                     trace["rounds"][-1]["agent_feedback"] = [
                         {
@@ -2791,7 +2913,11 @@ def run_report_material_loop(
                             "suggested_next_action": "submit_route_patch_when_improving_material_quality",
                         }
                     ]
-                trace["status"] = "submitted" if raw_has_groups else "submitted_with_conservative_paragraph_groups"
+                trace["status"] = route_status
+                trace["plan_origin"] = plan_origin
+                trace["plan_decision"] = _dict(_dict(materials.get("report_plan")).get("plan_decision"))
+                trace["raw_agent_paragraph_groups"] = raw_has_groups
+                trace["agent_paragraph_group_sections"] = sorted(agent_paragraph_group_sections)
                 trace["submitted_materials"] = materials
                 return materials or _fallback_materials_from_preload(tool_results, bundle), trace
             draft_validation = validate_report_writer_materials(bundle, draft_materials)
