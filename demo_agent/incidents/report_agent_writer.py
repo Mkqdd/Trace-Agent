@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 from typing import Any, Dict, Iterable, List, Tuple
 
@@ -772,6 +773,83 @@ def build_report_writer_prompt_brief(writer_brief: Dict[str, Any]) -> Dict[str, 
     }
 
 
+def build_report_writer_section_prompt_brief(writer_brief: Dict[str, Any], section_type: str) -> Dict[str, Any]:
+    """Build a single-section writer input from the deterministic writer brief."""
+
+    prompt_brief = build_report_writer_prompt_brief(writer_brief)
+    sections = [_as_dict(item) for item in _as_list(prompt_brief.get("section_fact_map"))]
+    selected_type = _text(section_type)
+    selected_index = -1
+    selected_section: Dict[str, Any] = {}
+    for index, section in enumerate(sections):
+        if _text(section.get("section_type")) == selected_type:
+            selected_index = index
+            selected_section = section
+            break
+    if not selected_section:
+        selected_section = {
+            "section_type": selected_type,
+            "title": selected_type or "未命名章节",
+            "paragraph_plan": [],
+            "allowed_fact_ids": [],
+        }
+    return {
+        "schema_version": "report-writer-section-prompt-brief-v1",
+        "source_brief_schema_version": _text(prompt_brief.get("source_brief_schema_version")),
+        "source_material_schema_version": _text(prompt_brief.get("source_material_schema_version")),
+        "header_packet": _as_dict(prompt_brief.get("header_packet")),
+        "all_section_titles": [_text(section.get("title")) for section in sections if _text(section.get("title"))],
+        "section_index": selected_index,
+        "section_count": len(sections),
+        "section": selected_section,
+        "writing_constraints": _as_dict(prompt_brief.get("writing_constraints")),
+        "appendix_note": _reader_clean_text(prompt_brief.get("appendix_note")),
+    }
+
+
+def _writer_section_mode_enabled() -> bool:
+    value = str(os.getenv("INCIDENT_AGENT_WRITER_SECTION_MODE") or "").strip().lower()
+    return value in {"1", "true", "yes", "on", "section", "sections", "per_section", "per-section"}
+
+
+def _ensure_header_markdown(markdown: str) -> str:
+    text = str(markdown or "").strip()
+    if not text:
+        return "# 首页摘要\n\n**结论**：未评估"
+    if "\n## " in text:
+        text = text.split("\n## ", 1)[0].strip()
+    if text.startswith("# 首页摘要"):
+        return text
+    text = re.sub(r"^#+\s*首页摘要\s*", "", text).strip()
+    return f"# 首页摘要\n\n{text}".strip()
+
+
+def _extract_single_section_markdown(markdown: str, title: str) -> str:
+    text = str(markdown or "").strip()
+    section_title = _text(title) or "未命名章节"
+    if not text:
+        return f"## {section_title}\n\n当前材料不足，无法进一步展开该章节。"
+
+    lines = text.splitlines()
+    start_index = -1
+    for index, line in enumerate(lines):
+        if line.strip() == f"## {section_title}":
+            start_index = index
+            break
+    if start_index >= 0:
+        selected = [lines[start_index]]
+        for line in lines[start_index + 1 :]:
+            stripped = line.strip()
+            if stripped.startswith("# ") or stripped.startswith("## "):
+                break
+            selected.append(line)
+        return "\n".join(selected).strip()
+
+    body_lines = [line for line in lines if not re.match(r"^#{1,6}\s+", line.strip())]
+    body = "\n".join(body_lines).strip() or text
+    return f"## {section_title}\n\n{body}".strip()
+
+
 def _strip_disallowed_subheadings(markdown: str) -> str:
     lines: List[str] = []
     previous_blank = False
@@ -900,6 +978,16 @@ def _normalize_writer_markdown(markdown: str, writer_brief: Dict[str, Any]) -> s
     expanded = stripped
     replacements = {
         "这可能是恶意软件执行的一部分": "这可能是可疑执行链的一部分",
+        "暴露于恶意活动之中": "出现可疑外联活动",
+        "恶意活动已经扩散到了多个资产": "异常线索已经扩展到多个资产",
+        "恶意活动已经扩散": "异常线索已经扩展",
+        "恶意活动的持续性": "可疑活动的连续性",
+        "恶意活动": "可疑活动",
+        "证实了横向移动的存在": "提示存在横向移动线索",
+        "证实横向移动的存在": "提示存在横向移动线索",
+        "证实了横向移动": "提示存在横向移动线索",
+        "证实横向移动": "提示存在横向移动线索",
+        "已证实横向移动": "提示存在横向移动线索",
         "恶意 JA4": "可疑 JA4",
         "恶意 JA4 通信指纹": "可疑 JA4 通信指纹",
         "可能存在恶意活动": "可能存在可疑活动",
@@ -963,8 +1051,135 @@ REPORT_AGENT_WRITER_SYSTEM_PROMPT = """你是 Trace-Agent 的安全事件报告 
 - 最终只返回 Markdown 正文，不要返回 JSON 或解释。"""
 
 
+REPORT_AGENT_WRITER_HEADER_PROMPT = """你是 Trace-Agent 的安全事件报告 writer。你只生成报告首页摘要，不写任何正文章节。
+
+输入只有 header_packet 和 appendix_note。你不得新增事实、资产、IOC、时间、动作或判断。
+
+输出要求：
+- 只输出 `# 首页摘要`。
+- 固定 8 行：结论、严重度、研判把握、已确认范围、最强证据、关键缺口、立即动作、一句话结论。
+- 严重度必须等于 header_packet.severity；研判把握必须等于 header_packet.confidence。
+- 如果某项为空，写“未评估”或“暂无明确材料”，不要编造。
+- 最终只返回 Markdown，不要返回 JSON 或解释。"""
+
+
+REPORT_AGENT_WRITER_SECTION_PROMPT = """你是 Trace-Agent 的安全事件报告 writer。你这次只生成一个正文章节，不写首页摘要，也不写其他章节。
+
+输入契约：
+- report_writer_section_prompt_brief 是从完整 writer brief 确定性裁剪出的单章节写作输入。
+- 你只能使用 section.paragraph_plan[*].fact_snapshots 中的事实，以及 section 自身的标题、问题、边界和约束。
+- header_packet 只用于理解全局结论边界，不能从 header_packet 补写本节没有路由到的事实。
+- 不得新增 brief 中没有的新 IOC、新资产、新时间、新动作、新阶段或新结论。
+
+写作要求：
+1. 只输出一个二级标题：`## {section_title}`，标题必须逐字匹配 section.title。
+2. 按 section.paragraph_plan 顺序写，每个 paragraph_plan item 对应一个自然段；段落之间空一行。
+3. 每段必须覆盖该 paragraph group 的全部 fact_snapshots，并围绕 paragraph_claim、write_focus、contrast_or_boundary 组织。
+4. 同一事实在不同章节可以复用，但本节必须服务当前 section_type 的论证目的：timeline_process 写事件推进，evidence_judgment 写判断作用，relationship_scope 写范围边界，counterevidence_limits 写不能写强结论的原因。
+5. 时间、资产名、域名、IP、进程名、文件名、JA3/JA4 值必须保持原样；英文事实要转述为中文。
+6. candidate_or_boundary=true 的事实只能写成候选范围、待验证线索或边界说明，不能写成已确认传播或已确认受影响。
+7. 外部基础设施只能写成外联判断、关联基础设施或封禁排查对象，不能写成受影响资产。
+8. rundll32.exe、loader DLL、PsExec、WMI 等只能按 fact_snapshots 的证据强度保守表述，不得升级成已确认控制或已确认恶意软件存在。
+
+格式要求：
+- 不要输出 JSON、解释、source_ids、fact_id、section_type、工具名或内部流程术语。
+- 不要输出三级及以下标题。
+- 如果 paragraph_plan 存在，不要压缩成一句总括；复杂章节按 paragraph groups 展开。
+- 最终只返回该章节 Markdown。"""
+
+
+def _header_prompt_brief(writer_brief: Dict[str, Any]) -> Dict[str, Any]:
+    source = _as_dict(writer_brief)
+    return {
+        "schema_version": "report-writer-header-prompt-brief-v1",
+        "source_brief_schema_version": _text(source.get("schema_version")),
+        "source_material_schema_version": _text(source.get("source_material_schema_version")),
+        "header_packet": _as_dict(source.get("header_packet")),
+        "appendix_note": _reader_clean_text(source.get("appendix_note")),
+    }
+
+
+def _section_max_tokens(section: Dict[str, Any]) -> int:
+    paragraph_count = len(_as_list(_as_dict(section).get("paragraph_plan")))
+    if bool(_as_dict(section).get("complex_section")):
+        return max(1400, min(2600, 700 + paragraph_count * 450))
+    return max(900, min(1800, 600 + paragraph_count * 350))
+
+
+def _render_polished_body_by_section(llm: Any, writer_brief: Dict[str, Any]) -> str:
+    from langchain_core.prompts import ChatPromptTemplate
+
+    header_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", REPORT_AGENT_WRITER_HEADER_PROMPT),
+            (
+                "user",
+                "请只生成首页摘要，不要生成任何 `##` 正文章节。\n"
+                "只生成首页摘要。\n"
+                "{header_prompt_brief_json}",
+            ),
+        ]
+    )
+    header_writer = llm.bind(max_tokens=900, temperature=0) if hasattr(llm, "bind") else llm
+    header_response = invoke_llm_with_trace(
+        header_writer,
+        header_prompt.format_messages(header_prompt_brief_json=_json(_header_prompt_brief(writer_brief))),
+        role="report_agent_writer",
+        extra={"writer_mode": "section", "writer_step": "header"},
+    )
+    parts = [_ensure_header_markdown(str(getattr(header_response, "content", "") or ""))]
+
+    section_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", REPORT_AGENT_WRITER_SECTION_PROMPT),
+            (
+                "user",
+                "请只生成一个章节，禁止输出首页摘要或其他章节。\n"
+                "section_type={section_type}\n"
+                "section_title={section_title}\n"
+                "{section_prompt_brief_json}",
+            ),
+        ]
+    )
+    prompt_brief = build_report_writer_prompt_brief(writer_brief)
+    sections = [_as_dict(section) for section in _as_list(prompt_brief.get("section_fact_map"))]
+    for index, section in enumerate(sections):
+        section_type = _text(section.get("section_type"))
+        section_title = _text(section.get("title")) or section_type or "未命名章节"
+        section_prompt_brief = build_report_writer_section_prompt_brief(writer_brief, section_type)
+        section_writer = (
+            llm.bind(max_tokens=_section_max_tokens(section), temperature=0)
+            if hasattr(llm, "bind")
+            else llm
+        )
+        section_response = invoke_llm_with_trace(
+            section_writer,
+            section_prompt.format_messages(
+                section_type=section_type,
+                section_title=section_title,
+                section_prompt_brief_json=_json(section_prompt_brief),
+            ),
+            role="report_agent_writer",
+            step_index=index,
+            extra={
+                "writer_mode": "section",
+                "writer_step": "section",
+                "section_type": section_type,
+                "section_title": section_title,
+                "section_index": index,
+            },
+        )
+        parts.append(_extract_single_section_markdown(str(getattr(section_response, "content", "") or ""), section_title))
+
+    assembled = "\n\n".join(part.strip() for part in parts if part and part.strip())
+    return _normalize_writer_markdown(assembled, writer_brief)
+
+
 def render_polished_body_from_writer_brief(llm: Any, writer_brief: Dict[str, Any]) -> str:
     from langchain_core.prompts import ChatPromptTemplate
+
+    if _writer_section_mode_enabled():
+        return _render_polished_body_by_section(llm, writer_brief)
 
     prompt_brief = build_report_writer_prompt_brief(writer_brief)
 

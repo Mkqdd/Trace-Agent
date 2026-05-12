@@ -25,6 +25,18 @@ ROLE_SPECIFIC_MODEL_ENVS = {
     "post_action_reviewer": "INCIDENT_AGENT_REVIEWER_MODEL",
     "legacy_proposal_reviewer": "INCIDENT_AGENT_REVIEWER_MODEL",
 }
+ROLE_ENV_PREFIXES = {
+    "investigator": "INCIDENT_AGENT_INVESTIGATOR",
+    "llm_selector": "INCIDENT_AGENT_SELECTOR",
+    "report_material_loop": "INCIDENT_AGENT_REPORT_MATERIAL",
+    "report_agent_writer": "INCIDENT_AGENT_WRITER",
+    "report_polish_initial": "INCIDENT_AGENT_WRITER",
+    "report_polish_full_repair": "INCIDENT_AGENT_WRITER",
+    "report_polish_section_repair": "INCIDENT_AGENT_WRITER",
+    "finish_reviewer": "INCIDENT_AGENT_REVIEWER",
+    "post_action_reviewer": "INCIDENT_AGENT_REVIEWER",
+    "legacy_proposal_reviewer": "INCIDENT_AGENT_REVIEWER",
+}
 TOOL_MODEL_ROLES = {"investigator", "llm_selector", "report_material_loop"}
 REASONER_MODEL_ROLES = {
     "report_agent_writer",
@@ -99,6 +111,10 @@ def _env_value(name: str) -> str:
     return str(os.getenv(name) or "").strip()
 
 
+def _role_env_prefix(role: str) -> str:
+    return ROLE_ENV_PREFIXES.get(str(role or "").strip(), "")
+
+
 def resolve_llm_model_for_role(role: str) -> Dict[str, Any]:
     """Resolve an optional model override for an LLM role.
 
@@ -151,8 +167,80 @@ def resolve_llm_model_for_role(role: str) -> Dict[str, Any]:
 
 
 class _NativeChatResponse:
-    def __init__(self, content: str) -> None:
+    def __init__(
+        self,
+        content: str,
+        *,
+        finish_reason: str = "",
+        usage: Optional[Dict[str, Any]] = None,
+        model_name: str = "",
+    ) -> None:
         self.content = content
+        self.finish_reason = finish_reason
+        self.usage = dict(usage or {})
+        self.model_name = model_name
+
+
+def _trace_jsonable(value: Any) -> Any:
+    if value is None:
+        return None
+    if hasattr(value, "model_dump") and callable(getattr(value, "model_dump")):
+        value = value.model_dump()
+    elif hasattr(value, "dict") and callable(getattr(value, "dict")):
+        value = value.dict()
+    elif not isinstance(value, (dict, list, tuple, str, int, float, bool)):
+        value = getattr(value, "__dict__", str(value))
+    try:
+        return json.loads(json.dumps(value, ensure_ascii=False, default=str))
+    except Exception:
+        return str(value)
+
+
+def _generation_options_for_trace(invocation_kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    options: Dict[str, Any] = {}
+    for key in ("max_tokens", "temperature", "reasoning_effort", "response_format"):
+        if key in invocation_kwargs:
+            options[key] = _trace_jsonable(invocation_kwargs.get(key))
+    extra_body = invocation_kwargs.get("extra_body")
+    if isinstance(extra_body, dict):
+        thinking = extra_body.get("thinking")
+        if isinstance(thinking, dict) and str(thinking.get("type") or "").lower() == "enabled":
+            options["thinking_enabled"] = True
+    return options
+
+
+def _response_trace_fields(response: Any) -> Dict[str, Any]:
+    fields: Dict[str, Any] = {}
+    response_metadata = getattr(response, "response_metadata", {}) or {}
+    if not isinstance(response_metadata, dict):
+        response_metadata = {}
+
+    finish_reason = (
+        str(getattr(response, "finish_reason", "") or "")
+        or str(response_metadata.get("finish_reason") or "")
+        or str(response_metadata.get("stop_reason") or "")
+    )
+    if finish_reason:
+        fields["finish_reason"] = finish_reason
+
+    usage = (
+        getattr(response, "usage", None)
+        or getattr(response, "usage_metadata", None)
+        or response_metadata.get("token_usage")
+        or response_metadata.get("usage")
+    )
+    usage_json = _trace_jsonable(usage)
+    if usage_json:
+        fields["usage"] = usage_json
+
+    model_name = (
+        str(getattr(response, "model_name", "") or "")
+        or str(response_metadata.get("model_name") or "")
+        or str(response_metadata.get("model") or "")
+    )
+    if model_name:
+        fields["model_name"] = model_name
+    return fields
 
 
 def _openai_role_from_message(message: Any) -> str:
@@ -178,12 +266,49 @@ def _openai_messages(messages: Any) -> List[Dict[str, Any]]:
     return rows
 
 
-def _invocation_kwargs(llm: Any) -> Dict[str, Any]:
+def _invocation_kwargs(llm: Any, role: str) -> Dict[str, Any]:
     kwargs = dict(getattr(llm, "kwargs", {}) or {})
-    return {
+    invocation = {
         key: value
         for key, value in kwargs.items()
         if key in {"max_tokens", "temperature", "response_format"} and value is not None
+    }
+    prefix = _role_env_prefix(role)
+    max_tokens = _env_value(f"{prefix}_MAX_TOKENS") if prefix else ""
+    if max_tokens:
+        try:
+            invocation["max_tokens"] = int(max_tokens)
+        except ValueError:
+            pass
+    temperature = _env_value(f"{prefix}_TEMPERATURE") if prefix else ""
+    if temperature:
+        try:
+            invocation["temperature"] = float(temperature)
+        except ValueError:
+            pass
+    reasoning_effort = _env_value(f"{prefix}_REASONING_EFFORT") if prefix else ""
+    if not reasoning_effort:
+        reasoning_effort = _env_value("INCIDENT_AGENT_REASONING_EFFORT")
+    if reasoning_effort:
+        invocation["reasoning_effort"] = reasoning_effort
+    thinking_enabled = _env_value(f"{prefix}_THINKING_ENABLED") if prefix else ""
+    if not thinking_enabled:
+        thinking_enabled = _env_value("INCIDENT_AGENT_THINKING_ENABLED")
+    if thinking_enabled.lower() in {"1", "true", "yes", "enabled"}:
+        invocation["extra_body"] = {"thinking": {"type": "enabled"}}
+    return invocation
+
+
+def _native_client_config(role: str) -> Dict[str, str]:
+    cfg = load_config()
+    prefix = _role_env_prefix(role)
+    base_url = _env_value(f"{prefix}_BASE_URL") if prefix else ""
+    api_key = _env_value(f"{prefix}_API_KEY") if prefix else ""
+    return {
+        "base_url": base_url or cfg.llm_base_url,
+        "api_key": api_key or cfg.llm_api_key,
+        "base_url_env": f"{prefix}_BASE_URL" if base_url and prefix else "",
+        "api_key_env": f"{prefix}_API_KEY" if api_key and prefix else "",
     }
 
 
@@ -199,15 +324,21 @@ def _invoke_openai_native_chat(
 
     from openai import OpenAI
 
-    cfg = load_config()
-    client = OpenAI(base_url=cfg.llm_base_url, api_key=cfg.llm_api_key, timeout=180, max_retries=1)
+    client_cfg = _native_client_config(role)
+    client = OpenAI(base_url=client_cfg["base_url"], api_key=client_cfg["api_key"], timeout=180, max_retries=1)
     response = client.chat.completions.create(
         model=model,
         messages=_openai_messages(messages),
         **dict(invocation_kwargs or {}),
     )
-    message = response.choices[0].message if response.choices else None
-    return _NativeChatResponse(str(getattr(message, "content", "") or ""))
+    choice = response.choices[0] if response.choices else None
+    message = getattr(choice, "message", None) if choice is not None else None
+    return _NativeChatResponse(
+        str(getattr(message, "content", "") or ""),
+        finish_reason=str(getattr(choice, "finish_reason", "") or ""),
+        usage=_trace_jsonable(getattr(response, "usage", None)) or {},
+        model_name=str(getattr(response, "model", "") or model),
+    )
 
 
 def _is_langchain_openai_chat(llm: Any) -> bool:
@@ -231,6 +362,11 @@ def _llm_for_role(llm: Any, role: str) -> tuple[Any, Dict[str, Any]]:
     if not selected_model:
         return llm, routing
     routing["native_openai_adapter"] = True
+    prefix = _role_env_prefix(str(role or "unknown"))
+    if prefix and _env_value(f"{prefix}_BASE_URL"):
+        routing["base_url_env"] = f"{prefix}_BASE_URL"
+    if prefix and _env_value(f"{prefix}_API_KEY"):
+        routing["api_key_env"] = f"{prefix}_API_KEY"
     return llm, routing
 
 
@@ -246,8 +382,15 @@ def invoke_llm_with_trace(
     started_at = time.time()
     payload = llm_messages_payload_summary(messages)
     routed_llm, routing = _llm_for_role(llm, role)
+    selected_model = str(routing.get("selected_model") or "").strip()
+    native_invocation_kwargs: Dict[str, Any] = {}
+    if routing.get("native_openai_adapter") and selected_model:
+        native_invocation_kwargs = _invocation_kwargs(routed_llm, str(role or "unknown"))
     trace_extra = dict(extra or {})
     trace_extra["model_routing"] = routing
+    generation_options = _generation_options_for_trace(native_invocation_kwargs)
+    if generation_options:
+        trace_extra["generation_options"] = generation_options
     base_event = {
         "call_id": call_id,
         "role": str(role or "unknown"),
@@ -258,14 +401,13 @@ def invoke_llm_with_trace(
     record_llm_trace_event({**base_event, "event": "start", "ts": started_at})
     monotonic_start = time.perf_counter()
     try:
-        selected_model = str(routing.get("selected_model") or "").strip()
         if routing.get("native_openai_adapter") and selected_model:
             response = _invoke_openai_native_chat(
                 routed_llm,
                 messages,
                 role=str(role or "unknown"),
                 model=selected_model,
-                invocation_kwargs=_invocation_kwargs(routed_llm),
+                invocation_kwargs=native_invocation_kwargs,
             )
         else:
             response = routed_llm.invoke(messages)
@@ -293,6 +435,7 @@ def invoke_llm_with_trace(
             "elapsed_ms": elapsed_ms,
             "response_bytes": len(encoded),
             "response_sha1": hashlib.sha1(encoded).hexdigest()[:12],
+            **_response_trace_fields(response),
         }
     )
     return response

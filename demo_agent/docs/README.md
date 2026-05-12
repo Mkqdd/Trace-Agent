@@ -25,6 +25,10 @@ demo_agent/.env.example
 - `INCIDENT_AGENT_TOOL_MODEL`：可选，覆盖调查/材料路由类 LLM 调用使用的模型，例如 `tool`。
 - `INCIDENT_AGENT_REASONER_MODEL`：可选，覆盖 writer/reviewer 类 LLM 调用使用的模型，例如 `reasoner`。
 - `INCIDENT_AGENT_INVESTIGATOR_MODEL`、`INCIDENT_AGENT_REPORT_MATERIAL_MODEL`、`INCIDENT_AGENT_WRITER_MODEL`、`INCIDENT_AGENT_REVIEWER_MODEL`：可选，按具体角色覆盖模型；优先级高于上面的分组模型。
+- `INCIDENT_AGENT_<ROLE>_BASE_URL`、`INCIDENT_AGENT_<ROLE>_API_KEY`：可选，按角色覆盖 OpenAI-compatible endpoint，例如 `INCIDENT_AGENT_WRITER_BASE_URL`、`INCIDENT_AGENT_REPORT_MATERIAL_API_KEY`；用于 writer/material 单独接 DeepSeek，调查层仍走默认 DeepShields。
+- `INCIDENT_AGENT_REASONING_EFFORT`、`INCIDENT_AGENT_THINKING_ENABLED`：可选，仅在角色模型 override 走 OpenAI-compatible native adapter 时透传，例如 DeepSeek `reasoning_effort=high` 与 `thinking.enabled`。也可使用角色级 `INCIDENT_AGENT_WRITER_REASONING_EFFORT`、`INCIDENT_AGENT_REPORT_MATERIAL_THINKING_ENABLED`。
+- `INCIDENT_AGENT_<ROLE>_MAX_TOKENS`、`INCIDENT_AGENT_<ROLE>_TEMPERATURE`：可选，按角色覆盖生成参数，例如 DeepSeek writer 可设置 `INCIDENT_AGENT_WRITER_MAX_TOKENS=16000` 以降低整篇报告被截断的概率。
+- `INCIDENT_AGENT_LLM_TRACE_PATH`：可选，记录每次 LLM 调用的 payload 摘要、模型路由、生成参数、`finish_reason` 和 token usage，便于排查截断、fallback 或模型路由问题。
 - `INCIDENT_AGENT_ENABLE_LLM`
 - `INCIDENT_AGENT_DECISION_MODE`
 - `INCIDENT_AGENT_LIVE_INTEL`

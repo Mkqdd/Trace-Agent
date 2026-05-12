@@ -1,0 +1,12 @@
+{
+  "schema_version": "report-polish-validation-v1",
+  "applied": true,
+  "status": "clean",
+  "summary": "未发现事实漂移。",
+  "issue_counts": {
+    "hard_fail": 0,
+    "soft_warn": 0
+  },
+  "issues": [],
+  "recheck_note": "Recomputed after validator Chinese sentence-boundary fix; original report_polish_validation.json was produced during the live run before this fix."
+}

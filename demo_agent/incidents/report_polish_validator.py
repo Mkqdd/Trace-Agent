@@ -14,6 +14,7 @@ TIME_MINUTE_WITH_DATE_RE = re.compile(
 IP_RE = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
 DOMAIN_RE = re.compile(r"\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}\b", re.IGNORECASE)
 SECTION_RE = re.compile(r"^(#{1,3})\s+(.+?)\s*$")
+SENTENCE_SPLIT_RE = re.compile(r"(?<=[。！？!?])\s*|\n+")
 EVENT_LIKE_RE = re.compile(r"(通信|外联|连接|解析|访问|执行|beacon|横向|命中)")
 CONFIRMED_SCOPE_RE = re.compile(r"(已确认|确认受影响|纳入已确认范围|确认扩散|已波及|确认感染|确认控制)")
 NEGATION_RE = re.compile(r"(未确认|尚未|不能|还不能|仍需|待确认|未独立验证)")
@@ -117,6 +118,10 @@ def _body_only(markdown: str) -> str:
     if appendix_marker in text:
         text = text.split(appendix_marker, 1)[0]
     return text.strip()
+
+
+def _split_sentences(text: str) -> List[str]:
+    return [_text(item) for item in SENTENCE_SPLIT_RE.split(_text(text)) if _text(item)]
 
 
 def _known_sets(report_fact_cards: Dict[str, Any]) -> Dict[str, Any]:
@@ -261,11 +266,7 @@ def validate_report_polish(body_markdown: str, report_fact_cards: Dict[str, Any]
     for section in sections:
         section_title = _text(section.get("title")) or "全文"
         section_text = _text(section.get("text"))
-        sentences = [
-            _text(item)
-            for item in re.split(r"(?<=[。！？!?])\s+|\n+", section_text)
-            if _text(item)
-        ]
+        sentences = _split_sentences(section_text)
 
         for sentence in sentences:
             full_time_ranges: List[Tuple[int, int]] = []

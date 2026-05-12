@@ -1,0 +1,16 @@
+{
+  "model": "deepseek-v4-pro",
+  "reasoning_effort": "high",
+  "thinking": {
+    "type": "enabled"
+  },
+  "source_run": "outputs/plan13_v24_investigator_tool_writer_reasoner_live/multi_host_confirmed_spread_plus",
+  "elapsed_seconds": 145.031,
+  "body_chars": 6693,
+  "body_lines": 64,
+  "validation_status": "clean",
+  "issue_counts": {
+    "hard_fail": 0,
+    "soft_warn": 0
+  }
+}

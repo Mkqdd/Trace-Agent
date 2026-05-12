@@ -171,6 +171,43 @@ def test_invoke_trace_records_role_model_routing() -> None:
     )
 
 
+def test_trace_records_role_specific_endpoint_env_names() -> None:
+    def run() -> None:
+        fake = _FakeLLM()
+        previous = getattr(llm_observability, "_invoke_openai_native_chat", None)
+
+        def fake_native(llm, messages, *, role, model, invocation_kwargs):
+            return _FakeResponse()
+
+        llm_observability._invoke_openai_native_chat = fake_native
+        with tempfile.TemporaryDirectory() as tmp:
+            trace_path = Path(tmp) / "llm_calls.jsonl"
+            os.environ[TRACE_ENV] = str(trace_path)
+            try:
+                invoke_llm_with_trace(fake, ["hello"], role="report_agent_writer")
+            finally:
+                if previous is not None:
+                    llm_observability._invoke_openai_native_chat = previous
+
+            events = [json.loads(line) for line in trace_path.read_text().splitlines() if line.strip()]
+            start = next(item for item in events if item["event"] == "start")
+            routing = start["extra"]["model_routing"]
+
+        assert routing["base_url_env"] == "INCIDENT_AGENT_WRITER_BASE_URL"
+        assert routing["api_key_env"] == "INCIDENT_AGENT_WRITER_API_KEY"
+        assert "dummy-key" not in json.dumps(routing)
+
+    _with_env(
+        {
+            "INCIDENT_AGENT_WRITER_MODEL": "deepseek-v4-pro",
+            "INCIDENT_AGENT_WRITER_BASE_URL": "https://api.deepseek.com",
+            "INCIDENT_AGENT_WRITER_API_KEY": "dummy-key",
+            TRACE_ENV: "",
+        },
+        run,
+    )
+
+
 def test_role_override_uses_native_openai_adapter_instead_of_langchain_bind() -> None:
     calls: list[dict] = []
     previous = getattr(llm_observability, "_invoke_openai_native_chat", None)
@@ -212,11 +249,124 @@ def test_role_override_uses_native_openai_adapter_instead_of_langchain_bind() ->
             llm_observability._invoke_openai_native_chat = previous
 
 
+def test_native_adapter_can_pass_reasoning_and_thinking_options() -> None:
+    calls: list[dict] = []
+    previous = getattr(llm_observability, "_invoke_openai_native_chat", None)
+
+    def fake_native(llm, messages, *, role, model, invocation_kwargs):
+        calls.append(dict(invocation_kwargs))
+        return _FakeResponse()
+
+    def run() -> None:
+        fake = _FakeLLM()
+        llm_observability._invoke_openai_native_chat = fake_native
+        invoke_llm_with_trace(fake, ["hello"], role="report_agent_writer")
+
+        assert calls
+        assert calls[0]["reasoning_effort"] == "high"
+        assert calls[0]["extra_body"] == {"thinking": {"type": "enabled"}}
+
+    try:
+        _with_env(
+            {
+                "INCIDENT_AGENT_REASONER_MODEL": "deepseek-v4-pro",
+                "INCIDENT_AGENT_REASONING_EFFORT": "high",
+                "INCIDENT_AGENT_THINKING_ENABLED": "1",
+            },
+            run,
+        )
+    finally:
+        if previous is not None:
+            llm_observability._invoke_openai_native_chat = previous
+
+
+def test_native_adapter_can_pass_role_generation_options() -> None:
+    calls: list[dict] = []
+    previous = getattr(llm_observability, "_invoke_openai_native_chat", None)
+
+    def fake_native(llm, messages, *, role, model, invocation_kwargs):
+        calls.append(dict(invocation_kwargs))
+        return _FakeResponse()
+
+    def run() -> None:
+        fake = _FakeLLM()
+        llm_observability._invoke_openai_native_chat = fake_native
+        invoke_llm_with_trace(fake, ["hello"], role="report_agent_writer")
+
+        assert calls
+        assert calls[0]["max_tokens"] == 7000
+        assert calls[0]["temperature"] == 0.2
+
+    try:
+        _with_env(
+            {
+                "INCIDENT_AGENT_WRITER_MODEL": "deepseek-v4-pro",
+                "INCIDENT_AGENT_WRITER_MAX_TOKENS": "7000",
+                "INCIDENT_AGENT_WRITER_TEMPERATURE": "0.2",
+            },
+            run,
+        )
+    finally:
+        if previous is not None:
+            llm_observability._invoke_openai_native_chat = previous
+
+
+def test_trace_records_native_finish_reason_usage_and_generation_options() -> None:
+    class FakeNativeResponse:
+        content = "ok"
+        finish_reason = "length"
+        model_name = "deepseek-v4-pro"
+        usage = {"prompt_tokens": 100, "completion_tokens": 16000, "total_tokens": 16100}
+
+    previous = getattr(llm_observability, "_invoke_openai_native_chat", None)
+
+    def fake_native(llm, messages, *, role, model, invocation_kwargs):
+        return FakeNativeResponse()
+
+    def run() -> None:
+        fake = _FakeLLM()
+        llm_observability._invoke_openai_native_chat = fake_native
+        with tempfile.TemporaryDirectory() as tmp:
+            trace_path = Path(tmp) / "llm_calls.jsonl"
+            os.environ[TRACE_ENV] = str(trace_path)
+            invoke_llm_with_trace(fake, ["hello"], role="report_agent_writer")
+
+            events = [json.loads(line) for line in trace_path.read_text().splitlines() if line.strip()]
+            start = next(item for item in events if item["event"] == "start")
+            end = next(item for item in events if item["event"] == "end")
+
+        assert start["extra"]["generation_options"]["max_tokens"] == 16000
+        assert start["extra"]["generation_options"]["reasoning_effort"] == "high"
+        assert start["extra"]["generation_options"]["thinking_enabled"] is True
+        assert end["finish_reason"] == "length"
+        assert end["model_name"] == "deepseek-v4-pro"
+        assert end["usage"]["completion_tokens"] == 16000
+
+    try:
+        _with_env(
+            {
+                "INCIDENT_AGENT_WRITER_MODEL": "deepseek-v4-pro",
+                "INCIDENT_AGENT_WRITER_MAX_TOKENS": "16000",
+                "INCIDENT_AGENT_WRITER_REASONING_EFFORT": "high",
+                "INCIDENT_AGENT_WRITER_THINKING_ENABLED": "1",
+                TRACE_ENV: "",
+            },
+            run,
+        )
+    finally:
+        if previous is not None:
+            llm_observability._invoke_openai_native_chat = previous
+
+
 if __name__ == "__main__":
     test_investigator_defaults_to_tool_without_material_default()
     test_investigator_role_default_does_not_bypass_fake_llm()
     test_role_model_resolution_uses_tool_and_reasoner_groups()
     test_specific_role_model_overrides_group_model()
     test_invoke_trace_records_role_model_routing()
+    test_trace_records_role_specific_endpoint_env_names()
     test_role_override_uses_native_openai_adapter_instead_of_langchain_bind()
+    test_native_adapter_can_pass_reasoning_and_thinking_options()
+    test_native_adapter_can_pass_role_generation_options()
+    test_trace_records_native_finish_reason_usage_and_generation_options()
     print("llm role routing checks passed")
