@@ -1903,22 +1903,26 @@ def _fact_refs_from_group_item(
 
 
 HIGH_RISK_ACTIVITY_MARKERS = {
-    "rundll32",
-    "powershell",
-    "cmd.exe",
-    "psexec",
-    "wmi",
     "remote service",
+    "remote process",
+    "process creation",
+    "script execution",
+    "payload",
     "web shell",
     "web-shell",
-    "loader",
-    "dll",
     "archive",
     "exfil",
     "credential",
+    "execution",
+    "lateral-movement",
+    "persistence",
+    "credential-access",
     "执行",
+    "进程创建",
     "远程服务",
+    "远程进程",
     "横向",
+    "持久化",
     "外传",
     "压缩",
     "凭据",
@@ -1952,8 +1956,11 @@ def _fact_search_text(fact: Dict[str, Any]) -> str:
         fact.get("classification"),
         fact.get("status"),
         fact.get("asset"),
+        fact.get("kind"),
     ]
     parts.extend(_list(fact.get("objects")))
+    parts.extend(_list(fact.get("stages")))
+    parts.extend(_list(fact.get("tags")))
     return "；".join(_text(item) for item in parts if _text(item))
 
 

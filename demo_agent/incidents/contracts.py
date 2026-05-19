@@ -86,7 +86,7 @@ def infer_stages(record: Dict[str, Any]) -> List[str]:
         "initial-access": ("initial-access", "exploit", "phish", "webshell", "login"),
         "execution": ("execution", "powershell", "named pipe", "loader", "process"),
         "command-and-control": ("command-and-control", "beacon", "c2", "callback"),
-        "lateral-movement": ("lateral-movement", "psexec", "wmic", "smb", "remote service"),
+        "lateral-movement": ("lateral-movement", "smb", "remote service", "remote process"),
         "exfiltration": ("exfiltration", "data transfer", "archive", "upload"),
     }
     stages: List[str] = []

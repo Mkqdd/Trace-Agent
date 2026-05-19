@@ -632,7 +632,7 @@ def build_report_writer_brief(materials: Dict[str, Any]) -> Dict[str, Any]:
             "候选事件、待确认对象和 candidate_or_boundary=true 的事实只能写入候选范围、扩线线索或边界说明，不能写成已确认传播或已确认受影响。",
             "外部基础设施只能写成外联判断、关联基础设施或封禁排查对象，不能写成受影响资产。",
             "action fact 只代表建议动作，不能改写成已经观测到的事实。",
-            "如果 exact_fact_text 出现 rundll32.exe、loader DLL、PsExec、WMI，只能保守写成可疑执行线索、DLL 加载线索或潜在横向推进；不要写成已确认恶意软件加载器执行或攻击者已控制。",
+            "如果 exact_fact_text 只提供执行、远程操作、工具调用或载荷加载线索，只能按证据强度保守写成可疑执行线索、潜在远程操作或范围推进线索；不要升级成已确认恶意软件存在、已确认横向移动或攻击者已控制，除非事实文本本身明确支持。",
         ],
         "candidate_or_boundary_fact_ids": candidate_fact_ids,
         "external_infrastructure_fact_ids": external_fact_ids,
@@ -1036,14 +1036,13 @@ REPORT_AGENT_WRITER_SYSTEM_PROMPT = """你是 Trace-Agent 的安全事件报告 
 保守边界：
 - writing_constraints.candidate_or_boundary_fact_ids 对应的事实只能写成候选范围、待验证线索、反证或缺口边界，不能写成已确认传播或已确认受影响。
 - 外部基础设施只能写成外联判断、关联基础设施或封禁排查对象，不能写成受影响资产。
-- PsExec、WMI、remote service creation 默认写成“横向移动线索”或“潜在横向推进”，不要写成“已证实横向移动”，除非 exact_fact_text 明确给出强结论。
-- rundll32.exe、loader DLL 只能保守写成“可疑执行线索”或“DLL 加载线索”，不要写成“恶意软件已存在”“恶意软件加载器已确认”“攻击者已控制”。
+- 远程执行、远程服务、远程进程、脚本执行、载荷加载等行为默认写成“可疑执行线索”“潜在远程操作”或“范围推进线索”，不要写成“已证实横向移动”“恶意软件已存在”或“攻击者已控制”，除非 exact_fact_text 明确给出强结论。
 - “持久化”只能出现在后续核查建议中，除非 fact_catalog 明确给出已观测持久化事实。
 - 如果 header_packet.conclusion 包含“复核”，正文不要写成已经完成定性的“确认事件成立”；可以写成“足以支撑事件级复核”。
 
 语言与格式：
 - 最终报告必须是中文；英文 source summary 要转述为中文，但域名、IP、资产名、进程名、文件名、时间、JA3/JA4 值必须逐字保留。
-- 时间戳必须保留 brief 原格式，例如 `2026-07-14 01:04:00 UTC`，不要改成中文日期。
+- 时间戳必须保留 brief 原格式，例如 `<YYYY-MM-DD HH:MM:SS UTC>`，不要改成中文日期。
 - 不要暴露 source_ids、section_type、fact_id、observation_id、工具名、workflow、reviewer、selector、readiness、material loop 等内部术语。
 - 不要原样输出 pivot、dst_ip、seed alert；应写成“关键关联指标”“目标 IP”“种子告警”。
 - 不要用“这些事实说明……”“这些节点说明……”“主要证据包括……”“可疑活动”“横向移动到某资产”“当前结论被一些缺口限制……”这类低分辨率总括替代 source_fact_catalog 中的原子事实展开。
@@ -1079,7 +1078,7 @@ REPORT_AGENT_WRITER_SECTION_PROMPT = """你是 Trace-Agent 的安全事件报告
 5. 时间、资产名、域名、IP、进程名、文件名、JA3/JA4 值必须保持原样；英文事实要转述为中文。
 6. candidate_or_boundary=true 的事实只能写成候选范围、待验证线索或边界说明，不能写成已确认传播或已确认受影响。
 7. 外部基础设施只能写成外联判断、关联基础设施或封禁排查对象，不能写成受影响资产。
-8. rundll32.exe、loader DLL、PsExec、WMI 等只能按 fact_snapshots 的证据强度保守表述，不得升级成已确认控制或已确认恶意软件存在。
+8. 远程执行、进程创建、脚本执行、载荷加载等行为只能按 fact_snapshots 的证据强度保守表述，不得升级成已确认控制、已确认横向移动或已确认恶意软件存在。
 
 格式要求：
 - 不要输出 JSON、解释、source_ids、fact_id、section_type、工具名或内部流程术语。

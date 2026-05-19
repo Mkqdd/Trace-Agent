@@ -1,6 +1,6 @@
 # Incident-Agent 快速开始
 
-当前仓库主线只保留 `incident-agent`。
+当前仓库主线只保留 `incident-agent`。推荐链路是：调查层使用供应商 `tool` 模型做开放式工具决策，report material 和 writer / polish 使用 DeepSeek v4，报告事实仍由 deterministic source bundle / fact catalog 约束，LLM 只负责路由、论证组织和正文展开。
 
 ## 1. 配置 `.env`
 
@@ -16,70 +16,149 @@ demo_agent/.env
 demo_agent/.env.example
 ```
 
-当前常用配置项有：
+基础配置：
 
-- `LLM_API_KEY`
-- `LLM_BASE_URL`
-- `LLM_MODEL`
-- 调查层 `investigator` 默认使用供应商的 `tool` 模型；如需回到通用模型，可设置 `INCIDENT_AGENT_INVESTIGATOR_MODEL=chat`。
-- `INCIDENT_AGENT_TOOL_MODEL`：可选，覆盖调查/材料路由类 LLM 调用使用的模型，例如 `tool`。
-- `INCIDENT_AGENT_REASONER_MODEL`：可选，覆盖 writer/reviewer 类 LLM 调用使用的模型，例如 `reasoner`。
-- `INCIDENT_AGENT_INVESTIGATOR_MODEL`、`INCIDENT_AGENT_REPORT_MATERIAL_MODEL`、`INCIDENT_AGENT_WRITER_MODEL`、`INCIDENT_AGENT_REVIEWER_MODEL`：可选，按具体角色覆盖模型；优先级高于上面的分组模型。
-- `INCIDENT_AGENT_<ROLE>_BASE_URL`、`INCIDENT_AGENT_<ROLE>_API_KEY`：可选，按角色覆盖 OpenAI-compatible endpoint，例如 `INCIDENT_AGENT_WRITER_BASE_URL`、`INCIDENT_AGENT_REPORT_MATERIAL_API_KEY`；用于 writer/material 单独接 DeepSeek，调查层仍走默认 DeepShields。
-- `INCIDENT_AGENT_REASONING_EFFORT`、`INCIDENT_AGENT_THINKING_ENABLED`：可选，仅在角色模型 override 走 OpenAI-compatible native adapter 时透传，例如 DeepSeek `reasoning_effort=high` 与 `thinking.enabled`。也可使用角色级 `INCIDENT_AGENT_WRITER_REASONING_EFFORT`、`INCIDENT_AGENT_REPORT_MATERIAL_THINKING_ENABLED`。
-- `INCIDENT_AGENT_<ROLE>_MAX_TOKENS`、`INCIDENT_AGENT_<ROLE>_TEMPERATURE`：可选，按角色覆盖生成参数，例如 DeepSeek writer 可设置 `INCIDENT_AGENT_WRITER_MAX_TOKENS=16000` 以降低整篇报告被截断的概率。
-- `INCIDENT_AGENT_LLM_TRACE_PATH`：可选，记录每次 LLM 调用的 payload 摘要、模型路由、生成参数、`finish_reason` 和 token usage，便于排查截断、fallback 或模型路由问题。
-- `INCIDENT_AGENT_ENABLE_LLM`
-- `INCIDENT_AGENT_DECISION_MODE`
-- `INCIDENT_AGENT_LIVE_INTEL`
-- `ABUSECH_AUTH_KEY`
+```env
+LLM_API_KEY=<DeepShields key>
+LLM_BASE_URL=https://api.deepshields.com/v1
+LLM_MODEL=chat
+LLM_TEMPERATURE=0.7
+```
 
-## 2. 运行 incident-agent
+当前最强报告链路建议加上以下角色级配置：
 
-在仓库根目录运行：
+```env
+INCIDENT_AGENT_INVESTIGATOR_MODEL=tool
 
-```bash
-python -m demo_agent \
-  --alert fixtures/incidents/web_initial_access_to_beacon \
-  --out outputs/incident_tests/web_initial_access_to_beacon/agent \
-  --mode incident-agent
+INCIDENT_AGENT_REPORT_MATERIAL_MODEL=deepseek-v4-pro
+INCIDENT_AGENT_REPORT_MATERIAL_BASE_URL=https://api.deepseek.com
+INCIDENT_AGENT_REPORT_MATERIAL_API_KEY=<DeepSeek key>
+INCIDENT_AGENT_REPORT_MATERIAL_MAX_TOKENS=16000
+INCIDENT_AGENT_REPORT_MATERIAL_TEMPERATURE=0.2
+INCIDENT_AGENT_REPORT_MATERIAL_REASONING_EFFORT=high
+INCIDENT_AGENT_REPORT_MATERIAL_THINKING_ENABLED=1
+
+INCIDENT_AGENT_WRITER_MODEL=deepseek-v4-pro
+INCIDENT_AGENT_WRITER_BASE_URL=https://api.deepseek.com
+INCIDENT_AGENT_WRITER_API_KEY=<DeepSeek key>
+INCIDENT_AGENT_WRITER_MAX_TOKENS=20000
+INCIDENT_AGENT_WRITER_TEMPERATURE=0.2
+INCIDENT_AGENT_WRITER_REASONING_EFFORT=high
+INCIDENT_AGENT_WRITER_THINKING_ENABLED=1
+```
+
+外部情报配置：
+
+```env
+SERPAPI_API_KEY=<SerpAPI key>
+ABUSECH_AUTH_KEY=<abuse.ch key>
+VT_API_KEY=<VirusTotal key>
+INCIDENT_AGENT_LIVE_INTEL=1
 ```
 
 说明：
 
-- `--alert`：可以直接指向 fixture case 目录，也可以指向 `seed_alert.json`
-- `--out`：输出目录
-- `--decision-mode`：调查模式，默认 `llm_agent`；可选 `heuristic`、`llm_selector`、`llm_agent`、`hybrid`
-- `--mode`：当前只保留 `incident-agent`
+- `INCIDENT_AGENT_INVESTIGATOR_MODEL=tool` 只影响调查层工具决策；如果要回到通用模型，可改成 `chat`。
+- `INCIDENT_AGENT_REPORT_MATERIAL_*` 只影响 report material agent。
+- `INCIDENT_AGENT_WRITER_*` 同时影响 writer 和 polish / repair 相关调用。
+- `INCIDENT_AGENT_<ROLE>_BASE_URL` 与 `INCIDENT_AGENT_<ROLE>_API_KEY` 会覆盖默认 OpenAI-compatible endpoint，适合让调查层继续走 DeepShields，而 material / writer 单独走 DeepSeek。
+- `INCIDENT_AGENT_LLM_TRACE_PATH` 可记录每次 LLM 调用的模型路由、payload 摘要、生成参数、`finish_reason` 和 token usage，便于排查截断、fallback 或 endpoint 配置错误。
+- 不要提交真实 API key。仓库文档和示例只保留占位符。
 
-模式区别：
+## 2. 运行单个 case
 
-- `heuristic`：纯代码按既定优先级推进
-- `llm_selector`：LLM 只能在代码给出的候选动作中选一个
-- `llm_agent`：LLM 在开放工具目录里自行决定下一步工具和参数，并显式决定何时 `finish`
-- `hybrid`：保留候选动作模式，但优先让 LLM 选择
+在仓库根目录运行：
 
-如果没有配置可用 LLM，请求 `llm_agent` 时会自动降级到 `heuristic`，以便离线 smoke test 仍能跑通。
+```bash
+conda run -n trail-agent python -m demo_agent \
+  --alert fixtures/incidents/multi_host_confirmed_spread_plus \
+  --out outputs/plan13_manual_check/multi_host_confirmed_spread_plus \
+  --mode incident-agent \
+  --decision-mode llm_agent \
+  --use-report-agent-materials
+```
 
-如果要快速验证 `llm_agent` 的开放式循环，可运行：
+参数说明：
+
+- `--alert` 可以指向 fixture case 目录，也可以指向 `seed_alert.json`。
+- `--out` 是输出目录。
+- `--decision-mode` 默认是 `llm_agent`；可选 `heuristic`、`llm_selector`、`llm_agent`、`hybrid`。
+- `--use-report-agent-materials` 当前默认开启，会走 material agent + writer brief + polished report 链路。
+
+如果没有可用 LLM，请求 `llm_agent` 时会自动降级到 `heuristic`，用于离线 smoke test。
+
+## 3. 运行 5-case live eval
+
+当前用于人工看效果的 5 个 fixture 是：
+
+```text
+multi_host_confirmed_spread_plus
+shared_infra_multi_asset_needs_review
+suspected_exfil_after_execution
+web_initial_access_to_beacon
+web_initial_access_without_execution
+```
+
+推荐用一个独立输出目录保存整轮 live eval：
+
+```bash
+OUT=outputs/plan13_current_strongest_5case_live
+mkdir -p "$OUT"
+
+for CASE in \
+  multi_host_confirmed_spread_plus \
+  shared_infra_multi_asset_needs_review \
+  suspected_exfil_after_execution \
+  web_initial_access_to_beacon \
+  web_initial_access_without_execution
+do
+  CASE_OUT="$OUT/$CASE"
+  mkdir -p "$CASE_OUT"
+  conda run -n trail-agent python -m demo_agent \
+    --alert "fixtures/incidents/$CASE" \
+    --out "$CASE_OUT" \
+    --mode incident-agent \
+    --decision-mode llm_agent \
+    --use-report-agent-materials \
+    > "$CASE_OUT/run_stdout.json" \
+    2> "$CASE_OUT/run_stderr.txt"
+  printf '%s\n' "$?" > "$CASE_OUT/run_rc.txt"
+done
+```
+
+Live eval 会调用外部 API，耗时和费用都明显高于 smoke test。宽回归或多轮 live eval 前建议先确认必要性。
+
+## 4. 验证命令
+
+快速验证 `llm_agent` 的开放式循环：
 
 ```bash
 conda run -n trail-agent python tools/test_llm_agent_protocol.py
 ```
 
-如果要先确认外部 LLM API 是否可连通，可运行：
+离线 5-case smoke：
+
+```bash
+conda run -n trail-agent python tools/run_incident_smoke.py
+```
+
+确认外部 LLM API 连通性：
 
 ```bash
 conda run -n trail-agent python tools/llm_ping.py --trace-path outputs/llm_ping.jsonl
 ```
 
-## 3. 生命周期 / 数据流
+报告链路或 writer 改动后，至少编译相关 Python 文件：
 
-详细生命周期说明已单独整理到：
+```bash
+conda run -n trail-agent python -m py_compile \
+  demo_agent/incidents/report_agent.py \
+  demo_agent/incidents/report_agent_tools.py \
+  demo_agent/incidents/report_agent_writer.py \
+  demo_agent/incidents/render.py
+```
 
-- [lifecycle.md](/home/estar0x/project/maltrail_test/Trace-Agent/demo_agent/docs/lifecycle.md)
-
-## 4. 输出内容
+## 5. 输出内容
 
 每条 case 通常会生成：
 
@@ -87,24 +166,50 @@ conda run -n trail-agent python tools/llm_ping.py --trace-path outputs/llm_ping.
 - `event.json`
 - `incident.json`
 - `investigation_trace.json`
+- `evidence_store.json`
+- `delivery_decision.json`
+- `reviewer_input.json`
+- `report_source_bundle.json`
+- `report_material_loop_trace.json`
+- `report_writer_materials.json`
+- `report_writer_brief.json`
 - `report_outline.json`
 - `report.md`
 - `report_appendix.md`
 - `report_polish_input.json`
 - `report_polish_brief.md`
+- `report_polish_validation.json`
 - `report_polished.md` 或 `report_polish_error.txt`
+- `llm_calls.jsonl`
 - `topology.json`
 - `topology.html`
 
-## 5. 常见查看顺序
+建议查看顺序：
 
-建议先看：
-
-1. `report.md`
-2. `report_polished.md`（如果存在）
-3. `report_outline.json`
-4. `delivery_decision.json`
-5. `reviewer_input.json`
+1. `report_polished.md`
+2. `report_polish_validation.json`
+3. `report_material_loop_trace.json`
+4. `report_writer_materials.json`
+5. `report_writer_brief.json`
 6. `incident.json`
-7. `investigation_trace.json`
-8. `topology.html`
+7. `delivery_decision.json`
+8. `investigation_trace.json`
+9. `llm_calls.jsonl`
+10. `topology.html`
+
+看报告质量时不要只看命令是否成功。重点确认是否存在 fallback、`finish_reason=length`、material 多轮修复、candidate / confirmed 边界混淆、以及 action guidance 是否足够可执行。
+
+## 6. 当前保留的对比产物
+
+当前 `outputs/` 只保留两组报告产物：
+
+- `outputs/plan13_v38_current_strongest_5case_live_deepseek_v4/`：最新 5-case live eval。调查层为 `tool`，material / writer 为 `deepseek-v4-pro`。
+- `outputs/plan13_v36_current_strongest_live/`：上一版最佳单 case 基线，用于和最新链路做人工对比。
+
+最新 v38 的整体结果：5 个 case 均生成 `report_polished.md`，无 LLM error，无 `finish_reason=length`，material 未 fallback。其中 3 个 polish validation 为 `clean`，1 个为 `soft_warn`，`web_initial_access_to_beacon` 当前存在一个已知 validator 误报：`shell.aspx` 文件名被当作未知域名标为 `unknown_domain` hard fail。
+
+## 7. 生命周期 / 数据流
+
+详细生命周期说明见：
+
+- [lifecycle.md](/home/estar0x/project/maltrail_test/Trace-Agent/demo_agent/docs/lifecycle.md)

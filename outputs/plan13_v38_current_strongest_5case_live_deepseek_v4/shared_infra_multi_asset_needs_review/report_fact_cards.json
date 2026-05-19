@@ -1,0 +1,781 @@
+{
+  "schema_version": "report-fact-cards-v1",
+  "source_contract": {
+    "evidence_store_schema": "evidence-store-v1",
+    "delivery_decision_schema": "delivery-decision-v1"
+  },
+  "card_counts": {
+    "event": 15,
+    "scope": 18,
+    "gap": 6,
+    "counterevidence": 2,
+    "action_basis": 4
+  },
+  "fact_cards": [
+    {
+      "fact_id": "fact-event-evt-701",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-06-20 10:04:30 UTC 资产 `ws-legal-03` 当前出现仅用于边界说明的背景事件 `auth-queue-sync.net`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003"
+      ],
+      "time": "2026-06-20 10:04:30 UTC",
+      "subject": "ws-legal-03",
+      "action": "解析域名",
+      "object": "auth-queue-sync.net",
+      "qualifiers": {
+        "event_id": "evt-701",
+        "kind": "dns",
+        "stages": [],
+        "classification": "unknown"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-702",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-06-20 10:12:00 UTC 资产 `ws-legal-03` 对外通信 `auth-queue-sync.net / 198.51.100.131`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003"
+      ],
+      "time": "2026-06-20 10:12:00 UTC",
+      "subject": "ws-legal-03",
+      "action": "对外通信",
+      "object": "auth-queue-sync.net / 198.51.100.131",
+      "qualifiers": {
+        "event_id": "evt-702",
+        "kind": "alert",
+        "stages": [],
+        "classification": "needs_review"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-703",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-06-20 10:16:20 UTC 资产 `ws-legal-03` 对外通信 `auth-queue-sync.net / 198.51.100.131`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003"
+      ],
+      "time": "2026-06-20 10:16:20 UTC",
+      "subject": "ws-legal-03",
+      "action": "对外通信",
+      "object": "auth-queue-sync.net / 198.51.100.131",
+      "qualifiers": {
+        "event_id": "evt-703",
+        "kind": "flow",
+        "stages": [
+          "command-and-control"
+        ],
+        "classification": "suspicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-704",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-06-20 10:21:40 UTC 资产 `ws-legal-03` 对外通信 `auth-queue-sync.net / 198.51.100.131`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003"
+      ],
+      "time": "2026-06-20 10:21:40 UTC",
+      "subject": "ws-legal-03",
+      "action": "对外通信",
+      "object": "auth-queue-sync.net / 198.51.100.131",
+      "qualifiers": {
+        "event_id": "evt-704",
+        "kind": "flow",
+        "stages": [
+          "command-and-control"
+        ],
+        "classification": "suspicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-705",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-06-20 10:24:00 UTC 资产 `ws-legal-03` 当前出现仅用于边界说明的背景事件 `主机侧上下文线索`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003"
+      ],
+      "time": "2026-06-20 10:24:00 UTC",
+      "subject": "ws-legal-03",
+      "action": "出现关联事件",
+      "object": "主机侧上下文线索",
+      "qualifiers": {
+        "event_id": "evt-705",
+        "kind": "asset_context",
+        "stages": [],
+        "classification": "unknown"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-706",
+      "fact_type": "event",
+      "status": "candidate",
+      "summary_line": "2026-06-20 10:39:00 UTC 资产 `ws-legal-09` 与 `cdn-auth-queue.net / 198.51.100.131` 出现待确认关联命中。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003",
+        "obs-004",
+        "obs-005"
+      ],
+      "time": "2026-06-20 10:39:00 UTC",
+      "subject": "ws-legal-09",
+      "action": "对外通信",
+      "object": "cdn-auth-queue.net / 198.51.100.131",
+      "qualifiers": {
+        "event_id": "evt-706",
+        "kind": "flow",
+        "stages": [],
+        "classification": "unknown"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-707",
+      "fact_type": "event",
+      "status": "candidate",
+      "summary_line": "2026-06-20 10:42:00 UTC 资产 `ws-legal-09` 与 `cdn-auth-queue.net` 出现待确认关联命中。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003",
+        "obs-004",
+        "obs-005"
+      ],
+      "time": "2026-06-20 10:42:00 UTC",
+      "subject": "ws-legal-09",
+      "action": "解析域名",
+      "object": "cdn-auth-queue.net",
+      "qualifiers": {
+        "event_id": "evt-707",
+        "kind": "dns",
+        "stages": [],
+        "classification": "unknown"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-708",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-06-20 10:46:10 UTC 资产 `ws-legal-09` 当前出现仅用于边界说明的背景事件 `identity-cache.vendor.example / 198.51.100.131`。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003",
+        "obs-004",
+        "obs-005"
+      ],
+      "time": "2026-06-20 10:46:10 UTC",
+      "subject": "ws-legal-09",
+      "action": "对外通信",
+      "object": "identity-cache.vendor.example / 198.51.100.131",
+      "qualifiers": {
+        "event_id": "evt-708",
+        "kind": "flow",
+        "stages": [],
+        "classification": "benign"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-709",
+      "fact_type": "event",
+      "status": "candidate",
+      "summary_line": "2026-06-20 10:49:30 UTC 资产 `ws-legal-12` 与 `legal-docs-cdn.example / 198.51.100.131` 出现待确认关联命中。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003",
+        "obs-004",
+        "obs-005"
+      ],
+      "time": "2026-06-20 10:49:30 UTC",
+      "subject": "ws-legal-12",
+      "action": "对外通信",
+      "object": "legal-docs-cdn.example / 198.51.100.131",
+      "qualifiers": {
+        "event_id": "evt-709",
+        "kind": "flow",
+        "stages": [],
+        "classification": "unknown"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-710",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-06-20 10:52:00 UTC 资产 `相关资产` 当前出现仅用于边界说明的背景事件 `auth-queue-sync.net / 198.51.100.131`。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003"
+      ],
+      "time": "2026-06-20 10:52:00 UTC",
+      "subject": "相关资产",
+      "action": "对外通信",
+      "object": "auth-queue-sync.net / 198.51.100.131",
+      "qualifiers": {
+        "event_id": "evt-710",
+        "kind": "infra_context",
+        "stages": [],
+        "classification": "benign"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-711",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-06-20 10:55:00 UTC 资产 `ws-legal-03` 当前出现仅用于边界说明的背景事件 `维护或计划内背景活动`。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003"
+      ],
+      "time": "2026-06-20 10:55:00 UTC",
+      "subject": "ws-legal-03",
+      "action": "背景说明",
+      "object": "维护或计划内背景活动",
+      "qualifiers": {
+        "event_id": "evt-711",
+        "kind": "asset_context",
+        "stages": [],
+        "classification": "benign"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-712",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-06-20 11:01:20 UTC 资产 `ws-legal-03` 当前出现仅用于边界说明的背景事件 `login.microsoftonline.com / 20.190.160.22`。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003"
+      ],
+      "time": "2026-06-20 11:01:20 UTC",
+      "subject": "ws-legal-03",
+      "action": "对外通信",
+      "object": "login.microsoftonline.com / 20.190.160.22",
+      "qualifiers": {
+        "event_id": "evt-712",
+        "kind": "flow",
+        "stages": [],
+        "classification": "benign"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-713",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-06-20 11:08:30 UTC 资产 `ws-legal-03` 当前出现仅用于边界说明的背景事件 `login-queue-cdn.net`。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003"
+      ],
+      "time": "2026-06-20 11:08:30 UTC",
+      "subject": "ws-legal-03",
+      "action": "解析域名",
+      "object": "login-queue-cdn.net",
+      "qualifiers": {
+        "event_id": "evt-713",
+        "kind": "dns",
+        "stages": [],
+        "classification": "unknown"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-714",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-06-20 11:11:00 UTC 资产 `ws-legal-03` 当前出现仅用于边界说明的背景事件 `login-queue-cdn.net / 203.0.113.131`。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003"
+      ],
+      "time": "2026-06-20 11:11:00 UTC",
+      "subject": "ws-legal-03",
+      "action": "对外通信",
+      "object": "login-queue-cdn.net / 203.0.113.131",
+      "qualifiers": {
+        "event_id": "evt-714",
+        "kind": "flow",
+        "stages": [],
+        "classification": "unknown"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-715",
+      "fact_type": "event",
+      "status": "candidate",
+      "summary_line": "2026-06-20 11:18:00 UTC 资产 `ws-legal-09` 与 `主机侧上下文线索` 出现待确认关联命中。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003",
+        "obs-004",
+        "obs-005"
+      ],
+      "time": "2026-06-20 11:18:00 UTC",
+      "subject": "ws-legal-09",
+      "action": "出现关联事件",
+      "object": "主机侧上下文线索",
+      "qualifiers": {
+        "event_id": "evt-715",
+        "kind": "asset_context",
+        "stages": [],
+        "classification": "unknown"
+      }
+    },
+    {
+      "fact_id": "fact-scope-obj-01",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `ws-legal-03` 当前作为调查锚点保留在主调查链中。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003"
+      ],
+      "entity": "ws-legal-03",
+      "role": "seed_asset",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-02",
+      "fact_type": "scope",
+      "status": "candidate",
+      "summary_line": "对象 `ws-legal-09` 当前作为待确认关联资产保留为待确认范围。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003",
+        "obs-004",
+        "obs-005"
+      ],
+      "entity": "ws-legal-09",
+      "role": "related_asset",
+      "scope_status": "candidate_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-03",
+      "fact_type": "scope",
+      "status": "candidate",
+      "summary_line": "对象 `ws-legal-12` 当前作为待确认关联资产保留为待确认范围。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003",
+        "obs-004",
+        "obs-005"
+      ],
+      "entity": "ws-legal-12",
+      "role": "related_asset",
+      "scope_status": "candidate_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-04",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `198.51.100.131` 当前作为已确认关联基础设施纳入主证据链。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003",
+        "obs-004",
+        "obs-005"
+      ],
+      "entity": "198.51.100.131",
+      "role": "core_external_indicator",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-05",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `auth-queue-sync.net` 当前作为已确认关联基础设施纳入主证据链。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003"
+      ],
+      "entity": "auth-queue-sync.net",
+      "role": "core_external_indicator",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-11",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `10.44.1.18` 当前作为内网关联对象纳入主证据链。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003"
+      ],
+      "entity": "10.44.1.18",
+      "role": "related_internal_address",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-12",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `10.44.1.29` 当前作为内网关联对象纳入主证据链。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003",
+        "obs-004",
+        "obs-005"
+      ],
+      "entity": "10.44.1.29",
+      "role": "related_internal_address",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-13",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `10.44.1.42` 当前作为内网关联对象纳入主证据链。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003",
+        "obs-004",
+        "obs-005"
+      ],
+      "entity": "10.44.1.42",
+      "role": "related_internal_address",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-06",
+      "fact_type": "scope",
+      "status": "background",
+      "summary_line": "对象 `20.190.160.22` 当前只作为背景指标保留为背景指标。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003"
+      ],
+      "entity": "20.190.160.22",
+      "role": "contextual_indicator",
+      "scope_status": "background_only"
+    },
+    {
+      "fact_id": "fact-scope-obj-07",
+      "fact_type": "scope",
+      "status": "background",
+      "summary_line": "对象 `identity-cache.vendor.example` 当前只作为背景指标保留为背景指标。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003",
+        "obs-004",
+        "obs-005"
+      ],
+      "entity": "identity-cache.vendor.example",
+      "role": "contextual_indicator",
+      "scope_status": "background_only"
+    },
+    {
+      "fact_id": "fact-scope-obj-08",
+      "fact_type": "scope",
+      "status": "background",
+      "summary_line": "对象 `login.microsoftonline.com` 当前只作为背景指标保留为背景指标。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003"
+      ],
+      "entity": "login.microsoftonline.com",
+      "role": "contextual_indicator",
+      "scope_status": "background_only"
+    },
+    {
+      "fact_id": "fact-scope-obj-10",
+      "fact_type": "scope",
+      "status": "background",
+      "summary_line": "对象 `Suspicious shared-infra beacon requiring review` 当前只作为背景提示保留为背景指标。",
+      "evidence_refs": [],
+      "entity": "Suspicious shared-infra beacon requiring review",
+      "role": "family_hint",
+      "scope_status": "background_only"
+    },
+    {
+      "fact_id": "fact-scope-obj-09",
+      "fact_type": "scope",
+      "status": "background",
+      "summary_line": "对象 `t13d190900_7711aa22bb33_9911ccddee77` 当前只作为种子指标保留为背景指标。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003"
+      ],
+      "entity": "t13d190900_7711aa22bb33_9911ccddee77",
+      "role": "seed_fingerprint",
+      "scope_status": "background_only"
+    },
+    {
+      "fact_id": "fact-scope-obj-14",
+      "fact_type": "scope",
+      "status": "candidate",
+      "summary_line": "对象 `203.0.113.131` 当前作为候选扩展对象保留为待确认范围。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003"
+      ],
+      "entity": "203.0.113.131",
+      "role": "expansion_candidate",
+      "scope_status": "candidate_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-15",
+      "fact_type": "scope",
+      "status": "candidate",
+      "summary_line": "对象 `cdn-auth-queue.net` 当前作为候选扩展对象保留为待确认范围。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003",
+        "obs-004",
+        "obs-005"
+      ],
+      "entity": "cdn-auth-queue.net",
+      "role": "expansion_candidate",
+      "scope_status": "candidate_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-16",
+      "fact_type": "scope",
+      "status": "candidate",
+      "summary_line": "对象 `legal-docs-cdn.example` 当前作为候选扩展对象保留为待确认范围。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003",
+        "obs-004",
+        "obs-005"
+      ],
+      "entity": "legal-docs-cdn.example",
+      "role": "expansion_candidate",
+      "scope_status": "candidate_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-17",
+      "fact_type": "scope",
+      "status": "candidate",
+      "summary_line": "对象 `login-queue-cdn.net` 当前作为候选扩展对象保留为待确认范围。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003"
+      ],
+      "entity": "login-queue-cdn.net",
+      "role": "expansion_candidate",
+      "scope_status": "candidate_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-18",
+      "fact_type": "scope",
+      "status": "candidate",
+      "summary_line": "对象 `t13d190900_7711aa22bb33_9911ccddee77` 当前作为候选扩展对象保留为待确认范围。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003"
+      ],
+      "entity": "t13d190900_7711aa22bb33_9911ccddee77",
+      "role": "expansion_candidate",
+      "scope_status": "candidate_scope"
+    },
+    {
+      "fact_id": "fact-gap-execution_gap",
+      "fact_type": "gap",
+      "status": "candidate",
+      "summary_line": "当前仍需对“是否存在主机侧执行、持久化或横向移动证据？”补充独立确认。",
+      "evidence_refs": [],
+      "question": "是否存在主机侧执行、持久化或横向移动证据？",
+      "blocking_effect": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
+    },
+    {
+      "fact_id": "fact-gap-related_assets_review",
+      "fact_type": "gap",
+      "status": "candidate",
+      "summary_line": "当前仍需对“关联资产 ws-legal-09、ws-legal-12 是否真正受影响？”补充独立确认。",
+      "evidence_refs": [],
+      "question": "关联资产 ws-legal-09、ws-legal-12 是否真正受影响？",
+      "blocking_effect": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
+    },
+    {
+      "fact_id": "fact-gap-ground_external_context",
+      "fact_type": "gap",
+      "status": "candidate",
+      "summary_line": "当前仍需对“补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。”补充独立确认。",
+      "evidence_refs": [],
+      "question": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+      "blocking_effect": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。"
+    },
+    {
+      "fact_id": "fact-gap-check_counterevidence",
+      "fact_type": "gap",
+      "status": "candidate",
+      "summary_line": "当前仍需对“仍需显式检查维护窗口、补丁、备份或共享基线等反证。”补充独立确认。",
+      "evidence_refs": [],
+      "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "blocking_effect": "该 gap 当前只限制边界说明，不再阻塞核心结论交付。"
+    },
+    {
+      "fact_id": "fact-gap-structure_evidence",
+      "fact_type": "gap",
+      "status": "candidate",
+      "summary_line": "当前仍需对“仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。”补充独立确认。",
+      "evidence_refs": [],
+      "question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+      "blocking_effect": "该 gap 当前只限制边界说明，不再阻塞核心结论交付。"
+    },
+    {
+      "fact_id": "fact-gap-validate_family_hint",
+      "fact_type": "gap",
+      "status": "candidate",
+      "summary_line": "当前仍需对“seed 自带的家族提示 Suspicious shared-infra beacon requiring review 是否有更多外部证据支撑？”补充独立确认。",
+      "evidence_refs": [],
+      "question": "seed 自带的家族提示 Suspicious shared-infra beacon requiring review 是否有更多外部证据支撑？",
+      "blocking_effect": "seed 自带的家族提示 Suspicious shared-infra beacon requiring review 是否有更多外部证据支撑？"
+    },
+    {
+      "fact_id": "fact-counter-cl-04",
+      "fact_type": "counterevidence",
+      "status": "background",
+      "summary_line": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "evidence_refs": [
+        "obs-004"
+      ],
+      "claim": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "impact": "用于说明为什么部分背景流量不足以推翻主判断。"
+    },
+    {
+      "fact_id": "fact-counter-cl-05",
+      "fact_type": "counterevidence",
+      "status": "background",
+      "summary_line": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "evidence_refs": [
+        "obs-005"
+      ],
+      "claim": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "impact": "用于说明为什么部分背景流量不足以推翻主判断。"
+    },
+    {
+      "fact_id": "fact-action-01",
+      "fact_type": "action_basis",
+      "status": "confirmed",
+      "summary_line": "优先隔离或重点监控资产：ws-legal-03",
+      "evidence_refs": [],
+      "recommended_action": "优先隔离或重点监控资产：ws-legal-03",
+      "priority": "immediate"
+    },
+    {
+      "fact_id": "fact-action-02",
+      "fact_type": "action_basis",
+      "status": "confirmed",
+      "summary_line": "在边界和代理设备上排查并封禁外部基础设施：198.51.100.131、auth-queue-sync.net",
+      "evidence_refs": [],
+      "recommended_action": "在边界和代理设备上排查并封禁外部基础设施：198.51.100.131、auth-queue-sync.net",
+      "priority": "immediate"
+    },
+    {
+      "fact_id": "fact-action-03",
+      "fact_type": "action_basis",
+      "status": "confirmed",
+      "summary_line": "继续核实待确认关联资产 ws-legal-09、ws-legal-12",
+      "evidence_refs": [],
+      "recommended_action": "继续核实待确认关联资产 ws-legal-09、ws-legal-12",
+      "priority": "short_term"
+    },
+    {
+      "fact_id": "fact-action-04",
+      "fact_type": "action_basis",
+      "status": "confirmed",
+      "summary_line": "优先补查：是否存在主机侧执行、持久化或横向移动证据",
+      "evidence_refs": [],
+      "recommended_action": "优先补查：是否存在主机侧执行、持久化或横向移动证据",
+      "priority": "follow_up"
+    }
+  ],
+  "verdict_packet": {
+    "severity": "中",
+    "confidence": "高",
+    "conclusion_statement": "ws-legal-03 围绕 198.51.100.131、auth-queue-sync.net 已出现连续异常迹象，但 ws-legal-09 仍需独立确认。",
+    "supporting_fact_ids": [
+      "fact-event-evt-702",
+      "fact-event-evt-703",
+      "fact-event-evt-704",
+      "fact-scope-obj-01",
+      "fact-scope-obj-04",
+      "fact-scope-obj-05",
+      "fact-counter-cl-04"
+    ]
+  },
+  "scope_packet": {
+    "confirmed_entities": [],
+    "candidate_entities": [
+      "ws-legal-09",
+      "ws-legal-12"
+    ],
+    "supporting_fact_ids": [
+      "fact-scope-obj-04",
+      "fact-scope-obj-05",
+      "fact-scope-obj-02",
+      "fact-scope-obj-03",
+      "fact-scope-obj-14",
+      "fact-scope-obj-15"
+    ]
+  },
+  "constraint_packet": {
+    "blocking_gaps": [
+      "是否存在主机侧执行、持久化或横向移动证据？",
+      "关联资产 ws-legal-09、ws-legal-12 是否真正受影响？",
+      "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+      "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+      "seed 自带的家族提示 Suspicious shared-infra beacon requiring review 是否有更多外部证据支撑？"
+    ],
+    "counterevidence": [
+      "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "检索到 1 条更接近维护、更新或正常基线的事件。"
+    ],
+    "boundary_statement": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+    "supporting_fact_ids": [
+      "fact-gap-execution_gap",
+      "fact-gap-related_assets_review",
+      "fact-gap-ground_external_context",
+      "fact-gap-check_counterevidence",
+      "fact-gap-structure_evidence",
+      "fact-gap-validate_family_hint",
+      "fact-counter-cl-04",
+      "fact-counter-cl-05",
+      "fact-event-evt-706",
+      "fact-event-evt-707"
+    ]
+  },
+  "action_packet": {
+    "immediate_actions": [
+      "优先隔离或重点监控资产：ws-legal-03",
+      "在边界和代理设备上排查并封禁外部基础设施：198.51.100.131、auth-queue-sync.net"
+    ],
+    "next_steps": [
+      "继续核实待确认关联资产 ws-legal-09、ws-legal-12",
+      "优先补查：是否存在主机侧执行、持久化或横向移动证据"
+    ],
+    "supporting_fact_ids": [
+      "fact-scope-obj-01",
+      "fact-scope-obj-04",
+      "fact-scope-obj-05",
+      "fact-gap-execution_gap",
+      "fact-gap-related_assets_review",
+      "fact-action-01",
+      "fact-action-02",
+      "fact-action-03",
+      "fact-action-04"
+    ]
+  }
+}

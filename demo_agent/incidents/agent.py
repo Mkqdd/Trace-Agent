@@ -67,6 +67,9 @@ INTEL_TOOL_NAMES = {
 }
 PAGE_TOOL_NAMES = {"fetch_page_content", "extract_claim_candidates_from_page", "extract_entities_from_page"}
 ALL_TOOL_NAMES = EVENT_TOOL_NAMES | INTEL_TOOL_NAMES | PAGE_TOOL_NAMES
+_TRUE_ENV_VALUES = {"1", "true", "yes", "on"}
+_FALSE_ENV_VALUES = {"0", "false", "no", "off"}
+_SERPAPI_BACKED_TOOL_NAMES = {"technical_source_search", "malware_profile_lookup", "pivot_related_indicators"}
 STATUS_LABELS = {
     "confirmed_incident": "确认事件",
     "needs_review": "待人工复核",
@@ -396,6 +399,22 @@ GROUNDING_STATUS_LABELS = {
     GROUNDING_STATUS_GROUNDED: "已验证待确认",
     GROUNDING_STATUS_CONFIRMED: "已确认支撑",
 }
+
+
+def _live_intel_enabled(tool_name: str = "", session_state: Optional[Dict[str, Any]] = None) -> bool:
+    raw = str(os.getenv("INCIDENT_AGENT_LIVE_INTEL") or "").strip().lower()
+    if raw in _FALSE_ENV_VALUES:
+        return False
+    if raw in _TRUE_ENV_VALUES:
+        return True
+    if raw and raw != "auto":
+        return False
+    effective_mode = str((session_state or {}).get("decision_mode") or "").strip()
+    if effective_mode == DECISION_MODE_HEURISTIC:
+        return False
+    if tool_name in _SERPAPI_BACKED_TOOL_NAMES:
+        return bool(os.getenv("SERPAPI_API_KEY") or os.getenv("SERP_API_KEY"))
+    return False
 
 
 def _gap_record(
@@ -1601,7 +1620,7 @@ def _tool_precondition_view(
     related_assets = [asset for asset in list(entities.get("related_assets") or []) if asset]
     candidate_events = _candidate_events(seed_event, incident_state)
     indicator_target = _default_indicator_target(seed_event, incident_state)
-    allow_live_intel = str(os.getenv("INCIDENT_AGENT_LIVE_INTEL") or "").strip().lower() in {"1", "true", "yes"}
+    allow_live_intel = _live_intel_enabled(tool_name, session_state)
     context_built = bool(incident_state.get("context_bundle", {}).get("minimal_event_count"))
 
     available = True
@@ -2653,7 +2672,7 @@ def _default_tool_request(seed_event: Dict[str, Any], session_state: Dict[str, A
     page_document = _latest_page_document(incident_state)
     seed_assets = _seed_assets_from_state(incident_state)
     related_assets = [asset for asset in list(entities.get("assets") or []) if asset and asset != entities.get("seed_asset")]
-    allow_live_intel = str(os.getenv("INCIDENT_AGENT_LIVE_INTEL") or "").strip().lower() in {"1", "true", "yes"}
+    allow_live_intel = _live_intel_enabled(tool_name, session_state)
 
     if tool_name in EVENT_TOOL_NAMES and remaining_event <= 0:
         return None
@@ -5749,7 +5768,7 @@ def _ground_candidate_event_observation(
         ]
         return observation
 
-    allow_live_intel = str(os.getenv("INCIDENT_AGENT_LIVE_INTEL") or "").strip().lower() in {"1", "true", "yes"}
+    allow_live_intel = _live_intel_enabled(GROUND_CANDIDATE_TOOL_NAME)
     supported_live_types = {"IP", "DOMAIN", "URL", "MD5", "SHA256"}
     hit_claims: List[str] = []
     families: List[str] = []
@@ -6440,8 +6459,21 @@ def _open_questions(
         str(item.get("tool_name") or "").strip()
         for item in list(incident_state.get("observations") or [])
     }
+    external_context_tools = {
+        "technical_source_search",
+        "malware_profile_lookup",
+        "pivot_related_indicators",
+        "abuse_ch_lookup",
+        "threatfox_ioc_lookup",
+        "urlhaus_ioc_lookup",
+        "fetch_page_content",
+        "extract_claim_candidates_from_page",
+    }
+    has_external_context = any(tool_name in external_context_tools for tool_name in observation_tools)
     scope_followup_actions = _novel_scope_followup_actions(seed_event, session_state, incident_state)
     scope_followup_pending = bool(scope_followup_actions)
+    family_hint = _meaningful_family_hint(seed_event)
+    fingerprint = str((((seed_event.get("trigger_fingerprint") or {}).get("value")) or "")).strip()
     questions: List[Dict[str, Any]] = []
     if not incident_state.get("context_bundle", {}).get("minimal_event_count"):
         questions.append(
@@ -6551,6 +6583,25 @@ def _open_questions(
                 closure_criteria=["补足外部基础设施背景", "支持当前结论的可解释性"],
             )
         )
+    if (
+        verdict.get("status") != "monitor_only"
+        and list(scope.get("primary_external_indicators") or [])
+        and (family_hint or fingerprint)
+        and not has_external_context
+    ):
+        questions.append(
+            _gap_record(
+                "ground_external_context",
+                priority="low",
+                question="补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+                gap_type="external_context",
+                materiality="confidence_supporting",
+                tool_capability_hints=["infra_context", "external_intel", "family_validation"],
+                delivery_blocking=False,
+                reportable_if_unresolved=True,
+                closure_criteria=["补足外部技术背景", "明确背景情报不等于本案强归因"],
+            )
+        )
     if COUNTEREVIDENCE_TOOL_NAME not in observation_tools:
         questions.append(
             _gap_record(
@@ -6579,7 +6630,6 @@ def _open_questions(
                 closure_criteria=["至少完成一次结构化沉淀", "报告可直接引用当前事实"],
             )
         )
-    family_hint = _meaningful_family_hint(seed_event)
     if family_hint and verdict.get("status") == "needs_review":
         questions.append(
             _gap_record(

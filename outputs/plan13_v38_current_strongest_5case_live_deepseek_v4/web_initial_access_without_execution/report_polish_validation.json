@@ -1,0 +1,24 @@
+{
+  "schema_version": "report-polish-validation-v1",
+  "applied": true,
+  "status": "soft_warn",
+  "summary": "发现 0 条 hard-fail 和 1 条 soft-warn。",
+  "issue_counts": {
+    "hard_fail": 0,
+    "soft_warn": 1
+  },
+  "issues": [
+    {
+      "severity": "soft_warn",
+      "code": "unsupported_event_tuple",
+      "section": "事件过程与行为模式",
+      "sentence": "2026-06-24 14:50:00 UTC，资产 web-app-02（源地址 10.61.2.20）的公网 Web 服务首次遭到针对 admin portal 的漏洞利用请求，该时间点尚未出现任何出向 TLS 通信，表明攻击者正在进行前期的漏洞探测或利用尝试。",
+      "message": "正文可能把多个真实事实组合成了事实卡中不存在的 时间-主体-对象 事件组合，请人工复核是否属于合理归纳。",
+      "evidence": [
+        "2026-06-24 14:50:00 UTC",
+        "web-app-02",
+        "10.61.2.20"
+      ]
+    }
+  ]
+}

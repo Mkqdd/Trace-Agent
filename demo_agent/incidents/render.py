@@ -226,26 +226,26 @@ def _reader_clean_text(value: Any) -> str:
     text = text.replace("该 gap 已经过多轮相关尝试但没有 新的有效信息，更适合作为报告未决事项。", "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。")
     text = text.replace("当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。", "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。")
     text = re.sub(
-        r"Approved .*patch staging began on ([A-Za-z0-9_.-]+) in the same hour and could explain some routine admin activity\.?",
-        r"资产 `\1` 同时间窗存在已批准的补丁或维护活动，可解释部分日常管理行为。",
+        r"Approved .*?(?:patch|maintenance|update|change|deployment|backup).*? on ([A-Za-z0-9_.-]+).*?\.?",
+        r"资产 `\1` 同时间窗存在已批准的维护、变更或更新活动，可解释部分日常管理行为。",
         text,
         flags=re.IGNORECASE,
     )
     text = re.sub(
-        r"Windows update content was downloaded from an approved Microsoft endpoint during the maintenance window\.?",
-        "该访问更接近维护窗口内的计划内 Windows 更新流量。",
+        r".*approved .*?(?:vendor|update|endpoint).*?\.?",
+        "该访问更接近已批准的供应商或更新端点流量。",
         text,
         flags=re.IGNORECASE,
     )
     text = re.sub(
-        r"A QA telemetry job also touched the same hosting IP through a different vendor domain, indicating the secondary IP is shared infrastructure\.?",
-        "另有 QA 遥测任务通过其他供应商域名访问了同一托管 IP，说明该次级 IP 更可能属于共享基础设施。",
+        r".*(?:shared infrastructure|same hosting ip|different vendor domain).*?\.?",
+        "相关对象存在共享基础设施背景，不能仅凭一次共现就升格为攻击基础设施。",
         text,
         flags=re.IGNORECASE,
     )
     text = re.sub(
-        r"The EDR sensor on ([A-Za-z0-9_.-]+) reported degraded process telemetry, so the execution lineage behind the second beacon cannot be reconstructed\.?",
-        r"资产 `\1` 的 EDR 进程遥测出现降级，因此第二条 beacon 背后的执行链暂时无法完整重建。",
+        r".*(?:degraded process telemetry|telemetry degraded|cannot be reconstructed).*?\.?",
+        "主机侧遥测不完整，导致相关执行链暂时无法完整重建。",
         text,
         flags=re.IGNORECASE,
     )
@@ -1809,11 +1809,11 @@ def _report_fact_body_from_signal(item: Dict[str, Any], *, role: str, relation: 
 
     if relation == "counterevidence":
         if kind == "asset_context":
-            return "同时间窗存在已批准的补丁/维护活动，可解释部分日常管理行为"
-        if _summary_has_any(summary, ["windows update", "approved microsoft endpoint"]):
-            return "与已批准的微软更新端点通信，更接近计划内更新流量"
-        if _summary_has_any(summary, ["qa telemetry", "shared infrastructure"]):
-            return "另有 QA 遥测任务通过其他供应商域名访问了同一托管 IP，说明该次级 IP 更可能属于共享基础设施"
+            return "同时间窗存在已批准的维护、变更或备份活动，可解释部分日常管理行为"
+        if _summary_has_any(summary, ["approved endpoint", "approved vendor", "approved update", "approved"]):
+            return "与已批准的供应商或更新端点通信，更接近计划内流量"
+        if _summary_has_any(summary, ["shared infrastructure", "same hosting ip", "different vendor domain"]):
+            return "存在共享基础设施背景，相关外部对象不能仅凭一次共现就升格为攻击基础设施"
         if indicator_text:
             return f"与 {indicator_text} 的访问更接近计划内更新、维护或共享基础设施背景"
         return "同时间窗存在更接近计划内活动的背景线索"
@@ -1823,10 +1823,10 @@ def _report_fact_body_from_signal(item: Dict[str, Any], *, role: str, relation: 
 
     if "lateral-movement" in stages:
         target_text = dst_ip or indicator_text or "关联内部主机"
-        if _summary_has_any(summary, ["wmi remote process creation", "wmi"]):
-            body = f"出现指向 `{target_text}` 的 WMI 远程进程创建"
-        elif _summary_has_any(summary, ["psexec", "remote service creation"]):
-            body = f"出现指向 `{target_text}` 的 PsExec 远程服务创建"
+        if _summary_has_any(summary, ["remote process creation"]):
+            body = f"出现指向 `{target_text}` 的远程进程创建"
+        elif _summary_has_any(summary, ["remote service creation"]):
+            body = f"出现指向 `{target_text}` 的远程服务创建"
         else:
             body = f"出现指向 `{target_text}` 的横向操作告警"
         if role == "progression_evidence":

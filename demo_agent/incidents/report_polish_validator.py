@@ -365,11 +365,11 @@ def validate_report_polish(body_markdown: str, report_fact_cards: Dict[str, Any]
                     continue
                 _add_issue(
                     issues,
-                    severity="hard_fail",
+                    severity="soft_warn",
                     code="unsupported_event_pair",
                     section=section_title,
                     sentence=sentence,
-                    message="正文出现了事实卡中不存在的 时间-主体 事件组合。",
+                    message="正文可能把多个真实事实组合成了事实卡中不存在的 时间-主体 事件组合，请人工复核是否属于合理归纳。",
                     evidence=time_hits[:1] + subject_hits[:1],
                 )
                 continue
@@ -387,11 +387,11 @@ def validate_report_polish(body_markdown: str, report_fact_cards: Dict[str, Any]
             if not matched:
                 _add_issue(
                     issues,
-                    severity="hard_fail",
+                    severity="soft_warn",
                     code="unsupported_event_tuple",
                     section=section_title,
                     sentence=sentence,
-                    message="正文出现了事实卡中不存在的 时间-主体-对象 事件组合。",
+                    message="正文可能把多个真实事实组合成了事实卡中不存在的 时间-主体-对象 事件组合，请人工复核是否属于合理归纳。",
                     evidence=time_hits[:1] + subject_hits[:1] + object_hits[:2],
                 )
 

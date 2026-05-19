@@ -1,0 +1,44 @@
+{
+  "schema_version": "report-polish-validation-v1",
+  "applied": true,
+  "status": "hard_fail",
+  "summary": "发现 2 条 hard-fail 和 1 条 soft-warn。",
+  "issue_counts": {
+    "hard_fail": 2,
+    "soft_warn": 1
+  },
+  "issues": [
+    {
+      "severity": "soft_warn",
+      "code": "unsupported_event_tuple",
+      "section": "调查起点与已知线索",
+      "sentence": "`2026-05-11 14:02:00 UTC`，公网可访问的 Web 服务器 `web-app-01` 从源地址 `10.60.1.14` 接收到了针对其登录端点的漏洞利用请求，这与后续发生的对外 TLS 加密流量在时间上紧密相连，构成了最初的可疑迹象。",
+      "message": "正文可能把多个真实事实组合成了事实卡中不存在的 时间-主体-对象 事件组合，请人工复核是否属于合理归纳。",
+      "evidence": [
+        "2026-05-11 14:02:00 UTC",
+        "web-app-01",
+        "10.60.1.14"
+      ]
+    },
+    {
+      "severity": "hard_fail",
+      "code": "unknown_domain",
+      "section": "事件过程与行为模式",
+      "sentence": "紧接着，在 `2026-05-11 14:16:30 UTC`，系统在 `web-app-01` 的 `/var/www/html/.cache` 目录下发现了一个名为 `shell.aspx` 的恶意 WebShell 文件。",
+      "message": "正文引用了事实卡中不存在的域名 `shell.aspx`。",
+      "evidence": [
+        "shell.aspx"
+      ]
+    },
+    {
+      "severity": "hard_fail",
+      "code": "unknown_domain",
+      "section": "关键事实与证据判断",
+      "sentence": "`2026-05-11 14:16:30 UTC`，文件 `shell.aspx` 在 `/var/www/html/.cache` 目录下被创建，这与先前漏洞利用的目标和 Web 服务进程上下文完全吻合。",
+      "message": "正文引用了事实卡中不存在的域名 `shell.aspx`。",
+      "evidence": [
+        "shell.aspx"
+      ]
+    }
+  ]
+}

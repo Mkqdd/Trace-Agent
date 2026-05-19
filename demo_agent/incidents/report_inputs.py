@@ -271,19 +271,26 @@ def _event_indicator_text(event: Dict[str, Any]) -> str:
     )
 
 
-def _background_summary_text(summary: Any) -> str:
-    text = str(summary or "").strip()
+def _background_summary_text(event: Dict[str, Any]) -> str:
+    text = str(event.get("summary") or "").strip()
     lowered = text.lower()
-    if not lowered:
+    tags = {str(tag or "").strip().lower() for tag in list(event.get("tags") or [])}
+    classification = str(event.get("classification") or "").strip().lower()
+    if not lowered and not tags:
         return ""
-    if "approved" in lowered and any(token in lowered for token in ["patch", "maintenance", "sccm"]):
-        return "同时间窗存在已批准的补丁或维护活动，可解释部分日常管理行为"
-    if "windows update" in lowered or "approved microsoft endpoint" in lowered:
-        return "访问了已批准的微软更新端点，更接近计划内更新流量"
-    if "qa telemetry" in lowered and "shared infrastructure" in lowered:
-        return "另有 QA 遥测任务通过其他供应商域名访问了同一托管 IP，说明该次级 IP 更可能属于共享基础设施"
-    if "degraded process telemetry" in lowered or "cannot be reconstructed" in lowered:
-        return "该主机的进程遥测不完整，导致后续执行链暂时无法完整重建"
+    maintenance_markers = {"maintenance", "patching", "backup", "approved-change", "scheduled-change"}
+    if classification == "benign" and tags.intersection(maintenance_markers):
+        return "同时间窗存在已批准的维护、变更或备份活动，可解释部分日常管理行为"
+    if "approved" in lowered and any(token in lowered for token in ["patch", "maintenance", "update", "change", "deployment", "backup"]):
+        return "同时间窗存在已批准的维护、变更或更新活动，可解释部分日常管理行为"
+    if "approved" in lowered and any(token in lowered for token in ["vendor", "endpoint", "update"]):
+        return "访问了已批准的供应商或更新端点，更接近计划内流量"
+    if "shared infrastructure" in lowered or "same hosting ip" in lowered or "different vendor domain" in lowered:
+        return "存在共享基础设施背景，相关外部对象不能仅凭一次共现就升格为攻击基础设施"
+    if "degraded" in lowered and "telemetry" in lowered:
+        return "该主机侧遥测不完整，导致相关执行链暂时无法完整重建"
+    if "cannot be reconstructed" in lowered:
+        return "当前证据不足以完整重建相关执行链"
     return ""
 
 
@@ -298,7 +305,7 @@ def _timeline_event_summary(event: Dict[str, Any]) -> str:
     dst_ip = str(event.get("dst_ip") or "").strip()
     answers = [str(answer or "").strip() for answer in list(event.get("answers") or []) if str(answer or "").strip()]
     indicator_text = _event_indicator_text(event)
-    background_summary = _background_summary_text(summary)
+    background_summary = _background_summary_text(event)
 
     if "exploit" in summary_lower and any(token in summary_lower for token in ["request", "requests", "portal", "admin", "post"]):
         return "对外服务入口出现可疑利用请求"
@@ -307,10 +314,10 @@ def _timeline_event_summary(event: Dict[str, Any]) -> str:
 
     if "lateral-movement" in stages:
         target_text = dst_ip or indicator_text or "关联内部主机"
-        if "wmi" in summary_lower:
-            return f"出现指向 `{target_text}` 的 WMI 远程进程创建"
-        if "psexec" in summary_lower or "remote service creation" in summary_lower:
-            return f"出现指向 `{target_text}` 的 PsExec 远程服务创建"
+        if "remote process creation" in summary_lower:
+            return f"出现指向 `{target_text}` 的远程进程创建"
+        if "remote service creation" in summary_lower:
+            return f"出现指向 `{target_text}` 的远程服务创建"
         return f"出现指向 `{target_text}` 的横向操作告警"
 
     if "initial-access" in stages:
@@ -679,6 +686,49 @@ def _ioc_rows(evidence_store: Dict[str, Any]) -> List[Dict[str, str]]:
     return rows
 
 
+def _process_name_from_summary(summary: Any) -> str:
+    match = re.search(r"\b([A-Za-z0-9_.-]+\.exe)\b", str(summary or ""))
+    return str(match.group(1) or "").strip() if match else ""
+
+
+def _host_execution_followup_actions(evidence_store: Dict[str, Any]) -> List[str]:
+    actions: List[str] = []
+    events = list(_confirmed_events(evidence_store) + _candidate_events(evidence_store))
+    for event in events:
+        stages = {str(stage or "").strip() for stage in list(event.get("stages") or [])}
+        kind = str(event.get("kind") or "").strip().lower()
+        if kind != "process" and "execution" not in stages:
+            continue
+
+        summary = str(event.get("summary") or "").strip()
+        process_name = _process_name_from_summary(summary)
+        asset_id = str(event.get("asset_id") or "").strip()
+        if not summary or not asset_id:
+            continue
+
+        lowered = summary.lower()
+        has_command_detail = any(token in lowered for token in ["command line", "cmdline", "parent process", "sha256", "hash"])
+        if has_command_detail and "dll" not in lowered:
+            continue
+
+        time_text = _format_time(event.get("ts"))
+        time_clause = f"{time_text} 前后" if time_text != "unknown" else "对应时间窗"
+        process_clause = f"`{process_name}` 的" if process_name else "可疑进程的"
+        detail_fields = ["完整命令行", "父进程", "执行用户"]
+        if "dll" in lowered:
+            detail_fields.append("加载模块/库路径（如 DLL）")
+        if "remote process" in lowered or "remote service" in lowered:
+            detail_fields.append("远程来源与目标参数")
+        detail_fields.extend(["文件哈希/签名", "落地时间"])
+        tail = "；若摘要提示模块或库加载，确认实际加载了哪个模块/库（如 DLL）及其来源路径。" if "dll" in lowered else "。"
+        actions.append(
+            _normalize_report_text(
+                f"在 `{asset_id}` 上围绕 {time_clause}，核查{process_clause}{'、'.join(detail_fields)}{tail}"
+            )
+        )
+    return _dedupe_text(actions)
+
+
 def _recommendations(evidence_store: Dict[str, Any], delivery_decision: Dict[str, Any]) -> List[str]:
     recommendations: List[str] = []
     confirmed_scope = list(delivery_decision.get("confirmed_scope") or [])
@@ -686,12 +736,14 @@ def _recommendations(evidence_store: Dict[str, Any], delivery_decision: Dict[str
     seed_asset = str((_coverage(evidence_store).get("seed_asset")) or "").strip()
     core_indicators = list((_coverage(evidence_store).get("primary_external_indicators")) or [])
     next_best_questions = list(delivery_decision.get("next_best_questions") or [])
+    host_followups = _host_execution_followup_actions(evidence_store)
 
     focus_assets = confirmed_scope or ([seed_asset] if seed_asset else [])
     if focus_assets:
         recommendations.append(f"优先隔离或重点监控资产：{_join_or_fallback(focus_assets)}。")
     if core_indicators:
         recommendations.append(f"在边界和代理设备上排查并封禁外部基础设施：{_join_or_fallback(core_indicators[:4])}。")
+    recommendations.extend(host_followups[:2])
     if candidate_scope:
         recommendations.append(f"继续核实待复核关联资产 {_join_or_fallback(candidate_scope[:4])}。")
     if next_best_questions:
