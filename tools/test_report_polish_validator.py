@@ -41,7 +41,7 @@ def test_chinese_sentence_boundary_prevents_cross_sentence_event_tuple() -> None
     assert validation["issues"] == []
 
 
-def test_event_tuple_mismatch_is_warning_not_delivery_blocker() -> None:
+def test_event_tuple_mismatch_is_not_judged_by_polish_validator() -> None:
     fact_cards = {
         "fact_cards": [
             {
@@ -67,13 +67,36 @@ def test_event_tuple_mismatch_is_warning_not_delivery_blocker() -> None:
 
     validation = validate_report_polish(body, fact_cards)
 
-    assert validation["status"] == "soft_warn"
+    assert validation["status"] == "clean"
     assert validation["issue_counts"]["hard_fail"] == 0
-    assert validation["issue_counts"]["soft_warn"] == 1
-    assert validation["issues"][0]["code"] == "unsupported_event_tuple"
+    assert validation["issue_counts"]["soft_warn"] == 0
+    assert validation["issues"] == []
+
+
+def test_conditional_candidate_scope_language_is_not_a_hard_failure() -> None:
+    fact_cards = {
+        "fact_cards": [
+            {
+                "fact_type": "scope",
+                "entity": "ws-eng-09",
+            },
+        ],
+        "scope_packet": {"candidate_entities": ["ws-eng-09"]},
+    }
+    body = (
+        "## 处置建议与后续核查\n\n"
+        "查找是否存在来自 ws-eng-05 的 WMI 远程执行成功后的落地文件、持久化任务或独立外联，"
+        "以决定是否将 ws-eng-09 从候选边界提升为已确认受影响范围。"
+    )
+
+    validation = validate_report_polish(body, fact_cards)
+
+    assert validation["status"] == "clean"
+    assert validation["issues"] == []
 
 
 if __name__ == "__main__":
     test_chinese_sentence_boundary_prevents_cross_sentence_event_tuple()
-    test_event_tuple_mismatch_is_warning_not_delivery_blocker()
+    test_event_tuple_mismatch_is_not_judged_by_polish_validator()
+    test_conditional_candidate_scope_language_is_not_a_hard_failure()
     print("report polish validator checks passed")

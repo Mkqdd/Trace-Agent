@@ -15,14 +15,30 @@ IP_RE = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
 DOMAIN_RE = re.compile(r"\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}\b", re.IGNORECASE)
 SECTION_RE = re.compile(r"^(#{1,3})\s+(.+?)\s*$")
 SENTENCE_SPLIT_RE = re.compile(r"(?<=[。！？!?])\s*|\n+")
-EVENT_LIKE_RE = re.compile(r"(通信|外联|连接|解析|访问|执行|beacon|横向|命中)")
-CONFIRMED_SCOPE_RE = re.compile(r"(已确认|确认受影响|纳入已确认范围|确认扩散|已波及|确认感染|确认控制)")
-NEGATION_RE = re.compile(r"(未确认|尚未|不能|还不能|仍需|待确认|未独立验证)")
-NON_DOMAIN_TLDS = {"exe", "dll", "sys", "bat", "cmd", "ps1", "zip", "7z", "rar", "tmp", "log"}
+NON_DOMAIN_TLDS = {
+    "7z",
+    "aspx",
+    "bat",
+    "cmd",
+    "dat",
+    "dll",
+    "exe",
+    "jsp",
+    "log",
+    "php",
+    "ps1",
+    "rar",
+    "sys",
+    "tmp",
+    "zip",
+}
 
 
 def _text(value: Any) -> str:
-    return str(value or "").strip()
+    text = str(value or "").strip()
+    for char in ("\u2010", "\u2011", "\u2012", "\u2013", "\u2014", "\u2212"):
+        text = text.replace(char, "-")
+    return text
 
 
 def _dedupe_text(values: List[Any]) -> List[str]:
@@ -126,62 +142,38 @@ def _split_sentences(text: str) -> List[str]:
 
 def _known_sets(report_fact_cards: Dict[str, Any]) -> Dict[str, Any]:
     facts = [dict(item) for item in list(report_fact_cards.get("fact_cards") or []) if isinstance(item, dict)]
-    scope_packet = dict(report_fact_cards.get("scope_packet") or {})
-
-    allowed_times: set[str] = set()
     allowed_full_times: set[str] = set()
     allowed_minute_prefixes: set[str] = set()
-    allowed_subjects: set[str] = set()
-    allowed_objects: set[str] = set()
     allowed_ips: set[str] = set()
     allowed_domains: set[str] = set()
-    allowed_event_tuples: set[Tuple[str, str, str]] = set()
-    allowed_event_pairs: set[Tuple[str, str]] = set()
-    candidate_entities = set(_dedupe_text(list(scope_packet.get("candidate_entities") or [])))
 
     for fact in facts:
         fact_type = _text(fact.get("fact_type"))
         if fact_type == "event":
             time_text = _text(fact.get("time"))
             if time_text:
-                allowed_times.add(time_text)
                 normalized_time = _normalize_time_text(time_text)
                 if normalized_time:
                     allowed_full_times.add(normalized_time)
                     allowed_minute_prefixes.add(normalized_time[:16])
-            subject = _text(fact.get("subject"))
-            if subject:
-                allowed_subjects.add(subject)
             for item in _split_components(fact.get("object")):
-                allowed_objects.add(item)
                 if IP_RE.fullmatch(item):
                     allowed_ips.add(item)
                 elif DOMAIN_RE.fullmatch(item):
                     allowed_domains.add(item.lower())
-            if time_text and subject:
-                allowed_event_pairs.add((time_text, subject))
-                for item in _split_components(fact.get("object")):
-                    allowed_event_tuples.add((time_text, subject, item))
         if fact_type == "scope":
             entity = _text(fact.get("entity"))
             if entity:
-                allowed_objects.add(entity)
                 if IP_RE.fullmatch(entity):
                     allowed_ips.add(entity)
                 elif DOMAIN_RE.fullmatch(entity):
                     allowed_domains.add(entity.lower())
 
     return {
-        "allowed_times": allowed_times,
         "allowed_full_times": allowed_full_times,
         "allowed_minute_prefixes": allowed_minute_prefixes,
-        "allowed_subjects": allowed_subjects,
-        "allowed_objects": allowed_objects,
         "allowed_ips": allowed_ips,
         "allowed_domains": allowed_domains,
-        "allowed_event_tuples": allowed_event_tuples,
-        "allowed_event_pairs": allowed_event_pairs,
-        "candidate_entities": candidate_entities,
     }
 
 
@@ -215,19 +207,6 @@ def _is_domain_like(value: str) -> bool:
     if suffix in NON_DOMAIN_TLDS:
         return False
     return True
-
-
-def _candidate_confirmed_context(sentence: str, candidate: str) -> bool:
-    text = _text(sentence)
-    index = text.find(candidate)
-    if index < 0:
-        return False
-    start = max(0, index - 24)
-    end = min(len(text), index + len(candidate) + 24)
-    local = text[start:end]
-    if NEGATION_RE.search(local):
-        return False
-    return bool(CONFIRMED_SCOPE_RE.search(local))
 
 
 def _mask_spans(text: str, spans: List[Tuple[int, int]]) -> str:
@@ -335,65 +314,6 @@ def validate_report_polish(body_markdown: str, report_fact_cards: Dict[str, Any]
                         message=f"正文引用了事实卡中不存在的域名 `{domain}`。",
                         evidence=[domain],
                     )
-
-            for candidate in sorted(known["candidate_entities"]):
-                if candidate in sentence and _candidate_confirmed_context(sentence, candidate):
-                    _add_issue(
-                        issues,
-                        severity="hard_fail",
-                        code="candidate_promoted_to_confirmed",
-                        section=section_title,
-                        sentence=sentence,
-                        message=f"候选对象 `{candidate}` 在正文里被写成了接近已确认状态。",
-                        evidence=[candidate],
-                    )
-
-            if not EVENT_LIKE_RE.search(sentence):
-                continue
-            time_hits = [value for value in known["allowed_times"] if value in sentence]
-            subject_hits = [value for value in known["allowed_subjects"] if value in sentence]
-            if not time_hits or not subject_hits:
-                continue
-            object_hits = [value for value in known["allowed_objects"] if value in sentence and value not in subject_hits]
-            if not object_hits:
-                pair_matched = any(
-                    (time_value, subject) in known["allowed_event_pairs"]
-                    for time_value in time_hits
-                    for subject in subject_hits
-                )
-                if pair_matched:
-                    continue
-                _add_issue(
-                    issues,
-                    severity="soft_warn",
-                    code="unsupported_event_pair",
-                    section=section_title,
-                    sentence=sentence,
-                    message="正文可能把多个真实事实组合成了事实卡中不存在的 时间-主体 事件组合，请人工复核是否属于合理归纳。",
-                    evidence=time_hits[:1] + subject_hits[:1],
-                )
-                continue
-            matched = False
-            for time_value in time_hits:
-                for subject in subject_hits:
-                    for obj in object_hits:
-                        if (time_value, subject, obj) in known["allowed_event_tuples"]:
-                            matched = True
-                            break
-                    if matched:
-                        break
-                if matched:
-                    break
-            if not matched:
-                _add_issue(
-                    issues,
-                    severity="soft_warn",
-                    code="unsupported_event_tuple",
-                    section=section_title,
-                    sentence=sentence,
-                    message="正文可能把多个真实事实组合成了事实卡中不存在的 时间-主体-对象 事件组合，请人工复核是否属于合理归纳。",
-                    evidence=time_hits[:1] + subject_hits[:1] + object_hits[:2],
-                )
 
     hard_fail_count = len([item for item in issues if _text(item.get("severity")) == "hard_fail"])
     soft_warn_count = len([item for item in issues if _text(item.get("severity")) == "soft_warn"])

@@ -6,7 +6,7 @@ import re
 from typing import Any, Dict, Iterable, List, Tuple
 
 from ..services.api.llm_observability import invoke_llm_with_trace
-from .report_agent_tools import source_fact_indexes
+from .report_agent_tools import build_source_fact_catalog, source_fact_indexes
 from .report_text_quality import (
     is_low_information_evidence_label,
     is_meta_material_text as _is_meta_conclusion_text,
@@ -973,6 +973,88 @@ def _guard_generated_iocs(markdown: str, writer_brief: Dict[str, Any]) -> str:
     return normalized
 
 
+def _restore_exact_timestamps(markdown: str, writer_brief: Dict[str, Any]) -> str:
+    """Restore minute-only timestamps when the brief has a unique exact time.
+
+    Writers often compress `YYYY-MM-DD HH:MM:SS UTC` to minute precision. That
+    is readable, but it creates avoidable fact-card drift. The repair is safe
+    only when the deterministic brief contains exactly one timestamp for that
+    minute.
+    """
+
+    exact_times = set(re.findall(r"\b\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} UTC\b", _json(writer_brief)))
+    if not exact_times:
+        return markdown
+    minute_to_exact: Dict[str, set[str]] = {}
+    bare_times = {exact[11:19] for exact in exact_times}
+    minute_second_to_bare: Dict[str, set[str]] = {}
+    for exact in exact_times:
+        minute = f"{exact[:16]} UTC"
+        minute_to_exact.setdefault(minute, set()).add(exact)
+        bare = exact[11:19]
+        minute_second_to_bare.setdefault(bare[3:], set()).add(bare)
+    normalized = markdown
+    for minute, exact_values in sorted(minute_to_exact.items(), key=lambda item: len(item[0]), reverse=True):
+        if len(exact_values) != 1:
+            continue
+        exact = next(iter(exact_values))
+        normalized = normalized.replace(minute, exact)
+    for match in sorted(set(re.findall(r"(?<!\d)(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?!\d)", normalized))):
+        if match in bare_times:
+            continue
+        candidates = minute_second_to_bare.get(match[3:]) or set()
+        if len(candidates) == 1:
+            normalized = normalized.replace(match, next(iter(candidates)))
+    return normalized
+
+
+def _remove_unsupported_lookback_windows(markdown: str, writer_brief: Dict[str, Any]) -> str:
+    """Avoid invented exact start times in action-oriented lookback guidance."""
+
+    exact_times = {
+        _restore_exact_timestamps(_normalize_time, writer_brief)
+        for _normalize_time in re.findall(r"\b\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?: UTC)?\b", _json(writer_brief))
+    }
+    exact_times = {time if time.endswith(" UTC") else f"{time} UTC" for time in exact_times}
+
+    def replace_parenthetical(match: re.Match[str]) -> str:
+        time_text = match.group("time")
+        normalized_time = time_text if time_text.endswith(" UTC") else f"{time_text} UTC"
+        if normalized_time in exact_times:
+            return match.group(0)
+        return "当前调查窗口"
+
+    normalized = re.sub(
+        r"分析窗口（(?P<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?: UTC)?)\s*至当前）",
+        replace_parenthetical,
+        markdown,
+    )
+    normalized = re.sub(
+        r"回溯\s+(?P<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?: UTC)?)\s*至当前(?:时段)?",
+        lambda match: "回溯" + (
+            f" {match.group('time')} 至当前"
+            if (match.group("time") if match.group("time").endswith(" UTC") else f"{match.group('time')} UTC") in exact_times
+            else "当前调查窗口"
+        ),
+        normalized,
+    )
+    return normalized
+
+
+def _normalize_markdown_spacing(markdown: str) -> str:
+    normalized = markdown
+    for char in ("\u2010", "\u2011", "\u2012", "\u2013", "\u2014", "\u2212"):
+        normalized = normalized.replace(char, "-")
+    # Keep inline code readable when the model attaches Chinese text directly
+    # to the backtick span.
+    normalized = re.sub(r"([\u4e00-\u9fff])(`[^`\n]+`)", r"\1 \2", normalized)
+    normalized = re.sub(r"(`[^`\n]+`)([\u4e00-\u9fff])", r"\1 \2", normalized)
+    normalized = re.sub(r"[ \t]+([，。；：！？、])", r"\1", normalized)
+    normalized = re.sub(r"([（【])\s+", r"\1", normalized)
+    normalized = re.sub(r"\s+([）】])", r"\1", normalized)
+    return normalized
+
+
 def _normalize_writer_markdown(markdown: str, writer_brief: Dict[str, Any]) -> str:
     stripped = _strip_disallowed_subheadings(markdown)
     expanded = stripped
@@ -992,8 +1074,42 @@ def _normalize_writer_markdown(markdown: str, writer_brief: Dict[str, Any]) -> s
         "恶意 JA4 通信指纹": "可疑 JA4 通信指纹",
         "可能存在恶意活动": "可能存在可疑活动",
         "恶意软件执行": "可疑执行活动",
+        "恶意软件加载器": "可疑加载器",
+        "恶意特征明确": "可疑特征明确",
+        "已确认恶意的网络行为": "已确认可疑的网络行为",
+        "攻击者控制域": "可疑控制域",
         "实际的恶意活动": "实际异常活动",
         "实际恶意活动": "实际异常活动",
+        "攻击者已在最少": "已观察到至少",
+        "已观察到最少": "已观察到至少",
+        "上建立对": "出现对",
+        "恶意 TLS": "可疑 TLS",
+        "恶意 TLS 信标": "可疑 TLS 信标",
+        "确认第二台主机受控": "确认第二台主机受影响",
+        "第二台主机受控": "第二台主机受影响",
+        "已确认受控": "已确认受影响",
+        "受控主机": "受影响主机",
+        "受控节点": "受影响节点",
+        "受控范围": "受影响范围",
+        "受控回连": "可疑回连",
+        "受控的怀疑": "受影响的怀疑",
+        "攻击者已经": "现有证据显示",
+        "攻击者已在": "已观察到",
+        "攻击者已": "已观察到",
+        "攻击者控制的存储": "可疑存储",
+        "受控外传": "可疑外传",
+        "确认横向移动": "确认存在横向推进线索",
+        "已确认横向移动": "已确认存在横向推进线索",
+        "横向移动（PsExec）": "PsExec 远程服务创建线索",
+        "横向移动（WMI）": "WMI 远程进程创建线索",
+        "loader DLL": "DLL 加载线索",
+        "Loader DLL": "DLL 加载线索",
+        "rundll32 加载器执行": "rundll32 可疑 DLL 加载线索",
+        "加载器执行": "可疑加载线索",
+        "可疑 `rundll32.exe` 可疑加载线索": "`rundll32.exe` 可疑 DLL 加载线索",
+        "可疑 rundll32 可疑 DLL 加载线索": "rundll32 可疑 DLL 加载线索",
+        "恶意基础设施": "关联外部基础设施",
+        "恶意 C2": "可疑 C2",
         "背景事件包括：": "背景或候选边界事件包括：",
         "这些背景事件": "这些背景或候选边界事件",
         "这些基础设施是否为真实受影响对象": "这些基础设施是否属于共享基础设施或当前事件相关基础设施",
@@ -1002,7 +1118,25 @@ def _normalize_writer_markdown(markdown: str, writer_brief: Dict[str, Any]) -> s
         expanded = expanded.replace(source, target)
     expanded = re.sub(r"\bpivot\b", "关键关联指标", expanded, flags=re.IGNORECASE)
     expanded = expanded.replace("dst_ip", "目标 IP")
+    expanded = re.sub(
+        r"决定是否将\s*(`[^`]+`|[A-Za-z0-9_.-]+)\s*(?:提升|升级)为已确认受影响范围",
+        r"判断 \1 是否仍应保留为待确认边界，或是否具备并入确认范围所需证据",
+        expanded,
+    )
+    expanded = re.sub(
+        r"确认是否将\s*(`[^`]+`|[A-Za-z0-9_.-]+)\s*(?:提升|升级)为已确认受影响范围",
+        r"确认 \1 是否仍应保留为待确认边界，或是否具备并入确认范围所需证据",
+        expanded,
+    )
+    expanded = re.sub(
+        r"没有足够证据将\s*(`[^`]+`|[A-Za-z0-9_.-]+)\s*(?:提升|升级)到[“\"]?已确认受影响[”\"]?状态",
+        r"\1 仍缺少并入确认范围所需的独立证据",
+        expanded,
+    )
     expanded = _guard_generated_iocs(expanded, writer_brief)
+    expanded = _remove_unsupported_lookback_windows(expanded, writer_brief)
+    expanded = _restore_exact_timestamps(expanded, writer_brief)
+    expanded = _normalize_markdown_spacing(expanded)
     return expanded.strip()
 
 
@@ -1206,3 +1340,247 @@ def render_polished_body_from_writer_brief(llm: Any, writer_brief: Dict[str, Any
 def render_polished_body_from_materials(llm: Any, materials: Dict[str, Any]) -> str:
     writer_brief = build_report_writer_brief(materials)
     return render_polished_body_from_writer_brief(llm, writer_brief)
+
+
+def _direct_source_fact_snapshot(fact: Dict[str, Any]) -> Dict[str, Any]:
+    return {
+        "fact_id": _text(fact.get("fact_id")),
+        "source_id": _text(fact.get("source_id")),
+        "fact_type": _text(fact.get("fact_type")),
+        "status": _text(fact.get("status")),
+        "classification": _text(fact.get("classification")),
+        "reporting_focus": _text(fact.get("reporting_focus")),
+        "candidate_or_boundary": bool(fact.get("candidate_or_boundary")),
+        "summary_line": _text(fact.get("summary_line")),
+        "boundary_note": _text(fact.get("boundary_note")),
+    }
+
+
+def _direct_source_fact_blob(fact: Dict[str, Any]) -> str:
+    parts = [
+        fact.get("fact_type"),
+        fact.get("status"),
+        fact.get("classification"),
+        fact.get("reporting_focus"),
+        fact.get("summary_line"),
+        fact.get("boundary_note"),
+    ]
+    return " ".join(_text(part).lower() for part in parts if _text(part))
+
+
+def _fact_has_any(text: str, needles: Iterable[str]) -> bool:
+    return any(needle.lower() in text for needle in needles if needle)
+
+
+def _build_direct_source_fact_lanes(fact_catalog: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
+    """Create generic navigation lanes without authoring semantic material.
+
+    The lanes are derived only from fact metadata already present in the
+    deterministic catalog. They help a direct-source writer avoid mixing
+    confirmed, candidate, background, gap, and action facts while keeping the
+    LLM responsible for final argument organization.
+    """
+
+    lanes: Dict[str, List[Dict[str, Any]]] = {
+        "confirmed_timeline": [],
+        "confirmed_scope": [],
+        "external_infrastructure": [],
+        "candidate_or_boundary": [],
+        "background_or_alternative": [],
+        "open_gaps": [],
+        "actions": [],
+        "context_claims": [],
+    }
+    boundary_statuses = ("candidate", "open", "reportable_unresolved", "partially_closed", "待确认", "已验证待确认")
+    confirmed_statuses = ("confirmed", "supporting", "已确认")
+    background_markers = ("background", "context", "benign", "背景", "替代解释", "上下文", "已关闭缺口")
+
+    for raw_fact in fact_catalog:
+        fact = _as_dict(raw_fact)
+        fact_id = _text(fact.get("fact_id"))
+        if not fact_id:
+            continue
+        snapshot = _direct_source_fact_snapshot(fact)
+        fact_type = _text(fact.get("fact_type"))
+        blob = _direct_source_fact_blob(fact)
+        is_boundary = bool(fact.get("candidate_or_boundary")) or _fact_has_any(blob, boundary_statuses)
+        is_background = _fact_has_any(blob, background_markers)
+
+        if fact_type == "action":
+            lanes["actions"].append(snapshot)
+            continue
+        if fact_type == "gap":
+            if not _fact_has_any(blob, ("closed", "已关闭")):
+                lanes["open_gaps"].append(snapshot)
+            else:
+                lanes["background_or_alternative"].append(snapshot)
+            continue
+        if is_boundary:
+            lanes["candidate_or_boundary"].append(snapshot)
+        if is_background and fact_type != "verdict":
+            lanes["background_or_alternative"].append(snapshot)
+        if "外部基础设施" in blob:
+            lanes["external_infrastructure"].append(snapshot)
+        if fact_type == "event" and _fact_has_any(blob, confirmed_statuses) and not is_boundary:
+            lanes["confirmed_timeline"].append(snapshot)
+        if _fact_has_any(blob, ("已确认受影响对象", "核心外部基础设施", "主支撑事件", "交付结论")) and not is_boundary:
+            lanes["confirmed_scope"].append(snapshot)
+        if fact_type in {"claim", "verdict", "intel_tool", "trace_store.seed_context"} and not is_boundary:
+            lanes["context_claims"].append(snapshot)
+
+    return {key: value for key, value in lanes.items() if value}
+
+
+def build_direct_source_writer_brief(source_bundle: Dict[str, Any]) -> Dict[str, Any]:
+    """Build the no-material-agent writer input from deterministic sources.
+
+    This experiment deliberately skips LLM-authored section routing. The only
+    semantic input is the report source bundle plus its deterministic fact
+    catalog; the writer must organize the argument itself without inventing
+    facts.
+    """
+
+    bundle = _as_dict(source_bundle)
+    fact_catalog = [_as_dict(item) for item in build_source_fact_catalog(bundle)]
+    case_header = _as_dict(bundle.get("case_header"))
+    source_counts = _as_dict(bundle.get("source_counts"))
+
+    facts_by_type: Dict[str, int] = {}
+    for fact in fact_catalog:
+        fact_type = _text(fact.get("fact_type")) or "unknown"
+        facts_by_type[fact_type] = facts_by_type.get(fact_type, 0) + 1
+
+    boundary_fact_ids = [
+        _text(fact.get("fact_id"))
+        for fact in fact_catalog
+        if _text(fact.get("fact_id")) and bool(fact.get("candidate_or_boundary"))
+    ]
+    external_fact_ids = [
+        _text(fact.get("fact_id"))
+        for fact in fact_catalog
+        if _text(fact.get("fact_id"))
+        and (
+            "外部基础设施" in _text(fact.get("reporting_focus"))
+            or "external_infrastructure" in _text(fact.get("status"))
+        )
+    ]
+    action_fact_ids = [
+        _text(fact.get("fact_id"))
+        for fact in fact_catalog
+        if _text(fact.get("fact_id")) and _text(fact.get("fact_type")) == "action"
+    ]
+
+    return {
+        "schema_version": "report-direct-source-writer-brief-v1",
+        "writer_mode": "direct_source",
+        "case_header": case_header,
+        "source_counts": source_counts,
+        "fact_counts_by_type": facts_by_type,
+        "fact_lanes": _build_direct_source_fact_lanes(fact_catalog),
+        "source_fact_catalog": fact_catalog,
+        "writing_contract": {
+            "purpose": "测试强 writer 是否能在不依赖 LLM material agent 的情况下，直接从事实目录组织报告。",
+            "required_shape": [
+                "# 首页摘要",
+                "## 1. 事件结论与当前判断",
+                "## 2. 事件过程与关键时间线",
+                "## 3. 关键证据判断",
+                "## 4. 影响范围、候选对象与外部基础设施",
+                "## 5. 反证、替代解释与未闭合缺口",
+                "## 6. 处置建议与后续核查",
+            ],
+            "boundary_fact_ids": boundary_fact_ids,
+            "external_infrastructure_fact_ids": external_fact_ids,
+            "action_fact_ids": action_fact_ids,
+            "global_rules": [
+                "只能使用 source_fact_catalog 中的事实，不得新增 IOC、资产、时间、动作、阶段或结论。",
+                "fact_lanes 只是由 fact 元数据生成的导航索引，不是额外事实；若 fact_lanes 与 source_fact_catalog 有冲突，以 source_fact_catalog 的原始字段为准。",
+                "candidate_or_boundary=true 的事实只能写成候选、待确认、边界、反证或缺口，不能写成已确认传播或已确认受影响。",
+                "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象，不能写成受影响资产。",
+                "action fact 只代表建议动作，不能改写成已经观测到的事实。",
+                "如果事实只显示 rundll32、脚本、远程服务、远程进程或载荷加载线索，只能写成可疑执行或潜在远程操作；除非事实明确支持，不要升级为已确认恶意软件执行、已确认横向移动或攻击者已控制。",
+                "处置建议要尽量具体到对象、字段和验证目标；避免只写“补充主机侧日志”这类无法执行的泛句。",
+            ],
+        },
+    }
+
+
+DIRECT_SOURCE_WRITER_SYSTEM_PROMPT = """你是 Trace-Agent 的资深安全事件报告 writer。本次实验跳过 LLM material agent，你需要直接基于 report_direct_source_writer_brief 组织报告。
+
+输入说明：
+- source_fact_catalog 是唯一事实来源，由代码从 report_source_bundle 确定性编译而来。
+- 每条 fact 都可能包含 fact_id、source_id、fact_type、status、classification、time、asset、objects、summary_line、exact_fact_text、reporting_focus、boundary_note、candidate_or_boundary。
+- fact_lanes 是按 fact 元数据生成的导航索引，用来提醒你哪些事实适合放入确认时间线、范围说明、候选边界、背景/替代解释、未闭合缺口和处置建议；它不新增事实，也不能覆盖原始 fact 字段。
+- 你可以自行决定哪些事实进入哪个章节，但不得使用 source_fact_catalog 之外的事实。
+
+写作目标：
+- 写给运维人员和安全运营协同对象，不写给内部 agent 开发者。
+- 报告要体现分析判断：事件为何成立、证据如何改变判断、哪些对象已确认、哪些只是候选、哪些反证或缺口限制更强结论。
+- 不要机械逐条朗读 fact catalog，也不要压缩成泛泛摘要。
+- 写作时先用 fact_lanes 找出本节相关事实，再回到 source_fact_catalog 核对 exact_fact_text、summary_line 和 boundary_note，避免把候选、背景或 action 写成已发生事实。
+
+固定结构：
+- 严格按 writing_contract.required_shape 输出标题，不得增删章节或改名。
+- 首页摘要必须固定输出 6 行项目符号，且每行都带粗体标签：结论、严重度、研判把握、已确认范围、一句话结论、立即动作。不要把首页摘要写成散句。
+- 第 2 节写事件推进和时间线；第 3 节解释证据判断作用；第 4 节解释确认范围、候选对象和外部基础设施边界；第 5 节解释反证、替代解释、未闭合 gap 和判断上限；第 6 节写具体可执行动作。
+- 第 2 节优先使用 confirmed_timeline，并可补充 candidate_or_boundary 中必须说明的后续候选节点；第 3 节优先使用 confirmed_timeline、confirmed_scope 和 context_claims；第 4 节优先使用 confirmed_scope、external_infrastructure、candidate_or_boundary；第 5 节优先使用 background_or_alternative、open_gaps、candidate_or_boundary；第 6 节优先使用 actions 和 open_gaps。
+- 第 3、4、5 节必须写成连续分析段落，禁止使用项目符号或编号清单；每节至少 2 个自然段。
+- 第 2 节可以按时间线列点，但每个节点必须说明它对事件推进意味着什么，不能只复制时间和事实。
+- 第 6 节可以使用项目符号，但每条建议都必须包含排查对象、日志源或字段、验证目标，避免只有泛泛动作。
+
+保守边界：
+- “确认安全事件”只表示证据足以交付事件级结论，不等于已经确认攻击者控制、恶意软件完整执行、横向移动闭环、持久化或长期驻留。
+- candidate_or_boundary=true 的事实只能写成候选范围、待验证线索、反证或缺口边界，不能写成已确认传播或已确认受影响。
+- status 为 candidate/open/partially_closed/reportable_unresolved，或 boundary_note 明确提示边界的事实，必须保守落文。
+- 外部基础设施只能写成外联判断、关联基础设施、出口侧排查或封禁对象，不能写成受影响资产。
+- action fact 只能写成建议动作，不能写成已发生事实。
+- 主机执行、rundll32、脚本、远程服务、远程进程、载荷加载等线索，如果缺少命令行、落地文件、DLL、父子进程、持久化或内存证据，只能写成可疑执行线索或待核查执行链，不能写成已确认恶意软件加载器执行。
+- PsExec、WMI、远程服务创建、远程进程创建可以支撑“横向推进线索”或“疑似横向活动”，但除非事实明确给出成功执行结果、载荷落地、目标主机后续独立命中或主机取证闭环，不要写成“已确认横向移动到某资产”。
+- 不要把“已确认受影响资产”写成“已确认受控主机”。可以写“已纳入确认受影响范围”“需要隔离和取证”，但不要暗示攻击者已完全控制。
+- 如果同一事实同时有维护窗口、补丁、备份、SCCM、Windows Update、共享基础设施或其他背景解释，必须说明它限制了哪类更强结论，不能只把它当作无关背景。
+
+行动建议要求：
+- 动作必须尽量落到可执行检查项：对象、日志源、字段、验证目标。
+- 如果事实中出现 rundll32.exe 但缺少完整参数，应建议排查完整命令行、加载 DLL、父进程、落地路径和相关哈希。
+- 如果存在外部基础设施，应建议在边界/代理/DNS/EDR 中围绕具体域名或 IP 做封禁、回溯和复现搜索。
+- 如果存在候选资产或候选事件，应建议用明确证据标准验证是否并入确认范围。
+- 对候选资产的行动建议不要写“提升/升级为已确认受影响范围”；应写“核查其是否仍保留为候选边界，或是否具备并入确认范围所需证据”。
+
+语言与格式：
+- 最终只返回中文 Markdown 正文。
+- 不要暴露 source_ids、fact_id、observation_id、工具名、workflow、reviewer、selector、readiness、material loop 等内部术语。
+- 域名、IP、资产名、进程名、文件名、时间、JA3/JA4 值必须逐字保留。
+- 时间必须尽量保留秒级精度；如果原始 fact 是 `YYYY-MM-DD HH:MM:SS UTC`，不要压成 `YYYY-MM-DD HH:MM UTC`。
+- 不要把时间、资产、JA3/JA4、IP、域名硬塞进同一句形成 source_fact_catalog 中不存在的“时间-主体-对象”事件组合；如果 JA3/JA4 只是告警识别特征，应单独写成“该告警关联的识别特征/回溯指标”。
+- 不要使用“这些证据表明”“主要证据包括”“这些事实说明”作为段落主体；必须直接说明具体事实如何支撑或限制判断。
+- 不要在正文末尾写“以上是本次事件的详细报告”这类客服式收尾。
+- 不要输出 JSON 或解释你的写作过程。
+"""
+
+
+def render_polished_body_from_direct_source_brief(llm: Any, writer_brief: Dict[str, Any]) -> str:
+    from langchain_core.prompts import ChatPromptTemplate
+
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", DIRECT_SOURCE_WRITER_SYSTEM_PROMPT),
+            (
+                "user",
+                "请仅基于以下 report_direct_source_writer_brief 生成完整 Markdown 正文：\n"
+                "{writer_brief_json}",
+            ),
+        ]
+    )
+    writer = llm.bind(max_tokens=6000, temperature=0) if hasattr(llm, "bind") else llm
+    response = invoke_llm_with_trace(
+        writer,
+        prompt.format_messages(writer_brief_json=_json(writer_brief)),
+        role="report_agent_writer",
+        extra={"writer_mode": "direct_source"},
+    )
+    return _normalize_writer_markdown(str(getattr(response, "content", "") or "").strip(), writer_brief)
+
+
+def render_polished_body_from_source_bundle(llm: Any, source_bundle: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
+    writer_brief = build_direct_source_writer_brief(source_bundle)
+    return render_polished_body_from_direct_source_brief(llm, writer_brief), writer_brief

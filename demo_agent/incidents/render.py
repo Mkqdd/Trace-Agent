@@ -9,7 +9,12 @@ from typing import Any, Dict, List, Tuple
 
 from .evidence_store import build_evidence_store, build_legacy_evidence_contract
 from .report_agent import run_report_material_loop
-from .report_agent_writer import build_report_writer_brief, render_polished_body_from_writer_brief
+from .report_agent_writer import (
+    build_direct_source_writer_brief,
+    build_report_writer_brief,
+    render_polished_body_from_direct_source_brief,
+    render_polished_body_from_writer_brief,
+)
 from .report_fact_cards import build_report_fact_cards
 from .report_polish_validator import validate_report_polish
 from .report_source_bundle import build_report_source_bundle
@@ -4538,6 +4543,8 @@ def render_incident_report_with_llm(
     report_writer_brief: Dict[str, Any] = {}
     report_material_loop_trace: Dict[str, Any] = {}
     report_agent_error = ""
+    report_writer_mode = str(os.getenv("INCIDENT_AGENT_REPORT_WRITER_MODE") or "").strip().lower() or "material-agent"
+    direct_source_writer = report_writer_mode in {"direct-source", "direct_source", "source-direct", "source_direct"}
     if use_report_agent_materials is None:
         report_agent_flag = str(os.getenv("INCIDENT_AGENT_USE_REPORT_AGENT_MATERIALS") or "").strip().lower()
         use_report_agent_materials = report_agent_flag not in {"0", "false", "no", "off"}
@@ -4551,7 +4558,8 @@ def render_incident_report_with_llm(
                 "report_writer_brief": report_writer_brief,
                 "report_material_loop_trace": report_material_loop_trace,
                 "report_agent_error": report_agent_error,
-                "report_agent_materials_enabled": bool(use_report_agent_materials),
+                "report_agent_materials_enabled": bool(use_report_agent_materials and not direct_source_writer),
+                "report_writer_mode": "direct-source" if direct_source_writer else report_writer_mode,
             }
         )
         return payload
@@ -4574,6 +4582,49 @@ def render_incident_report_with_llm(
             "report_polish_brief": polish_brief,
             "report_polish_validation": skipped_validation,
             "report_polish_error": "",
+        })
+
+    if direct_source_writer:
+        try:
+            report_writer_brief = build_direct_source_writer_brief(report_source_bundle)
+            report_writer_materials = {
+                "schema_version": "report-writer-materials-direct-source-experiment-v1",
+                "material_agent_bypassed": True,
+                "case_header": report_writer_brief.get("case_header") or {},
+                "source_fact_catalog": report_writer_brief.get("source_fact_catalog") or [],
+                "writing_contract": report_writer_brief.get("writing_contract") or {},
+            }
+            report_material_loop_trace = {
+                "schema_version": "report-material-loop-trace-v1",
+                "status": "skipped_direct_source_writer",
+                "material_agent_bypassed": True,
+                "validation": {"ok": True, "mode": "direct_source"},
+            }
+            body = render_polished_body_from_direct_source_brief(llm, report_writer_brief)
+            if body.strip():
+                validation = validate_report_polish(body, report_fact_cards)
+                return _with_report_agent_artifacts({
+                    "report_markdown": deterministic,
+                    "report_polished_markdown": _compose_polished_report(body, appendix),
+                    "report_appendix_markdown": appendix,
+                    "report_fact_cards": report_fact_cards,
+                    "report_polish_input": polish_input,
+                    "report_polish_brief": polish_brief,
+                    "report_polish_validation": validation,
+                    "report_polish_error": "",
+                })
+            report_agent_error = "direct_source_writer_empty_response"
+        except Exception as exc:
+            report_agent_error = f"direct_source_writer:{type(exc).__name__}: {exc}"
+        return _with_report_agent_artifacts({
+            "report_markdown": deterministic,
+            "report_polished_markdown": "",
+            "report_appendix_markdown": appendix,
+            "report_fact_cards": report_fact_cards,
+            "report_polish_input": polish_input,
+            "report_polish_brief": polish_brief,
+            "report_polish_validation": skipped_validation,
+            "report_polish_error": report_agent_error,
         })
 
     if use_report_agent_materials:

@@ -309,12 +309,21 @@ def main() -> None:
         action="store_false",
         help="关闭 plan13 report material loop，回退到旧 report_writer_brief polish 链路。",
     )
+    parser.add_argument(
+        "--report-writer-mode",
+        default=os.getenv("INCIDENT_AGENT_REPORT_WRITER_MODE") or "",
+        choices=["", "material-agent", "direct-source"],
+        help="报告 writer 实验模式：默认 material-agent；direct-source 跳过 material agent，直接从 source bundle/fact catalog 写作。",
+    )
     args = parser.parse_args()
 
     resolved_fixture_dir = Path(args.fixture_dir).resolve() if args.fixture_dir else None
     previous_report_agent_flag = os.environ.get("INCIDENT_AGENT_USE_REPORT_AGENT_MATERIALS")
+    previous_report_writer_mode = os.environ.get("INCIDENT_AGENT_REPORT_WRITER_MODE")
     if args.use_report_agent_materials is not None:
         os.environ["INCIDENT_AGENT_USE_REPORT_AGENT_MATERIALS"] = "1" if args.use_report_agent_materials else "0"
+    if args.report_writer_mode:
+        os.environ["INCIDENT_AGENT_REPORT_WRITER_MODE"] = args.report_writer_mode
     try:
         res = run(
             alert_path=Path(args.alert).resolve(),
@@ -329,6 +338,11 @@ def main() -> None:
                 os.environ.pop("INCIDENT_AGENT_USE_REPORT_AGENT_MATERIALS", None)
             else:
                 os.environ["INCIDENT_AGENT_USE_REPORT_AGENT_MATERIALS"] = previous_report_agent_flag
+        if args.report_writer_mode:
+            if previous_report_writer_mode is None:
+                os.environ.pop("INCIDENT_AGENT_REPORT_WRITER_MODE", None)
+            else:
+                os.environ["INCIDENT_AGENT_REPORT_WRITER_MODE"] = previous_report_writer_mode
     print(json.dumps(res, ensure_ascii=False, indent=2))
 
 
