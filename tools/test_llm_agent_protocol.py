@@ -41,7 +41,7 @@ def _user_text(messages: List[Any]) -> str:
     return str(getattr(messages[-1], "content", "") or "")
 
 
-class ProtocolSmokeLLM:
+class FakeProtocolSmokeLLM:
     def __init__(self) -> None:
         self.investigator_calls = 0
         self.post_action_reviews = 0
@@ -165,7 +165,7 @@ class ProtocolSmokeLLM:
         )
 
 
-class PreflightBlockSmokeLLM(ProtocolSmokeLLM):
+class FakePreflightBlockSmokeLLM(FakeProtocolSmokeLLM):
     def _investigate(self, user: str) -> FakeResp:
         self.investigator_calls += 1
         assert "agent_context:\n" in user
@@ -189,7 +189,7 @@ class PreflightBlockSmokeLLM(ProtocolSmokeLLM):
 
 
 def _run_protocol_smoke() -> Dict[str, Any]:
-    llm = ProtocolSmokeLLM()
+    llm = FakeProtocolSmokeLLM()
     result = run_incident_agent_case(
         seed_alert=load_json(FIXTURE_DIR / "seed_alert.json"),
         fixture_dir=str(FIXTURE_DIR),
@@ -229,7 +229,7 @@ def _run_protocol_smoke() -> Dict[str, Any]:
 
 
 def _run_preflight_block_smoke() -> Dict[str, Any]:
-    llm = PreflightBlockSmokeLLM()
+    llm = FakePreflightBlockSmokeLLM()
     result = run_incident_agent_case(
         seed_alert=load_json(FIXTURE_DIR / "seed_alert.json"),
         fixture_dir=str(FIXTURE_DIR),

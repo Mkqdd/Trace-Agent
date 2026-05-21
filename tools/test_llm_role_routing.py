@@ -18,6 +18,33 @@ from demo_agent.services.api.llm_observability import (  # noqa: E402
 )
 
 
+ROLE_ENV_PREFIXES = (
+    "INCIDENT_AGENT_INVESTIGATOR",
+    "INCIDENT_AGENT_SELECTOR",
+    "INCIDENT_AGENT_REPORT_MATERIAL",
+    "INCIDENT_AGENT_WRITER",
+    "INCIDENT_AGENT_REVIEWER",
+)
+ROLE_MODEL_ENV_KEYS = {
+    "INCIDENT_AGENT_INVESTIGATOR_MODEL",
+    "INCIDENT_AGENT_SELECTOR_MODEL",
+    "INCIDENT_AGENT_REPORT_MATERIAL_MODEL",
+    "INCIDENT_AGENT_WRITER_MODEL",
+    "INCIDENT_AGENT_REVIEWER_MODEL",
+    "INCIDENT_AGENT_TOOL_MODEL",
+    "INCIDENT_AGENT_REASONER_MODEL",
+}
+ROLE_GENERATION_ENV_KEYS = {
+    f"{prefix}_{suffix}"
+    for prefix in ROLE_ENV_PREFIXES
+    for suffix in ("BASE_URL", "API_KEY", "MAX_TOKENS", "TEMPERATURE", "REASONING_EFFORT", "THINKING_ENABLED")
+} | {
+    "INCIDENT_AGENT_REASONING_EFFORT",
+    "INCIDENT_AGENT_THINKING_ENABLED",
+}
+ROUTE_TEST_ENV_KEYS = ROLE_MODEL_ENV_KEYS | ROLE_GENERATION_ENV_KEYS
+
+
 class _FakeResponse:
     content = "ok"
 
@@ -38,9 +65,16 @@ class _FakeLLM:
         return _FakeResponse()
 
 
+class ChatOpenAI(_FakeLLM):
+    """Minimal LangChain-OpenAI-shaped double for native adapter routing tests."""
+
+
 def _with_env(overrides: dict[str, str | None], fn) -> None:
-    previous = {key: os.environ.get(key) for key in overrides}
+    effective_keys = set(ROUTE_TEST_ENV_KEYS) | set(overrides)
+    previous = {key: os.environ.get(key) for key in effective_keys}
     try:
+        for key in ROUTE_TEST_ENV_KEYS:
+            os.environ.pop(key, None)
         for key, value in overrides.items():
             if value is None:
                 os.environ.pop(key, None)
@@ -138,7 +172,7 @@ def test_specific_role_model_overrides_group_model() -> None:
 
 def test_invoke_trace_records_role_model_routing() -> None:
     def run() -> None:
-        fake = _FakeLLM()
+        fake = ChatOpenAI()
         previous = getattr(llm_observability, "_invoke_openai_native_chat", None)
 
         def fake_native(llm, messages, *, role, model, invocation_kwargs):
@@ -173,7 +207,7 @@ def test_invoke_trace_records_role_model_routing() -> None:
 
 def test_trace_records_role_specific_endpoint_env_names() -> None:
     def run() -> None:
-        fake = _FakeLLM()
+        fake = ChatOpenAI()
         previous = getattr(llm_observability, "_invoke_openai_native_chat", None)
 
         def fake_native(llm, messages, *, role, model, invocation_kwargs):
@@ -225,7 +259,7 @@ def test_role_override_uses_native_openai_adapter_instead_of_langchain_bind() ->
         return _FakeResponse()
 
     def run() -> None:
-        fake = _FakeLLM(bound_kwargs={"max_tokens": 123, "temperature": 0})
+        fake = ChatOpenAI(bound_kwargs={"max_tokens": 123, "temperature": 0})
         llm_observability._invoke_openai_native_chat = fake_native
         invoke_llm_with_trace(fake, ["hello"], role="report_agent_writer")
 
@@ -258,7 +292,7 @@ def test_native_adapter_can_pass_reasoning_and_thinking_options() -> None:
         return _FakeResponse()
 
     def run() -> None:
-        fake = _FakeLLM()
+        fake = ChatOpenAI()
         llm_observability._invoke_openai_native_chat = fake_native
         invoke_llm_with_trace(fake, ["hello"], role="report_agent_writer")
 
@@ -289,7 +323,7 @@ def test_native_adapter_can_pass_role_generation_options() -> None:
         return _FakeResponse()
 
     def run() -> None:
-        fake = _FakeLLM()
+        fake = ChatOpenAI()
         llm_observability._invoke_openai_native_chat = fake_native
         invoke_llm_with_trace(fake, ["hello"], role="report_agent_writer")
 
@@ -324,7 +358,7 @@ def test_trace_records_native_finish_reason_usage_and_generation_options() -> No
         return FakeNativeResponse()
 
     def run() -> None:
-        fake = _FakeLLM()
+        fake = ChatOpenAI()
         llm_observability._invoke_openai_native_chat = fake_native
         with tempfile.TemporaryDirectory() as tmp:
             trace_path = Path(tmp) / "llm_calls.jsonl"

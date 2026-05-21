@@ -1,6 +1,6 @@
 # Incident-Agent 快速开始
 
-当前仓库主线只保留 `incident-agent`。推荐链路是：调查层使用供应商 `tool` 模型做开放式工具决策，report material 和 writer / polish 使用 DeepSeek v4，报告事实仍由 deterministic source bundle / fact catalog 约束，LLM 只负责路由、论证组织和正文展开。
+当前仓库主线只保留 `incident-agent`。默认链路是：调查层使用供应商 `tool` 模型做开放式工具决策，report material 和 writer / polish 使用 DeepSeek v4，报告事实仍由 deterministic source bundle / fact catalog 约束，LLM 只负责路由、论证组织和正文展开；如果默认 `tool` / `chat` 上游不稳定，也可以把调查和 review 显式切到 DeepSeek v4。
 
 ## 1. 配置 `.env`
 
@@ -28,7 +28,23 @@ LLM_TEMPERATURE=0.7
 当前最强报告链路建议加上以下角色级配置：
 
 ```env
-INCIDENT_AGENT_INVESTIGATOR_MODEL=tool
+# If the default tool/chat upstream is unstable, route investigation and review
+# roles to the same stable OpenAI-compatible provider used by the writer.
+INCIDENT_AGENT_INVESTIGATOR_MODEL=deepseek-v4-pro
+INCIDENT_AGENT_INVESTIGATOR_BASE_URL=https://api.deepseek.com
+INCIDENT_AGENT_INVESTIGATOR_API_KEY=<DeepSeek key>
+INCIDENT_AGENT_INVESTIGATOR_MAX_TOKENS=6000
+INCIDENT_AGENT_INVESTIGATOR_TEMPERATURE=0.2
+INCIDENT_AGENT_INVESTIGATOR_REASONING_EFFORT=high
+INCIDENT_AGENT_INVESTIGATOR_THINKING_ENABLED=1
+
+INCIDENT_AGENT_REVIEWER_MODEL=deepseek-v4-pro
+INCIDENT_AGENT_REVIEWER_BASE_URL=https://api.deepseek.com
+INCIDENT_AGENT_REVIEWER_API_KEY=<DeepSeek key>
+INCIDENT_AGENT_REVIEWER_MAX_TOKENS=6000
+INCIDENT_AGENT_REVIEWER_TEMPERATURE=0.2
+INCIDENT_AGENT_REVIEWER_REASONING_EFFORT=high
+INCIDENT_AGENT_REVIEWER_THINKING_ENABLED=1
 
 INCIDENT_AGENT_REPORT_MATERIAL_MODEL=deepseek-v4-pro
 INCIDENT_AGENT_REPORT_MATERIAL_BASE_URL=https://api.deepseek.com
@@ -58,7 +74,8 @@ INCIDENT_AGENT_LIVE_INTEL=1
 
 说明：
 
-- `INCIDENT_AGENT_INVESTIGATOR_MODEL=tool` 只影响调查层工具决策；如果要回到通用模型，可改成 `chat`。
+- `INCIDENT_AGENT_INVESTIGATOR_*` 只影响调查层工具决策。默认 `tool` / `chat` 上游不稳定时，建议显式路由到当前稳定 provider。
+- `INCIDENT_AGENT_REVIEWER_*` 只影响 post-action / finish reviewer；它决定是否接受工具动作或交付，不影响 writer 事实边界。
 - `INCIDENT_AGENT_REPORT_MATERIAL_*` 只影响 report material agent。
 - `INCIDENT_AGENT_WRITER_*` 同时影响 writer 和 polish / repair 相关调用。
 - `INCIDENT_AGENT_<ROLE>_BASE_URL` 与 `INCIDENT_AGENT_<ROLE>_API_KEY` 会覆盖默认 OpenAI-compatible endpoint，适合让调查层继续走 DeepShields，而 material / writer 单独走 DeepSeek。
@@ -86,6 +103,22 @@ conda run -n trail-agent python -m demo_agent \
 - `--use-report-agent-materials` 当前默认开启，会走 material agent + writer brief + polished report 链路。
 
 如果没有可用 LLM，请求 `llm_agent` 时会自动降级到 `heuristic`，用于离线 smoke test。
+
+### Evidence Graph Writer Experiment
+
+实验分支可以跳过 LLM material agent，先从 `report_source_bundle` / `source_fact_catalog` 编译确定性证据图和假设板，再交给 writer 写作：
+
+```bash
+conda run -n trail-agent python -m demo_agent \
+  --alert fixtures/incidents/multi_host_confirmed_spread_plus \
+  --out outputs/plan13_v48_evidence_graph_writer_live/multi_host_confirmed_spread_plus \
+  --mode incident-agent \
+  --decision-mode llm_agent \
+  --use-report-agent-materials \
+  --report-writer-mode evidence-graph
+```
+
+该模式会保留 `report_writer_brief.json`、`report_writer_materials.json`、`report_evidence_graph.json`、`report_hypothesis_board.json`、`report_graph_writer_brief.json` 和 `report_material_loop_trace.json`。`report_material_loop_trace.json` 应明确标记 material agent 被 evidence graph writer bypass，而不是伪装成 agent-authored materials。
 
 ## 3. 运行 5-case live eval
 
@@ -152,6 +185,7 @@ conda run -n trail-agent python tools/llm_ping.py --trace-path outputs/llm_ping.
 
 ```bash
 conda run -n trail-agent python -m py_compile \
+  demo_agent/incidents/evidence_graph.py \
   demo_agent/incidents/report_agent.py \
   demo_agent/incidents/report_agent_tools.py \
   demo_agent/incidents/report_agent_writer.py \
@@ -173,6 +207,9 @@ conda run -n trail-agent python -m py_compile \
 - `report_material_loop_trace.json`
 - `report_writer_materials.json`
 - `report_writer_brief.json`
+- `report_evidence_graph.json`（仅 evidence-graph writer mode）
+- `report_hypothesis_board.json`（仅 evidence-graph writer mode）
+- `report_graph_writer_brief.json`（仅 evidence-graph writer mode）
 - `report_outline.json`
 - `report.md`
 - `report_appendix.md`

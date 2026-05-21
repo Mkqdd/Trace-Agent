@@ -3,9 +3,11 @@ from __future__ import annotations
 import json
 import os
 import re
+from datetime import datetime, timedelta
 from typing import Any, Dict, Iterable, List, Tuple
 
 from ..services.api.llm_observability import invoke_llm_with_trace
+from .evidence_graph import build_graph_writer_brief
 from .report_agent_tools import build_source_fact_catalog, source_fact_indexes
 from .report_text_quality import (
     is_low_information_evidence_label,
@@ -1017,6 +1019,32 @@ def _remove_unsupported_lookback_windows(markdown: str, writer_brief: Dict[str, 
     }
     exact_times = {time if time.endswith(" UTC") else f"{time} UTC" for time in exact_times}
 
+    def normalize_token(time_text: str, *, reference_date: str = "") -> str:
+        cleaned = time_text.strip().strip("`").strip()
+        if not cleaned:
+            return ""
+        if re.match(r"^\d{2}:\d{2}:\d{2}(?: UTC)?$", cleaned) and reference_date:
+            cleaned = f"{reference_date} {cleaned}"
+        if not cleaned.endswith(" UTC"):
+            cleaned = f"{cleaned} UTC"
+        return cleaned
+
+    def replace_range(match: re.Match[str]) -> str:
+        start = normalize_token(match.group("start"))
+        reference_date = start[:10] if re.match(r"^\d{4}-\d{2}-\d{2}", start) else ""
+        end = normalize_token(match.group("end"), reference_date=reference_date)
+        if start in exact_times and end in exact_times:
+            return match.group(0)
+        suffix = match.group("suffix") or ""
+        return "当前调查窗口内" if suffix in {"间", "窗口内", "时段", "范围内"} else "当前调查窗口"
+
+    time_range = re.compile(
+        r"`?(?P<start>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?: UTC)?)`?"
+        r"\s*至\s*"
+        r"`?(?P<end>(?:\d{4}-\d{2}-\d{2} )?\d{2}:\d{2}:\d{2}(?: UTC)?)`?"
+        r"\s*(?P<suffix>间|窗口内|时段|范围内)?"
+    )
+
     def replace_parenthetical(match: re.Match[str]) -> str:
         time_text = match.group("time")
         normalized_time = time_text if time_text.endswith(" UTC") else f"{time_text} UTC"
@@ -1036,6 +1064,46 @@ def _remove_unsupported_lookback_windows(markdown: str, writer_brief: Dict[str, 
             if (match.group("time") if match.group("time").endswith(" UTC") else f"{match.group('time')} UTC") in exact_times
             else "当前调查窗口"
         ),
+        normalized,
+    )
+    normalized = time_range.sub(replace_range, normalized)
+    return normalized
+
+
+def _restore_beijing_times_to_source_utc(markdown: str, writer_brief: Dict[str, Any]) -> str:
+    """Undo writer-side Beijing-time conversions when the UTC source is unique."""
+
+    exact_times = set(re.findall(r"\b\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} UTC\b", _json(writer_brief)))
+    if not exact_times or "北京时间" not in markdown:
+        return markdown
+
+    def replace_zh(match: re.Match[str]) -> str:
+        try:
+            second = int(match.group("second") or "0")
+            local_time = datetime(
+                int(match.group("year")),
+                int(match.group("month")),
+                int(match.group("day")),
+                int(match.group("hour")),
+                int(match.group("minute")),
+                second,
+            )
+        except ValueError:
+            return match.group(0)
+        utc_time = local_time - timedelta(hours=8)
+        candidate = utc_time.strftime("%Y-%m-%d %H:%M:%S UTC")
+        return candidate if candidate in exact_times else match.group(0)
+
+    normalized = re.sub(
+        r"北京时间\s*(?P<year>\d{4})\s*年\s*(?P<month>\d{1,2})\s*月\s*(?P<day>\d{1,2})\s*日"
+        r"(?:凌晨|早上|上午|中午|下午|傍晚|晚上)?\s*(?P<hour>\d{1,2}):(?P<minute>\d{2})(?::(?P<second>\d{2}))?",
+        replace_zh,
+        markdown,
+    )
+    normalized = re.sub(
+        r"北京时间\s*(?P<year>\d{4})-(?P<month>\d{1,2})-(?P<day>\d{1,2})\s+"
+        r"(?P<hour>\d{1,2}):(?P<minute>\d{2})(?::(?P<second>\d{2}))?",
+        replace_zh,
         normalized,
     )
     return normalized
@@ -1080,6 +1148,10 @@ def _normalize_writer_markdown(markdown: str, writer_brief: Dict[str, Any]) -> s
         "攻击者控制域": "可疑控制域",
         "实际的恶意活动": "实际异常活动",
         "实际恶意活动": "实际异常活动",
+        "被成功入侵": "被纳入确认受影响范围",
+        "成功入侵": "纳入确认受影响范围",
+        "攻击者控制链上的新节点": "需要隔离和取证的受影响节点",
+        "攻击者控制链上的节点": "需要隔离和取证的受影响节点",
         "攻击者已在最少": "已观察到至少",
         "已观察到最少": "已观察到至少",
         "上建立对": "出现对",
@@ -1100,6 +1172,8 @@ def _normalize_writer_markdown(markdown: str, writer_brief: Dict[str, Any]) -> s
         "受控外传": "可疑外传",
         "确认横向移动": "确认存在横向推进线索",
         "已确认横向移动": "已确认存在横向推进线索",
+        "成功将活动范围扩展至": "使调查确认范围扩展至",
+        "成功将活动范围扩展到": "使调查确认范围扩展到",
         "横向移动（PsExec）": "PsExec 远程服务创建线索",
         "横向移动（WMI）": "WMI 远程进程创建线索",
         "loader DLL": "DLL 加载线索",
@@ -1135,6 +1209,7 @@ def _normalize_writer_markdown(markdown: str, writer_brief: Dict[str, Any]) -> s
     )
     expanded = _guard_generated_iocs(expanded, writer_brief)
     expanded = _remove_unsupported_lookback_windows(expanded, writer_brief)
+    expanded = _restore_beijing_times_to_source_utc(expanded, writer_brief)
     expanded = _restore_exact_timestamps(expanded, writer_brief)
     expanded = _normalize_markdown_spacing(expanded)
     return expanded.strip()
@@ -1558,6 +1633,43 @@ DIRECT_SOURCE_WRITER_SYSTEM_PROMPT = """你是 Trace-Agent 的资深安全事件
 """
 
 
+EVIDENCE_GRAPH_WRITER_SYSTEM_PROMPT = """你是 Trace-Agent 的资深安全事件报告 writer。本次输入是 report_graph_writer_brief。
+
+事实边界：
+- source_fact_catalog 是唯一事实来源。
+- evidence_graph 和 graph_lenses 只组织事实关系，不新增事实。
+- hypothesis_board 是写作论证视角，不是额外证据。
+- 任何候选、边界、反证、open gap、action fact 都不能被写成当前已确认事实。
+
+写作策略：
+- 写给运维人员和安全运营协同对象，不写给内部 agent 开发者。
+- 不要机械逐条朗读证据图；先用 graph_lenses 找本节证据，再回到 source_fact_catalog 核对 exact_fact_text、summary_line 和 boundary_note。
+- 第 2 节按 graph_lenses.main_chain 写主线推进，可补充 candidate_expansion，但必须标明待验证。
+- 第 3 节结合 graph_lenses.main_chain 与 hypothesis_board.confirmed_main_chain，写当前结论为什么成立；同时用 insufficient_evidence_limits 说明哪些更强结论仍不成立。
+- 第 4 节写确认资产、候选资产、核心外部基础设施、共享或背景基础设施，不能把外部 IP 写成受影响资产。
+- 第 5 节结合 graph_lenses.counterevidence、graph_lenses.open_gaps 与 hypothesis_board.benign_or_shared_infra_alternative，写反证、替代解释和缺口如何限制结论上限。
+- 第 6 节写行动建议，每条包含对象、日志源或字段、验证目标。
+
+保守边界：
+- “确认安全事件”只表示证据足以交付事件级结论，不等于已经确认攻击者控制、恶意软件完整执行、横向移动闭环、持久化或长期驻留。
+- candidate_or_boundary=true 的事实只能写成候选范围、待验证线索、反证或缺口边界，不能写成已确认传播或已确认受影响。
+- 外部基础设施只能写成外联对象、关联基础设施或排查封禁对象，不能写成受影响资产。
+- action fact 只代表建议动作，不能改写成已经观测到的事实。
+- 主机执行、脚本、远程服务、远程进程、载荷加载等线索，如果缺少命令行、落地文件、父子进程、持久化或内存证据，只能写成可疑执行线索或待核查执行链。
+
+输出格式：
+- 只输出中文 Markdown 正文。
+- 严格使用 writing_contract.required_shape 的标题。
+- 首页摘要必须固定输出 6 行项目符号，且每行都带粗体标签：结论、严重度、研判把握、已确认范围、一句话结论、立即动作。
+- 第 3、4、5 节必须写成连续分析段落，禁止使用项目符号或编号清单；每节至少 2 个自然段。
+- 第 6 节可以使用项目符号，但每条建议都必须包含排查对象、日志源或字段、验证目标。
+- 时间必须保留 source_fact_catalog 中的 UTC 原格式，不要转换成北京时间、当地时间或中文日期。
+- 已确认受影响资产只能写成“纳入确认受影响范围”“需要隔离和取证”；不要写成“成功入侵”“攻击者控制链节点”“已被攻击者控制”。
+- 不输出 JSON、fact_id、source_id、工具名、内部状态或解释过程。
+- 不发明事实卡之外的精确时间、IP、域名、资产、进程、文件或 IOC。
+"""
+
+
 def render_polished_body_from_direct_source_brief(llm: Any, writer_brief: Dict[str, Any]) -> str:
     from langchain_core.prompts import ChatPromptTemplate
 
@@ -1584,3 +1696,32 @@ def render_polished_body_from_direct_source_brief(llm: Any, writer_brief: Dict[s
 def render_polished_body_from_source_bundle(llm: Any, source_bundle: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
     writer_brief = build_direct_source_writer_brief(source_bundle)
     return render_polished_body_from_direct_source_brief(llm, writer_brief), writer_brief
+
+
+def render_polished_body_from_graph_writer_brief(llm: Any, writer_brief: Dict[str, Any]) -> str:
+    from langchain_core.prompts import ChatPromptTemplate
+
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", EVIDENCE_GRAPH_WRITER_SYSTEM_PROMPT),
+            (
+                "user",
+                "请仅基于以下 report_graph_writer_brief 生成完整 Markdown 正文：\n"
+                "{writer_brief_json}",
+            ),
+        ]
+    )
+    writer = llm.bind(max_tokens=7000, temperature=0) if hasattr(llm, "bind") else llm
+    response = invoke_llm_with_trace(
+        writer,
+        prompt.format_messages(writer_brief_json=_json(writer_brief)),
+        role="report_agent_writer",
+        extra={"writer_mode": "evidence_graph"},
+    )
+    return _normalize_writer_markdown(str(getattr(response, "content", "") or "").strip(), writer_brief)
+
+
+def render_polished_body_from_evidence_graph(llm: Any, source_bundle: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
+    fact_catalog = [_as_dict(item) for item in build_source_fact_catalog(source_bundle)]
+    writer_brief = build_graph_writer_brief(source_bundle, fact_catalog)
+    return render_polished_body_from_graph_writer_brief(llm, writer_brief), writer_brief

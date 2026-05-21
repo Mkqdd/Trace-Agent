@@ -8,11 +8,14 @@ import time
 from typing import Any, Dict, List, Tuple
 
 from .evidence_store import build_evidence_store, build_legacy_evidence_contract
+from .evidence_graph import build_graph_writer_brief
 from .report_agent import run_report_material_loop
+from .report_agent_tools import build_source_fact_catalog
 from .report_agent_writer import (
     build_direct_source_writer_brief,
     build_report_writer_brief,
     render_polished_body_from_direct_source_brief,
+    render_polished_body_from_graph_writer_brief,
     render_polished_body_from_writer_brief,
 )
 from .report_fact_cards import build_report_fact_cards
@@ -4545,6 +4548,12 @@ def render_incident_report_with_llm(
     report_agent_error = ""
     report_writer_mode = str(os.getenv("INCIDENT_AGENT_REPORT_WRITER_MODE") or "").strip().lower() or "material-agent"
     direct_source_writer = report_writer_mode in {"direct-source", "direct_source", "source-direct", "source_direct"}
+    evidence_graph_writer = report_writer_mode in {"evidence-graph", "evidence_graph", "graph"}
+    resolved_report_writer_mode = report_writer_mode
+    if direct_source_writer:
+        resolved_report_writer_mode = "direct-source"
+    elif evidence_graph_writer:
+        resolved_report_writer_mode = "evidence-graph"
     if use_report_agent_materials is None:
         report_agent_flag = str(os.getenv("INCIDENT_AGENT_USE_REPORT_AGENT_MATERIALS") or "").strip().lower()
         use_report_agent_materials = report_agent_flag not in {"0", "false", "no", "off"}
@@ -4558,8 +4567,10 @@ def render_incident_report_with_llm(
                 "report_writer_brief": report_writer_brief,
                 "report_material_loop_trace": report_material_loop_trace,
                 "report_agent_error": report_agent_error,
-                "report_agent_materials_enabled": bool(use_report_agent_materials and not direct_source_writer),
-                "report_writer_mode": "direct-source" if direct_source_writer else report_writer_mode,
+                "report_agent_materials_enabled": bool(
+                    use_report_agent_materials and not direct_source_writer and not evidence_graph_writer
+                ),
+                "report_writer_mode": resolved_report_writer_mode,
             }
         )
         return payload
@@ -4582,6 +4593,53 @@ def render_incident_report_with_llm(
             "report_polish_brief": polish_brief,
             "report_polish_validation": skipped_validation,
             "report_polish_error": "",
+        })
+
+    if evidence_graph_writer:
+        try:
+            source_fact_catalog = build_source_fact_catalog(report_source_bundle)
+            report_writer_brief = build_graph_writer_brief(report_source_bundle, source_fact_catalog)
+            report_writer_materials = {
+                "schema_version": "report-writer-materials-evidence-graph-experiment-v1",
+                "material_agent_bypassed": True,
+                "case_header": report_writer_brief.get("case_header") or {},
+                "source_fact_catalog": report_writer_brief.get("source_fact_catalog") or [],
+                "evidence_graph": report_writer_brief.get("evidence_graph") or {},
+                "graph_lenses": report_writer_brief.get("graph_lenses") or {},
+                "hypothesis_board": report_writer_brief.get("hypothesis_board") or {},
+                "writing_contract": report_writer_brief.get("writing_contract") or {},
+            }
+            report_material_loop_trace = {
+                "schema_version": "report-material-loop-trace-v1",
+                "status": "skipped_evidence_graph_writer",
+                "material_agent_bypassed": True,
+                "validation": {"ok": True, "mode": "evidence_graph"},
+            }
+            body = render_polished_body_from_graph_writer_brief(llm, report_writer_brief)
+            if body.strip():
+                validation = validate_report_polish(body, report_fact_cards)
+                return _with_report_agent_artifacts({
+                    "report_markdown": deterministic,
+                    "report_polished_markdown": _compose_polished_report(body, appendix),
+                    "report_appendix_markdown": appendix,
+                    "report_fact_cards": report_fact_cards,
+                    "report_polish_input": polish_input,
+                    "report_polish_brief": polish_brief,
+                    "report_polish_validation": validation,
+                    "report_polish_error": "",
+                })
+            report_agent_error = "evidence_graph_writer_empty_response"
+        except Exception as exc:
+            report_agent_error = f"evidence_graph_writer:{type(exc).__name__}: {exc}"
+        return _with_report_agent_artifacts({
+            "report_markdown": deterministic,
+            "report_polished_markdown": "",
+            "report_appendix_markdown": appendix,
+            "report_fact_cards": report_fact_cards,
+            "report_polish_input": polish_input,
+            "report_polish_brief": polish_brief,
+            "report_polish_validation": skipped_validation,
+            "report_polish_error": report_agent_error,
         })
 
     if direct_source_writer:

@@ -154,6 +154,9 @@ Trace-Agent 是一个面向安全告警调查的事件研判代理：它从一�
 - 如果 control_constraints.recent_low_value_steps >= 2，只有在出现新状态、未尝试工具、或明确 blocking gap 时才继续；否则建议 finish。
 - 如果 reviewer_feedback.next_round_feedback 存在，应先吸收其中的限制和边界提醒，再选择下一步动作。
 - 如果 blocking_checks 仍存在，不要建议 finish，除非 tool_catalog 中没有任何工具能直接缩小这些检查对应的问题。
+- 如果 agent_context.hypothesis_board.active 存在多个合理假设，优先选择最能区分这些假设的工具调用。
+  例如：真实传播 vs 共享基础设施背景，优先查询候选资产主机侧证据和共享基础设施上下文。
+- hypothesis_board 是 advisory planning state，不是交付硬门槛；不能因为 hypothesis_board 仍有开放候选就自动拒绝 finish。主证据链可交付且剩余问题可写成边界时，可以建议 finish。
 
 工具选择规则：
 - 不要重复调用同一输入已经成功执行过的确定性工具。
@@ -1158,6 +1161,15 @@ def _initial_working_hypotheses(seed_event: Dict[str, Any]) -> List[Dict[str, An
     ]
 
 
+def _initial_investigation_hypothesis_board() -> Dict[str, Any]:
+    return {
+        "schema_version": "investigation-hypothesis-board-v1",
+        "active": [],
+        "closed": [],
+        "last_updated_round": 0,
+    }
+
+
 def _initial_session_state(seed_event: Dict[str, Any], budgets: Dict[str, int], selector_policy: Dict[str, Any]) -> Dict[str, Any]:
     seed_src = str(((seed_event.get("src") or {}).get("ip")) or "").strip()
     seed_dst = str(((seed_event.get("dst") or {}).get("ip")) or "").strip()
@@ -1179,6 +1191,7 @@ def _initial_session_state(seed_event: Dict[str, Any], budgets: Dict[str, int], 
         "tool_history": [],
         "open_questions": _initial_open_questions(seed_event),
         "working_hypotheses": _initial_working_hypotheses(seed_event),
+        "hypothesis_board": _initial_investigation_hypothesis_board(),
         "stop_reason": "",
         "secondary_stop_reasons": [],
         "ready_for_delivery_at_stop": False,
@@ -3220,6 +3233,7 @@ def _format_llm_session_summary(
         "open_questions": list(session_state.get("open_questions") or []),
         "material_gaps": list(acceptance_state.get("material_gaps") or []),
         "working_hypotheses": list(session_state.get("working_hypotheses") or []),
+        "hypothesis_board": dict(session_state.get("hypothesis_board") or {}),
         "budgets": session_state.get("budgets") or {},
         "latest_evidence": latest_ledger,
         "tool_history": _recent_tool_effects(session_state),
@@ -3433,6 +3447,7 @@ def _build_agent_context_v1(
             },
             "reportable_unresolved": reportable_unresolved,
         },
+        "hypothesis_board": dict(session_state.get("hypothesis_board") or {}),
         "tool_catalog": _static_tool_catalog_view(tool_catalog),
         "action_options": _action_options_view(tool_catalog),
         "control_constraints": _control_constraints_view(session_state, incident_state, finalized),
@@ -3946,6 +3961,7 @@ def _reviewer_context_view(
         "control_summary": control_summary,
         "control_phase": str(control_summary.get("compat_phase") or ""),
         "active_tool_cooldowns": _active_tool_cooldowns(session_state, incident_state, finalized),
+        "hypothesis_board": dict(session_state.get("hypothesis_board") or {}),
     }
 
 

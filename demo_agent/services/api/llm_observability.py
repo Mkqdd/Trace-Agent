@@ -347,6 +347,12 @@ def _is_langchain_openai_chat(llm: Any) -> bool:
     return class_name == "ChatOpenAI" or module_name.startswith("langchain_openai")
 
 
+def _is_test_double_llm(llm: Any) -> bool:
+    class_name = type(llm).__name__.lower()
+    module_name = type(llm).__module__.lower()
+    return "fake" in class_name or module_name.startswith("tools.")
+
+
 def _llm_for_role(llm: Any, role: str) -> tuple[Any, Dict[str, Any]]:
     routing = resolve_llm_model_for_role(role)
     if routing.get("routing_group") == "role_default" and not _is_langchain_openai_chat(llm):
@@ -360,6 +366,12 @@ def _llm_for_role(llm: Any, role: str) -> tuple[Any, Dict[str, Any]]:
         }
     selected_model = str(routing.get("selected_model") or "").strip()
     if not selected_model:
+        return llm, routing
+    if _is_test_double_llm(llm):
+        routing = dict(routing)
+        routing["selected_model"] = ""
+        routing["bind_applied"] = False
+        routing["skipped_model_override_for_test_double"] = True
         return llm, routing
     routing["native_openai_adapter"] = True
     prefix = _role_env_prefix(str(role or "unknown"))

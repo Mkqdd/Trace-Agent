@@ -21,6 +21,24 @@
   - `direct-source`: current DS v4 writer over deterministic fact catalog.
   - `evidence-graph`: new deterministic evidence graph + hypothesis planner + graph writer brief.
 
+## Current Execution Status
+
+- Tasks 1-7 are implemented on `experiment-evidence-graph-architecture`.
+- Task 8 report-side A/B experiment has been run at `outputs/plan13_v48_evidence_graph_writer_live/`.
+- Task 8 machine checks passed for all 5 cases: run return code `0`, report polish validation `clean`, hard failures `0`, material trace `skipped_evidence_graph_writer`.
+- Task 8 manual comparison is recorded in `outputs/plan13_v48_evidence_graph_writer_live/manual_comparison.md`.
+- Validation checklist has been rerun successfully for evidence graph builder, hypothesis board, graph writer brief, report polish validator, LLM agent protocol, and Python compilation.
+- Acceptance status: evidence-graph mode passes the report-side experiment criteria, but should not be promoted as the default full pipeline yet.
+- Current blocker before full-pipeline promotion: live investigation/reviewer calls still depend on the default `tool` / `chat` provider and produced upstream connection failures in v48. Writer-side DS v4 calls completed successfully.
+- Follow-up verification: after explicitly routing investigator/reviewer to DeepSeek v4 in local `.env`, one representative evidence-graph live case completed at `outputs/plan13_v50_evidence_graph_all_ds_v4_one/multi_host_confirmed_spread_plus/` with report validation `clean`, hard failures `0`, soft warnings `0`, material trace `skipped_evidence_graph_writer`, and LLM errors `0`.
+- Full routing verification: `outputs/plan13_v51_evidence_graph_all_ds_v4_live/` completed all 5 cases with run return code `0`, material trace `skipped_evidence_graph_writer`, and LLM errors `0` across the suite. This fixed the v48 upstream provider-noise problem.
+- Writer hard-fail follow-up: v51 exposed one real writer drift in `shared_infra_multi_asset_needs_review`, where an action recommendation invented exact lookback-window times. The writer normalizer now rewrites unsupported action lookback windows to `当前调查窗口内` instead of preserving invented timestamps.
+- Targeted fix verification: `outputs/plan13_v52_evidence_graph_all_ds_v4_fix_lookback/shared_infra_multi_asset_needs_review/` reran the failing case with run return code `0`, report validation `clean`, hard failures `0`, soft warnings `0`, material trace `skipped_evidence_graph_writer`, and LLM errors `0`.
+- Task 9 advisory investigation-layer hypothesis board is now implemented in `demo_agent/incidents/agent.py` with tests in `tools/test_investigation_hypothesis_board.py`.
+- Fresh 5-case verification after Task 9 is recorded at `outputs/plan13_v53_task9_evidence_graph_all_ds_v4_live/`; all 5 cases now return `0`, report validation is `clean`, material trace is `skipped_evidence_graph_writer`, and LLM errors are `0`.
+- Next recommended step: review the v53 all-green evidence-graph output root and decide whether to keep evidence-graph as the preferred report-side path before promoting any further investigation-layer experiments.
+- Follow-up architecture direction: the next investigation-layer experiment is now documented in [EXPERIMENT_INVESTIGATION_HYPOTHESIS_GRAPH_PLAN.md](/home/estar0x/project/maltrail_test/Trace-Agent/EXPERIMENT_INVESTIGATION_HYPOTHESIS_GRAPH_PLAN.md), which moves hypothesis tracking and information-gain planning into the investigation loop itself.
+
 ## Research Basis And Translation
 
 - ReAct argues for interleaving reasoning traces and actions so the model can gather external information and update plans. Trace-Agent should apply this to investigation-layer tool choice, not to final report writing. Source: https://arxiv.org/abs/2210.03629.

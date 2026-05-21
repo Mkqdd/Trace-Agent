@@ -147,6 +147,16 @@ def _run_one_incident_agent(
     report_source_bundle = result.get("report_source_bundle") or {}
     report_writer_materials = result.get("report_writer_materials") or {}
     report_writer_brief = result.get("report_writer_brief") or {}
+    report_evidence_graph = (
+        (report_writer_brief or {}).get("evidence_graph")
+        or (report_writer_materials or {}).get("evidence_graph")
+        or {}
+    )
+    report_hypothesis_board = (
+        (report_writer_brief or {}).get("hypothesis_board")
+        or (report_writer_materials or {}).get("hypothesis_board")
+        or {}
+    )
     report_material_loop_trace = result.get("report_material_loop_trace") or {}
     report_agent_error = str(result.get("report_agent_error") or "")
     report_outline = result.get("report_outline") or {}
@@ -177,6 +187,12 @@ def _run_one_incident_agent(
         save_json(out_dir / "report_writer_materials.json", report_writer_materials)
     if report_writer_brief:
         save_json(out_dir / "report_writer_brief.json", report_writer_brief)
+    if report_evidence_graph:
+        save_json(out_dir / "report_evidence_graph.json", report_evidence_graph)
+    if report_hypothesis_board:
+        save_json(out_dir / "report_hypothesis_board.json", report_hypothesis_board)
+    if report_writer_brief and report_writer_brief.get("schema_version") == "report-graph-writer-brief-v1":
+        save_json(out_dir / "report_graph_writer_brief.json", report_writer_brief)
     if report_material_loop_trace:
         save_json(out_dir / "report_material_loop_trace.json", report_material_loop_trace)
     if report_agent_error.strip():
@@ -229,6 +245,12 @@ def _run_one_incident_agent(
         response["report_writer_materials_path"] = str((out_dir / "report_writer_materials.json").resolve())
     if report_writer_brief:
         response["report_writer_brief_path"] = str((out_dir / "report_writer_brief.json").resolve())
+    if report_evidence_graph:
+        response["report_evidence_graph_path"] = str((out_dir / "report_evidence_graph.json").resolve())
+    if report_hypothesis_board:
+        response["report_hypothesis_board_path"] = str((out_dir / "report_hypothesis_board.json").resolve())
+    if report_writer_brief and report_writer_brief.get("schema_version") == "report-graph-writer-brief-v1":
+        response["report_graph_writer_brief_path"] = str((out_dir / "report_graph_writer_brief.json").resolve())
     if report_material_loop_trace:
         response["report_material_loop_trace_path"] = str((out_dir / "report_material_loop_trace.json").resolve())
     if report_agent_error.strip():
@@ -312,8 +334,8 @@ def main() -> None:
     parser.add_argument(
         "--report-writer-mode",
         default=os.getenv("INCIDENT_AGENT_REPORT_WRITER_MODE") or "",
-        choices=["", "material-agent", "direct-source"],
-        help="报告 writer 实验模式：默认 material-agent；direct-source 跳过 material agent，直接从 source bundle/fact catalog 写作。",
+        choices=["", "material-agent", "direct-source", "evidence-graph"],
+        help="报告 writer 实验模式：默认 material-agent；direct-source 跳过 material agent；evidence-graph 使用证据图和假设板写作。",
     )
     args = parser.parse_args()
 
