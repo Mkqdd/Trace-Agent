@@ -62,6 +62,9 @@
       "ground_external_context"
     ],
     "blocking_gap_ids": [],
+    "reportable_gap_ids": [
+      "ground_external_context"
+    ],
     "action_ids": [
       "action:asset_scope",
       "action:background_validation",
@@ -383,7 +386,7 @@
           "candidate_spread",
           "insufficient_evidence_limits"
         ],
-        "reason": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。; 该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。; 扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？; 该 gap 已不再出现在当前 canonical gap 集合中。; seed 自带的家族提示 Suspected cloud-storage exfil chain 是否有更多外部证据支撑？",
+        "reason": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。; 该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。; 扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？; 该 gap 已不再出现在当前 canonical gap 集合中。; seed 自带的家族提示 Suspected cloud-storage exfil chain 是否有更多外部证据支撑？",
         "candidate_kind": "planned"
       }
     },
@@ -418,7 +421,7 @@
         "target_hypotheses": [
           "benign_or_shared_infra_alternative"
         ],
-        "reason": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。; 该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。; seed 自带的家族提示 Suspected cloud-storage exfil chain 是否有更多外部证据支撑？; 该 gap 已不再出现在当前 canonical gap 集合中。",
+        "reason": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。; 该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。; seed 自带的家族提示 Suspected cloud-storage exfil chain 是否有更多外部证据支撑？; 该 gap 已不再出现在当前 canonical gap 集合中。",
         "candidate_kind": "planned"
       }
     },
@@ -487,7 +490,7 @@
           "candidate_spread",
           "insufficient_evidence_limits"
         ],
-        "reason": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。; 该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。; 扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？; 该 gap 已不再出现在当前 canonical gap 集合中。",
+        "reason": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。; 该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。; 扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？; 该 gap 已不再出现在当前 canonical gap 集合中。",
         "candidate_kind": "planned"
       }
     },
@@ -674,10 +677,10 @@
         "evt-613",
         "evt-614",
         "obs-001",
-        "obs-005",
-        "obs-007",
         "obs-004",
-        "obs-006"
+        "obs-006",
+        "obs-007",
+        "obs-005"
       ],
       "event_ids": [
         "evt-601",
@@ -695,10 +698,10 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007",
         "obs-004",
-        "obs-006"
+        "obs-006",
+        "obs-007",
+        "obs-005"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -731,7 +734,7 @@
         "evt-611",
         "evt-612",
         "obs-003",
-        "obs-004"
+        "obs-007"
       ],
       "event_ids": [
         "evt-611",
@@ -739,7 +742,7 @@
       ],
       "observation_ids": [
         "obs-003",
-        "obs-004"
+        "obs-007"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -763,12 +766,15 @@
       "status": "context",
       "boundary": false,
       "source_ids": [
-        "evt-615"
+        "evt-615",
+        "obs-007"
       ],
       "event_ids": [
         "evt-615"
       ],
-      "observation_ids": [],
+      "observation_ids": [
+        "obs-007"
+      ],
       "gap_ids": [],
       "action_ids": [],
       "roles": [
@@ -822,8 +828,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -854,8 +860,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -886,8 +892,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -918,8 +924,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -950,8 +956,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -982,8 +988,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -1014,8 +1020,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -1046,8 +1052,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -1078,8 +1084,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -1138,7 +1144,7 @@
       ],
       "observation_ids": [
         "obs-003",
-        "obs-004"
+        "obs-007"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -1168,7 +1174,7 @@
         "evt-613"
       ],
       "observation_ids": [
-        "obs-004"
+        "obs-007"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -1198,9 +1204,9 @@
         "evt-614"
       ],
       "observation_ids": [
+        "obs-004",
         "obs-005",
-        "obs-006",
-        "obs-007"
+        "obs-006"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -1229,7 +1235,9 @@
       "event_ids": [
         "evt-615"
       ],
-      "observation_ids": [],
+      "observation_ids": [
+        "obs-007"
+      ],
       "gap_ids": [],
       "action_ids": [],
       "roles": [
@@ -1270,6 +1278,7 @@
         "delivery_blocking": true,
         "actionable_now": false,
         "blocks_delivery_now": true,
+        "reportable_only": false,
         "target_hypotheses": [
           "insufficient_evidence_limits"
         ],
@@ -1304,6 +1313,7 @@
         "delivery_blocking": true,
         "actionable_now": false,
         "blocks_delivery_now": true,
+        "reportable_only": false,
         "target_hypotheses": [
           "benign_or_shared_infra_alternative"
         ],
@@ -1338,6 +1348,7 @@
         "delivery_blocking": false,
         "actionable_now": false,
         "blocks_delivery_now": false,
+        "reportable_only": false,
         "target_hypotheses": [
           "insufficient_evidence_limits"
         ],
@@ -1371,6 +1382,7 @@
         "delivery_blocking": true,
         "actionable_now": false,
         "blocks_delivery_now": true,
+        "reportable_only": false,
         "target_hypotheses": [
           "candidate_spread",
           "insufficient_evidence_limits"
@@ -1385,7 +1397,7 @@
       "node_id": "gap:ground_external_context",
       "node_type": "gap",
       "label": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
-      "status": "reportable_unresolved",
+      "status": "unresolved_but_deliverable",
       "boundary": true,
       "source_ids": [
         "ground_external_context"
@@ -1401,11 +1413,12 @@
       ],
       "properties": {
         "question": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
-        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "priority": "low",
         "delivery_blocking": false,
         "actionable_now": false,
         "blocks_delivery_now": false,
+        "reportable_only": true,
         "target_hypotheses": [
           "benign_or_shared_infra_alternative"
         ],
@@ -1441,6 +1454,7 @@
         "delivery_blocking": true,
         "actionable_now": false,
         "blocks_delivery_now": true,
+        "reportable_only": false,
         "target_hypotheses": [
           "insufficient_evidence_limits"
         ],
@@ -1475,6 +1489,7 @@
         "delivery_blocking": true,
         "actionable_now": false,
         "blocks_delivery_now": true,
+        "reportable_only": false,
         "target_hypotheses": [
           "insufficient_evidence_limits"
         ],
@@ -1510,6 +1525,7 @@
         "delivery_blocking": true,
         "actionable_now": false,
         "blocks_delivery_now": true,
+        "reportable_only": false,
         "target_hypotheses": [
           "candidate_spread",
           "insufficient_evidence_limits"
@@ -1548,6 +1564,7 @@
         "delivery_blocking": false,
         "actionable_now": false,
         "blocks_delivery_now": false,
+        "reportable_only": false,
         "target_hypotheses": [],
         "target_actions": [
           "family_validation",
@@ -1684,9 +1701,9 @@
         "evt-610",
         "evt-613",
         "evt-614",
-        "obs-001,obs-005,obs-007",
-        "obs-004",
-        "obs-005,obs-006,obs-007"
+        "obs-001,obs-004,obs-006",
+        "obs-007",
+        "obs-004,obs-005,obs-006"
       ],
       "event_ids": [
         "evt-601",
@@ -1703,9 +1720,9 @@
         "evt-614"
       ],
       "observation_ids": [
-        "obs-001,obs-005,obs-007",
-        "obs-004",
-        "obs-005,obs-006,obs-007"
+        "obs-001,obs-004,obs-006",
+        "obs-007",
+        "obs-004,obs-005,obs-006"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -1728,14 +1745,14 @@
       "source_ids": [
         "evt-611",
         "evt-612",
-        "obs-003,obs-004"
+        "obs-003,obs-007"
       ],
       "event_ids": [
         "evt-611",
         "evt-612"
       ],
       "observation_ids": [
-        "obs-003,obs-004"
+        "obs-003,obs-007"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -1756,12 +1773,15 @@
       "status": "context",
       "boundary": false,
       "source_ids": [
-        "evt-615"
+        "evt-615",
+        "obs-007"
       ],
       "event_ids": [
         "evt-615"
       ],
-      "observation_ids": [],
+      "observation_ids": [
+        "obs-007"
+      ],
       "gap_ids": [],
       "action_ids": [],
       "roles": [
@@ -1782,13 +1802,13 @@
       "boundary": true,
       "source_ids": [
         "evt-613",
-        "obs-004"
+        "obs-007"
       ],
       "event_ids": [
         "evt-613"
       ],
       "observation_ids": [
-        "obs-004"
+        "obs-007"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -1820,7 +1840,8 @@
         "evt-610",
         "evt-611",
         "evt-615",
-        "obs-001,obs-005,obs-007"
+        "obs-001,obs-004,obs-006",
+        "obs-007"
       ],
       "event_ids": [
         "evt-602",
@@ -1832,7 +1853,8 @@
         "evt-615"
       ],
       "observation_ids": [
-        "obs-001,obs-005,obs-007"
+        "obs-001,obs-004,obs-006",
+        "obs-007"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -1859,14 +1881,14 @@
       "source_ids": [
         "evt-609",
         "evt-610",
-        "obs-001,obs-005,obs-007"
+        "obs-001,obs-004,obs-006"
       ],
       "event_ids": [
         "evt-609",
         "evt-610"
       ],
       "observation_ids": [
-        "obs-001,obs-005,obs-007"
+        "obs-001,obs-004,obs-006"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -1892,13 +1914,13 @@
       "boundary": true,
       "source_ids": [
         "evt-613",
-        "obs-004"
+        "obs-007"
       ],
       "event_ids": [
         "evt-613"
       ],
       "observation_ids": [
-        "obs-004"
+        "obs-007"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -1929,7 +1951,7 @@
         "evt-607",
         "evt-608",
         "evt-611",
-        "obs-001,obs-005,obs-007"
+        "obs-001,obs-004,obs-006"
       ],
       "event_ids": [
         "evt-601",
@@ -1940,7 +1962,7 @@
         "evt-611"
       ],
       "observation_ids": [
-        "obs-001,obs-005,obs-007"
+        "obs-001,obs-004,obs-006"
       ],
       "gap_ids": [],
       "action_ids": [],
@@ -1965,12 +1987,15 @@
       "status": "boundary",
       "boundary": true,
       "source_ids": [
-        "evt-615"
+        "evt-615",
+        "obs-007"
       ],
       "event_ids": [
         "evt-615"
       ],
-      "observation_ids": [],
+      "observation_ids": [
+        "obs-007"
+      ],
       "gap_ids": [],
       "action_ids": [],
       "roles": [
@@ -2040,7 +2065,7 @@
       ],
       "observation_ids": [
         "obs-003",
-        "obs-004"
+        "obs-007"
       ],
       "properties": {}
     },
@@ -2058,8 +2083,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2077,7 +2102,7 @@
       ],
       "observation_ids": [
         "obs-003",
-        "obs-004"
+        "obs-007"
       ],
       "properties": {}
     },
@@ -2093,7 +2118,9 @@
       "event_ids": [
         "evt-615"
       ],
-      "observation_ids": [],
+      "observation_ids": [
+        "obs-007"
+      ],
       "properties": {}
     },
     {
@@ -2154,7 +2181,7 @@
         "evt-613"
       ],
       "observation_ids": [
-        "obs-004"
+        "obs-007"
       ],
       "properties": {}
     },
@@ -2220,8 +2247,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2256,8 +2283,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2275,8 +2302,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2294,8 +2321,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2329,7 +2356,7 @@
         "evt-613"
       ],
       "observation_ids": [
-        "obs-004"
+        "obs-007"
       ],
       "properties": {}
     },
@@ -2392,8 +2419,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2409,7 +2436,9 @@
       "event_ids": [
         "evt-615"
       ],
-      "observation_ids": [],
+      "observation_ids": [
+        "obs-007"
+      ],
       "properties": {}
     },
     {
@@ -2441,8 +2470,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2458,7 +2487,9 @@
       "event_ids": [
         "evt-615"
       ],
-      "observation_ids": [],
+      "observation_ids": [
+        "obs-007"
+      ],
       "properties": {}
     },
     {
@@ -2475,8 +2506,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2508,7 +2539,9 @@
       "event_ids": [
         "evt-615"
       ],
-      "observation_ids": [],
+      "observation_ids": [
+        "obs-007"
+      ],
       "properties": {}
     },
     {
@@ -2525,8 +2558,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2542,7 +2575,9 @@
       "event_ids": [
         "evt-615"
       ],
-      "observation_ids": [],
+      "observation_ids": [
+        "obs-007"
+      ],
       "properties": {}
     },
     {
@@ -2589,8 +2624,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2623,8 +2658,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2672,8 +2707,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2691,8 +2726,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2710,8 +2745,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2729,8 +2764,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2748,8 +2783,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2766,7 +2801,7 @@
         "evt-613"
       ],
       "observation_ids": [
-        "obs-004"
+        "obs-007"
       ],
       "properties": {}
     },
@@ -2784,8 +2819,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2803,8 +2838,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2822,8 +2857,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2856,8 +2891,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2875,7 +2910,7 @@
       ],
       "observation_ids": [
         "obs-003",
-        "obs-004"
+        "obs-007"
       ],
       "properties": {}
     },
@@ -2908,8 +2943,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -2988,8 +3023,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3007,8 +3042,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3040,7 +3075,7 @@
         "evt-613"
       ],
       "observation_ids": [
-        "obs-004"
+        "obs-007"
       ],
       "properties": {}
     },
@@ -3087,7 +3122,7 @@
         "evt-613"
       ],
       "observation_ids": [
-        "obs-004"
+        "obs-007"
       ],
       "properties": {}
     },
@@ -3150,8 +3185,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3184,7 +3219,7 @@
       ],
       "observation_ids": [
         "obs-003",
-        "obs-004"
+        "obs-007"
       ],
       "properties": {}
     },
@@ -3217,8 +3252,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3251,8 +3286,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3285,8 +3320,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3304,8 +3339,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3323,8 +3358,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3342,8 +3377,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3361,8 +3396,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3380,8 +3415,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3397,7 +3432,9 @@
       "event_ids": [
         "evt-615"
       ],
-      "observation_ids": [],
+      "observation_ids": [
+        "obs-007"
+      ],
       "properties": {}
     },
     {
@@ -3414,8 +3451,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3432,9 +3469,9 @@
         "evt-614"
       ],
       "observation_ids": [
+        "obs-004",
         "obs-005",
-        "obs-006",
-        "obs-007"
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3452,8 +3489,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3471,8 +3508,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3490,8 +3527,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3509,8 +3546,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3542,7 +3579,7 @@
         "evt-613"
       ],
       "observation_ids": [
-        "obs-004"
+        "obs-007"
       ],
       "properties": {}
     },
@@ -3560,8 +3597,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3608,7 +3645,7 @@
         "evt-613"
       ],
       "observation_ids": [
-        "obs-004"
+        "obs-007"
       ],
       "properties": {}
     },
@@ -3626,8 +3663,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3645,8 +3682,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3679,7 +3716,7 @@
       ],
       "observation_ids": [
         "obs-003",
-        "obs-004"
+        "obs-007"
       ],
       "properties": {}
     },
@@ -3697,8 +3734,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3716,8 +3753,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3735,8 +3772,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3753,9 +3790,9 @@
         "evt-614"
       ],
       "observation_ids": [
+        "obs-004",
         "obs-005",
-        "obs-006",
-        "obs-007"
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3773,8 +3810,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3792,8 +3829,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3824,7 +3861,9 @@
       "event_ids": [
         "evt-615"
       ],
-      "observation_ids": [],
+      "observation_ids": [
+        "obs-007"
+      ],
       "properties": {}
     },
     {
@@ -3841,8 +3880,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3876,8 +3915,8 @@
       ],
       "observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "properties": {}
     },
@@ -3948,8 +3987,8 @@
         ],
         "support_observation_ids": [
           "obs-001",
-          "obs-005",
-          "obs-007"
+          "obs-004",
+          "obs-006"
         ],
         "refute_event_ids": [
           "evt-615",
@@ -3957,8 +3996,8 @@
           "evt-613"
         ],
         "refute_observation_ids": [
-          "obs-003",
-          "obs-004"
+          "obs-007",
+          "obs-003"
         ],
         "gap_ids": [],
         "candidate_action_ids": [],
@@ -3978,7 +4017,7 @@
           "evt-612"
         ],
         "refute_observation_ids": [
-          "obs-004",
+          "obs-007",
           "obs-003"
         ],
         "gap_ids": [
@@ -4009,7 +4048,7 @@
         ],
         "support_observation_ids": [
           "obs-003",
-          "obs-004"
+          "obs-007"
         ],
         "refute_event_ids": [],
         "refute_observation_ids": [],
@@ -4083,8 +4122,8 @@
         ],
         "refute_observation_ids": [
           "obs-001",
-          "obs-005",
-          "obs-007"
+          "obs-004",
+          "obs-006"
         ],
         "gap_ids": [],
         "candidate_action_ids": [],

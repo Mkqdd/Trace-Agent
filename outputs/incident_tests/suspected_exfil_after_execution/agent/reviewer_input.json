@@ -40,21 +40,21 @@
     "recent_tool_effects": [
       {
         "step_index": 5,
-        "tool_name": "search_related_events",
-        "novelty_score": 2,
-        "summary": "新增 1 条事件；新增 1 条 claim"
-      },
-      {
-        "step_index": 6,
         "tool_name": "ground_candidate_event",
         "novelty_score": 3,
         "summary": "新增 1 条 claim；完成 1 条候选事件验证；关闭 1 个 gap"
       },
       {
-        "step_index": 7,
+        "step_index": 6,
         "tool_name": "search_related_events",
         "novelty_score": 0,
         "summary": "没有新增实质信息"
+      },
+      {
+        "step_index": 7,
+        "tool_name": "check_counterevidence",
+        "novelty_score": 2,
+        "summary": "新增 1 条 claim；关闭 1 个 gap"
       }
     ],
     "budget_usage": {

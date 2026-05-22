@@ -31,7 +31,7 @@
         "fact-scope-obj-02",
         "fact-scope-obj-04",
         "fact-scope-obj-05",
-        "fact-counter-cl-05"
+        "fact-counter-cl-10"
       ]
     },
     "scope_packet": {
@@ -57,13 +57,13 @@
         "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。"
       ],
       "counterevidence": [
-        "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。"
+        "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。"
       ],
       "boundary_statement": "当前确认范围收敛在 web-app-01、app-db-01；web-app-03 保持待确认状态。",
       "supporting_fact_ids": [
         "fact-gap-validate_candidate_events",
         "fact-gap-ground_external_context",
-        "fact-counter-cl-05",
+        "fact-counter-cl-10",
         "fact-event-evt-313",
         "fact-event-evt-316"
       ]
@@ -258,10 +258,10 @@
       "group_title": "反证事实",
       "facts": [
         {
-          "fact_id": "fact-counter-cl-05",
+          "fact_id": "fact-counter-cl-10",
           "fact_type": "counterevidence",
           "status": "background",
-          "summary_line": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
+          "summary_line": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
           "reporting_focus": "替代解释",
           "boundary_note": "要解释为何不足以推翻主判断，而不是只罗列背景事件"
         }
@@ -375,7 +375,7 @@
         "fact-scope-obj-05",
         "fact-scope-obj-03",
         "fact-gap-validate_candidate_events",
-        "fact-counter-cl-05"
+        "fact-counter-cl-10"
       ]
     },
     {
@@ -422,7 +422,7 @@
         "fact-event-evt-311",
         "fact-event-evt-307",
         "fact-event-evt-309",
-        "fact-counter-cl-05"
+        "fact-counter-cl-10"
       ]
     },
     {
@@ -486,7 +486,7 @@
       "allowed_fact_ids": [
         "fact-gap-validate_candidate_events",
         "fact-gap-ground_external_context",
-        "fact-counter-cl-05",
+        "fact-counter-cl-10",
         "fact-event-evt-313",
         "fact-event-evt-316"
       ]
@@ -521,7 +521,7 @@
         "constraint_packet"
       ],
       "allowed_fact_ids": [
-        "fact-counter-cl-05",
+        "fact-counter-cl-10",
         "fact-gap-validate_candidate_events"
       ]
     }

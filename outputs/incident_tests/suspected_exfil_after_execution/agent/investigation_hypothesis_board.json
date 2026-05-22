@@ -21,8 +21,8 @@
       ],
       "support_observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "refute_event_ids": [
         "evt-615",
@@ -30,8 +30,8 @@
         "evt-613"
       ],
       "refute_observation_ids": [
-        "obs-003",
-        "obs-004"
+        "obs-007",
+        "obs-003"
       ],
       "gap_ids": [],
       "candidate_action_ids": [],
@@ -51,7 +51,7 @@
         "evt-612"
       ],
       "refute_observation_ids": [
-        "obs-004",
+        "obs-007",
         "obs-003"
       ],
       "gap_ids": [
@@ -82,7 +82,7 @@
       ],
       "support_observation_ids": [
         "obs-003",
-        "obs-004"
+        "obs-007"
       ],
       "refute_event_ids": [],
       "refute_observation_ids": [],
@@ -156,8 +156,8 @@
       ],
       "refute_observation_ids": [
         "obs-001",
-        "obs-005",
-        "obs-007"
+        "obs-004",
+        "obs-006"
       ],
       "gap_ids": [],
       "candidate_action_ids": [],

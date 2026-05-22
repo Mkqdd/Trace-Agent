@@ -737,14 +737,15 @@
         "status": "unresolved_but_deliverable",
         "status_label": "可交付但未完全闭合",
         "legacy_status": "reportable_unresolved",
-        "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "host_confirmation"
         ],
-        "next_best_query": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
+        "next_best_query": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
       },
       {
         "gap_id": "related_assets_review",
@@ -754,16 +755,17 @@
         "status": "unresolved_but_deliverable",
         "status_label": "可交付但未完全闭合",
         "legacy_status": "reportable_unresolved",
-        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "materiality": "boundary_sensitive",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "asset_scope",
           "cluster_expand",
           "scope"
         ],
-        "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+        "next_best_query": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
       },
       {
         "gap_id": "ground_external_context",
@@ -776,6 +778,7 @@
         "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "infra_context",
@@ -795,6 +798,7 @@
         "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "family_validation",
@@ -813,6 +817,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "counterevidence",
@@ -831,6 +836,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "evidence_structuring",
@@ -850,6 +856,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "cluster_expand",
@@ -868,6 +875,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -886,6 +894,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -1472,14 +1481,15 @@
         "status": "unresolved_but_deliverable",
         "status_label": "可交付但未完全闭合",
         "legacy_status": "reportable_unresolved",
-        "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "host_confirmation"
         ],
-        "next_best_query": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
+        "next_best_query": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
       },
       {
         "gap_id": "related_assets_review",
@@ -1489,16 +1499,17 @@
         "status": "unresolved_but_deliverable",
         "status_label": "可交付但未完全闭合",
         "legacy_status": "reportable_unresolved",
-        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "materiality": "boundary_sensitive",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "asset_scope",
           "cluster_expand",
           "scope"
         ],
-        "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+        "next_best_query": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
       },
       {
         "gap_id": "ground_external_context",
@@ -1511,6 +1522,7 @@
         "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "infra_context",
@@ -1530,6 +1542,7 @@
         "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "family_validation",
@@ -1548,6 +1561,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "counterevidence",
@@ -1566,6 +1580,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "evidence_structuring",
@@ -1585,6 +1600,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "cluster_expand",
@@ -1603,6 +1619,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -1621,6 +1638,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -2286,12 +2304,14 @@
             "确认是否存在主机侧执行线索",
             "或保留为主机侧待确认事项"
           ],
+          "blocks_delivery_now": false,
           "attempt_count": 4,
           "material_attempt_count": 2,
           "editorial_only_attempt_count": 1,
           "zero_delta_attempt_count": 1,
           "last_attempt_step": 5,
           "last_attempt_tool": "search_related_events",
+          "recent_materially_stalled": true,
           "recent_attempts": [
             {
               "step_index": 3,
@@ -2318,7 +2338,7 @@
           "addressable_tools": [],
           "actionable_tools": [],
           "status": "reportable_unresolved",
-          "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+          "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
           "actionable_now": false,
           "first_seen_step": 1,
           "last_seen_step": 7,
@@ -2347,6 +2367,7 @@
           "zero_delta_attempt_count": 1,
           "last_attempt_step": 5,
           "last_attempt_tool": "search_related_events",
+          "recent_materially_stalled": true,
           "recent_attempts": [
             {
               "step_index": 4,
@@ -2366,11 +2387,12 @@
           "addressable_tools": [],
           "actionable_tools": [],
           "status": "reportable_unresolved",
-          "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+          "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
           "actionable_now": false,
           "first_seen_step": 3,
           "last_seen_step": 7,
-          "closed_step": null
+          "closed_step": null,
+          "blocks_delivery_now": false
         },
         {
           "id": "ground_external_context",
@@ -2389,12 +2411,14 @@
             "补足外部技术背景",
             "明确背景情报不等于本案强归因"
           ],
+          "blocks_delivery_now": false,
           "attempt_count": 1,
           "material_attempt_count": 0,
           "editorial_only_attempt_count": 0,
           "zero_delta_attempt_count": 1,
           "last_attempt_step": 6,
           "last_attempt_tool": "local_intel_lookup",
+          "recent_materially_stalled": false,
           "recent_attempts": [
             {
               "step_index": 6,
@@ -2429,12 +2453,14 @@
             "补足家族提示支撑",
             "或明确仅作弱提示引用"
           ],
+          "blocks_delivery_now": false,
           "attempt_count": 0,
           "material_attempt_count": 0,
           "editorial_only_attempt_count": 0,
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -2467,6 +2493,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -2500,6 +2527,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -2532,6 +2560,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 4,
           "last_attempt_tool": "expand_asset_scope",
+          "recent_materially_stalled": false,
           "recent_attempts": [
             {
               "step_index": 2,
@@ -2586,6 +2615,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -2618,6 +2648,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -2769,24 +2800,24 @@
         "question": "是否存在主机侧执行、持久化或横向移动证据？",
         "priority": "medium",
         "status": "unresolved_but_deliverable",
-        "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "delivery_blocking": false,
         "actionable_now": false,
         "blocks_delivery_now": false,
         "gate_type": "reportable_limit",
-        "next_best_question": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
+        "next_best_question": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
       },
       {
         "gap_id": "related_assets_review",
         "question": "关联资产 web-app-05 是否真正受影响？",
         "priority": "medium",
         "status": "unresolved_but_deliverable",
-        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "delivery_blocking": true,
         "actionable_now": false,
         "blocks_delivery_now": false,
         "gate_type": "reportable_limit",
-        "next_best_question": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+        "next_best_question": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
       },
       {
         "gap_id": "ground_external_context",
@@ -3349,12 +3380,12 @@
           "category": "交付缺口",
           "why_selected": "当前尚未观测到稳定的执行阶段证据，因此还不能确认主机侧执行、持久化或横向移动是否已经成立。",
           "reader_fact": "是否存在主机侧执行、持久化或横向移动证据？",
-          "reader_limit": "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。",
+          "reader_limit": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。",
           "citation_refs": [
             "execution_gap"
           ],
           "status": "unresolved_but_deliverable",
-          "next_best_query": "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。"
+          "next_best_query": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
         },
         {
           "role": "boundary_gap_evidence",
@@ -3368,12 +3399,12 @@
           "category": "交付缺口",
           "why_selected": "当前仍缺少对“关联资产 web-app-05 是否真正受影响？”的直接补证。",
           "reader_fact": "关联资产 web-app-05 是否真正受影响？",
-          "reader_limit": "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。",
+          "reader_limit": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。",
           "citation_refs": [
             "related_assets_review"
           ],
           "status": "unresolved_but_deliverable",
-          "next_best_query": "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+          "next_best_query": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
         },
         {
           "role": "boundary_gap_evidence",
@@ -3828,8 +3859,8 @@
         "当前不适合仅凭背景情报完成基础设施或家族级强归因。"
       ],
       "next_best_evidence": [
-        "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。",
-        "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+        "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。",
+        "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。"
       ],
       "source_text": "种子事件窗观测、资产背景核查、关联事件扩查、显式反证检查"
     },
@@ -3851,8 +3882,8 @@
       ],
       "follow_up_actions": [],
       "next_best_evidence": [
-        "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。",
-        "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+        "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。",
+        "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。"
       ]
     }
   },
@@ -4283,13 +4314,13 @@
         "gap": "是否存在主机侧执行、持久化或横向移动证据？",
         "limited_conclusion": "当前尚未观测到稳定的执行阶段证据，因此还不能确认主机侧执行、持久化或横向移动是否已经成立。",
         "actionable": "否",
-        "best_query": "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。"
+        "best_query": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
       },
       {
         "gap": "关联资产 web-app-05 是否真正受影响？",
         "limited_conclusion": "当前仍缺少对“关联资产 web-app-05 是否真正受影响？”的直接补证。",
         "actionable": "否",
-        "best_query": "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+        "best_query": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
       },
       {
         "gap": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
@@ -5041,14 +5072,15 @@
         "status": "unresolved_but_deliverable",
         "status_label": "可交付但未完全闭合",
         "legacy_status": "reportable_unresolved",
-        "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "host_confirmation"
         ],
-        "next_best_query": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
+        "next_best_query": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
       },
       {
         "gap_id": "related_assets_review",
@@ -5058,16 +5090,17 @@
         "status": "unresolved_but_deliverable",
         "status_label": "可交付但未完全闭合",
         "legacy_status": "reportable_unresolved",
-        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "materiality": "boundary_sensitive",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "asset_scope",
           "cluster_expand",
           "scope"
         ],
-        "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+        "next_best_query": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
       },
       {
         "gap_id": "ground_external_context",
@@ -5080,6 +5113,7 @@
         "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "infra_context",
@@ -5099,6 +5133,7 @@
         "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "family_validation",
@@ -5117,6 +5152,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "counterevidence",
@@ -5135,6 +5171,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "evidence_structuring",
@@ -5154,6 +5191,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "cluster_expand",
@@ -5172,6 +5210,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -5190,6 +5229,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -5776,14 +5816,15 @@
         "status": "unresolved_but_deliverable",
         "status_label": "可交付但未完全闭合",
         "legacy_status": "reportable_unresolved",
-        "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "host_confirmation"
         ],
-        "next_best_query": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
+        "next_best_query": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
       },
       {
         "gap_id": "related_assets_review",
@@ -5793,16 +5834,17 @@
         "status": "unresolved_but_deliverable",
         "status_label": "可交付但未完全闭合",
         "legacy_status": "reportable_unresolved",
-        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "materiality": "boundary_sensitive",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "asset_scope",
           "cluster_expand",
           "scope"
         ],
-        "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+        "next_best_query": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
       },
       {
         "gap_id": "ground_external_context",
@@ -5815,6 +5857,7 @@
         "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "infra_context",
@@ -5834,6 +5877,7 @@
         "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "family_validation",
@@ -5852,6 +5896,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "counterevidence",
@@ -5870,6 +5915,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "evidence_structuring",
@@ -5889,6 +5935,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "cluster_expand",
@@ -5907,6 +5954,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -5925,6 +5973,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -6590,12 +6639,14 @@
             "确认是否存在主机侧执行线索",
             "或保留为主机侧待确认事项"
           ],
+          "blocks_delivery_now": false,
           "attempt_count": 4,
           "material_attempt_count": 2,
           "editorial_only_attempt_count": 1,
           "zero_delta_attempt_count": 1,
           "last_attempt_step": 5,
           "last_attempt_tool": "search_related_events",
+          "recent_materially_stalled": true,
           "recent_attempts": [
             {
               "step_index": 3,
@@ -6622,7 +6673,7 @@
           "addressable_tools": [],
           "actionable_tools": [],
           "status": "reportable_unresolved",
-          "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+          "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
           "actionable_now": false,
           "first_seen_step": 1,
           "last_seen_step": 7,
@@ -6651,6 +6702,7 @@
           "zero_delta_attempt_count": 1,
           "last_attempt_step": 5,
           "last_attempt_tool": "search_related_events",
+          "recent_materially_stalled": true,
           "recent_attempts": [
             {
               "step_index": 4,
@@ -6670,11 +6722,12 @@
           "addressable_tools": [],
           "actionable_tools": [],
           "status": "reportable_unresolved",
-          "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+          "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
           "actionable_now": false,
           "first_seen_step": 3,
           "last_seen_step": 7,
-          "closed_step": null
+          "closed_step": null,
+          "blocks_delivery_now": false
         },
         {
           "id": "ground_external_context",
@@ -6693,12 +6746,14 @@
             "补足外部技术背景",
             "明确背景情报不等于本案强归因"
           ],
+          "blocks_delivery_now": false,
           "attempt_count": 1,
           "material_attempt_count": 0,
           "editorial_only_attempt_count": 0,
           "zero_delta_attempt_count": 1,
           "last_attempt_step": 6,
           "last_attempt_tool": "local_intel_lookup",
+          "recent_materially_stalled": false,
           "recent_attempts": [
             {
               "step_index": 6,
@@ -6733,12 +6788,14 @@
             "补足家族提示支撑",
             "或明确仅作弱提示引用"
           ],
+          "blocks_delivery_now": false,
           "attempt_count": 0,
           "material_attempt_count": 0,
           "editorial_only_attempt_count": 0,
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -6771,6 +6828,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -6804,6 +6862,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -6836,6 +6895,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 4,
           "last_attempt_tool": "expand_asset_scope",
+          "recent_materially_stalled": false,
           "recent_attempts": [
             {
               "step_index": 2,
@@ -6890,6 +6950,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -6922,6 +6983,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -7398,12 +7460,12 @@
           "category": "交付缺口",
           "why_selected": "当前尚未观测到稳定的执行阶段证据，因此还不能确认主机侧执行、持久化或横向移动是否已经成立。",
           "reader_fact": "是否存在主机侧执行、持久化或横向移动证据？",
-          "reader_limit": "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。",
+          "reader_limit": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。",
           "citation_refs": [
             "execution_gap"
           ],
           "status": "unresolved_but_deliverable",
-          "next_best_query": "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。"
+          "next_best_query": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
         },
         {
           "role": "boundary_gap_evidence",
@@ -7417,12 +7479,12 @@
           "category": "交付缺口",
           "why_selected": "当前仍缺少对“关联资产 web-app-05 是否真正受影响？”的直接补证。",
           "reader_fact": "关联资产 web-app-05 是否真正受影响？",
-          "reader_limit": "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。",
+          "reader_limit": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。",
           "citation_refs": [
             "related_assets_review"
           ],
           "status": "unresolved_but_deliverable",
-          "next_best_query": "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+          "next_best_query": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
         },
         {
           "role": "boundary_gap_evidence",
@@ -7877,8 +7939,8 @@
         "当前不适合仅凭背景情报完成基础设施或家族级强归因。"
       ],
       "next_best_evidence": [
-        "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。",
-        "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+        "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。",
+        "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。"
       ],
       "source_text": "种子事件窗观测、资产背景核查、关联事件扩查、显式反证检查"
     },
@@ -7900,8 +7962,8 @@
       ],
       "follow_up_actions": [],
       "next_best_evidence": [
-        "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。",
-        "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+        "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。",
+        "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。"
       ]
     }
   },
@@ -8385,8 +8447,8 @@
       "当前不适合仅凭背景情报完成基础设施或家族级强归因。"
     ],
     "next_best_evidence": [
-      "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。",
-      "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+      "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。",
+      "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。"
     ],
     "source_text": "种子事件窗观测、资产背景核查、关联事件扩查、显式反证检查"
   },
@@ -8408,8 +8470,8 @@
     ],
     "follow_up_actions": [],
     "next_best_evidence": [
-      "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。",
-      "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+      "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。",
+      "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。"
     ]
   },
   "section_presence": {
@@ -8845,13 +8907,13 @@
         "gap": "是否存在主机侧执行、持久化或横向移动证据？",
         "limited_conclusion": "当前尚未观测到稳定的执行阶段证据，因此还不能确认主机侧执行、持久化或横向移动是否已经成立。",
         "actionable": "否",
-        "best_query": "当前缺少继续缩小该缺口的有效手段，更适合作为报告边界说明。"
+        "best_query": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
       },
       {
         "gap": "关联资产 web-app-05 是否真正受影响？",
         "limited_conclusion": "当前仍缺少对“关联资产 web-app-05 是否真正受影响？”的直接补证。",
         "actionable": "否",
-        "best_query": "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+        "best_query": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
       },
       {
         "gap": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",

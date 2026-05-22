@@ -20,7 +20,7 @@
       "evidence_refs": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "time": "2026-06-03 16:28:00 UTC",
@@ -42,7 +42,7 @@
       "evidence_refs": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "time": "2026-06-03 16:34:20 UTC",
@@ -66,7 +66,7 @@
       "evidence_refs": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "time": "2026-06-03 16:40:00 UTC",
@@ -90,7 +90,7 @@
       "evidence_refs": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "time": "2026-06-03 16:42:30 UTC",
@@ -114,7 +114,7 @@
       "evidence_refs": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "time": "2026-06-03 16:44:00 UTC",
@@ -139,7 +139,7 @@
       "evidence_refs": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "time": "2026-06-03 16:45:40 UTC",
@@ -163,7 +163,7 @@
       "evidence_refs": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "time": "2026-06-03 16:47:00 UTC",
@@ -187,7 +187,7 @@
       "evidence_refs": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "time": "2026-06-03 16:50:10 UTC",
@@ -211,7 +211,7 @@
       "evidence_refs": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "time": "2026-06-03 16:52:30 UTC",
@@ -233,7 +233,7 @@
       "evidence_refs": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "time": "2026-06-03 16:55:00 UTC",
@@ -259,7 +259,7 @@
         "obs-001",
         "obs-003",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "time": "2026-06-03 17:05:00 UTC",
@@ -281,7 +281,7 @@
       "evidence_refs": [
         "obs-003",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "time": "2026-06-03 17:08:20 UTC",
@@ -302,7 +302,7 @@
       "summary_line": "2026-06-03 17:12:00 UTC 资产 `ws-rnd-04` 当前出现仅用于边界说明的背景事件 `company-my.sharepoint.com / 13.107.136.9`。",
       "evidence_refs": [
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "time": "2026-06-03 17:12:00 UTC",
@@ -346,7 +346,8 @@
       "status": "background",
       "summary_line": "2026-06-03 17:24:40 UTC 资产 `ws-rnd-12` 当前出现仅用于边界说明的背景事件 `filesync-cdn.example / 198.51.100.144`。",
       "evidence_refs": [
-        "obs-005",
+        "obs-004",
+        "obs-006",
         "obs-007"
       ],
       "time": "2026-06-03 17:24:40 UTC",
@@ -368,7 +369,7 @@
       "evidence_refs": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "entity": "ws-rnd-04",
@@ -384,7 +385,7 @@
         "obs-001",
         "obs-003",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "entity": "ws-rnd-09",
@@ -400,7 +401,7 @@
         "obs-001",
         "obs-003",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "entity": "198.51.100.144",
@@ -415,7 +416,7 @@
       "evidence_refs": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "entity": "api.files-sync-share.net",
@@ -431,7 +432,7 @@
         "obs-001",
         "obs-003",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "entity": "files-sync-share.net",
@@ -446,7 +447,7 @@
       "evidence_refs": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "entity": "10.90.2.44",
@@ -462,7 +463,7 @@
         "obs-001",
         "obs-003",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "entity": "10.90.2.49",
@@ -475,7 +476,8 @@
       "status": "confirmed",
       "summary_line": "对象 `10.90.8.12` 当前作为内网关联对象纳入主证据链。",
       "evidence_refs": [
-        "obs-005",
+        "obs-004",
+        "obs-006",
         "obs-007"
       ],
       "entity": "10.90.8.12",
@@ -489,7 +491,7 @@
       "summary_line": "对象 `13.107.136.9` 当前只作为背景指标保留为背景指标。",
       "evidence_refs": [
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "entity": "13.107.136.9",
@@ -503,7 +505,7 @@
       "summary_line": "对象 `company-my.sharepoint.com` 当前只作为背景指标保留为背景指标。",
       "evidence_refs": [
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "entity": "company-my.sharepoint.com",
@@ -516,7 +518,8 @@
       "status": "background",
       "summary_line": "对象 `filesync-cdn.example` 当前只作为背景指标保留为背景指标。",
       "evidence_refs": [
-        "obs-005",
+        "obs-004",
+        "obs-006",
         "obs-007"
       ],
       "entity": "filesync-cdn.example",
@@ -541,7 +544,7 @@
       "evidence_refs": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "entity": "t13d190900_44ac2200b3c1_ab11cd22ee44",
@@ -556,7 +559,7 @@
       "evidence_refs": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ],
       "entity": "t13d190900_44ac2200b3c1_ab11cd22ee44",
@@ -569,7 +572,8 @@
       "status": "candidate",
       "summary_line": "对象 `ws-rnd-12` 当前作为候选扩展对象保留为待确认范围。",
       "evidence_refs": [
-        "obs-005",
+        "obs-004",
+        "obs-006",
         "obs-007"
       ],
       "entity": "ws-rnd-12",
@@ -583,7 +587,7 @@
       "summary_line": "当前仍需对“补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。”补充独立确认。",
       "evidence_refs": [],
       "question": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
-      "blocking_effect": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+      "blocking_effect": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
     },
     {
       "fact_id": "fact-counter-cl-03",
@@ -597,14 +601,14 @@
       "impact": "用于说明为什么部分背景流量不足以推翻主判断。"
     },
     {
-      "fact_id": "fact-counter-cl-04",
+      "fact_id": "fact-counter-cl-07",
       "fact_type": "counterevidence",
       "status": "background",
-      "summary_line": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
+      "summary_line": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
       "evidence_refs": [
-        "obs-004"
+        "obs-007"
       ],
-      "claim": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
+      "claim": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
       "impact": "用于说明为什么部分背景流量不足以推翻主判断。"
     },
     {
@@ -680,13 +684,13 @@
     ],
     "counterevidence": [
       "检索到 1 条更接近维护、更新或正常基线的事件。",
-      "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。"
+      "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。"
     ],
     "boundary_statement": "当前确认范围收敛在 ws-rnd-04；ws-rnd-09 保持待确认状态。",
     "supporting_fact_ids": [
       "fact-gap-ground_external_context",
       "fact-counter-cl-03",
-      "fact-counter-cl-04",
+      "fact-counter-cl-07",
       "fact-event-evt-611"
     ]
   },

@@ -1,0 +1,66 @@
+{
+  "schema_version": "reviewer-input-v1",
+  "provisional_assessment": {
+    "status": "needs_review",
+    "status_label": "待人工复核",
+    "confidence": 70,
+    "severity": "中危",
+    "rationale": [
+      "当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。",
+      "seed alert 自带家族/工具提示：Suspicious shared-infra beacon requiring review。",
+      "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。",
+      "同时也存在可解释为背景活动的信号，因此暂未自动推进为确认事件。"
+    ]
+  },
+  "runtime_summary": {
+    "context_built": true,
+    "cluster_built": true,
+    "timeline_built": true,
+    "scope_assessed": true,
+    "counterevidence_reviewed": true,
+    "supplemental_context_reviewed": false,
+    "candidate_event_count": 0,
+    "observed_event_count": 9,
+    "consecutive_low_value_steps": 0,
+    "recent_low_novelty_count": 0,
+    "stop_reason": "agent_finish",
+    "budget_usage": {
+      "max_steps": 10,
+      "remaining_steps": 7,
+      "max_tool_calls": 12,
+      "remaining_tool_calls": 10,
+      "max_event_queries": 8,
+      "remaining_event_queries": 6,
+      "max_intel_queries": 5,
+      "remaining_intel_queries": 5
+    }
+  },
+  "session_trace_summary": {
+    "stop_reason": "agent_finish",
+    "consecutive_low_value_steps": 0,
+    "recent_tool_effects": [
+      {
+        "step_index": 1,
+        "tool_name": "search_seed_context",
+        "novelty_score": 15,
+        "summary": "新增 6 条事件；新增 2 个资产；新增 2 个外部指示物；新增 1 条 claim；关闭 2 个 gap；达到可交付状态"
+      },
+      {
+        "step_index": 2,
+        "tool_name": "expand_asset_scope",
+        "novelty_score": 4,
+        "summary": "新增 3 条事件；新增 1 条 claim"
+      }
+    ],
+    "budget_usage": {
+      "max_steps": 10,
+      "remaining_steps": 7,
+      "max_tool_calls": 12,
+      "remaining_tool_calls": 10,
+      "max_event_queries": 8,
+      "remaining_event_queries": 6,
+      "max_intel_queries": 5,
+      "remaining_intel_queries": 5
+    }
+  }
+}

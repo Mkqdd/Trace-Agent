@@ -655,7 +655,7 @@
       "summary_line": "当前仍需对“扩线得到的 3 条关联事件尚未完成独立验证，是否应并入主事件范围？”补充独立确认。",
       "evidence_refs": [],
       "question": "扩线得到的 3 条关联事件尚未完成独立验证，是否应并入主事件范围？",
-      "blocking_effect": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+      "blocking_effect": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
     },
     {
       "fact_id": "fact-gap-ground_external_context",
@@ -664,7 +664,7 @@
       "summary_line": "当前仍需对“补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。”补充独立确认。",
       "evidence_refs": [],
       "question": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
-      "blocking_effect": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+      "blocking_effect": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
     },
     {
       "fact_id": "fact-counter-cl-09",

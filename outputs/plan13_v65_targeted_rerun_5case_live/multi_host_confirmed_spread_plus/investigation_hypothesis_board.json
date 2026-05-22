@@ -1,0 +1,154 @@
+{
+  "schema_version": "investigation-hypothesis-board-v2",
+  "graph_schema_version": "investigation-graph-v1",
+  "last_updated_round": 5,
+  "hypotheses": [
+    {
+      "hypothesis_id": "confirmed_main_chain",
+      "claim": "The confirmed main chain is sufficient for the current incident verdict.",
+      "status": "closed",
+      "priority": 0,
+      "support_event_ids": [
+        "evt-801",
+        "evt-802",
+        "evt-804",
+        "evt-805",
+        "evt-808",
+        "evt-803"
+      ],
+      "support_observation_ids": [
+        "obs-001",
+        "obs-002"
+      ],
+      "refute_event_ids": [
+        "evt-806",
+        "evt-807"
+      ],
+      "refute_observation_ids": [],
+      "gap_ids": [],
+      "candidate_action_ids": [],
+      "last_updated_round": 5,
+      "why_next": "Keep the main chain tightly bounded and avoid promoting candidate evidence to confirmed without grounding."
+    },
+    {
+      "hypothesis_id": "candidate_spread",
+      "claim": "Candidate spread may extend the incident scope and still needs validation.",
+      "status": "open",
+      "priority": 1,
+      "support_event_ids": [
+        "evt-809"
+      ],
+      "support_observation_ids": [
+        "obs-002"
+      ],
+      "refute_event_ids": [
+        "evt-806",
+        "evt-807"
+      ],
+      "refute_observation_ids": [],
+      "gap_ids": [
+        "expand_cluster_scope",
+        "validate_family_hint",
+        "validate_candidate_events"
+      ],
+      "candidate_action_ids": [
+        "action:structured_intel",
+        "action:external_intel",
+        "action:family_validation",
+        "action:expand_asset_scope",
+        "action:infra_context",
+        "action:candidate_grounding",
+        "action:search_related_events",
+        "action:local_intel"
+      ],
+      "last_updated_round": 5,
+      "why_next": "Validate whether candidate spread is real before merging it into the confirmed scope."
+    },
+    {
+      "hypothesis_id": "benign_or_shared_infra_alternative",
+      "claim": "Shared infrastructure, maintenance, or benign background may explain part of the signal.",
+      "status": "supported",
+      "priority": 2,
+      "support_event_ids": [
+        "evt-806",
+        "evt-807"
+      ],
+      "support_observation_ids": [],
+      "refute_event_ids": [],
+      "refute_observation_ids": [],
+      "gap_ids": [
+        "check_counterevidence",
+        "ground_external_context"
+      ],
+      "candidate_action_ids": [
+        "action:external_intel",
+        "action:family_validation",
+        "action:check_counterevidence",
+        "action:infra_context"
+      ],
+      "last_updated_round": 5,
+      "why_next": "Continue checking shared infrastructure and background explanations before stronger attribution."
+    },
+    {
+      "hypothesis_id": "insufficient_evidence_limits",
+      "claim": "Missing evidence still limits stronger claims about scope, attribution, or closure.",
+      "status": "open",
+      "priority": 3,
+      "support_event_ids": [],
+      "support_observation_ids": [],
+      "refute_event_ids": [],
+      "refute_observation_ids": [],
+      "gap_ids": [
+        "validate_candidate_events",
+        "structure_evidence",
+        "expand_cluster_scope",
+        "execution_gap",
+        "build_context",
+        "identify_assets"
+      ],
+      "candidate_action_ids": [
+        "action:context_building",
+        "action:evidence_structuring",
+        "action:infra_context",
+        "action:entity_structuring",
+        "action:external_intel",
+        "action:local_intel",
+        "action:search_related_events",
+        "action:expand_asset_scope",
+        "action:candidate_grounding",
+        "action:asset_scope",
+        "action:timeline",
+        "action:host_confirmation",
+        "action:structured_intel",
+        "action:source_retrieval"
+      ],
+      "last_updated_round": 5,
+      "why_next": "Close the remaining gaps before claiming a stronger conclusion."
+    },
+    {
+      "hypothesis_id": "false_positive_or_noise",
+      "claim": "The seed could still be false positive or background noise if support stays weak.",
+      "status": "weakened",
+      "priority": 4,
+      "support_event_ids": [],
+      "support_observation_ids": [],
+      "refute_event_ids": [
+        "evt-801",
+        "evt-802",
+        "evt-803",
+        "evt-805",
+        "evt-804",
+        "evt-809",
+        "evt-808"
+      ],
+      "refute_observation_ids": [
+        "obs-001",
+        "obs-002"
+      ],
+      "gap_ids": [],
+      "candidate_action_ids": [],
+      "last_updated_round": 5,
+      "why_next": "Only revisit this hypothesis if the seed remains weak after the main chain is checked."
+    }
+  ]
+}

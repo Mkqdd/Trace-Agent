@@ -1,0 +1,149 @@
+{
+  "schema_version": "investigation-hypothesis-board-v2",
+  "graph_schema_version": "investigation-graph-v1",
+  "last_updated_round": 4,
+  "hypotheses": [
+    {
+      "hypothesis_id": "confirmed_main_chain",
+      "claim": "The confirmed main chain is sufficient for the current incident verdict.",
+      "status": "closed",
+      "priority": 0,
+      "support_event_ids": [
+        "evt-309",
+        "evt-304",
+        "evt-303",
+        "evt-308",
+        "evt-311",
+        "evt-307",
+        "evt-305",
+        "evt-306",
+        "evt-301"
+      ],
+      "support_observation_ids": [
+        "obs-001",
+        "obs-002"
+      ],
+      "refute_event_ids": [
+        "evt-302"
+      ],
+      "refute_observation_ids": [],
+      "gap_ids": [],
+      "candidate_action_ids": [],
+      "last_updated_round": 4,
+      "why_next": "Keep the main chain tightly bounded and avoid promoting candidate evidence to confirmed without grounding."
+    },
+    {
+      "hypothesis_id": "candidate_spread",
+      "claim": "Candidate spread may extend the incident scope and still needs validation.",
+      "status": "weakened",
+      "priority": 1,
+      "support_event_ids": [],
+      "support_observation_ids": [],
+      "refute_event_ids": [
+        "evt-302"
+      ],
+      "refute_observation_ids": [],
+      "gap_ids": [
+        "expand_cluster_scope",
+        "validate_candidate_events"
+      ],
+      "candidate_action_ids": [
+        "action:structured_intel",
+        "action:external_intel",
+        "action:infra_context",
+        "action:candidate_grounding",
+        "action:search_related_events",
+        "action:local_intel"
+      ],
+      "last_updated_round": 4,
+      "why_next": "Validate whether candidate spread is real before merging it into the confirmed scope."
+    },
+    {
+      "hypothesis_id": "benign_or_shared_infra_alternative",
+      "claim": "Shared infrastructure, maintenance, or benign background may explain part of the signal.",
+      "status": "supported",
+      "priority": 2,
+      "support_event_ids": [
+        "evt-302"
+      ],
+      "support_observation_ids": [],
+      "refute_event_ids": [],
+      "refute_observation_ids": [],
+      "gap_ids": [
+        "check_counterevidence",
+        "ground_external_context"
+      ],
+      "candidate_action_ids": [
+        "action:local_intel_lookup",
+        "action:check_counterevidence",
+        "action:technical_source_search",
+        "action:malware_profile_lookup",
+        "action:pivot_related_indicators"
+      ],
+      "last_updated_round": 4,
+      "why_next": "Continue checking shared infrastructure and background explanations before stronger attribution."
+    },
+    {
+      "hypothesis_id": "insufficient_evidence_limits",
+      "claim": "Missing evidence still limits stronger claims about scope, attribution, or closure.",
+      "status": "open",
+      "priority": 3,
+      "support_event_ids": [],
+      "support_observation_ids": [],
+      "refute_event_ids": [],
+      "refute_observation_ids": [],
+      "gap_ids": [
+        "validate_candidate_events",
+        "structure_evidence",
+        "expand_cluster_scope",
+        "execution_gap",
+        "build_context",
+        "identify_assets"
+      ],
+      "candidate_action_ids": [
+        "action:context_building",
+        "action:evidence_structuring",
+        "action:infra_context",
+        "action:entity_structuring",
+        "action:external_intel",
+        "action:local_intel",
+        "action:search_related_events",
+        "action:candidate_grounding",
+        "action:asset_scope",
+        "action:timeline",
+        "action:host_confirmation",
+        "action:structured_intel",
+        "action:source_retrieval"
+      ],
+      "last_updated_round": 4,
+      "why_next": "Close the remaining gaps before claiming a stronger conclusion."
+    },
+    {
+      "hypothesis_id": "false_positive_or_noise",
+      "claim": "The seed could still be false positive or background noise if support stays weak.",
+      "status": "weakened",
+      "priority": 4,
+      "support_event_ids": [],
+      "support_observation_ids": [],
+      "refute_event_ids": [
+        "evt-301",
+        "evt-303",
+        "evt-311",
+        "evt-306",
+        "evt-305",
+        "evt-309",
+        "evt-304",
+        "evt-308",
+        "evt-307"
+      ],
+      "refute_observation_ids": [
+        "obs-001",
+        "obs-002"
+      ],
+      "gap_ids": [],
+      "candidate_action_ids": [],
+      "last_updated_round": 4,
+      "why_next": "Only revisit this hypothesis if the seed remains weak after the main chain is checked."
+    }
+  ]
+}

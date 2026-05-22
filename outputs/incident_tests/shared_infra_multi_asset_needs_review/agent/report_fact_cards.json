@@ -622,7 +622,7 @@
       "summary_line": "当前仍需对“是否存在主机侧执行、持久化或横向移动证据？”补充独立确认。",
       "evidence_refs": [],
       "question": "是否存在主机侧执行、持久化或横向移动证据？",
-      "blocking_effect": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
+      "blocking_effect": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
     },
     {
       "fact_id": "fact-gap-related_assets_review",
@@ -631,7 +631,7 @@
       "summary_line": "当前仍需对“关联资产 ws-legal-09、ws-legal-12 是否真正受影响？”补充独立确认。",
       "evidence_refs": [],
       "question": "关联资产 ws-legal-09、ws-legal-12 是否真正受影响？",
-      "blocking_effect": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
+      "blocking_effect": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
     },
     {
       "fact_id": "fact-gap-ground_external_context",
@@ -761,7 +761,7 @@
       "检索到 1 条更接近维护、更新或正常基线的事件。",
       "检索到 1 条更接近维护、更新或正常基线的事件。"
     ],
-    "boundary_statement": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+    "boundary_statement": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
     "supporting_fact_ids": [
       "fact-gap-execution_gap",
       "fact-gap-related_assets_review",

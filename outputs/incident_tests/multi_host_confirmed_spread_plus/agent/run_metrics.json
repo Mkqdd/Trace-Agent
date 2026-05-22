@@ -9,7 +9,7 @@
     "level": "exhausted",
     "best_action": "",
     "best_action_score": 0,
-    "finish_score": 2,
+    "finish_score": 3,
     "active_hypothesis_ids": [
       "candidate_spread",
       "benign_or_shared_infra_alternative",
@@ -40,7 +40,7 @@
   "prompt_payload_bytes": {
     "agent_total": 0,
     "reviewer_total": 0,
-    "agent_context_v1_preview_total": 732934,
+    "agent_context_v1_preview_total": 190011,
     "total": 0
   }
 }

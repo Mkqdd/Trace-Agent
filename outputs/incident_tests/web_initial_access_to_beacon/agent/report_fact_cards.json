@@ -21,7 +21,7 @@
         "obs-001",
         "obs-005",
         "obs-006",
-        "obs-008",
+        "obs-007",
         "obs-010"
       ],
       "time": "2026-05-11 14:02:00 UTC",
@@ -46,7 +46,7 @@
         "obs-001",
         "obs-005",
         "obs-006",
-        "obs-008",
+        "obs-007",
         "obs-010"
       ],
       "time": "2026-05-11 14:04:40 UTC",
@@ -69,7 +69,7 @@
         "obs-001",
         "obs-005",
         "obs-006",
-        "obs-008",
+        "obs-007",
         "obs-010"
       ],
       "time": "2026-05-11 14:07:30 UTC",
@@ -95,7 +95,7 @@
         "obs-001",
         "obs-005",
         "obs-006",
-        "obs-008",
+        "obs-007",
         "obs-010"
       ],
       "time": "2026-05-11 14:12:00 UTC",
@@ -120,7 +120,7 @@
         "obs-001",
         "obs-005",
         "obs-006",
-        "obs-008",
+        "obs-007",
         "obs-010"
       ],
       "time": "2026-05-11 14:14:10 UTC",
@@ -145,7 +145,7 @@
         "obs-001",
         "obs-005",
         "obs-006",
-        "obs-008",
+        "obs-007",
         "obs-010"
       ],
       "time": "2026-05-11 14:16:30 UTC",
@@ -170,7 +170,7 @@
         "obs-001",
         "obs-005",
         "obs-006",
-        "obs-008",
+        "obs-007",
         "obs-010"
       ],
       "time": "2026-05-11 14:18:10 UTC",
@@ -195,7 +195,7 @@
         "obs-001",
         "obs-005",
         "obs-006",
-        "obs-008",
+        "obs-007",
         "obs-010"
       ],
       "time": "2026-05-11 14:21:00 UTC",
@@ -220,7 +220,7 @@
         "obs-001",
         "obs-005",
         "obs-006",
-        "obs-008",
+        "obs-007",
         "obs-010"
       ],
       "time": "2026-05-11 14:24:20 UTC",
@@ -247,8 +247,8 @@
         "obs-004",
         "obs-005",
         "obs-006",
+        "obs-007",
         "obs-008",
-        "obs-009",
         "obs-010"
       ],
       "time": "2026-05-11 14:27:00 UTC",
@@ -275,8 +275,8 @@
         "obs-003",
         "obs-005",
         "obs-006",
+        "obs-007",
         "obs-008",
-        "obs-009",
         "obs-010"
       ],
       "time": "2026-05-11 14:31:30 UTC",
@@ -301,7 +301,7 @@
         "obs-005",
         "obs-006",
         "obs-007",
-        "obs-008",
+        "obs-009",
         "obs-010"
       ],
       "time": "2026-05-11 14:34:40 UTC",
@@ -324,8 +324,9 @@
       "status": "candidate",
       "summary_line": "2026-05-11 14:42:00 UTC 资产 `web-app-03` 与 `api-cdn-auth-check.net` 出现待确认关联命中。",
       "evidence_refs": [
+        "obs-006",
+        "obs-007",
         "obs-008",
-        "obs-009",
         "obs-010"
       ],
       "time": "2026-05-11 14:42:00 UTC",
@@ -345,9 +346,10 @@
       "status": "background",
       "summary_line": "2026-05-11 14:45:20 UTC 资产 `web-app-03` 当前出现仅用于边界说明的背景事件 `scanner-cdn.example / 198.51.100.88`。",
       "evidence_refs": [
+        "obs-005",
         "obs-006",
+        "obs-007",
         "obs-008",
-        "obs-009",
         "obs-010"
       ],
       "time": "2026-05-11 14:45:20 UTC",
@@ -369,7 +371,7 @@
       "evidence_refs": [
         "obs-005",
         "obs-006",
-        "obs-008",
+        "obs-007",
         "obs-010"
       ],
       "time": "2026-05-11 14:50:00 UTC",
@@ -391,7 +393,7 @@
       "evidence_refs": [
         "obs-005",
         "obs-006",
-        "obs-008",
+        "obs-007",
         "obs-010"
       ],
       "time": "2026-05-11 14:55:00 UTC",
@@ -416,7 +418,7 @@
         "obs-001",
         "obs-005",
         "obs-006",
-        "obs-008",
+        "obs-007",
         "obs-010"
       ],
       "entity": "web-app-01",
@@ -434,8 +436,8 @@
         "obs-004",
         "obs-005",
         "obs-006",
+        "obs-007",
         "obs-008",
-        "obs-009",
         "obs-010"
       ],
       "entity": "app-db-01",
@@ -448,9 +450,10 @@
       "status": "candidate",
       "summary_line": "对象 `web-app-03` 当前作为待确认关联资产保留为待确认范围。",
       "evidence_refs": [
+        "obs-005",
         "obs-006",
+        "obs-007",
         "obs-008",
-        "obs-009",
         "obs-010"
       ],
       "entity": "web-app-03",
@@ -467,8 +470,8 @@
         "obs-003",
         "obs-005",
         "obs-006",
+        "obs-007",
         "obs-008",
-        "obs-009",
         "obs-010"
       ],
       "entity": "198.51.100.88",
@@ -486,8 +489,8 @@
         "obs-004",
         "obs-005",
         "obs-006",
+        "obs-007",
         "obs-008",
-        "obs-009",
         "obs-010"
       ],
       "entity": "cdn-auth-check.net",
@@ -503,7 +506,7 @@
         "obs-001",
         "obs-005",
         "obs-006",
-        "obs-008",
+        "obs-007",
         "obs-010"
       ],
       "entity": "10.60.1.14",
@@ -516,9 +519,10 @@
       "status": "confirmed",
       "summary_line": "对象 `10.60.1.23` 当前作为内网关联对象纳入主证据链。",
       "evidence_refs": [
+        "obs-005",
         "obs-006",
+        "obs-007",
         "obs-008",
-        "obs-009",
         "obs-010"
       ],
       "entity": "10.60.1.23",
@@ -536,8 +540,8 @@
         "obs-004",
         "obs-005",
         "obs-006",
+        "obs-007",
         "obs-008",
-        "obs-009",
         "obs-010"
       ],
       "entity": "10.60.2.34",
@@ -550,9 +554,10 @@
       "status": "background",
       "summary_line": "对象 `scanner-cdn.example` 当前只作为背景指标保留为背景指标。",
       "evidence_refs": [
+        "obs-005",
         "obs-006",
+        "obs-007",
         "obs-008",
-        "obs-009",
         "obs-010"
       ],
       "entity": "scanner-cdn.example",
@@ -578,7 +583,7 @@
         "obs-001",
         "obs-005",
         "obs-006",
-        "obs-008",
+        "obs-007",
         "obs-010"
       ],
       "entity": "t13d1517h2_91adbe210bc1_7cae1281e991",
@@ -591,8 +596,9 @@
       "status": "candidate",
       "summary_line": "对象 `api-cdn-auth-check.net` 当前作为候选扩展对象保留为待确认范围。",
       "evidence_refs": [
+        "obs-006",
+        "obs-007",
         "obs-008",
-        "obs-009",
         "obs-010"
       ],
       "entity": "api-cdn-auth-check.net",
@@ -608,7 +614,7 @@
         "obs-001",
         "obs-005",
         "obs-006",
-        "obs-008",
+        "obs-007",
         "obs-010"
       ],
       "entity": "t13d1517h2_91adbe210bc1_7cae1281e991",
@@ -622,7 +628,7 @@
       "summary_line": "当前仍需对“扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？”补充独立确认。",
       "evidence_refs": [],
       "question": "扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？",
-      "blocking_effect": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+      "blocking_effect": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
     },
     {
       "fact_id": "fact-gap-ground_external_context",
@@ -631,17 +637,17 @@
       "summary_line": "当前仍需对“补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。”补充独立确认。",
       "evidence_refs": [],
       "question": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
-      "blocking_effect": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+      "blocking_effect": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
     },
     {
-      "fact_id": "fact-counter-cl-05",
+      "fact_id": "fact-counter-cl-10",
       "fact_type": "counterevidence",
       "status": "background",
-      "summary_line": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
+      "summary_line": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
       "evidence_refs": [
-        "obs-005"
+        "obs-010"
       ],
-      "claim": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
+      "claim": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
       "impact": "用于说明为什么部分背景流量不足以推翻主判断。"
     },
     {
@@ -692,7 +698,7 @@
       "fact-scope-obj-02",
       "fact-scope-obj-04",
       "fact-scope-obj-05",
-      "fact-counter-cl-05"
+      "fact-counter-cl-10"
     ]
   },
   "scope_packet": {
@@ -718,13 +724,13 @@
       "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。"
     ],
     "counterevidence": [
-      "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。"
+      "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。"
     ],
     "boundary_statement": "当前确认范围收敛在 web-app-01、app-db-01；web-app-03 保持待确认状态。",
     "supporting_fact_ids": [
       "fact-gap-validate_candidate_events",
       "fact-gap-ground_external_context",
-      "fact-counter-cl-05",
+      "fact-counter-cl-10",
       "fact-event-evt-313",
       "fact-event-evt-316"
     ]

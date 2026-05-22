@@ -14,6 +14,7 @@ from demo_agent.incidents.agent import (  # noqa: E402
     _review_finish_request,
     _finish_review_fallback,
     _stop_decision,
+    STOP_REASON_DELIVERY_READY,
 )
 from tools.test_investigation_graph import _sample_seed  # noqa: E402
 
@@ -61,6 +62,63 @@ def test_stop_gate_does_not_stop_ready_case_when_high_value_action_remains() -> 
 
     assert decision["stop"] is False
     assert decision["reason"] == "continue"
+
+
+def test_stop_gate_stops_ready_case_when_only_boundary_followups_remain() -> None:
+    session_state = {
+        "step_index": 2,
+        "decision_mode": "llm_agent",
+        "budgets": {**DEFAULT_BUDGETS, "remaining_steps": 3, "remaining_tool_calls": 2},
+        "value_of_information": {
+            "level": "low",
+            "best_action": "extract_claim_candidates_from_page",
+            "best_action_score": 2,
+        },
+        "investigation_opportunity_trace": {
+            "stop_recommendation": {
+                "should_stop": True,
+                "reason": "Remaining actions are low value or exhausted; unresolved items should become reportable boundaries.",
+            },
+            "value_of_information": {
+                "level": "low",
+                "best_action": "extract_claim_candidates_from_page",
+                "best_action_score": 2,
+            },
+        },
+    }
+    finalized = {
+        "readiness": {"ready_for_delivery": True, "blocking_checks": []},
+        "delivery_decision": {
+            "approved": True,
+            "readiness": {"ready_for_delivery": True, "blocking_checks": []},
+            "blocking_gaps": [],
+            "non_blocking_gaps": [
+                {
+                    "gap_id": "expand_cluster_scope",
+                    "question": "Boundary follow-up remains, but it should not block delivery.",
+                    "status": "unresolved_but_deliverable",
+                    "delivery_blocking": True,
+                    "blocks_delivery_now": False,
+                    "actionable_now": True,
+                }
+            ],
+        },
+        "gap_ledger": [
+            {
+                "id": "expand_cluster_scope",
+                "question": "Boundary follow-up remains, but it should not block delivery.",
+                "status": "stalled",
+                "delivery_blocking": True,
+                "reportable_if_unresolved": True,
+                "actionable_now": False,
+            }
+        ],
+    }
+
+    decision = _stop_decision(_sample_seed(), time.perf_counter(), session_state, {}, finalized)
+
+    assert decision["stop"] is True
+    assert decision["reason"] == STOP_REASON_DELIVERY_READY
 
 
 def test_finish_review_defers_ready_case_when_high_value_action_remains() -> None:

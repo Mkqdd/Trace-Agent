@@ -57,7 +57,7 @@
       "counterevidence": [
         "显式反证检查发现 4 条更接近维护、更新、补丁或备份背景的事件。"
       ],
-      "boundary_statement": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+      "boundary_statement": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
       "supporting_fact_ids": [
         "fact-gap-execution_gap",
         "fact-gap-related_assets_review",

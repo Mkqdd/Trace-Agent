@@ -56,13 +56,13 @@
       ],
       "counterevidence": [
         "检索到 1 条更接近维护、更新或正常基线的事件。",
-        "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。"
+        "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。"
       ],
       "boundary_statement": "当前确认范围收敛在 ws-rnd-04；ws-rnd-09 保持待确认状态。",
       "supporting_fact_ids": [
         "fact-gap-ground_external_context",
         "fact-counter-cl-03",
-        "fact-counter-cl-04",
+        "fact-counter-cl-07",
         "fact-event-evt-611"
       ]
     },
@@ -234,10 +234,10 @@
           "boundary_note": "要解释为何不足以推翻主判断，而不是只罗列背景事件"
         },
         {
-          "fact_id": "fact-counter-cl-04",
+          "fact_id": "fact-counter-cl-07",
           "fact_type": "counterevidence",
           "status": "background",
-          "summary_line": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
+          "summary_line": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
           "reporting_focus": "替代解释",
           "boundary_note": "要解释为何不足以推翻主判断，而不是只罗列背景事件"
         }
@@ -442,7 +442,7 @@
       "allowed_fact_ids": [
         "fact-gap-ground_external_context",
         "fact-counter-cl-03",
-        "fact-counter-cl-04",
+        "fact-counter-cl-07",
         "fact-event-evt-611"
       ]
     },

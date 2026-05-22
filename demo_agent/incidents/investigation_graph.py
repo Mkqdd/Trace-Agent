@@ -866,6 +866,7 @@ def _runtime_summary(
         if gap_id
         and (
             bool(gap.get("reportable_only"))
+            or bool(gap.get("reportable_if_unresolved"))
             or _text(gap.get("status")).lower() in {"reportable_unresolved", "unresolved_but_deliverable", "open_unaddressable"}
             or not bool(gap.get("blocks_delivery_now", gap.get("delivery_blocking")))
         )

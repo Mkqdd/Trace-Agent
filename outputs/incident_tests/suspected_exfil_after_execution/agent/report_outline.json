@@ -129,66 +129,6 @@
       {
         "id": "obs-004",
         "observation_id": "obs-004",
-        "tool_name": "check_counterevidence",
-        "relation": "counterevidence",
-        "grounding_status": "",
-        "source_type": "trace_store.asset_context",
-        "source_ref": "",
-        "summary": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
-        "status": "ok",
-        "raw_status": "ok",
-        "provenance": "counterevidence",
-        "event_ids": [
-          "evt-612",
-          "evt-613"
-        ],
-        "checked_event_ids": [
-          "evt-601",
-          "evt-602",
-          "evt-603",
-          "evt-604",
-          "evt-605",
-          "evt-606",
-          "evt-607",
-          "evt-608",
-          "evt-609",
-          "evt-610",
-          "evt-611",
-          "evt-612",
-          "evt-613",
-          "evt-614"
-        ],
-        "boundary_event_ids": [],
-        "derived_entities": {
-          "asset_ids": [
-            "ws-rnd-04",
-            "ws-rnd-09"
-          ],
-          "src_ips": [
-            "10.90.2.44",
-            "10.90.2.49"
-          ],
-          "dst_ips": [
-            "198.51.100.144",
-            "13.107.136.9"
-          ],
-          "domains": [
-            "files-sync-share.net",
-            "api.files-sync-share.net",
-            "company-my.sharepoint.com"
-          ],
-          "fingerprints": [
-            "t13d190900_44ac2200b3c1_ab11cd22ee44"
-          ]
-        },
-        "claim_texts": [
-          "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。"
-        ],
-        "confidence": 78
-      },
-      {
-        "id": "obs-005",
-        "observation_id": "obs-005",
         "tool_name": "search_related_events",
         "relation": "candidate",
         "grounding_status": "",
@@ -259,8 +199,8 @@
         "confidence": 90
       },
       {
-        "id": "obs-006",
-        "observation_id": "obs-006",
+        "id": "obs-005",
+        "observation_id": "obs-005",
         "tool_name": "ground_candidate_event",
         "relation": "context",
         "grounding_status": "context_only",
@@ -286,8 +226,8 @@
         "confidence": 28
       },
       {
-        "id": "obs-007",
-        "observation_id": "obs-007",
+        "id": "obs-006",
+        "observation_id": "obs-006",
         "tool_name": "search_related_events",
         "relation": "candidate",
         "grounding_status": "",
@@ -356,6 +296,71 @@
           "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。"
         ],
         "confidence": 90
+      },
+      {
+        "id": "obs-007",
+        "observation_id": "obs-007",
+        "tool_name": "check_counterevidence",
+        "relation": "counterevidence",
+        "grounding_status": "",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+        "status": "ok",
+        "raw_status": "ok",
+        "provenance": "counterevidence",
+        "event_ids": [
+          "evt-612",
+          "evt-613",
+          "evt-615"
+        ],
+        "checked_event_ids": [
+          "evt-601",
+          "evt-602",
+          "evt-603",
+          "evt-604",
+          "evt-605",
+          "evt-606",
+          "evt-607",
+          "evt-608",
+          "evt-609",
+          "evt-610",
+          "evt-611",
+          "evt-612",
+          "evt-613",
+          "evt-614",
+          "evt-615"
+        ],
+        "boundary_event_ids": [],
+        "derived_entities": {
+          "asset_ids": [
+            "ws-rnd-04",
+            "ws-rnd-09",
+            "ws-rnd-12"
+          ],
+          "src_ips": [
+            "10.90.2.44",
+            "10.90.2.49",
+            "10.90.8.12"
+          ],
+          "dst_ips": [
+            "198.51.100.144",
+            "13.107.136.9"
+          ],
+          "domains": [
+            "files-sync-share.net",
+            "api.files-sync-share.net",
+            "company-my.sharepoint.com",
+            "filesync-cdn.example"
+          ],
+          "fingerprints": [
+            "t13d190900_44ac2200b3c1_ab11cd22ee44"
+          ]
+        },
+        "claim_texts": [
+          "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。"
+        ],
+        "confidence": 78
       }
     ],
     "objects": [
@@ -674,26 +679,11 @@
       },
       {
         "claim_id": "CL-04",
-        "text": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
-        "relation": "counterevidence",
-        "provenance": "counterevidence",
-        "observation_ids": [
-          "obs-004"
-        ],
-        "event_ids": [
-          "evt-612",
-          "evt-613"
-        ],
-        "source_refs": [],
-        "confidence": 78
-      },
-      {
-        "claim_id": "CL-05",
         "text": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
         "relation": "candidate",
         "provenance": "local_observation",
         "observation_ids": [
-          "obs-005"
+          "obs-004"
         ],
         "event_ids": [
           "evt-602",
@@ -711,12 +701,12 @@
         "confidence": 90
       },
       {
-        "claim_id": "CL-06",
+        "claim_id": "CL-05",
         "text": "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。",
         "relation": "context",
         "provenance": "external_intel",
         "observation_ids": [
-          "obs-006"
+          "obs-005"
         ],
         "event_ids": [
           "evt-614"
@@ -727,12 +717,12 @@
         "confidence": 28
       },
       {
-        "claim_id": "CL-07",
+        "claim_id": "CL-06",
         "text": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
         "relation": "candidate",
         "provenance": "local_observation",
         "observation_ids": [
-          "obs-007"
+          "obs-006"
         ],
         "event_ids": [
           "evt-602",
@@ -748,6 +738,22 @@
         ],
         "source_refs": [],
         "confidence": 90
+      },
+      {
+        "claim_id": "CL-07",
+        "text": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+        "relation": "counterevidence",
+        "provenance": "counterevidence",
+        "observation_ids": [
+          "obs-007"
+        ],
+        "event_ids": [
+          "evt-612",
+          "evt-613",
+          "evt-615"
+        ],
+        "source_refs": [],
+        "confidence": 78
       }
     ],
     "hypotheses": {
@@ -769,16 +775,36 @@
         "status": "unresolved_but_deliverable",
         "status_label": "可交付但未完全闭合",
         "legacy_status": "reportable_unresolved",
-        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "infra_context",
           "external_intel",
           "family_validation"
         ],
-        "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+        "next_best_query": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
+      },
+      {
+        "gap_id": "check_counterevidence",
+        "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+        "gap_type": "counterevidence",
+        "priority": "medium",
+        "status": "closed",
+        "status_label": "已闭合",
+        "legacy_status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+        "materiality": "delivery_blocking",
+        "delivery_blocking": true,
+        "reportable_if_unresolved": false,
+        "actionable_now": false,
+        "actionable_tools": [
+          "counterevidence",
+          "background_validation"
+        ],
+        "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
       },
       {
         "gap_id": "expand_cluster_scope",
@@ -791,6 +817,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "cluster_expand",
@@ -809,6 +836,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "candidate_grounding",
@@ -816,24 +844,6 @@
           "external_intel",
           "infra_context",
           "structured_intel"
-        ],
-        "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
-      },
-      {
-        "gap_id": "check_counterevidence",
-        "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
-        "gap_type": "counterevidence",
-        "priority": "medium",
-        "status": "closed",
-        "status_label": "已闭合",
-        "legacy_status": "closed",
-        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
-        "materiality": "delivery_blocking",
-        "delivery_blocking": true,
-        "actionable_now": false,
-        "actionable_tools": [
-          "counterevidence",
-          "background_validation"
         ],
         "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
       },
@@ -848,6 +858,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "evidence_structuring",
@@ -867,6 +878,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "host_confirmation"
@@ -884,6 +896,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -902,6 +915,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -920,6 +934,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "family_validation",
@@ -1250,17 +1265,6 @@
           "obs-004"
         ],
         "event_ids": [
-          "evt-612",
-          "evt-613"
-        ],
-        "source_refs": [],
-        "provenance": "counterevidence"
-      },
-      "CL-05": {
-        "observation_ids": [
-          "obs-005"
-        ],
-        "event_ids": [
           "evt-602",
           "evt-603",
           "evt-604",
@@ -1275,9 +1279,9 @@
         "source_refs": [],
         "provenance": "local_observation"
       },
-      "CL-06": {
+      "CL-05": {
         "observation_ids": [
-          "obs-006"
+          "obs-005"
         ],
         "event_ids": [
           "evt-614"
@@ -1287,9 +1291,9 @@
         ],
         "provenance": "external_intel"
       },
-      "CL-07": {
+      "CL-06": {
         "observation_ids": [
-          "obs-007"
+          "obs-006"
         ],
         "event_ids": [
           "evt-602",
@@ -1305,6 +1309,18 @@
         ],
         "source_refs": [],
         "provenance": "local_observation"
+      },
+      "CL-07": {
+        "observation_ids": [
+          "obs-007"
+        ],
+        "event_ids": [
+          "evt-612",
+          "evt-613",
+          "evt-615"
+        ],
+        "source_refs": [],
+        "provenance": "counterevidence"
       }
     },
     "version": "runtime-v1",
@@ -1582,16 +1598,36 @@
         "status": "unresolved_but_deliverable",
         "status_label": "可交付但未完全闭合",
         "legacy_status": "reportable_unresolved",
-        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "infra_context",
           "external_intel",
           "family_validation"
         ],
-        "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+        "next_best_query": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
+      },
+      {
+        "gap_id": "check_counterevidence",
+        "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+        "gap_type": "counterevidence",
+        "priority": "medium",
+        "status": "closed",
+        "status_label": "已闭合",
+        "legacy_status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+        "materiality": "delivery_blocking",
+        "delivery_blocking": true,
+        "reportable_if_unresolved": false,
+        "actionable_now": false,
+        "actionable_tools": [
+          "counterevidence",
+          "background_validation"
+        ],
+        "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
       },
       {
         "gap_id": "expand_cluster_scope",
@@ -1604,6 +1640,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "cluster_expand",
@@ -1622,6 +1659,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "candidate_grounding",
@@ -1629,24 +1667,6 @@
           "external_intel",
           "infra_context",
           "structured_intel"
-        ],
-        "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
-      },
-      {
-        "gap_id": "check_counterevidence",
-        "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
-        "gap_type": "counterevidence",
-        "priority": "medium",
-        "status": "closed",
-        "status_label": "已闭合",
-        "legacy_status": "closed",
-        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
-        "materiality": "delivery_blocking",
-        "delivery_blocking": true,
-        "actionable_now": false,
-        "actionable_tools": [
-          "counterevidence",
-          "background_validation"
         ],
         "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
       },
@@ -1661,6 +1681,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "evidence_structuring",
@@ -1680,6 +1701,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "host_confirmation"
@@ -1697,6 +1719,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -1715,6 +1738,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -1733,6 +1757,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "family_validation",
@@ -1783,17 +1808,6 @@
           "obs-004"
         ],
         "event_ids": [
-          "evt-612",
-          "evt-613"
-        ],
-        "source_refs": [],
-        "provenance": "counterevidence"
-      },
-      "CL-05": {
-        "observation_ids": [
-          "obs-005"
-        ],
-        "event_ids": [
           "evt-602",
           "evt-603",
           "evt-604",
@@ -1808,9 +1822,9 @@
         "source_refs": [],
         "provenance": "local_observation"
       },
-      "CL-06": {
+      "CL-05": {
         "observation_ids": [
-          "obs-006"
+          "obs-005"
         ],
         "event_ids": [
           "evt-614"
@@ -1820,9 +1834,9 @@
         ],
         "provenance": "external_intel"
       },
-      "CL-07": {
+      "CL-06": {
         "observation_ids": [
-          "obs-007"
+          "obs-006"
         ],
         "event_ids": [
           "evt-602",
@@ -1838,6 +1852,18 @@
         ],
         "source_refs": [],
         "provenance": "local_observation"
+      },
+      "CL-07": {
+        "observation_ids": [
+          "obs-007"
+        ],
+        "event_ids": [
+          "evt-612",
+          "evt-613",
+          "evt-615"
+        ],
+        "source_refs": [],
+        "provenance": "counterevidence"
       }
     },
     "pivots": {
@@ -1882,16 +1908,17 @@
         "confidence": 35
       },
       {
-        "claim_id": "CL-04",
-        "text": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
+        "claim_id": "CL-07",
+        "text": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
         "relation": "counterevidence",
         "provenance": "counterevidence",
         "observation_ids": [
-          "obs-004"
+          "obs-007"
         ],
         "event_ids": [
           "evt-612",
-          "evt-613"
+          "evt-613",
+          "evt-615"
         ],
         "source_refs": [],
         "confidence": 78
@@ -2207,46 +2234,6 @@
         },
         {
           "observation_id": "obs-004",
-          "tool_name": "check_counterevidence",
-          "relation": "counterevidence",
-          "grounding_status": "",
-          "source_type": "trace_store.asset_context",
-          "source_ref": "",
-          "summary": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
-          "event_ids": [
-            "evt-612",
-            "evt-613"
-          ],
-          "checked_event_ids": [
-            "evt-601",
-            "evt-602",
-            "evt-603",
-            "evt-604",
-            "evt-605",
-            "evt-606",
-            "evt-607",
-            "evt-608",
-            "evt-609",
-            "evt-610",
-            "evt-611",
-            "evt-612",
-            "evt-613",
-            "evt-614"
-          ],
-          "boundary_event_ids": [],
-          "claim_texts": [
-            "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。"
-          ],
-          "confidence": 78,
-          "supports_hypothesis": [
-            "benign"
-          ],
-          "contradicts_hypothesis": [
-            "primary"
-          ]
-        },
-        {
-          "observation_id": "obs-005",
           "tool_name": "search_related_events",
           "relation": "candidate",
           "grounding_status": "",
@@ -2294,7 +2281,7 @@
           "contradicts_hypothesis": []
         },
         {
-          "observation_id": "obs-006",
+          "observation_id": "obs-005",
           "tool_name": "ground_candidate_event",
           "relation": "context",
           "grounding_status": "context_only",
@@ -2318,7 +2305,7 @@
           "contradicts_hypothesis": []
         },
         {
-          "observation_id": "obs-007",
+          "observation_id": "obs-006",
           "tool_name": "search_related_events",
           "relation": "candidate",
           "grounding_status": "",
@@ -2364,6 +2351,48 @@
             "secondary"
           ],
           "contradicts_hypothesis": []
+        },
+        {
+          "observation_id": "obs-007",
+          "tool_name": "check_counterevidence",
+          "relation": "counterevidence",
+          "grounding_status": "",
+          "source_type": "trace_store.asset_context",
+          "source_ref": "",
+          "summary": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+          "event_ids": [
+            "evt-612",
+            "evt-613",
+            "evt-615"
+          ],
+          "checked_event_ids": [
+            "evt-601",
+            "evt-602",
+            "evt-603",
+            "evt-604",
+            "evt-605",
+            "evt-606",
+            "evt-607",
+            "evt-608",
+            "evt-609",
+            "evt-610",
+            "evt-611",
+            "evt-612",
+            "evt-613",
+            "evt-614",
+            "evt-615"
+          ],
+          "boundary_event_ids": [],
+          "claim_texts": [
+            "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。"
+          ],
+          "confidence": 78,
+          "supports_hypothesis": [
+            "benign"
+          ],
+          "contradicts_hypothesis": [
+            "primary"
+          ]
         }
       ],
       "context_bundle": {
@@ -2452,12 +2481,14 @@
             "补足外部技术背景",
             "明确背景情报不等于本案强归因"
           ],
+          "blocks_delivery_now": false,
           "attempt_count": 2,
           "material_attempt_count": 0,
           "editorial_only_attempt_count": 1,
           "zero_delta_attempt_count": 1,
-          "last_attempt_step": 6,
+          "last_attempt_step": 5,
           "last_attempt_tool": "ground_candidate_event",
+          "recent_materially_stalled": true,
           "recent_attempts": [
             {
               "step_index": 2,
@@ -2467,7 +2498,7 @@
               "summary": "关闭 1 个 gap"
             },
             {
-              "step_index": 6,
+              "step_index": 5,
               "tool_name": "ground_candidate_event",
               "material_score": 0,
               "editorial_score": 1,
@@ -2477,11 +2508,44 @@
           "addressable_tools": [],
           "actionable_tools": [],
           "status": "reportable_unresolved",
-          "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+          "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
           "actionable_now": false,
           "first_seen_step": 1,
           "last_seen_step": 7,
           "closed_step": null
+        },
+        {
+          "id": "check_counterevidence",
+          "priority": "medium",
+          "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+          "gap_type": "counterevidence",
+          "materiality": "delivery_blocking",
+          "tool_capability_hints": [
+            "counterevidence",
+            "background_validation"
+          ],
+          "delivery_blocking": true,
+          "reportable_if_unresolved": false,
+          "closure_criteria": [
+            "完成显式反证检查",
+            "明确是否存在降级解释"
+          ],
+          "attempt_count": 0,
+          "material_attempt_count": 0,
+          "editorial_only_attempt_count": 0,
+          "zero_delta_attempt_count": 0,
+          "last_attempt_step": 0,
+          "last_attempt_tool": "",
+          "recent_materially_stalled": false,
+          "recent_attempts": [],
+          "addressable_tools": [],
+          "actionable_tools": [],
+          "status": "closed",
+          "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+          "actionable_now": false,
+          "first_seen_step": 1,
+          "last_seen_step": 7,
+          "closed_step": 7
         },
         {
           "id": "expand_cluster_scope",
@@ -2503,8 +2567,9 @@
           "material_attempt_count": 2,
           "editorial_only_attempt_count": 0,
           "zero_delta_attempt_count": 0,
-          "last_attempt_step": 5,
+          "last_attempt_step": 4,
           "last_attempt_tool": "search_related_events",
+          "recent_materially_stalled": false,
           "recent_attempts": [
             {
               "step_index": 3,
@@ -2514,11 +2579,11 @@
               "summary": "新增 1 条事件；新增 1 条 claim"
             },
             {
-              "step_index": 5,
+              "step_index": 4,
               "tool_name": "search_related_events",
-              "material_score": 1,
+              "material_score": 3,
               "editorial_score": 1,
-              "summary": "新增 1 条事件；新增 1 条 claim"
+              "summary": "新增 3 条事件；新增 1 条 claim"
             }
           ],
           "addressable_tools": [],
@@ -2528,7 +2593,7 @@
           "actionable_now": false,
           "first_seen_step": 1,
           "last_seen_step": 7,
-          "closed_step": 7
+          "closed_step": 6
         },
         {
           "id": "validate_candidate_events",
@@ -2555,47 +2620,16 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
           "status": "closed",
           "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
           "actionable_now": false,
-          "first_seen_step": 5,
+          "first_seen_step": 4,
           "last_seen_step": 7,
-          "closed_step": 6
-        },
-        {
-          "id": "check_counterevidence",
-          "priority": "medium",
-          "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
-          "gap_type": "counterevidence",
-          "materiality": "delivery_blocking",
-          "tool_capability_hints": [
-            "counterevidence",
-            "background_validation"
-          ],
-          "delivery_blocking": true,
-          "reportable_if_unresolved": false,
-          "closure_criteria": [
-            "完成显式反证检查",
-            "明确是否存在降级解释"
-          ],
-          "attempt_count": 0,
-          "material_attempt_count": 0,
-          "editorial_only_attempt_count": 0,
-          "zero_delta_attempt_count": 0,
-          "last_attempt_step": 0,
-          "last_attempt_tool": "",
-          "recent_attempts": [],
-          "addressable_tools": [],
-          "actionable_tools": [],
-          "status": "closed",
-          "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
-          "actionable_now": false,
-          "first_seen_step": 1,
-          "last_seen_step": 7,
-          "closed_step": 4
+          "closed_step": 5
         },
         {
           "id": "structure_evidence",
@@ -2620,6 +2654,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -2645,12 +2680,14 @@
             "确认是否存在主机侧执行线索",
             "或保留为主机侧待确认事项"
           ],
+          "blocks_delivery_now": false,
           "attempt_count": 0,
           "material_attempt_count": 0,
           "editorial_only_attempt_count": 0,
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -2683,6 +2720,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -2715,6 +2753,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -2741,12 +2780,14 @@
             "补足家族提示支撑",
             "或明确仅作弱提示引用"
           ],
+          "blocks_delivery_now": false,
           "attempt_count": 0,
           "material_attempt_count": 0,
           "editorial_only_attempt_count": 0,
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -2851,21 +2892,21 @@
       "recent_tool_effects": [
         {
           "step_index": 5,
-          "tool_name": "search_related_events",
-          "novelty_score": 2,
-          "summary": "新增 1 条事件；新增 1 条 claim"
-        },
-        {
-          "step_index": 6,
           "tool_name": "ground_candidate_event",
           "novelty_score": 3,
           "summary": "新增 1 条 claim；完成 1 条候选事件验证；关闭 1 个 gap"
         },
         {
-          "step_index": 7,
+          "step_index": 6,
           "tool_name": "search_related_events",
           "novelty_score": 0,
           "summary": "没有新增实质信息"
+        },
+        {
+          "step_index": 7,
+          "tool_name": "check_counterevidence",
+          "novelty_score": 2,
+          "summary": "新增 1 条 claim；关闭 1 个 gap"
         }
       ],
       "budget_usage": {
@@ -2899,12 +2940,12 @@
         "question": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
         "priority": "low",
         "status": "unresolved_but_deliverable",
-        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "delivery_blocking": false,
         "actionable_now": false,
         "blocks_delivery_now": false,
         "gate_type": "reportable_limit",
-        "next_best_question": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+        "next_best_question": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
       }
     ],
     "next_best_questions": [
@@ -3034,7 +3075,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -3051,7 +3092,7 @@
           "citation_refs": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T16:40:00Z",
@@ -3080,7 +3121,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -3097,7 +3138,7 @@
           "citation_refs": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T16:34:20Z",
@@ -3123,7 +3164,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -3139,7 +3180,7 @@
           "citation_refs": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T16:52:30Z",
@@ -3165,7 +3206,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -3180,7 +3221,7 @@
           "citation_refs": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T16:44:00Z",
@@ -3207,7 +3248,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -3222,7 +3263,7 @@
           "citation_refs": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T16:42:30Z",
@@ -3251,7 +3292,7 @@
             "obs-001",
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -3269,7 +3310,7 @@
             "obs-001",
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T17:05:00Z",
@@ -3295,7 +3336,7 @@
           "observation_ids": [
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -3310,7 +3351,7 @@
           "citation_refs": [
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T17:08:20Z",
@@ -3334,7 +3375,7 @@
           "event_id": "evt-613",
           "observation_ids": [
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -3350,7 +3391,7 @@
           "reader_limit": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
           "citation_refs": [
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T17:12:00Z",
@@ -3381,12 +3422,12 @@
           "category": "交付缺口",
           "why_selected": "当前不适合仅凭背景情报完成基础设施或家族级强归因。",
           "reader_fact": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
-          "reader_limit": "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。",
+          "reader_limit": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。",
           "citation_refs": [
             "ground_external_context"
           ],
           "status": "unresolved_but_deliverable",
-          "next_best_query": "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+          "next_best_query": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
         }
       ]
     },
@@ -3416,7 +3457,7 @@
       ],
       "upstream_context": "当前可获得的背景提示主要来自家族/工具线索：Suspected cloud-storage exfil chain，与当前观察到的阶段形态 命令与控制、执行、数据外传 基本一致。",
       "investigation_focus": "在 2026-06-03 16:44:00 UTC，资产 `ws-rnd-04` 在异常通信后出现 `7z.exe` 可疑启动，说明异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
-      "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+      "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
     },
     "scope_definition": {
       "investigation_scope": "本轮调查覆盖 2026-06-03 16:28:00 UTC 至 2026-06-03 17:24:40 UTC 内围绕 ws-rnd-04 与 198.51.100.144、api.files-sync-share.net、files-sync-share.net 的关键事件窗。",
@@ -3425,7 +3466,7 @@
       "out_of_scope": "本轮不把未经过独立验证的候选对象 ws-rnd-09、ws-rnd-12 直接写成已确认范围，也不把背景情报直接写成已确认事实。",
       "primary_hypothesis_requirements": "当前主假设至少需要同时满足：种子告警需要能够对应到明确异常起点；同一基础设施的异常通信需要在同资产或关联资产上被再次观察到；事件链需要推进到执行或横向动作，而不只是停留在单点外联；已核查的维护或更新背景不足以解释整条主链；未独立验证的候选对象只能作为边界线索保留，不能直接写成确认影响范围。",
       "primary_hypothesis_failure_conditions": "这条观测更支持背景解释或替代解释，而不是继续放大当前主假设。",
-      "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+      "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
     },
     "coverage_plan": {
       "in_chain_objects": "ws-rnd-04、198.51.100.144、api.files-sync-share.net、files-sync-share.net、t13d190900_44ac2200b3c1_ab11cd22ee44",
@@ -3447,7 +3488,7 @@
       "unconfirmed_links": [
         "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。"
       ],
-      "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+      "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
     },
     "evidence_blocks": {
       "supporting": [
@@ -3458,11 +3499,11 @@
           "fact_text": "在 2026-06-03 16:40:00 UTC，资产 `ws-rnd-04` 围绕 198.51.100.144 / files-sync-share.net 的异常通信触发了种子告警。",
           "reason_text": "这是种子命中的直接落点，说明调查起点并不是孤立的指纹命中。",
           "limitation_text": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
-          "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+          "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3473,11 +3514,11 @@
           "fact_text": "在 2026-06-03 16:34:20 UTC，资产 `ws-rnd-04` 再次与 198.51.100.144 / files-sync-share.net 通信，说明同一基础设施上的异常仍在持续。",
           "reason_text": "同一基础设施在种子资产或关联资产上再次出现，使单点告警扩展成可复核的连续事件链。",
           "limitation_text": "仅凭网络侧重复通信仍可能在少数情况下被正常组件、同步组件或运维脚本解释，因此仍需要结合资产背景或主机侧结果。",
-          "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+          "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3488,11 +3529,11 @@
           "fact_text": "在 2026-06-03 16:52:30 UTC，资产 `ws-rnd-04` 先解析了少见域名 `api.files-sync-share.net`，为后续与同一基础设施的通信提供了准备。",
           "reason_text": "同一基础设施在种子资产或关联资产上再次出现，使单点告警扩展成可复核的连续事件链。",
           "limitation_text": "这条观测本身更适合用来补足上下文，而不是单独承担最终结论。",
-          "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+          "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3503,11 +3544,11 @@
           "fact_text": "在 2026-06-03 16:44:00 UTC，资产 `ws-rnd-04` 在异常通信后出现 `7z.exe` 可疑启动。",
           "reason_text": "它把异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
           "limitation_text": "当前仍缺少更细的命令行、落地文件、持久化或内存证据，因此可以确认存在执行线索，但还不能完整描述具体载荷。",
-          "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+          "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3518,11 +3559,11 @@
           "fact_text": "在 2026-06-03 16:42:30 UTC，资产 `ws-rnd-04` 在异常通信后出现可疑进程执行。",
           "reason_text": "它把异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
           "limitation_text": "当前仍缺少更细的命令行、落地文件、持久化或内存证据，因此可以确认存在执行线索，但还不能完整描述具体载荷。",
-          "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+          "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3538,7 +3579,7 @@
             "obs-001",
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         }
@@ -3555,7 +3596,7 @@
           "observation_ids": [
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3566,10 +3607,10 @@
           "fact_text": "在 2026-06-03 17:12:00 UTC，资产 `ws-rnd-04` 与 13.107.136.9 / company-my.sharepoint.com 的访问更接近计划内更新、维护或共享基础设施背景。",
           "reason_text": "这条观测更支持背景解释或替代解释，而不是继续放大当前主假设。",
           "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
-          "source_text": "显式反证检查、关联事件扩查",
+          "source_text": "关联事件扩查、显式反证检查",
           "observation_ids": [
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         }
@@ -3590,7 +3631,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3601,7 +3642,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3612,7 +3653,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3623,7 +3664,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3634,7 +3675,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3645,7 +3686,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3656,7 +3697,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3667,7 +3708,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3678,7 +3719,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3689,7 +3730,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3701,7 +3742,7 @@
             "obs-001",
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3712,7 +3753,7 @@
           "observation_ids": [
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3722,7 +3763,7 @@
           "role": "反证检查",
           "observation_ids": [
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -3742,7 +3783,8 @@
           "summary": "资产 `ws-rnd-12`：A lab workstation reached the same IP through a different vendor CDN domain, indicating the IP is not uniquely malicious.",
           "role": "反证检查",
           "observation_ids": [
-            "obs-005",
+            "obs-004",
+            "obs-006",
             "obs-007"
           ]
         }
@@ -3754,7 +3796,7 @@
         "事件链已经从单纯通信异常推进到更高风险的后续动作，风险等级明显上升。",
         "同时间窗也完成了替代解释检查，但现有反证不足以完全推翻主链。"
       ],
-      "source_text": "种子事件窗观测、显式反证检查、关联事件扩查、候选对象情报验证"
+      "source_text": "种子事件窗观测、关联事件扩查、显式反证检查、候选对象情报验证"
     },
     "relationship_analysis": {
       "pivot_text": "files-sync-share.net、api.files-sync-share.net、company-my.sharepoint.com、filesync-cdn.example、198.51.100.144、13.107.136.9、t13d190900_44ac2200b3c1_ab11cd22ee44",
@@ -3790,9 +3832,9 @@
         "当前不适合仅凭背景情报完成基础设施或家族级强归因。"
       ],
       "next_best_evidence": [
-        "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+        "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
       ],
-      "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+      "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
     },
     "recommended_actions": {
       "current_conclusion": "确认安全事件",
@@ -3815,7 +3857,7 @@
         "优先补查：补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。。"
       ],
       "next_best_evidence": [
-        "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+        "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
       ]
     }
   },
@@ -4001,10 +4043,10 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
-        "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+        "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
       },
       {
         "id": "E-02",
@@ -4017,10 +4059,10 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
-        "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+        "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
       },
       {
         "id": "E-03",
@@ -4033,10 +4075,10 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
-        "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+        "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
       },
       {
         "id": "E-04",
@@ -4049,10 +4091,10 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
-        "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+        "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
       },
       {
         "id": "E-05",
@@ -4065,10 +4107,10 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
-        "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+        "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
       },
       {
         "id": "E-06",
@@ -4082,7 +4124,7 @@
           "obs-001",
           "obs-003",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
         "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
@@ -4098,7 +4140,7 @@
         "observation_ids": [
           "obs-003",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
         "source_text": "显式反证检查、关联事件扩查"
@@ -4113,10 +4155,10 @@
         "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
         "observation_ids": [
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
-        "source_text": "显式反证检查、关联事件扩查"
+        "source_text": "关联事件扩查、显式反证检查"
       }
     ],
     "observation_rows": [
@@ -4140,27 +4182,27 @@
       },
       {
         "observation_id": "obs-004",
-        "tool_name": "check_counterevidence",
-        "summary": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
-        "relation": "counterevidence"
-      },
-      {
-        "observation_id": "obs-005",
         "tool_name": "search_related_events",
         "summary": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
         "relation": "candidate"
       },
       {
-        "observation_id": "obs-006",
+        "observation_id": "obs-005",
         "tool_name": "ground_candidate_event",
         "summary": "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。",
         "relation": "context"
       },
       {
-        "observation_id": "obs-007",
+        "observation_id": "obs-006",
         "tool_name": "search_related_events",
         "summary": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
         "relation": "candidate"
+      },
+      {
+        "observation_id": "obs-007",
+        "tool_name": "check_counterevidence",
+        "summary": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+        "relation": "counterevidence"
       }
     ],
     "section_reference_rows": [
@@ -4246,7 +4288,7 @@
         "gap": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
         "limited_conclusion": "当前不适合仅凭背景情报完成基础设施或家族级强归因。",
         "actionable": "否",
-        "best_query": "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+        "best_query": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
       }
     ]
   },
@@ -4378,66 +4420,6 @@
       {
         "id": "obs-004",
         "observation_id": "obs-004",
-        "tool_name": "check_counterevidence",
-        "relation": "counterevidence",
-        "grounding_status": "",
-        "source_type": "trace_store.asset_context",
-        "source_ref": "",
-        "summary": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
-        "status": "ok",
-        "raw_status": "ok",
-        "provenance": "counterevidence",
-        "event_ids": [
-          "evt-612",
-          "evt-613"
-        ],
-        "checked_event_ids": [
-          "evt-601",
-          "evt-602",
-          "evt-603",
-          "evt-604",
-          "evt-605",
-          "evt-606",
-          "evt-607",
-          "evt-608",
-          "evt-609",
-          "evt-610",
-          "evt-611",
-          "evt-612",
-          "evt-613",
-          "evt-614"
-        ],
-        "boundary_event_ids": [],
-        "derived_entities": {
-          "asset_ids": [
-            "ws-rnd-04",
-            "ws-rnd-09"
-          ],
-          "src_ips": [
-            "10.90.2.44",
-            "10.90.2.49"
-          ],
-          "dst_ips": [
-            "198.51.100.144",
-            "13.107.136.9"
-          ],
-          "domains": [
-            "files-sync-share.net",
-            "api.files-sync-share.net",
-            "company-my.sharepoint.com"
-          ],
-          "fingerprints": [
-            "t13d190900_44ac2200b3c1_ab11cd22ee44"
-          ]
-        },
-        "claim_texts": [
-          "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。"
-        ],
-        "confidence": 78
-      },
-      {
-        "id": "obs-005",
-        "observation_id": "obs-005",
         "tool_name": "search_related_events",
         "relation": "candidate",
         "grounding_status": "",
@@ -4508,8 +4490,8 @@
         "confidence": 90
       },
       {
-        "id": "obs-006",
-        "observation_id": "obs-006",
+        "id": "obs-005",
+        "observation_id": "obs-005",
         "tool_name": "ground_candidate_event",
         "relation": "context",
         "grounding_status": "context_only",
@@ -4535,8 +4517,8 @@
         "confidence": 28
       },
       {
-        "id": "obs-007",
-        "observation_id": "obs-007",
+        "id": "obs-006",
+        "observation_id": "obs-006",
         "tool_name": "search_related_events",
         "relation": "candidate",
         "grounding_status": "",
@@ -4605,6 +4587,71 @@
           "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。"
         ],
         "confidence": 90
+      },
+      {
+        "id": "obs-007",
+        "observation_id": "obs-007",
+        "tool_name": "check_counterevidence",
+        "relation": "counterevidence",
+        "grounding_status": "",
+        "source_type": "trace_store.asset_context",
+        "source_ref": "",
+        "summary": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+        "status": "ok",
+        "raw_status": "ok",
+        "provenance": "counterevidence",
+        "event_ids": [
+          "evt-612",
+          "evt-613",
+          "evt-615"
+        ],
+        "checked_event_ids": [
+          "evt-601",
+          "evt-602",
+          "evt-603",
+          "evt-604",
+          "evt-605",
+          "evt-606",
+          "evt-607",
+          "evt-608",
+          "evt-609",
+          "evt-610",
+          "evt-611",
+          "evt-612",
+          "evt-613",
+          "evt-614",
+          "evt-615"
+        ],
+        "boundary_event_ids": [],
+        "derived_entities": {
+          "asset_ids": [
+            "ws-rnd-04",
+            "ws-rnd-09",
+            "ws-rnd-12"
+          ],
+          "src_ips": [
+            "10.90.2.44",
+            "10.90.2.49",
+            "10.90.8.12"
+          ],
+          "dst_ips": [
+            "198.51.100.144",
+            "13.107.136.9"
+          ],
+          "domains": [
+            "files-sync-share.net",
+            "api.files-sync-share.net",
+            "company-my.sharepoint.com",
+            "filesync-cdn.example"
+          ],
+          "fingerprints": [
+            "t13d190900_44ac2200b3c1_ab11cd22ee44"
+          ]
+        },
+        "claim_texts": [
+          "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。"
+        ],
+        "confidence": 78
       }
     ],
     "objects": [
@@ -4923,26 +4970,11 @@
       },
       {
         "claim_id": "CL-04",
-        "text": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
-        "relation": "counterevidence",
-        "provenance": "counterevidence",
-        "observation_ids": [
-          "obs-004"
-        ],
-        "event_ids": [
-          "evt-612",
-          "evt-613"
-        ],
-        "source_refs": [],
-        "confidence": 78
-      },
-      {
-        "claim_id": "CL-05",
         "text": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
         "relation": "candidate",
         "provenance": "local_observation",
         "observation_ids": [
-          "obs-005"
+          "obs-004"
         ],
         "event_ids": [
           "evt-602",
@@ -4960,12 +4992,12 @@
         "confidence": 90
       },
       {
-        "claim_id": "CL-06",
+        "claim_id": "CL-05",
         "text": "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。",
         "relation": "context",
         "provenance": "external_intel",
         "observation_ids": [
-          "obs-006"
+          "obs-005"
         ],
         "event_ids": [
           "evt-614"
@@ -4976,12 +5008,12 @@
         "confidence": 28
       },
       {
-        "claim_id": "CL-07",
+        "claim_id": "CL-06",
         "text": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
         "relation": "candidate",
         "provenance": "local_observation",
         "observation_ids": [
-          "obs-007"
+          "obs-006"
         ],
         "event_ids": [
           "evt-602",
@@ -4997,6 +5029,22 @@
         ],
         "source_refs": [],
         "confidence": 90
+      },
+      {
+        "claim_id": "CL-07",
+        "text": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+        "relation": "counterevidence",
+        "provenance": "counterevidence",
+        "observation_ids": [
+          "obs-007"
+        ],
+        "event_ids": [
+          "evt-612",
+          "evt-613",
+          "evt-615"
+        ],
+        "source_refs": [],
+        "confidence": 78
       }
     ],
     "hypotheses": {
@@ -5018,16 +5066,36 @@
         "status": "unresolved_but_deliverable",
         "status_label": "可交付但未完全闭合",
         "legacy_status": "reportable_unresolved",
-        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "infra_context",
           "external_intel",
           "family_validation"
         ],
-        "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+        "next_best_query": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
+      },
+      {
+        "gap_id": "check_counterevidence",
+        "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+        "gap_type": "counterevidence",
+        "priority": "medium",
+        "status": "closed",
+        "status_label": "已闭合",
+        "legacy_status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+        "materiality": "delivery_blocking",
+        "delivery_blocking": true,
+        "reportable_if_unresolved": false,
+        "actionable_now": false,
+        "actionable_tools": [
+          "counterevidence",
+          "background_validation"
+        ],
+        "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
       },
       {
         "gap_id": "expand_cluster_scope",
@@ -5040,6 +5108,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "cluster_expand",
@@ -5058,6 +5127,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "candidate_grounding",
@@ -5065,24 +5135,6 @@
           "external_intel",
           "infra_context",
           "structured_intel"
-        ],
-        "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
-      },
-      {
-        "gap_id": "check_counterevidence",
-        "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
-        "gap_type": "counterevidence",
-        "priority": "medium",
-        "status": "closed",
-        "status_label": "已闭合",
-        "legacy_status": "closed",
-        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
-        "materiality": "delivery_blocking",
-        "delivery_blocking": true,
-        "actionable_now": false,
-        "actionable_tools": [
-          "counterevidence",
-          "background_validation"
         ],
         "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
       },
@@ -5097,6 +5149,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "evidence_structuring",
@@ -5116,6 +5169,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "host_confirmation"
@@ -5133,6 +5187,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -5151,6 +5206,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -5169,6 +5225,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "family_validation",
@@ -5499,17 +5556,6 @@
           "obs-004"
         ],
         "event_ids": [
-          "evt-612",
-          "evt-613"
-        ],
-        "source_refs": [],
-        "provenance": "counterevidence"
-      },
-      "CL-05": {
-        "observation_ids": [
-          "obs-005"
-        ],
-        "event_ids": [
           "evt-602",
           "evt-603",
           "evt-604",
@@ -5524,9 +5570,9 @@
         "source_refs": [],
         "provenance": "local_observation"
       },
-      "CL-06": {
+      "CL-05": {
         "observation_ids": [
-          "obs-006"
+          "obs-005"
         ],
         "event_ids": [
           "evt-614"
@@ -5536,9 +5582,9 @@
         ],
         "provenance": "external_intel"
       },
-      "CL-07": {
+      "CL-06": {
         "observation_ids": [
-          "obs-007"
+          "obs-006"
         ],
         "event_ids": [
           "evt-602",
@@ -5554,6 +5600,18 @@
         ],
         "source_refs": [],
         "provenance": "local_observation"
+      },
+      "CL-07": {
+        "observation_ids": [
+          "obs-007"
+        ],
+        "event_ids": [
+          "evt-612",
+          "evt-613",
+          "evt-615"
+        ],
+        "source_refs": [],
+        "provenance": "counterevidence"
       }
     },
     "version": "runtime-v1",
@@ -5831,16 +5889,36 @@
         "status": "unresolved_but_deliverable",
         "status_label": "可交付但未完全闭合",
         "legacy_status": "reportable_unresolved",
-        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "infra_context",
           "external_intel",
           "family_validation"
         ],
-        "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+        "next_best_query": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
+      },
+      {
+        "gap_id": "check_counterevidence",
+        "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+        "gap_type": "counterevidence",
+        "priority": "medium",
+        "status": "closed",
+        "status_label": "已闭合",
+        "legacy_status": "closed",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+        "materiality": "delivery_blocking",
+        "delivery_blocking": true,
+        "reportable_if_unresolved": false,
+        "actionable_now": false,
+        "actionable_tools": [
+          "counterevidence",
+          "background_validation"
+        ],
+        "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
       },
       {
         "gap_id": "expand_cluster_scope",
@@ -5853,6 +5931,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "cluster_expand",
@@ -5871,6 +5950,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "candidate_grounding",
@@ -5878,24 +5958,6 @@
           "external_intel",
           "infra_context",
           "structured_intel"
-        ],
-        "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
-      },
-      {
-        "gap_id": "check_counterevidence",
-        "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
-        "gap_type": "counterevidence",
-        "priority": "medium",
-        "status": "closed",
-        "status_label": "已闭合",
-        "legacy_status": "closed",
-        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
-        "materiality": "delivery_blocking",
-        "delivery_blocking": true,
-        "actionable_now": false,
-        "actionable_tools": [
-          "counterevidence",
-          "background_validation"
         ],
         "next_best_query": "该 gap 已不再出现在当前 canonical gap 集合中。"
       },
@@ -5910,6 +5972,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "evidence_structuring",
@@ -5929,6 +5992,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "host_confirmation"
@@ -5946,6 +6010,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -5964,6 +6029,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "delivery_blocking",
         "delivery_blocking": true,
+        "reportable_if_unresolved": false,
         "actionable_now": false,
         "actionable_tools": [
           "context_building",
@@ -5982,6 +6048,7 @@
         "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
         "materiality": "confidence_supporting",
         "delivery_blocking": false,
+        "reportable_if_unresolved": true,
         "actionable_now": false,
         "actionable_tools": [
           "family_validation",
@@ -6032,17 +6099,6 @@
           "obs-004"
         ],
         "event_ids": [
-          "evt-612",
-          "evt-613"
-        ],
-        "source_refs": [],
-        "provenance": "counterevidence"
-      },
-      "CL-05": {
-        "observation_ids": [
-          "obs-005"
-        ],
-        "event_ids": [
           "evt-602",
           "evt-603",
           "evt-604",
@@ -6057,9 +6113,9 @@
         "source_refs": [],
         "provenance": "local_observation"
       },
-      "CL-06": {
+      "CL-05": {
         "observation_ids": [
-          "obs-006"
+          "obs-005"
         ],
         "event_ids": [
           "evt-614"
@@ -6069,9 +6125,9 @@
         ],
         "provenance": "external_intel"
       },
-      "CL-07": {
+      "CL-06": {
         "observation_ids": [
-          "obs-007"
+          "obs-006"
         ],
         "event_ids": [
           "evt-602",
@@ -6087,6 +6143,18 @@
         ],
         "source_refs": [],
         "provenance": "local_observation"
+      },
+      "CL-07": {
+        "observation_ids": [
+          "obs-007"
+        ],
+        "event_ids": [
+          "evt-612",
+          "evt-613",
+          "evt-615"
+        ],
+        "source_refs": [],
+        "provenance": "counterevidence"
       }
     },
     "pivots": {
@@ -6131,16 +6199,17 @@
         "confidence": 35
       },
       {
-        "claim_id": "CL-04",
-        "text": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
+        "claim_id": "CL-07",
+        "text": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
         "relation": "counterevidence",
         "provenance": "counterevidence",
         "observation_ids": [
-          "obs-004"
+          "obs-007"
         ],
         "event_ids": [
           "evt-612",
-          "evt-613"
+          "evt-613",
+          "evt-615"
         ],
         "source_refs": [],
         "confidence": 78
@@ -6456,46 +6525,6 @@
         },
         {
           "observation_id": "obs-004",
-          "tool_name": "check_counterevidence",
-          "relation": "counterevidence",
-          "grounding_status": "",
-          "source_type": "trace_store.asset_context",
-          "source_ref": "",
-          "summary": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
-          "event_ids": [
-            "evt-612",
-            "evt-613"
-          ],
-          "checked_event_ids": [
-            "evt-601",
-            "evt-602",
-            "evt-603",
-            "evt-604",
-            "evt-605",
-            "evt-606",
-            "evt-607",
-            "evt-608",
-            "evt-609",
-            "evt-610",
-            "evt-611",
-            "evt-612",
-            "evt-613",
-            "evt-614"
-          ],
-          "boundary_event_ids": [],
-          "claim_texts": [
-            "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。"
-          ],
-          "confidence": 78,
-          "supports_hypothesis": [
-            "benign"
-          ],
-          "contradicts_hypothesis": [
-            "primary"
-          ]
-        },
-        {
-          "observation_id": "obs-005",
           "tool_name": "search_related_events",
           "relation": "candidate",
           "grounding_status": "",
@@ -6543,7 +6572,7 @@
           "contradicts_hypothesis": []
         },
         {
-          "observation_id": "obs-006",
+          "observation_id": "obs-005",
           "tool_name": "ground_candidate_event",
           "relation": "context",
           "grounding_status": "context_only",
@@ -6567,7 +6596,7 @@
           "contradicts_hypothesis": []
         },
         {
-          "observation_id": "obs-007",
+          "observation_id": "obs-006",
           "tool_name": "search_related_events",
           "relation": "candidate",
           "grounding_status": "",
@@ -6613,6 +6642,48 @@
             "secondary"
           ],
           "contradicts_hypothesis": []
+        },
+        {
+          "observation_id": "obs-007",
+          "tool_name": "check_counterevidence",
+          "relation": "counterevidence",
+          "grounding_status": "",
+          "source_type": "trace_store.asset_context",
+          "source_ref": "",
+          "summary": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+          "event_ids": [
+            "evt-612",
+            "evt-613",
+            "evt-615"
+          ],
+          "checked_event_ids": [
+            "evt-601",
+            "evt-602",
+            "evt-603",
+            "evt-604",
+            "evt-605",
+            "evt-606",
+            "evt-607",
+            "evt-608",
+            "evt-609",
+            "evt-610",
+            "evt-611",
+            "evt-612",
+            "evt-613",
+            "evt-614",
+            "evt-615"
+          ],
+          "boundary_event_ids": [],
+          "claim_texts": [
+            "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。"
+          ],
+          "confidence": 78,
+          "supports_hypothesis": [
+            "benign"
+          ],
+          "contradicts_hypothesis": [
+            "primary"
+          ]
         }
       ],
       "context_bundle": {
@@ -6701,12 +6772,14 @@
             "补足外部技术背景",
             "明确背景情报不等于本案强归因"
           ],
+          "blocks_delivery_now": false,
           "attempt_count": 2,
           "material_attempt_count": 0,
           "editorial_only_attempt_count": 1,
           "zero_delta_attempt_count": 1,
-          "last_attempt_step": 6,
+          "last_attempt_step": 5,
           "last_attempt_tool": "ground_candidate_event",
+          "recent_materially_stalled": true,
           "recent_attempts": [
             {
               "step_index": 2,
@@ -6716,7 +6789,7 @@
               "summary": "关闭 1 个 gap"
             },
             {
-              "step_index": 6,
+              "step_index": 5,
               "tool_name": "ground_candidate_event",
               "material_score": 0,
               "editorial_score": 1,
@@ -6726,11 +6799,44 @@
           "addressable_tools": [],
           "actionable_tools": [],
           "status": "reportable_unresolved",
-          "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+          "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
           "actionable_now": false,
           "first_seen_step": 1,
           "last_seen_step": 7,
           "closed_step": null
+        },
+        {
+          "id": "check_counterevidence",
+          "priority": "medium",
+          "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+          "gap_type": "counterevidence",
+          "materiality": "delivery_blocking",
+          "tool_capability_hints": [
+            "counterevidence",
+            "background_validation"
+          ],
+          "delivery_blocking": true,
+          "reportable_if_unresolved": false,
+          "closure_criteria": [
+            "完成显式反证检查",
+            "明确是否存在降级解释"
+          ],
+          "attempt_count": 0,
+          "material_attempt_count": 0,
+          "editorial_only_attempt_count": 0,
+          "zero_delta_attempt_count": 0,
+          "last_attempt_step": 0,
+          "last_attempt_tool": "",
+          "recent_materially_stalled": false,
+          "recent_attempts": [],
+          "addressable_tools": [],
+          "actionable_tools": [],
+          "status": "closed",
+          "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+          "actionable_now": false,
+          "first_seen_step": 1,
+          "last_seen_step": 7,
+          "closed_step": 7
         },
         {
           "id": "expand_cluster_scope",
@@ -6752,8 +6858,9 @@
           "material_attempt_count": 2,
           "editorial_only_attempt_count": 0,
           "zero_delta_attempt_count": 0,
-          "last_attempt_step": 5,
+          "last_attempt_step": 4,
           "last_attempt_tool": "search_related_events",
+          "recent_materially_stalled": false,
           "recent_attempts": [
             {
               "step_index": 3,
@@ -6763,11 +6870,11 @@
               "summary": "新增 1 条事件；新增 1 条 claim"
             },
             {
-              "step_index": 5,
+              "step_index": 4,
               "tool_name": "search_related_events",
-              "material_score": 1,
+              "material_score": 3,
               "editorial_score": 1,
-              "summary": "新增 1 条事件；新增 1 条 claim"
+              "summary": "新增 3 条事件；新增 1 条 claim"
             }
           ],
           "addressable_tools": [],
@@ -6777,7 +6884,7 @@
           "actionable_now": false,
           "first_seen_step": 1,
           "last_seen_step": 7,
-          "closed_step": 7
+          "closed_step": 6
         },
         {
           "id": "validate_candidate_events",
@@ -6804,47 +6911,16 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
           "status": "closed",
           "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
           "actionable_now": false,
-          "first_seen_step": 5,
+          "first_seen_step": 4,
           "last_seen_step": 7,
-          "closed_step": 6
-        },
-        {
-          "id": "check_counterevidence",
-          "priority": "medium",
-          "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
-          "gap_type": "counterevidence",
-          "materiality": "delivery_blocking",
-          "tool_capability_hints": [
-            "counterevidence",
-            "background_validation"
-          ],
-          "delivery_blocking": true,
-          "reportable_if_unresolved": false,
-          "closure_criteria": [
-            "完成显式反证检查",
-            "明确是否存在降级解释"
-          ],
-          "attempt_count": 0,
-          "material_attempt_count": 0,
-          "editorial_only_attempt_count": 0,
-          "zero_delta_attempt_count": 0,
-          "last_attempt_step": 0,
-          "last_attempt_tool": "",
-          "recent_attempts": [],
-          "addressable_tools": [],
-          "actionable_tools": [],
-          "status": "closed",
-          "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
-          "actionable_now": false,
-          "first_seen_step": 1,
-          "last_seen_step": 7,
-          "closed_step": 4
+          "closed_step": 5
         },
         {
           "id": "structure_evidence",
@@ -6869,6 +6945,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -6894,12 +6971,14 @@
             "确认是否存在主机侧执行线索",
             "或保留为主机侧待确认事项"
           ],
+          "blocks_delivery_now": false,
           "attempt_count": 0,
           "material_attempt_count": 0,
           "editorial_only_attempt_count": 0,
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -6932,6 +7011,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -6964,6 +7044,7 @@
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -6990,12 +7071,14 @@
             "补足家族提示支撑",
             "或明确仅作弱提示引用"
           ],
+          "blocks_delivery_now": false,
           "attempt_count": 0,
           "material_attempt_count": 0,
           "editorial_only_attempt_count": 0,
           "zero_delta_attempt_count": 0,
           "last_attempt_step": 0,
           "last_attempt_tool": "",
+          "recent_materially_stalled": false,
           "recent_attempts": [],
           "addressable_tools": [],
           "actionable_tools": [],
@@ -7071,7 +7154,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -7088,7 +7171,7 @@
           "citation_refs": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T16:40:00Z",
@@ -7117,7 +7200,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -7134,7 +7217,7 @@
           "citation_refs": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T16:34:20Z",
@@ -7160,7 +7243,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -7176,7 +7259,7 @@
           "citation_refs": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T16:52:30Z",
@@ -7202,7 +7285,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -7217,7 +7300,7 @@
           "citation_refs": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T16:44:00Z",
@@ -7244,7 +7327,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -7259,7 +7342,7 @@
           "citation_refs": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T16:42:30Z",
@@ -7288,7 +7371,7 @@
             "obs-001",
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -7306,7 +7389,7 @@
             "obs-001",
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T17:05:00Z",
@@ -7332,7 +7415,7 @@
           "observation_ids": [
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -7347,7 +7430,7 @@
           "citation_refs": [
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T17:08:20Z",
@@ -7371,7 +7454,7 @@
           "event_id": "evt-613",
           "observation_ids": [
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "object_refs": [
@@ -7387,7 +7470,7 @@
           "reader_limit": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
           "citation_refs": [
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ],
           "ts": "2026-06-03T17:12:00Z",
@@ -7418,12 +7501,12 @@
           "category": "交付缺口",
           "why_selected": "当前不适合仅凭背景情报完成基础设施或家族级强归因。",
           "reader_fact": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
-          "reader_limit": "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。",
+          "reader_limit": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。",
           "citation_refs": [
             "ground_external_context"
           ],
           "status": "unresolved_but_deliverable",
-          "next_best_query": "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+          "next_best_query": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
         }
       ]
     },
@@ -7453,7 +7536,7 @@
       ],
       "upstream_context": "当前可获得的背景提示主要来自家族/工具线索：Suspected cloud-storage exfil chain，与当前观察到的阶段形态 命令与控制、执行、数据外传 基本一致。",
       "investigation_focus": "在 2026-06-03 16:44:00 UTC，资产 `ws-rnd-04` 在异常通信后出现 `7z.exe` 可疑启动，说明异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
-      "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+      "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
     },
     "scope_definition": {
       "investigation_scope": "本轮调查覆盖 2026-06-03 16:28:00 UTC 至 2026-06-03 17:24:40 UTC 内围绕 ws-rnd-04 与 198.51.100.144、api.files-sync-share.net、files-sync-share.net 的关键事件窗。",
@@ -7462,7 +7545,7 @@
       "out_of_scope": "本轮不把未经过独立验证的候选对象 ws-rnd-09、ws-rnd-12 直接写成已确认范围，也不把背景情报直接写成已确认事实。",
       "primary_hypothesis_requirements": "当前主假设至少需要同时满足：种子告警需要能够对应到明确异常起点；同一基础设施的异常通信需要在同资产或关联资产上被再次观察到；事件链需要推进到执行或横向动作，而不只是停留在单点外联；已核查的维护或更新背景不足以解释整条主链；未独立验证的候选对象只能作为边界线索保留，不能直接写成确认影响范围。",
       "primary_hypothesis_failure_conditions": "这条观测更支持背景解释或替代解释，而不是继续放大当前主假设。",
-      "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+      "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
     },
     "coverage_plan": {
       "in_chain_objects": "ws-rnd-04、198.51.100.144、api.files-sync-share.net、files-sync-share.net、t13d190900_44ac2200b3c1_ab11cd22ee44",
@@ -7484,7 +7567,7 @@
       "unconfirmed_links": [
         "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。"
       ],
-      "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+      "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
     },
     "evidence_blocks": {
       "supporting": [
@@ -7495,11 +7578,11 @@
           "fact_text": "在 2026-06-03 16:40:00 UTC，资产 `ws-rnd-04` 围绕 198.51.100.144 / files-sync-share.net 的异常通信触发了种子告警。",
           "reason_text": "这是种子命中的直接落点，说明调查起点并不是孤立的指纹命中。",
           "limitation_text": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
-          "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+          "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7510,11 +7593,11 @@
           "fact_text": "在 2026-06-03 16:34:20 UTC，资产 `ws-rnd-04` 再次与 198.51.100.144 / files-sync-share.net 通信，说明同一基础设施上的异常仍在持续。",
           "reason_text": "同一基础设施在种子资产或关联资产上再次出现，使单点告警扩展成可复核的连续事件链。",
           "limitation_text": "仅凭网络侧重复通信仍可能在少数情况下被正常组件、同步组件或运维脚本解释，因此仍需要结合资产背景或主机侧结果。",
-          "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+          "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7525,11 +7608,11 @@
           "fact_text": "在 2026-06-03 16:52:30 UTC，资产 `ws-rnd-04` 先解析了少见域名 `api.files-sync-share.net`，为后续与同一基础设施的通信提供了准备。",
           "reason_text": "同一基础设施在种子资产或关联资产上再次出现，使单点告警扩展成可复核的连续事件链。",
           "limitation_text": "这条观测本身更适合用来补足上下文，而不是单独承担最终结论。",
-          "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+          "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7540,11 +7623,11 @@
           "fact_text": "在 2026-06-03 16:44:00 UTC，资产 `ws-rnd-04` 在异常通信后出现 `7z.exe` 可疑启动。",
           "reason_text": "它把异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
           "limitation_text": "当前仍缺少更细的命令行、落地文件、持久化或内存证据，因此可以确认存在执行线索，但还不能完整描述具体载荷。",
-          "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+          "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7555,11 +7638,11 @@
           "fact_text": "在 2026-06-03 16:42:30 UTC，资产 `ws-rnd-04` 在异常通信后出现可疑进程执行。",
           "reason_text": "它把异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
           "limitation_text": "当前仍缺少更细的命令行、落地文件、持久化或内存证据，因此可以确认存在执行线索，但还不能完整描述具体载荷。",
-          "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+          "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7575,7 +7658,7 @@
             "obs-001",
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         }
@@ -7592,7 +7675,7 @@
           "observation_ids": [
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7603,10 +7686,10 @@
           "fact_text": "在 2026-06-03 17:12:00 UTC，资产 `ws-rnd-04` 与 13.107.136.9 / company-my.sharepoint.com 的访问更接近计划内更新、维护或共享基础设施背景。",
           "reason_text": "这条观测更支持背景解释或替代解释，而不是继续放大当前主假设。",
           "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
-          "source_text": "显式反证检查、关联事件扩查",
+          "source_text": "关联事件扩查、显式反证检查",
           "observation_ids": [
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         }
@@ -7627,7 +7710,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7638,7 +7721,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7649,7 +7732,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7660,7 +7743,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7671,7 +7754,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7682,7 +7765,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7693,7 +7776,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7704,7 +7787,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7715,7 +7798,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7726,7 +7809,7 @@
           "observation_ids": [
             "obs-001",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7738,7 +7821,7 @@
             "obs-001",
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7749,7 +7832,7 @@
           "observation_ids": [
             "obs-003",
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7759,7 +7842,7 @@
           "role": "反证检查",
           "observation_ids": [
             "obs-004",
-            "obs-005",
+            "obs-006",
             "obs-007"
           ]
         },
@@ -7779,7 +7862,8 @@
           "summary": "资产 `ws-rnd-12`：A lab workstation reached the same IP through a different vendor CDN domain, indicating the IP is not uniquely malicious.",
           "role": "反证检查",
           "observation_ids": [
-            "obs-005",
+            "obs-004",
+            "obs-006",
             "obs-007"
           ]
         }
@@ -7791,7 +7875,7 @@
         "事件链已经从单纯通信异常推进到更高风险的后续动作，风险等级明显上升。",
         "同时间窗也完成了替代解释检查，但现有反证不足以完全推翻主链。"
       ],
-      "source_text": "种子事件窗观测、显式反证检查、关联事件扩查、候选对象情报验证"
+      "source_text": "种子事件窗观测、关联事件扩查、显式反证检查、候选对象情报验证"
     },
     "relationship_analysis": {
       "pivot_text": "files-sync-share.net、api.files-sync-share.net、company-my.sharepoint.com、filesync-cdn.example、198.51.100.144、13.107.136.9、t13d190900_44ac2200b3c1_ab11cd22ee44",
@@ -7827,9 +7911,9 @@
         "当前不适合仅凭背景情报完成基础设施或家族级强归因。"
       ],
       "next_best_evidence": [
-        "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+        "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
       ],
-      "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+      "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
     },
     "recommended_actions": {
       "current_conclusion": "确认安全事件",
@@ -7852,7 +7936,7 @@
         "优先补查：补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。。"
       ],
       "next_best_evidence": [
-        "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+        "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
       ]
     }
   },
@@ -7896,7 +7980,7 @@
     ],
     "upstream_context": "当前可获得的背景提示主要来自家族/工具线索：Suspected cloud-storage exfil chain，与当前观察到的阶段形态 命令与控制、执行、数据外传 基本一致。",
     "investigation_focus": "在 2026-06-03 16:44:00 UTC，资产 `ws-rnd-04` 在异常通信后出现 `7z.exe` 可疑启动，说明异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
-    "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+    "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
   },
   "scope_definition": {
     "investigation_scope": "本轮调查覆盖 2026-06-03 16:28:00 UTC 至 2026-06-03 17:24:40 UTC 内围绕 ws-rnd-04 与 198.51.100.144、api.files-sync-share.net、files-sync-share.net 的关键事件窗。",
@@ -7905,7 +7989,7 @@
     "out_of_scope": "本轮不把未经过独立验证的候选对象 ws-rnd-09、ws-rnd-12 直接写成已确认范围，也不把背景情报直接写成已确认事实。",
     "primary_hypothesis_requirements": "当前主假设至少需要同时满足：种子告警需要能够对应到明确异常起点；同一基础设施的异常通信需要在同资产或关联资产上被再次观察到；事件链需要推进到执行或横向动作，而不只是停留在单点外联；已核查的维护或更新背景不足以解释整条主链；未独立验证的候选对象只能作为边界线索保留，不能直接写成确认影响范围。",
     "primary_hypothesis_failure_conditions": "这条观测更支持背景解释或替代解释，而不是继续放大当前主假设。",
-    "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+    "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
   },
   "coverage_plan": {
     "in_chain_objects": "ws-rnd-04、198.51.100.144、api.files-sync-share.net、files-sync-share.net、t13d190900_44ac2200b3c1_ab11cd22ee44",
@@ -7927,7 +8011,7 @@
     "unconfirmed_links": [
       "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。"
     ],
-    "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+    "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
   },
   "evidence_blocks": {
     "supporting": [
@@ -7938,11 +8022,11 @@
         "fact_text": "在 2026-06-03 16:40:00 UTC，资产 `ws-rnd-04` 围绕 198.51.100.144 / files-sync-share.net 的异常通信触发了种子告警。",
         "reason_text": "这是种子命中的直接落点，说明调查起点并不是孤立的指纹命中。",
         "limitation_text": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
-        "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+        "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -7953,11 +8037,11 @@
         "fact_text": "在 2026-06-03 16:34:20 UTC，资产 `ws-rnd-04` 再次与 198.51.100.144 / files-sync-share.net 通信，说明同一基础设施上的异常仍在持续。",
         "reason_text": "同一基础设施在种子资产或关联资产上再次出现，使单点告警扩展成可复核的连续事件链。",
         "limitation_text": "仅凭网络侧重复通信仍可能在少数情况下被正常组件、同步组件或运维脚本解释，因此仍需要结合资产背景或主机侧结果。",
-        "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+        "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -7968,11 +8052,11 @@
         "fact_text": "在 2026-06-03 16:52:30 UTC，资产 `ws-rnd-04` 先解析了少见域名 `api.files-sync-share.net`，为后续与同一基础设施的通信提供了准备。",
         "reason_text": "同一基础设施在种子资产或关联资产上再次出现，使单点告警扩展成可复核的连续事件链。",
         "limitation_text": "这条观测本身更适合用来补足上下文，而不是单独承担最终结论。",
-        "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+        "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -7983,11 +8067,11 @@
         "fact_text": "在 2026-06-03 16:44:00 UTC，资产 `ws-rnd-04` 在异常通信后出现 `7z.exe` 可疑启动。",
         "reason_text": "它把异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
         "limitation_text": "当前仍缺少更细的命令行、落地文件、持久化或内存证据，因此可以确认存在执行线索，但还不能完整描述具体载荷。",
-        "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+        "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -7998,11 +8082,11 @@
         "fact_text": "在 2026-06-03 16:42:30 UTC，资产 `ws-rnd-04` 在异常通信后出现可疑进程执行。",
         "reason_text": "它把异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
         "limitation_text": "当前仍缺少更细的命令行、落地文件、持久化或内存证据，因此可以确认存在执行线索，但还不能完整描述具体载荷。",
-        "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+        "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -8018,7 +8102,7 @@
           "obs-001",
           "obs-003",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       }
@@ -8035,7 +8119,7 @@
         "observation_ids": [
           "obs-003",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -8046,10 +8130,10 @@
         "fact_text": "在 2026-06-03 17:12:00 UTC，资产 `ws-rnd-04` 与 13.107.136.9 / company-my.sharepoint.com 的访问更接近计划内更新、维护或共享基础设施背景。",
         "reason_text": "这条观测更支持背景解释或替代解释，而不是继续放大当前主假设。",
         "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
-        "source_text": "显式反证检查、关联事件扩查",
+        "source_text": "关联事件扩查、显式反证检查",
         "observation_ids": [
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       }
@@ -8073,7 +8157,7 @@
       "observation_ids": [
         "obs-003",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ]
     },
@@ -8084,10 +8168,10 @@
       "fact_text": "在 2026-06-03 17:12:00 UTC，资产 `ws-rnd-04` 与 13.107.136.9 / company-my.sharepoint.com 的访问更接近计划内更新、维护或共享基础设施背景。",
       "reason_text": "这条观测更支持背景解释或替代解释，而不是继续放大当前主假设。",
       "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
-      "source_text": "显式反证检查、关联事件扩查",
+      "source_text": "关联事件扩查、显式反证检查",
       "observation_ids": [
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ]
     }
@@ -8101,7 +8185,7 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -8112,7 +8196,7 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -8123,7 +8207,7 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -8134,7 +8218,7 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -8145,7 +8229,7 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -8156,7 +8240,7 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -8167,7 +8251,7 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -8178,7 +8262,7 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -8189,7 +8273,7 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -8200,7 +8284,7 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -8212,7 +8296,7 @@
           "obs-001",
           "obs-003",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -8223,7 +8307,7 @@
         "observation_ids": [
           "obs-003",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -8233,7 +8317,7 @@
         "role": "反证检查",
         "observation_ids": [
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ]
       },
@@ -8253,7 +8337,8 @@
         "summary": "资产 `ws-rnd-12`：A lab workstation reached the same IP through a different vendor CDN domain, indicating the IP is not uniquely malicious.",
         "role": "反证检查",
         "observation_ids": [
-          "obs-005",
+          "obs-004",
+          "obs-006",
           "obs-007"
         ]
       }
@@ -8265,7 +8350,7 @@
       "事件链已经从单纯通信异常推进到更高风险的后续动作，风险等级明显上升。",
       "同时间窗也完成了替代解释检查，但现有反证不足以完全推翻主链。"
     ],
-    "source_text": "种子事件窗观测、显式反证检查、关联事件扩查、候选对象情报验证"
+    "source_text": "种子事件窗观测、关联事件扩查、显式反证检查、候选对象情报验证"
   },
   "relationship_analysis": {
     "pivot_text": "files-sync-share.net、api.files-sync-share.net、company-my.sharepoint.com、filesync-cdn.example、198.51.100.144、13.107.136.9、t13d190900_44ac2200b3c1_ab11cd22ee44",
@@ -8301,9 +8386,9 @@
       "当前不适合仅凭背景情报完成基础设施或家族级强归因。"
     ],
     "next_best_evidence": [
-      "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+      "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
     ],
-    "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+    "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
   },
   "recommended_actions": {
     "current_conclusion": "确认安全事件",
@@ -8326,7 +8411,7 @@
       "优先补查：补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。。"
     ],
     "next_best_evidence": [
-      "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+      "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
     ]
   },
   "section_presence": {
@@ -8517,10 +8602,10 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
-        "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+        "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
       },
       {
         "id": "E-02",
@@ -8533,10 +8618,10 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
-        "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+        "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
       },
       {
         "id": "E-03",
@@ -8549,10 +8634,10 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
-        "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+        "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
       },
       {
         "id": "E-04",
@@ -8565,10 +8650,10 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
-        "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+        "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
       },
       {
         "id": "E-05",
@@ -8581,10 +8666,10 @@
         "observation_ids": [
           "obs-001",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
-        "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
+        "source_text": "种子事件窗观测、关联事件扩查、显式反证检查"
       },
       {
         "id": "E-06",
@@ -8598,7 +8683,7 @@
           "obs-001",
           "obs-003",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
         "source_text": "种子事件窗观测、显式反证检查、关联事件扩查"
@@ -8614,7 +8699,7 @@
         "observation_ids": [
           "obs-003",
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
         "source_text": "显式反证检查、关联事件扩查"
@@ -8629,10 +8714,10 @@
         "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
         "observation_ids": [
           "obs-004",
-          "obs-005",
+          "obs-006",
           "obs-007"
         ],
-        "source_text": "显式反证检查、关联事件扩查"
+        "source_text": "关联事件扩查、显式反证检查"
       }
     ],
     "observation_rows": [
@@ -8656,27 +8741,27 @@
       },
       {
         "observation_id": "obs-004",
-        "tool_name": "check_counterevidence",
-        "summary": "显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。",
-        "relation": "counterevidence"
-      },
-      {
-        "observation_id": "obs-005",
         "tool_name": "search_related_events",
         "summary": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
         "relation": "candidate"
       },
       {
-        "observation_id": "obs-006",
+        "observation_id": "obs-005",
         "tool_name": "ground_candidate_event",
         "summary": "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。",
         "relation": "context"
       },
       {
-        "observation_id": "obs-007",
+        "observation_id": "obs-006",
         "tool_name": "search_related_events",
         "summary": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
         "relation": "candidate"
+      },
+      {
+        "observation_id": "obs-007",
+        "tool_name": "check_counterevidence",
+        "summary": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+        "relation": "counterevidence"
       }
     ],
     "section_reference_rows": [
@@ -8762,7 +8847,7 @@
         "gap": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
         "limited_conclusion": "当前不适合仅凭背景情报完成基础设施或家族级强归因。",
         "actionable": "否",
-        "best_query": "该缺口已多轮核查但仍未获得新的有效信息，更适合作为报告未决事项。"
+        "best_query": "该 gap 最近连续相关尝试没有 新的有效信息，更适合作为报告未决事项。"
       }
     ]
   },
@@ -8896,11 +8981,11 @@
       "fact_text": "在 2026-06-03 16:40:00 UTC，资产 `ws-rnd-04` 围绕 198.51.100.144 / files-sync-share.net 的异常通信触发了种子告警。",
       "reason_text": "这是种子命中的直接落点，说明调查起点并不是孤立的指纹命中。",
       "limitation_text": "单条种子命中本身不能独立证明事件成立，仍需要结合重复通信、资产背景或主机侧线索共同定性。",
-      "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+      "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
       "observation_ids": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ]
     },
@@ -8911,11 +8996,11 @@
       "fact_text": "在 2026-06-03 16:34:20 UTC，资产 `ws-rnd-04` 再次与 198.51.100.144 / files-sync-share.net 通信，说明同一基础设施上的异常仍在持续。",
       "reason_text": "同一基础设施在种子资产或关联资产上再次出现，使单点告警扩展成可复核的连续事件链。",
       "limitation_text": "仅凭网络侧重复通信仍可能在少数情况下被正常组件、同步组件或运维脚本解释，因此仍需要结合资产背景或主机侧结果。",
-      "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+      "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
       "observation_ids": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ]
     },
@@ -8926,11 +9011,11 @@
       "fact_text": "在 2026-06-03 16:52:30 UTC，资产 `ws-rnd-04` 先解析了少见域名 `api.files-sync-share.net`，为后续与同一基础设施的通信提供了准备。",
       "reason_text": "同一基础设施在种子资产或关联资产上再次出现，使单点告警扩展成可复核的连续事件链。",
       "limitation_text": "这条观测本身更适合用来补足上下文，而不是单独承担最终结论。",
-      "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+      "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
       "observation_ids": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ]
     },
@@ -8941,11 +9026,11 @@
       "fact_text": "在 2026-06-03 16:44:00 UTC，资产 `ws-rnd-04` 在异常通信后出现 `7z.exe` 可疑启动。",
       "reason_text": "它把异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
       "limitation_text": "当前仍缺少更细的命令行、落地文件、持久化或内存证据，因此可以确认存在执行线索，但还不能完整描述具体载荷。",
-      "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+      "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
       "observation_ids": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ]
     },
@@ -8956,11 +9041,11 @@
       "fact_text": "在 2026-06-03 16:42:30 UTC，资产 `ws-rnd-04` 在异常通信后出现可疑进程执行。",
       "reason_text": "它把异常从通信层推进到主机执行或其他更高风险阶段，对事件定性的权重明显更高。",
       "limitation_text": "当前仍缺少更细的命令行、落地文件、持久化或内存证据，因此可以确认存在执行线索，但还不能完整描述具体载荷。",
-      "source_text": "种子事件窗观测、显式反证检查、关联事件扩查",
+      "source_text": "种子事件窗观测、关联事件扩查、显式反证检查",
       "observation_ids": [
         "obs-001",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ]
     },
@@ -8976,7 +9061,7 @@
         "obs-001",
         "obs-003",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ]
     }
@@ -8993,7 +9078,7 @@
       "observation_ids": [
         "obs-003",
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ]
     },
@@ -9004,10 +9089,10 @@
       "fact_text": "在 2026-06-03 17:12:00 UTC，资产 `ws-rnd-04` 与 13.107.136.9 / company-my.sharepoint.com 的访问更接近计划内更新、维护或共享基础设施背景。",
       "reason_text": "这条观测更支持背景解释或替代解释，而不是继续放大当前主假设。",
       "limitation_text": "这类背景解释能够帮助收窄判断，但如果后续出现脱离基线的重复通信、执行线索或跨资产异常，它本身并不能永久关闭事件。",
-      "source_text": "显式反证检查、关联事件扩查",
+      "source_text": "关联事件扩查、显式反证检查",
       "observation_ids": [
         "obs-004",
-        "obs-005",
+        "obs-006",
         "obs-007"
       ]
     }

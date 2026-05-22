@@ -29,7 +29,7 @@
 ## Constraint Packet
 - 边界陈述：当前确认范围收敛在 web-app-01、app-db-01；web-app-03 保持待确认状态。
 - 未闭合问题：扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？；补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。
-- 反证与替代解释：显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。
+- 反证与替代解释：显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。
 
 ## Action Packet
 - 立即动作：优先隔离或重点监控已确认受影响资产：web-app-01、app-db-01；在边界和代理设备上排查并封禁外部基础设施：198.51.100.88、cdn-auth-check.net
@@ -60,7 +60,7 @@
 - `fact-scope-obj-04` [已确认关联基础设施]：对象 `198.51.100.88` 当前作为已确认关联基础设施纳入主证据链。；书写边界：只应写入外联判断或边界封禁动作，不写成已确认受影响范围
 - `fact-scope-obj-05` [已确认关联基础设施]：对象 `cdn-auth-check.net` 当前作为已确认关联基础设施纳入主证据链。；书写边界：只应写入外联判断或边界封禁动作，不写成已确认受影响范围
 ### 反证事实
-- `fact-counter-cl-05` [替代解释]：显式反证检查发现 2 条更接近维护、更新、补丁或备份背景的事件。；书写边界：要解释为何不足以推翻主判断，而不是只罗列背景事件
+- `fact-counter-cl-10` [替代解释]：显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。；书写边界：要解释为何不足以推翻主判断，而不是只罗列背景事件
 ### 缺口事实
 - `fact-gap-validate_candidate_events` [交付边界]：当前仍需对“扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？”补充独立确认。；书写边界：限制范围继续扩大，但不否定当前主结论
 - `fact-gap-ground_external_context` [交付边界]：当前仍需对“补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。”补充独立确认。；书写边界：限制范围继续扩大，但不否定当前主结论
@@ -82,7 +82,7 @@
 ### 2. 范围界定与调查假设
 - 本节目标：说明调查锚点、已确认受影响范围和待确认对象各落在哪里，以及为什么边界停在这里。
 - 可引用 packets：scope_packet；constraint_packet
-- 优先引用事实 ID（按顺序）：fact-scope-obj-01；fact-scope-obj-02；fact-scope-obj-04；fact-scope-obj-05；fact-scope-obj-03；fact-gap-validate_candidate_events；fact-counter-cl-05
+- 优先引用事实 ID（按顺序）：fact-scope-obj-01；fact-scope-obj-02；fact-scope-obj-04；fact-scope-obj-05；fact-scope-obj-03；fact-gap-validate_candidate_events；fact-counter-cl-10
 ### 3. 对象覆盖策略与关键实体
 - 本节目标：区分调查锚点、已确认受影响对象、待确认对象、核心外部基础设施和背景指标，只点关键对象。
 - 可引用 packets：scope_packet
@@ -94,7 +94,7 @@
 ### 5. 关键证据与异常事实
 - 本节目标：只抓最关键的支撑事实与反证边界，写清它们为什么改变判断。
 - 可引用 packets：verdict_packet；constraint_packet
-- 优先引用事实 ID（按顺序）：fact-event-evt-304；fact-event-evt-311；fact-event-evt-307；fact-event-evt-309；fact-counter-cl-05
+- 优先引用事实 ID（按顺序）：fact-event-evt-304；fact-event-evt-311；fact-event-evt-307；fact-event-evt-309；fact-counter-cl-10
 ### 6. 时序特征与行为模式
 - 本节目标：只保留少量关键时间节点，并说明这些节点对判断意味着什么。
 - 可引用 packets：verdict_packet；constraint_packet
@@ -110,7 +110,7 @@
 ### 9. 证据链摘要与观测缺口
 - 本节目标：说明判断上限、当前仍未闭合的缺口，以及为什么这些缺口没有推翻主判断。
 - 可引用 packets：constraint_packet
-- 优先引用事实 ID（按顺序）：fact-gap-validate_candidate_events；fact-gap-ground_external_context；fact-counter-cl-05；fact-event-evt-313；fact-event-evt-316
+- 优先引用事实 ID（按顺序）：fact-gap-validate_candidate_events；fact-gap-ground_external_context；fact-counter-cl-10；fact-event-evt-313；fact-event-evt-316
 ### 10. 结论与后续建议
 - 本节目标：按立即处置、短期核查、持续复核三类写动作建议，并回扣前文证据边界。
 - 可引用 packets：verdict_packet；action_packet；constraint_packet
@@ -118,7 +118,7 @@
 ### 11. 技术附录提示
 - 本节目标：只提示附录里有哪些技术明细可以进一步查阅，不重复附录内容。
 - 可引用 packets：scope_packet；constraint_packet
-- 优先引用事实 ID（按顺序）：fact-counter-cl-05；fact-gap-validate_candidate_events
+- 优先引用事实 ID（按顺序）：fact-counter-cl-10；fact-gap-validate_candidate_events
 
 ## Writing Priorities
 - 第1、2、4、5、7、8、9节默认写成连续短段落，不要把正文写成 fact card 清单。

@@ -3980,6 +3980,7 @@
       "zero_delta_attempt_count": 0,
       "last_attempt_step": 5,
       "last_attempt_tool": "ground_candidate_event",
+      "recent_materially_stalled": true,
       "recent_attempts": [
         {
           "step_index": 4,
@@ -4001,10 +4002,11 @@
         "local_intel_lookup"
       ],
       "status": "reportable_unresolved",
-      "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+      "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
       "actionable_now": false,
       "first_seen_step": 3,
       "last_seen_step": 9,
+      "blocks_delivery_now": false,
       "source_id": "gap:validate_candidate_events",
       "source_layers": [
         "incident_state.gap_ledger",
@@ -4024,10 +4026,9 @@
         "infra_context",
         "structured_intel"
       ],
-      "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
-      "blocks_delivery_now": false,
+      "next_best_query": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
       "gate_type": "reportable_limit",
-      "next_best_question": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+      "next_best_question": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
     },
     {
       "id": "ground_external_context",
@@ -4046,12 +4047,14 @@
         "补足外部技术背景",
         "明确背景情报不等于本案强归因"
       ],
+      "blocks_delivery_now": false,
       "attempt_count": 3,
       "material_attempt_count": 0,
       "editorial_only_attempt_count": 2,
       "zero_delta_attempt_count": 1,
       "last_attempt_step": 5,
       "last_attempt_tool": "ground_candidate_event",
+      "recent_materially_stalled": true,
       "recent_attempts": [
         {
           "step_index": 2,
@@ -4080,7 +4083,7 @@
         "local_intel_lookup"
       ],
       "status": "reportable_unresolved",
-      "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+      "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
       "actionable_now": false,
       "first_seen_step": 1,
       "last_seen_step": 9,
@@ -4101,10 +4104,9 @@
         "external_intel",
         "family_validation"
       ],
-      "next_best_query": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
-      "blocks_delivery_now": false,
+      "next_best_query": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
       "gate_type": "reportable_limit",
-      "next_best_question": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+      "next_best_question": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
     },
     {
       "id": "check_counterevidence",
@@ -4127,6 +4129,7 @@
       "editorial_only_attempt_count": 0,
       "zero_delta_attempt_count": 0,
       "last_attempt_step": 0,
+      "recent_materially_stalled": false,
       "status": "closed",
       "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
       "actionable_now": false,
@@ -4170,6 +4173,7 @@
       "zero_delta_attempt_count": 0,
       "last_attempt_step": 7,
       "last_attempt_tool": "expand_asset_scope",
+      "recent_materially_stalled": false,
       "recent_attempts": [
         {
           "step_index": 3,
@@ -4236,6 +4240,7 @@
       "editorial_only_attempt_count": 0,
       "zero_delta_attempt_count": 0,
       "last_attempt_step": 0,
+      "recent_materially_stalled": false,
       "status": "closed",
       "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
       "actionable_now": false,
@@ -4273,11 +4278,13 @@
         "确认是否存在主机侧执行线索",
         "或保留为主机侧待确认事项"
       ],
+      "blocks_delivery_now": false,
       "attempt_count": 0,
       "material_attempt_count": 0,
       "editorial_only_attempt_count": 0,
       "zero_delta_attempt_count": 0,
       "last_attempt_step": 0,
+      "recent_materially_stalled": false,
       "status": "closed",
       "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
       "actionable_now": false,
@@ -4319,6 +4326,7 @@
       "editorial_only_attempt_count": 0,
       "zero_delta_attempt_count": 0,
       "last_attempt_step": 0,
+      "recent_materially_stalled": false,
       "status": "closed",
       "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
       "actionable_now": false,
@@ -4361,6 +4369,7 @@
       "editorial_only_attempt_count": 0,
       "zero_delta_attempt_count": 0,
       "last_attempt_step": 0,
+      "recent_materially_stalled": false,
       "status": "closed",
       "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
       "actionable_now": false,
@@ -4398,11 +4407,13 @@
         "补足家族提示支撑",
         "或明确仅作弱提示引用"
       ],
+      "blocks_delivery_now": false,
       "attempt_count": 0,
       "material_attempt_count": 0,
       "editorial_only_attempt_count": 0,
       "zero_delta_attempt_count": 0,
       "last_attempt_step": 0,
+      "recent_materially_stalled": false,
       "status": "closed",
       "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
       "actionable_now": false,

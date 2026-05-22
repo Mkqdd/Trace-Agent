@@ -62,6 +62,12 @@
       "validate_family_hint"
     ],
     "blocking_gap_ids": [],
+    "reportable_gap_ids": [
+      "execution_gap",
+      "related_assets_review",
+      "ground_external_context",
+      "validate_family_hint"
+    ],
     "action_ids": [
       "action:asset_scope",
       "action:background_validation",
@@ -115,7 +121,7 @@
           "candidate_spread",
           "insufficient_evidence_limits"
         ],
-        "reason": "关联资产 web-app-05 是否真正受影响？; 该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。; 仍需确认事件涉及的关键资产。; 该 gap 已不再出现在当前 canonical gap 集合中。",
+        "reason": "关联资产 web-app-05 是否真正受影响？; 该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。; 仍需确认事件涉及的关键资产。; 该 gap 已不再出现在当前 canonical gap 集合中。",
         "candidate_kind": "planned"
       }
     },
@@ -183,7 +189,7 @@
           "candidate_spread",
           "insufficient_evidence_limits"
         ],
-        "reason": "关联资产 web-app-05 是否真正受影响？; 该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。; 仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。; 该 gap 已不再出现在当前 canonical gap 集合中。",
+        "reason": "关联资产 web-app-05 是否真正受影响？; 该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。; 仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。; 该 gap 已不再出现在当前 canonical gap 集合中。",
         "candidate_kind": "planned"
       }
     },
@@ -416,7 +422,7 @@
         "target_hypotheses": [
           "insufficient_evidence_limits"
         ],
-        "reason": "是否存在主机侧执行、持久化或横向移动证据？; 当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+        "reason": "是否存在主机侧执行、持久化或横向移动证据？; 该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "candidate_kind": "planned"
       }
     },
@@ -484,7 +490,7 @@
           "candidate_spread",
           "insufficient_evidence_limits"
         ],
-        "reason": "关联资产 web-app-05 是否真正受影响？; 该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。; 仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。; 该 gap 已不再出现在当前 canonical gap 集合中。",
+        "reason": "关联资产 web-app-05 是否真正受影响？; 该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。; 仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。; 该 gap 已不再出现在当前 canonical gap 集合中。",
         "candidate_kind": "planned"
       }
     },
@@ -1129,6 +1135,7 @@
         "delivery_blocking": true,
         "actionable_now": false,
         "blocks_delivery_now": true,
+        "reportable_only": false,
         "target_hypotheses": [
           "insufficient_evidence_limits"
         ],
@@ -1163,6 +1170,7 @@
         "delivery_blocking": true,
         "actionable_now": false,
         "blocks_delivery_now": true,
+        "reportable_only": false,
         "target_hypotheses": [
           "benign_or_shared_infra_alternative"
         ],
@@ -1176,7 +1184,7 @@
       "node_id": "gap:execution_gap",
       "node_type": "gap",
       "label": "是否存在主机侧执行、持久化或横向移动证据？",
-      "status": "reportable_unresolved",
+      "status": "unresolved_but_deliverable",
       "boundary": true,
       "source_ids": [
         "execution_gap"
@@ -1192,11 +1200,12 @@
       ],
       "properties": {
         "question": "是否存在主机侧执行、持久化或横向移动证据？",
-        "status_reason": "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "priority": "medium",
         "delivery_blocking": false,
         "actionable_now": false,
         "blocks_delivery_now": false,
+        "reportable_only": true,
         "target_hypotheses": [
           "insufficient_evidence_limits"
         ],
@@ -1230,6 +1239,7 @@
         "delivery_blocking": true,
         "actionable_now": false,
         "blocks_delivery_now": true,
+        "reportable_only": false,
         "target_hypotheses": [
           "candidate_spread",
           "insufficient_evidence_limits"
@@ -1244,7 +1254,7 @@
       "node_id": "gap:ground_external_context",
       "node_type": "gap",
       "label": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
-      "status": "reportable_unresolved",
+      "status": "unresolved_but_deliverable",
       "boundary": true,
       "source_ids": [
         "ground_external_context"
@@ -1265,6 +1275,7 @@
         "delivery_blocking": false,
         "actionable_now": false,
         "blocks_delivery_now": false,
+        "reportable_only": true,
         "target_hypotheses": [
           "benign_or_shared_infra_alternative"
         ],
@@ -1300,6 +1311,7 @@
         "delivery_blocking": true,
         "actionable_now": false,
         "blocks_delivery_now": true,
+        "reportable_only": false,
         "target_hypotheses": [
           "insufficient_evidence_limits"
         ],
@@ -1313,7 +1325,7 @@
       "node_id": "gap:related_assets_review",
       "node_type": "gap",
       "label": "关联资产 web-app-05 是否真正受影响？",
-      "status": "reportable_unresolved",
+      "status": "unresolved_but_deliverable",
       "boundary": true,
       "source_ids": [
         "related_assets_review"
@@ -1329,11 +1341,12 @@
       ],
       "properties": {
         "question": "关联资产 web-app-05 是否真正受影响？",
-        "status_reason": "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。",
+        "status_reason": "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。",
         "priority": "medium",
         "delivery_blocking": true,
         "actionable_now": false,
-        "blocks_delivery_now": true,
+        "blocks_delivery_now": false,
+        "reportable_only": true,
         "target_hypotheses": [
           "candidate_spread",
           "insufficient_evidence_limits"
@@ -1370,6 +1383,7 @@
         "delivery_blocking": true,
         "actionable_now": false,
         "blocks_delivery_now": true,
+        "reportable_only": false,
         "target_hypotheses": [
           "insufficient_evidence_limits"
         ],
@@ -1384,7 +1398,7 @@
       "node_id": "gap:validate_family_hint",
       "node_type": "gap",
       "label": "seed 自带的家族提示 Possible web beacon without host corroboration 是否有更多外部证据支撑？",
-      "status": "reportable_unresolved",
+      "status": "unresolved_but_deliverable",
       "boundary": true,
       "source_ids": [
         "validate_family_hint"
@@ -1405,6 +1419,7 @@
         "delivery_blocking": false,
         "actionable_now": false,
         "blocks_delivery_now": false,
+        "reportable_only": true,
         "target_hypotheses": [],
         "target_actions": [
           "family_validation",

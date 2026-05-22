@@ -68,6 +68,16 @@ Failure means the hypothesis is present but does not control anything. Treat it 
 
 Tests and evals for hypothesis features should include negative or control cases whenever practical. A useful test should show not only when a hypothesis is supported, but also when it stays unresolved, is rejected, or should not affect delivery.
 
+## Experiment Split Discipline
+
+For the current 5-case incident evaluation, use a fixed 3/2 split before judging a change: three cases are the development set, and two cases are the holdout validation set. Record the concrete split in the eval notes, run folder, PR description, or review notes before comparing results. Do not change the split after seeing outcomes.
+
+Development-set failures may drive targeted investigation and targeted fixes, but the fix must still be expressed as a general mechanism: schema handling, evidence normalization, tool metadata quality, ranking logic, validator semantics, prompt contract, or report grounding. Do not encode fixture names, hostnames, domains, hashes, timestamps, event ids, paragraph wording, or other case-local details.
+
+Holdout cases are for validation only. If a holdout case performs poorly, inspect artifacts to identify the failing boundary, but do not tune directly against that case. A holdout failure should trigger an architecture-level hypothesis and a general change that would be expected to help future unseen cases, not a narrow patch that makes the visible holdout report look better.
+
+Treat an experiment as successful only when the development cases improve for the stated mechanism and the holdout cases do not regress on evidence boundaries, delivery correctness, source grounding, and reportable uncertainty. Treat it as failed or unproven if the improvement appears only on the development cases, depends on case-specific strings or fixture shape, makes holdout behavior worse, or cannot be traced to a real decision change.
+
 ## Report Pipeline Boundaries
 
 - `report_source_bundle` is the factual input boundary.

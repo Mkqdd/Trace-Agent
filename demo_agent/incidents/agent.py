@@ -1859,9 +1859,19 @@ def _material_gap_view(seed_event: Dict[str, Any], session_state: Dict[str, Any]
             if not bool(_tool_recent_stats(session_state, tool_name).get("materially_depleted"))
         ]
         attempt_stats = _gap_attempt_stats(session_state, gap, after_step=int(prior_gap.get("first_seen_step") or 0))
+        recent_materially_stalled = bool(attempt_stats.get("recent_materially_stalled"))
         status = "open"
         status_reason = ""
         if (
+            bool(gap.get("reportable_if_unresolved"))
+            and recent_materially_stalled
+            and int(attempt_stats.get("attempt_count") or 0) >= 2
+        ):
+            actionable_tools = []
+            status = "reportable_unresolved"
+            status_reason = "该 gap 最近连续相关尝试没有 material delta，更适合作为报告未决事项。"
+            gap["blocks_delivery_now"] = False
+        elif (
             bool(gap.get("reportable_if_unresolved"))
             and int(attempt_stats.get("attempt_count") or 0) >= 2
             and int(attempt_stats.get("material_attempt_count") or 0) <= 0
@@ -1869,12 +1879,14 @@ def _material_gap_view(seed_event: Dict[str, Any], session_state: Dict[str, Any]
             actionable_tools = []
             status = "reportable_unresolved"
             status_reason = "该 gap 已经过多轮相关尝试但没有 material delta，更适合作为报告未决事项。"
+            gap["blocks_delivery_now"] = False
         elif not actionable_tools and addressable_tools:
             status = "stalled"
             status_reason = "存在理论上相关的工具，但它们近期已经进入低收益状态。"
         elif not addressable_tools and bool(gap.get("reportable_if_unresolved")):
             status = "reportable_unresolved"
             status_reason = "当前没有仍然适合继续缩小该 gap 的工具，更适合作为报告边界说明。"
+            gap["blocks_delivery_now"] = False
         elif not addressable_tools:
             status = "open_unaddressable"
             status_reason = "当前工具面还不足以继续缩小该 gap。"
@@ -1884,6 +1896,7 @@ def _material_gap_view(seed_event: Dict[str, Any], session_state: Dict[str, Any]
         gap["zero_delta_attempt_count"] = int(attempt_stats.get("zero_delta_attempt_count") or 0)
         gap["last_attempt_step"] = int(attempt_stats.get("last_attempt_step") or 0)
         gap["last_attempt_tool"] = str(attempt_stats.get("last_attempt_tool") or "").strip()
+        gap["recent_materially_stalled"] = recent_materially_stalled
         gap["recent_attempts"] = list(attempt_stats.get("recent_runs") or [])
         gap["addressable_tools"] = addressable_tools
         gap["actionable_tools"] = actionable_tools
@@ -7675,9 +7688,12 @@ def _stop_decision(
     delivery_decision = dict(finalized.get("delivery_decision") or incident_state.get("delivery_decision") or {})
     blocking_gaps = [dict(item) for item in list(delivery_decision.get("blocking_gaps") or [])]
     actionable_gaps = [dict(item) for item in list(acceptance_state.get("actionable_gaps") or [])]
+    blocking_actionable_gaps = [dict(item) for item in list(acceptance_state.get("blocking_actionable_gaps") or [])]
     value_of_information = dict(control_summary.get("value_of_information") or session_state.get("value_of_information") or {})
     value_level = str(value_of_information.get("level") or "").strip()
     high_value_action_available = bool(str(value_of_information.get("best_action") or "").strip() and value_level in {"high", "medium"})
+    value_stop_recommendation = dict(control_summary.get("value_of_information_stop_recommendation") or {})
+    value_prefers_stop = value_level in {"low", "exhausted"} or bool(value_stop_recommendation.get("should_stop"))
     insufficient_progress_signals = [
         str(item).strip()
         for item in list(
@@ -7690,6 +7706,7 @@ def _stop_decision(
     acceptance_prefers_stop = bool(acceptance_state.get("preferred_stop"))
     ready_for_delivery = bool(acceptance_state.get("ready_for_delivery"))
     has_actionable_path = bool(actionable_gaps)
+    only_boundary_actionable_path = has_actionable_path and not blocking_actionable_gaps
     is_stalled = bool(insufficient_progress_signals) and not has_actionable_path and not acceptance_prefers_stop
     post_action_stop = _post_action_stop_signal(session_state)
     post_action_recommends_stop = bool(post_action_stop.get("should_stop"))
@@ -7707,6 +7724,24 @@ def _stop_decision(
         and ready_for_delivery
         and not blocking_gaps
         and not has_actionable_path
+        and not high_value_action_available
+    ):
+        return _stop_result(
+            stop=True,
+            reason=STOP_REASON_DELIVERY_READY,
+            secondary_stop_reasons=budget_stop_reasons,
+            ready_for_delivery=ready_for_delivery,
+            has_actionable_path=has_actionable_path,
+            blocking_gap_count=len(blocking_gaps),
+        )
+    if (
+        decision_mode == DECISION_MODE_LLM_AGENT
+        and
+        int(session_state.get("step_index") or 0) >= 2
+        and ready_for_delivery
+        and not blocking_gaps
+        and only_boundary_actionable_path
+        and value_prefers_stop
         and not high_value_action_available
     ):
         return _stop_result(

@@ -1,0 +1,157 @@
+{
+  "version": "2.0",
+  "title": "事件级溯源拓扑",
+  "nodes": [
+    {
+      "id": "fp:ja4:t13d190900_7711aa22bb33_9911ccddee77",
+      "label": "JA4 t13d190900_7711aa22bb33_9911ccddee77",
+      "type": "fingerprint_ja4"
+    },
+    {
+      "id": "asset:ws-legal-03",
+      "label": "ws-legal-03",
+      "type": "internal_host"
+    },
+    {
+      "id": "asset:ws-legal-09",
+      "label": "ws-legal-09",
+      "type": "internal_host"
+    },
+    {
+      "id": "ip:198.51.100.131",
+      "label": "198.51.100.131",
+      "type": "external_ip"
+    },
+    {
+      "id": "domain:auth-queue-sync.net",
+      "label": "auth-queue-sync.net",
+      "type": "domain"
+    },
+    {
+      "id": "domain:cdn-auth-queue.net",
+      "label": "cdn-auth-queue.net",
+      "type": "domain"
+    },
+    {
+      "id": "domain:identity-cache.vendor.example",
+      "label": "identity-cache.vendor.example",
+      "type": "domain"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:evt-701:asset-fp",
+      "source": "asset:ws-legal-03",
+      "target": "fp:ja4:t13d190900_7711aa22bb33_9911ccddee77",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-702:asset-ip",
+      "source": "asset:ws-legal-03",
+      "target": "ip:198.51.100.131",
+      "label": "alert"
+    },
+    {
+      "id": "edge:evt-702:ip-domain",
+      "source": "ip:198.51.100.131",
+      "target": "domain:auth-queue-sync.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-702:asset-fp",
+      "source": "asset:ws-legal-03",
+      "target": "fp:ja4:t13d190900_7711aa22bb33_9911ccddee77",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-703:asset-ip",
+      "source": "asset:ws-legal-03",
+      "target": "ip:198.51.100.131",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-703:ip-domain",
+      "source": "ip:198.51.100.131",
+      "target": "domain:auth-queue-sync.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-703:asset-fp",
+      "source": "asset:ws-legal-03",
+      "target": "fp:ja4:t13d190900_7711aa22bb33_9911ccddee77",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-704:asset-ip",
+      "source": "asset:ws-legal-03",
+      "target": "ip:198.51.100.131",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-704:ip-domain",
+      "source": "ip:198.51.100.131",
+      "target": "domain:auth-queue-sync.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-704:asset-fp",
+      "source": "asset:ws-legal-03",
+      "target": "fp:ja4:t13d190900_7711aa22bb33_9911ccddee77",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-705:asset-fp",
+      "source": "asset:ws-legal-03",
+      "target": "fp:ja4:t13d190900_7711aa22bb33_9911ccddee77",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-706:asset-ip",
+      "source": "asset:ws-legal-09",
+      "target": "ip:198.51.100.131",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-706:ip-domain",
+      "source": "ip:198.51.100.131",
+      "target": "domain:cdn-auth-queue.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-706:asset-fp",
+      "source": "asset:ws-legal-09",
+      "target": "fp:ja4:t13d190900_7711aa22bb33_9911ccddee77",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-707:asset-fp",
+      "source": "asset:ws-legal-09",
+      "target": "fp:ja4:t13d190900_7711aa22bb33_9911ccddee77",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-708:asset-ip",
+      "source": "asset:ws-legal-09",
+      "target": "ip:198.51.100.131",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-708:ip-domain",
+      "source": "ip:198.51.100.131",
+      "target": "domain:identity-cache.vendor.example",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-708:asset-fp",
+      "source": "asset:ws-legal-09",
+      "target": "fp:ja4:t13d190900_7711aa22bb33_9911ccddee77",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-715:asset-fp",
+      "source": "asset:ws-legal-09",
+      "target": "fp:ja4:t13d190900_7711aa22bb33_9911ccddee77",
+      "label": "seed_indicator"
+    }
+  ]
+}
