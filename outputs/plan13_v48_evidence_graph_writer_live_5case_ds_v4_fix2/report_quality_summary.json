@@ -1,0 +1,125 @@
+{
+  "root": "outputs/plan13_v48_evidence_graph_writer_live_5case_ds_v4_fix2",
+  "cases": [
+    {
+      "case": "multi_host_confirmed_spread_plus",
+      "writer_mode": "evidence_graph",
+      "report_chars": 13195,
+      "report_lines": 242,
+      "validation_status": "clean",
+      "validation_issues": {
+        "hard_fail": 0,
+        "soft_warn": 0
+      },
+      "material_status": "skipped_evidence_graph_writer",
+      "material_agent_bypassed": true,
+      "mentions_candidate": true,
+      "mentions_boundary": true,
+      "mentions_action_fields": true,
+      "manual_scores": {
+        "factual_grounding": null,
+        "boundary_correctness": null,
+        "actionability": null,
+        "analytical_depth": null,
+        "non_repetition": null,
+        "operator_readability": null
+      }
+    },
+    {
+      "case": "shared_infra_multi_asset_needs_review",
+      "writer_mode": "evidence_graph",
+      "report_chars": 14696,
+      "report_lines": 247,
+      "validation_status": "clean",
+      "validation_issues": {
+        "hard_fail": 0,
+        "soft_warn": 0
+      },
+      "material_status": "skipped_evidence_graph_writer",
+      "material_agent_bypassed": true,
+      "mentions_candidate": true,
+      "mentions_boundary": true,
+      "mentions_action_fields": true,
+      "manual_scores": {
+        "factual_grounding": null,
+        "boundary_correctness": null,
+        "actionability": null,
+        "analytical_depth": null,
+        "non_repetition": null,
+        "operator_readability": null
+      }
+    },
+    {
+      "case": "suspected_exfil_after_execution",
+      "writer_mode": "evidence_graph",
+      "report_chars": 13588,
+      "report_lines": 222,
+      "validation_status": "clean",
+      "validation_issues": {
+        "hard_fail": 0,
+        "soft_warn": 0
+      },
+      "material_status": "skipped_evidence_graph_writer",
+      "material_agent_bypassed": true,
+      "mentions_candidate": true,
+      "mentions_boundary": true,
+      "mentions_action_fields": true,
+      "manual_scores": {
+        "factual_grounding": null,
+        "boundary_correctness": null,
+        "actionability": null,
+        "analytical_depth": null,
+        "non_repetition": null,
+        "operator_readability": null
+      }
+    },
+    {
+      "case": "web_initial_access_to_beacon",
+      "writer_mode": "evidence_graph",
+      "report_chars": 14126,
+      "report_lines": 233,
+      "validation_status": "clean",
+      "validation_issues": {
+        "hard_fail": 0,
+        "soft_warn": 0
+      },
+      "material_status": "skipped_evidence_graph_writer",
+      "material_agent_bypassed": true,
+      "mentions_candidate": true,
+      "mentions_boundary": true,
+      "mentions_action_fields": true,
+      "manual_scores": {
+        "factual_grounding": null,
+        "boundary_correctness": null,
+        "actionability": null,
+        "analytical_depth": null,
+        "non_repetition": null,
+        "operator_readability": null
+      }
+    },
+    {
+      "case": "web_initial_access_without_execution",
+      "writer_mode": "evidence_graph",
+      "report_chars": 13859,
+      "report_lines": 245,
+      "validation_status": "clean",
+      "validation_issues": {
+        "hard_fail": 0,
+        "soft_warn": 0
+      },
+      "material_status": "skipped_evidence_graph_writer",
+      "material_agent_bypassed": true,
+      "mentions_candidate": true,
+      "mentions_boundary": true,
+      "mentions_action_fields": true,
+      "manual_scores": {
+        "factual_grounding": null,
+        "boundary_correctness": null,
+        "actionability": null,
+        "analytical_depth": null,
+        "non_repetition": null,
+        "operator_readability": null
+      }
+    }
+  ]
+}

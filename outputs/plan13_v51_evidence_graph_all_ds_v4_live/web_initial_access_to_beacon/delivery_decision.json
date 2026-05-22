@@ -1,0 +1,219 @@
+{
+  "schema_version": "delivery-decision-v1",
+  "approved": true,
+  "delivery_status": "confirmed_incident",
+  "delivery_status_label": "确认安全事件",
+  "confidence_band": "高",
+  "confirmed_scope": [
+    "web-app-01",
+    "app-db-01"
+  ],
+  "candidate_scope": [],
+  "blocking_gaps": [],
+  "non_blocking_gaps": [
+    {
+      "gap_id": "expand_cluster_scope",
+      "question": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "priority": "high",
+      "status": "unresolved_but_deliverable",
+      "status_reason": "该 gap 当前只限制边界说明，不再阻塞核心结论交付。",
+      "delivery_blocking": true,
+      "actionable_now": true,
+      "blocks_delivery_now": false,
+      "gate_type": "reportable_limit",
+      "next_best_question": "仍需围绕当前 枢纽 做一次显式扩线，确认是否存在同指标的更大范围复现。"
+    },
+    {
+      "gap_id": "validate_candidate_events",
+      "question": "扩线得到的 3 条关联事件尚未完成独立验证，是否应并入主事件范围？",
+      "priority": "high",
+      "status": "unresolved_but_deliverable",
+      "status_reason": "该 gap 当前只限制边界说明，不再阻塞核心结论交付。",
+      "delivery_blocking": true,
+      "actionable_now": true,
+      "blocks_delivery_now": false,
+      "gate_type": "reportable_limit",
+      "next_best_question": "扩线得到的 3 条关联事件尚未完成独立验证，是否应并入主事件范围？"
+    },
+    {
+      "gap_id": "ground_external_context",
+      "question": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+      "priority": "low",
+      "status": "open",
+      "status_reason": "",
+      "delivery_blocking": false,
+      "actionable_now": true,
+      "blocks_delivery_now": false,
+      "gate_type": "reportable_limit",
+      "next_best_question": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。"
+    },
+    {
+      "gap_id": "check_counterevidence",
+      "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "priority": "medium",
+      "status": "unresolved_but_deliverable",
+      "status_reason": "该 gap 当前只限制边界说明，不再阻塞核心结论交付。",
+      "delivery_blocking": true,
+      "actionable_now": true,
+      "blocks_delivery_now": false,
+      "gate_type": "reportable_limit",
+      "next_best_question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。"
+    },
+    {
+      "gap_id": "structure_evidence",
+      "question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+      "priority": "medium",
+      "status": "unresolved_but_deliverable",
+      "status_reason": "该 gap 当前只限制边界说明，不再阻塞核心结论交付。",
+      "delivery_blocking": true,
+      "actionable_now": true,
+      "blocks_delivery_now": false,
+      "gate_type": "reviewer_judgment",
+      "next_best_question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。"
+    }
+  ],
+  "next_best_questions": [
+    "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+    "扩线得到的 3 条关联事件尚未完成独立验证，是否应并入主事件范围？",
+    "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+    "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+    "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。"
+  ],
+  "reviewer_rationale": "主支撑证据和范围已达到确认事件交付门槛；剩余候选扩线、反证或背景材料应作为报告边界呈现。",
+  "insufficient_progress_signals": [],
+  "delivery_verdict": {
+    "status": "confirmed_incident",
+    "status_label": "确认安全事件",
+    "confidence": 94,
+    "severity": "高危",
+    "rationale": [
+      "事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。",
+      "seed alert 自带家族/工具提示：Confirmed web initial access to beacon chain。",
+      "主支撑证据和范围已达到确认事件交付门槛；剩余候选扩线、反证或背景材料应作为报告边界呈现。"
+    ],
+    "delivery_ready": true,
+    "blocked_by": [],
+    "provisional_status": "confirmed_incident",
+    "provisional_status_label": "确认事件"
+  },
+  "analysis_verdict": {
+    "status": "confirmed_incident",
+    "status_label": "确认事件",
+    "confidence": 94,
+    "severity": "高危",
+    "rationale": [
+      "事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。",
+      "seed alert 自带家族/工具提示：Confirmed web initial access to beacon chain。"
+    ]
+  },
+  "readiness": {
+    "ready_for_delivery": true,
+    "summary": "主支撑证据和范围已达到确认事件交付门槛；剩余候选扩线、反证或背景材料应作为报告边界呈现。",
+    "checks": [
+      {
+        "id": "context_built",
+        "ok": true,
+        "reason": "已围绕 seed alert 建立最小上下文。",
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
+      },
+      {
+        "id": "cluster_built",
+        "ok": true,
+        "reason": "事件簇规模已经足以支撑时间线和范围判断。",
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
+      },
+      {
+        "id": "candidate_events_grounded",
+        "ok": false,
+        "reason": "仍有候选事件未独立验证，但它们当前只限制扩展边界，不再阻塞核心结论交付。",
+        "delivery_blocking": false,
+        "gate_type": "reportable_limit",
+        "suggested_report_boundary": "候选事件只能写入待确认范围或报告边界，不能并入已确认传播结论。",
+        "actionable_now": false
+      },
+      {
+        "id": "timeline_built",
+        "ok": true,
+        "reason": "已形成时间线，可解释关键观察的先后关系。",
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
+      },
+      {
+        "id": "scope_assessed",
+        "ok": true,
+        "reason": "当前事件范围已经落到资产或核心外部指示物上。",
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
+      },
+      {
+        "id": "evidence_chain_ready",
+        "ok": true,
+        "reason": "确认事件前至少需要执行、横向移动、外传等高风险阶段，或已经保守收敛到多资产范围，目前该条件已满足。",
+        "delivery_blocking": true,
+        "gate_type": "hard_blocker",
+        "suggested_report_boundary": "",
+        "actionable_now": false
+      },
+      {
+        "id": "counterevidence_checked",
+        "ok": false,
+        "reason": "尚未执行显式反证检查；这会限制反证边界，但不应单独推翻已成立的主证据链。",
+        "delivery_blocking": false,
+        "gate_type": "reportable_limit",
+        "suggested_report_boundary": "报告应说明维护窗口、补丁、备份或共享基线等反证检查尚未闭合。",
+        "actionable_now": true
+      },
+      {
+        "id": "supplemental_context_reviewed",
+        "ok": false,
+        "reason": "仍缺少情报或结构化整理动作；这是报告厚度和背景解释风险，不是核心证据链硬阻断。",
+        "delivery_blocking": false,
+        "gate_type": "reviewer_judgment",
+        "suggested_report_boundary": "报告应避免超出已有事件事实推断外部归因或背景情报。",
+        "actionable_now": true
+      }
+    ],
+    "blocking_checks": [],
+    "reviewer_judgment_checks": [
+      {
+        "id": "supplemental_context_reviewed",
+        "ok": false,
+        "reason": "仍缺少情报或结构化整理动作；这是报告厚度和背景解释风险，不是核心证据链硬阻断。",
+        "delivery_blocking": false,
+        "gate_type": "reviewer_judgment",
+        "suggested_report_boundary": "报告应避免超出已有事件事实推断外部归因或背景情报。",
+        "actionable_now": true
+      }
+    ],
+    "reportable_limit_checks": [
+      {
+        "id": "candidate_events_grounded",
+        "ok": false,
+        "reason": "仍有候选事件未独立验证，但它们当前只限制扩展边界，不再阻塞核心结论交付。",
+        "delivery_blocking": false,
+        "gate_type": "reportable_limit",
+        "suggested_report_boundary": "候选事件只能写入待确认范围或报告边界，不能并入已确认传播结论。",
+        "actionable_now": false
+      },
+      {
+        "id": "counterevidence_checked",
+        "ok": false,
+        "reason": "尚未执行显式反证检查；这会限制反证边界，但不应单独推翻已成立的主证据链。",
+        "delivery_blocking": false,
+        "gate_type": "reportable_limit",
+        "suggested_report_boundary": "报告应说明维护窗口、补丁、备份或共享基线等反证检查尚未闭合。",
+        "actionable_now": true
+      }
+    ]
+  }
+}

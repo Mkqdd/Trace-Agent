@@ -38,6 +38,14 @@ def _truthy_env(name: str) -> bool:
     return str(os.getenv(name) or "").strip().lower() in {"1", "true", "yes"}
 
 
+def _optional_positive_int(value: Any) -> int | None:
+    try:
+        parsed = int(value or 0)
+    except (TypeError, ValueError):
+        return None
+    return parsed if parsed > 0 else None
+
+
 def _load_optional_llm(decision_mode: str | None = None) -> Tuple[Any, Dict[str, Any]]:
     requested_mode = _normalize_decision_mode(decision_mode or os.getenv("INCIDENT_AGENT_DECISION_MODE") or DEFAULT_DECISION_MODE)
     enabled_by_flag = _truthy_env("INCIDENT_AGENT_ENABLE_LLM")
@@ -105,6 +113,7 @@ def _run_one_incident_agent(
     llm: Any,
     llm_runtime: Dict[str, Any],
     decision_mode: str | None,
+    budgets: Dict[str, int] | None = None,
 ) -> Dict[str, Any]:
     event = normalize_alert(alert)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -121,6 +130,7 @@ def _run_one_incident_agent(
             fixture_dir=str(fixture_dir),
             llm=llm,
             llm_runtime=llm_runtime,
+            budgets=budgets,
             decision_mode=decision_mode,
         )
     finally:
@@ -147,6 +157,16 @@ def _run_one_incident_agent(
     report_source_bundle = result.get("report_source_bundle") or {}
     report_writer_materials = result.get("report_writer_materials") or {}
     report_writer_brief = result.get("report_writer_brief") or {}
+    investigation_graph = result.get("investigation_graph") or incident.get("investigation_graph") or {}
+    investigation_hypothesis_board = result.get("investigation_hypothesis_board") or incident.get("investigation_hypothesis_board") or {}
+    investigation_opportunity_trace = result.get("investigation_opportunity_trace") or incident.get("investigation_opportunity_trace") or {}
+    investigation_opportunity_history = result.get("investigation_opportunity_history") or incident.get("investigation_opportunity_history") or []
+    if investigation_opportunity_history:
+        investigation_opportunity_trace = {
+            "schema_version": "investigation-opportunity-trace-history-v1",
+            "latest": investigation_opportunity_trace,
+            "rounds": investigation_opportunity_history,
+        }
     report_evidence_graph = (
         (report_writer_brief or {}).get("evidence_graph")
         or (report_writer_materials or {}).get("evidence_graph")
@@ -187,6 +207,12 @@ def _run_one_incident_agent(
         save_json(out_dir / "report_writer_materials.json", report_writer_materials)
     if report_writer_brief:
         save_json(out_dir / "report_writer_brief.json", report_writer_brief)
+    if investigation_graph:
+        save_json(out_dir / "investigation_graph.json", investigation_graph)
+    if investigation_hypothesis_board:
+        save_json(out_dir / "investigation_hypothesis_board.json", investigation_hypothesis_board)
+    if investigation_opportunity_trace:
+        save_json(out_dir / "investigation_opportunity_trace.json", investigation_opportunity_trace)
     if report_evidence_graph:
         save_json(out_dir / "report_evidence_graph.json", report_evidence_graph)
     if report_hypothesis_board:
@@ -245,6 +271,12 @@ def _run_one_incident_agent(
         response["report_writer_materials_path"] = str((out_dir / "report_writer_materials.json").resolve())
     if report_writer_brief:
         response["report_writer_brief_path"] = str((out_dir / "report_writer_brief.json").resolve())
+    if investigation_graph:
+        response["investigation_graph_path"] = str((out_dir / "investigation_graph.json").resolve())
+    if investigation_hypothesis_board:
+        response["investigation_hypothesis_board_path"] = str((out_dir / "investigation_hypothesis_board.json").resolve())
+    if investigation_opportunity_trace:
+        response["investigation_opportunity_trace_path"] = str((out_dir / "investigation_opportunity_trace.json").resolve())
     if report_evidence_graph:
         response["report_evidence_graph_path"] = str((out_dir / "report_evidence_graph.json").resolve())
     if report_hypothesis_board:
@@ -275,6 +307,7 @@ def run(
     mode: str = "incident-agent",
     fixture_dir: Path | None = None,
     decision_mode: str | None = None,
+    budgets: Dict[str, int] | None = None,
 ) -> Dict[str, Any]:
     if mode != "incident-agent":
         raise ValueError("Trace-Agent 当前只保留 --mode incident-agent。")
@@ -298,6 +331,7 @@ def run(
                 llm=llm,
                 llm_runtime=llm_runtime,
                 decision_mode=decision_mode,
+                budgets=budgets,
             )
         ],
     }
@@ -317,6 +351,12 @@ def main() -> None:
         default=os.getenv("INCIDENT_AGENT_DECISION_MODE") or DEFAULT_DECISION_MODE,
         choices=DECISION_MODE_CHOICES,
         help="decision mode: llm_agent (default), heuristic, llm_selector, or hybrid",
+    )
+    parser.add_argument(
+        "--max-runtime-s",
+        type=int,
+        default=_optional_positive_int(os.getenv("INCIDENT_AGENT_MAX_RUNTIME_S")),
+        help="override the incident-agent runtime budget in seconds",
     )
     parser.add_argument(
         "--use-report-agent-materials",
@@ -342,6 +382,7 @@ def main() -> None:
     resolved_fixture_dir = Path(args.fixture_dir).resolve() if args.fixture_dir else None
     previous_report_agent_flag = os.environ.get("INCIDENT_AGENT_USE_REPORT_AGENT_MATERIALS")
     previous_report_writer_mode = os.environ.get("INCIDENT_AGENT_REPORT_WRITER_MODE")
+    budgets = {"max_runtime_s": int(args.max_runtime_s)} if args.max_runtime_s else None
     if args.use_report_agent_materials is not None:
         os.environ["INCIDENT_AGENT_USE_REPORT_AGENT_MATERIALS"] = "1" if args.use_report_agent_materials else "0"
     if args.report_writer_mode:
@@ -353,6 +394,7 @@ def main() -> None:
             mode=args.mode,
             fixture_dir=resolved_fixture_dir,
             decision_mode=args.decision_mode,
+            budgets=budgets,
         )
     finally:
         if args.use_report_agent_materials is not None:

@@ -1,0 +1,22 @@
+{
+  "schema_version": "report-polish-validation-v1",
+  "applied": true,
+  "status": "hard_fail",
+  "summary": "发现 1 条 hard-fail 和 0 条 soft-warn。",
+  "issue_counts": {
+    "hard_fail": 1,
+    "soft_warn": 0
+  },
+  "issues": [
+    {
+      "severity": "hard_fail",
+      "code": "unknown_domain",
+      "section": "4. 影响范围、候选对象与外部基础设施",
+      "sentence": "作为候选外部基础设施，cn-notify-edge.net 和 198.51.100.44 仅出现在未验证的候选事件中，虽然它们在逻辑上可能属于同一攻击者的备用 C2 设施，但在缺少独立情报源或本地指纹再度命中前，只能作为关联基础设施排查，不能作为封禁的直接依据。",
+      "message": "正文引用了事实卡中不存在的域名 `cn-notify-edge.net`。",
+      "evidence": [
+        "cn-notify-edge.net"
+      ]
+    }
+  ]
+}

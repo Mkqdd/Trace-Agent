@@ -46,35 +46,35 @@ def _sample_policy() -> dict:
     }
 
 
-def test_initial_session_state_has_advisory_hypothesis_board() -> None:
+def test_initial_session_state_has_stateful_hypothesis_board() -> None:
     session_state = _initial_session_state(_sample_seed(), _sample_budgets(), _sample_policy())
 
-    assert session_state["hypothesis_board"] == {
-        "schema_version": "investigation-hypothesis-board-v1",
-        "active": [],
-        "closed": [],
-        "last_updated_round": 0,
-    }
+    board = session_state["hypothesis_board"]
+    assert board["schema_version"] == "investigation-hypothesis-board-v2"
+    assert board["last_updated_round"] == 0
+    hypothesis_ids = [item["hypothesis_id"] for item in board["hypotheses"]]
+    assert "confirmed_main_chain" in hypothesis_ids
+    assert "candidate_spread" in hypothesis_ids
+    assert "benign_or_shared_infra_alternative" in hypothesis_ids
+    assert "insufficient_evidence_limits" in hypothesis_ids
+    assert "false_positive_or_noise" in hypothesis_ids
 
 
 def test_hypothesis_board_is_visible_to_investigator_and_reviewer_contexts() -> None:
     seed = _sample_seed()
     session_state = _initial_session_state(seed, _sample_budgets(), _sample_policy())
-    session_state["hypothesis_board"]["active"].append(
-        {
-            "hypothesis_id": "shared_infra_alternative",
-            "claim": "Shared infrastructure could explain part of the signal.",
-            "status": "open",
-        }
-    )
     incident_state = _initial_incident_state(seed)
     finalized = _finalize_runtime_state(seed, session_state, incident_state)
 
     agent_context = _build_agent_context_v1(seed, session_state, incident_state, finalized, tool_catalog=[])
     reviewer_context = _reviewer_context_view(seed, session_state, incident_state, finalized)
 
-    assert agent_context["hypothesis_board"]["active"][0]["hypothesis_id"] == "shared_infra_alternative"
-    assert reviewer_context["hypothesis_board"]["active"][0]["hypothesis_id"] == "shared_infra_alternative"
+    agent_hypothesis_ids = [item["hypothesis_id"] for item in agent_context["hypothesis_board"]["hypotheses"]]
+    reviewer_hypothesis_ids = [item["hypothesis_id"] for item in reviewer_context["hypothesis_board"]["hypotheses"]]
+    assert "benign_or_shared_infra_alternative" in agent_hypothesis_ids
+    assert "benign_or_shared_infra_alternative" in reviewer_hypothesis_ids
+    assert agent_context["investigation_hypothesis_board"]["schema_version"] == "investigation-hypothesis-board-v2"
+    assert reviewer_context["investigation_hypothesis_board"]["schema_version"] == "investigation-hypothesis-board-v2"
 
 
 def test_investigator_prompt_treats_hypothesis_board_as_advisory_disambiguation() -> None:
@@ -83,8 +83,45 @@ def test_investigator_prompt_treats_hypothesis_board_as_advisory_disambiguation(
     assert "不能因为 hypothesis_board 仍有开放候选就自动拒绝 finish" in INVESTIGATOR_SYSTEM_PROMPT
 
 
+def test_agent_context_uses_investigation_summaries_not_full_graph_payloads() -> None:
+    seed = _sample_seed()
+    session_state = _initial_session_state(seed, _sample_budgets(), _sample_policy())
+    incident_state = _initial_incident_state(seed)
+    finalized = _finalize_runtime_state(seed, session_state, incident_state)
+
+    agent_context = _build_agent_context_v1(seed, session_state, incident_state, finalized, tool_catalog=[])
+    reviewer_context = _reviewer_context_view(seed, session_state, incident_state, finalized)
+
+    for context in (agent_context, reviewer_context):
+        assert "investigation_graph_summary" in context
+        assert "investigation_opportunity_summary" in context
+        assert "nodes" not in context["investigation_graph_summary"]
+        assert "edges" not in context["investigation_graph_summary"]
+        assert "ranked_actions" not in context["investigation_opportunity_summary"]
+        assert "rounds" not in context["investigation_opportunity_summary"]
+
+
+def test_reviewer_context_uses_compact_runtime_snapshot() -> None:
+    seed = _sample_seed()
+    session_state = _initial_session_state(seed, _sample_budgets(), _sample_policy())
+    incident_state = _initial_incident_state(seed)
+    finalized = _finalize_runtime_state(seed, session_state, incident_state)
+
+    reviewer_context = _reviewer_context_view(seed, session_state, incident_state, finalized)
+    runtime = reviewer_context["runtime"]
+
+    assert runtime["schema_version"] == "reviewer-input-v1"
+    assert "runtime_summary" in runtime
+    assert "session_trace_summary" in runtime
+    assert "session_state" not in runtime
+    assert "tool_history" not in runtime
+    assert "working_hypotheses" not in runtime
+
+
 if __name__ == "__main__":
-    test_initial_session_state_has_advisory_hypothesis_board()
+    test_initial_session_state_has_stateful_hypothesis_board()
     test_hypothesis_board_is_visible_to_investigator_and_reviewer_contexts()
     test_investigator_prompt_treats_hypothesis_board_as_advisory_disambiguation()
+    test_agent_context_uses_investigation_summaries_not_full_graph_payloads()
+    test_reviewer_context_uses_compact_runtime_snapshot()
     print("investigation hypothesis board checks passed")

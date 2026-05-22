@@ -1,0 +1,116 @@
+{
+  "version": "2.0",
+  "title": "事件级溯源拓扑",
+  "nodes": [
+    {
+      "id": "fp:ja4:t13d1516h2_2ba4190accc0_13fe129f5abc",
+      "label": "JA4 t13d1516h2_2ba4190accc0_13fe129f5abc",
+      "type": "fingerprint_ja4"
+    },
+    {
+      "id": "asset:ws-eng-02",
+      "label": "ws-eng-02",
+      "type": "internal_host"
+    },
+    {
+      "id": "asset:ws-eng-05",
+      "label": "ws-eng-05",
+      "type": "internal_host"
+    },
+    {
+      "id": "ip:203.0.113.77",
+      "label": "203.0.113.77",
+      "type": "external_ip"
+    },
+    {
+      "id": "ip:10.70.3.45",
+      "label": "10.70.3.45",
+      "type": "external_ip"
+    },
+    {
+      "id": "domain:sync-cdn-notify.net",
+      "label": "sync-cdn-notify.net",
+      "type": "domain"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:evt-801:asset-fp",
+      "source": "asset:ws-eng-02",
+      "target": "fp:ja4:t13d1516h2_2ba4190accc0_13fe129f5abc",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-802:asset-ip",
+      "source": "asset:ws-eng-02",
+      "target": "ip:203.0.113.77",
+      "label": "alert"
+    },
+    {
+      "id": "edge:evt-802:ip-domain",
+      "source": "ip:203.0.113.77",
+      "target": "domain:sync-cdn-notify.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-802:asset-fp",
+      "source": "asset:ws-eng-02",
+      "target": "fp:ja4:t13d1516h2_2ba4190accc0_13fe129f5abc",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-803:asset-ip",
+      "source": "asset:ws-eng-02",
+      "target": "ip:203.0.113.77",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-803:ip-domain",
+      "source": "ip:203.0.113.77",
+      "target": "domain:sync-cdn-notify.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-803:asset-fp",
+      "source": "asset:ws-eng-02",
+      "target": "fp:ja4:t13d1516h2_2ba4190accc0_13fe129f5abc",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-804:asset-fp",
+      "source": "asset:ws-eng-02",
+      "target": "fp:ja4:t13d1516h2_2ba4190accc0_13fe129f5abc",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-805:asset-ip",
+      "source": "asset:ws-eng-02",
+      "target": "ip:10.70.3.45",
+      "label": "alert"
+    },
+    {
+      "id": "edge:evt-805:asset-fp",
+      "source": "asset:ws-eng-02",
+      "target": "fp:ja4:t13d1516h2_2ba4190accc0_13fe129f5abc",
+      "label": "seed_indicator"
+    },
+    {
+      "id": "edge:evt-808:asset-ip",
+      "source": "asset:ws-eng-05",
+      "target": "ip:203.0.113.77",
+      "label": "flow"
+    },
+    {
+      "id": "edge:evt-808:ip-domain",
+      "source": "ip:203.0.113.77",
+      "target": "domain:sync-cdn-notify.net",
+      "label": "resolves_to"
+    },
+    {
+      "id": "edge:evt-808:asset-fp",
+      "source": "asset:ws-eng-05",
+      "target": "fp:ja4:t13d1516h2_2ba4190accc0_13fe129f5abc",
+      "label": "seed_indicator"
+    }
+  ]
+}

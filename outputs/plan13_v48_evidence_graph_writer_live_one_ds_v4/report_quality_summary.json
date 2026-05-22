@@ -1,0 +1,29 @@
+{
+  "root": "outputs/plan13_v48_evidence_graph_writer_live_one_ds_v4",
+  "cases": [
+    {
+      "case": "multi_host_confirmed_spread_plus",
+      "writer_mode": "evidence_graph",
+      "report_chars": 12615,
+      "report_lines": 240,
+      "validation_status": "clean",
+      "validation_issues": {
+        "hard_fail": 0,
+        "soft_warn": 0
+      },
+      "material_status": "skipped_evidence_graph_writer",
+      "material_agent_bypassed": true,
+      "mentions_candidate": true,
+      "mentions_boundary": true,
+      "mentions_action_fields": true,
+      "manual_scores": {
+        "factual_grounding": null,
+        "boundary_correctness": null,
+        "actionability": null,
+        "analytical_depth": null,
+        "non_repetition": null,
+        "operator_readability": null
+      }
+    }
+  ]
+}

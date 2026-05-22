@@ -1,0 +1,637 @@
+{
+  "schema_version": "report-fact-cards-v1",
+  "source_contract": {
+    "evidence_store_schema": "evidence-store-v1",
+    "delivery_decision_schema": "delivery-decision-v1"
+  },
+  "card_counts": {
+    "event": 14,
+    "scope": 13,
+    "gap": 7,
+    "action_basis": 4
+  },
+  "fact_cards": [
+    {
+      "fact_id": "fact-event-evt-901",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-06-24 14:50:00 UTC 资产 `web-app-02` 出现关联事件 `Public-facing web server received exploit requests against the admin portal before outbound TLS traffic began.`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "time": "2026-06-24 14:50:00 UTC",
+      "subject": "web-app-02",
+      "action": "出现关联事件",
+      "object": "Public-facing web server received exploit requests against the admin portal before outbound TLS traffic began.",
+      "qualifiers": {
+        "event_id": "evt-901",
+        "kind": "alert",
+        "stages": [
+          "initial-access"
+        ],
+        "classification": "suspicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-902",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-06-24 14:54:00 UTC 资产 `web-app-02` 出现关联事件 `A second wave of admin-portal exploit requests used a different source ASN and payload family.`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "time": "2026-06-24 14:54:00 UTC",
+      "subject": "web-app-02",
+      "action": "出现关联事件",
+      "object": "A second wave of admin-portal exploit requests used a different source ASN and payload family.",
+      "qualifiers": {
+        "event_id": "evt-902",
+        "kind": "alert",
+        "stages": [
+          "initial-access"
+        ],
+        "classification": "suspicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-903",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-06-24 14:58:30 UTC 资产 `web-app-02` 解析域名 `auth-edge-panel.net`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "time": "2026-06-24 14:58:30 UTC",
+      "subject": "web-app-02",
+      "action": "解析域名",
+      "object": "auth-edge-panel.net",
+      "qualifiers": {
+        "event_id": "evt-903",
+        "kind": "dns",
+        "stages": [
+          "initial-access",
+          "command-and-control"
+        ],
+        "classification": "suspicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-904",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-06-24 15:02:00 UTC 资产 `web-app-02` 对外通信 `auth-edge-panel.net / 198.51.100.177`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "time": "2026-06-24 15:02:00 UTC",
+      "subject": "web-app-02",
+      "action": "对外通信",
+      "object": "auth-edge-panel.net / 198.51.100.177",
+      "qualifiers": {
+        "event_id": "evt-904",
+        "kind": "alert",
+        "stages": [
+          "command-and-control"
+        ],
+        "classification": "malicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-905",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-06-24 15:06:40 UTC 资产 `web-app-02` 对外通信 `auth-edge-panel.net / 198.51.100.177`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "time": "2026-06-24 15:06:40 UTC",
+      "subject": "web-app-02",
+      "action": "对外通信",
+      "object": "auth-edge-panel.net / 198.51.100.177",
+      "qualifiers": {
+        "event_id": "evt-905",
+        "kind": "flow",
+        "stages": [
+          "command-and-control"
+        ],
+        "classification": "suspicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-906",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-06-24 15:10:00 UTC 资产 `web-app-02` 当前出现仅用于边界说明的背景事件 `cdn-auth-edge.net`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "time": "2026-06-24 15:10:00 UTC",
+      "subject": "web-app-02",
+      "action": "解析域名",
+      "object": "cdn-auth-edge.net",
+      "qualifiers": {
+        "event_id": "evt-906",
+        "kind": "dns",
+        "stages": [],
+        "classification": "unknown"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-907",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-06-24 15:12:30 UTC 资产 `web-app-02` 当前出现仅用于边界说明的背景事件 `cdn-auth-edge.net / 198.51.100.177`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "time": "2026-06-24 15:12:30 UTC",
+      "subject": "web-app-02",
+      "action": "对外通信",
+      "object": "cdn-auth-edge.net / 198.51.100.177",
+      "qualifiers": {
+        "event_id": "evt-907",
+        "kind": "flow",
+        "stages": [],
+        "classification": "unknown"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-908",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-06-24 15:15:30 UTC 资产 `web-app-02` 当前出现仅用于边界说明的背景事件 `维护或计划内背景活动`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "time": "2026-06-24 15:15:30 UTC",
+      "subject": "web-app-02",
+      "action": "背景说明",
+      "object": "维护或计划内背景活动",
+      "qualifiers": {
+        "event_id": "evt-908",
+        "kind": "asset_context",
+        "stages": [],
+        "classification": "benign"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-909",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-06-24 15:18:00 UTC 资产 `web-app-02` 当前出现仅用于边界说明的背景事件 `维护或计划内背景活动`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "time": "2026-06-24 15:18:00 UTC",
+      "subject": "web-app-02",
+      "action": "背景说明",
+      "object": "维护或计划内背景活动",
+      "qualifiers": {
+        "event_id": "evt-909",
+        "kind": "asset_context",
+        "stages": [],
+        "classification": "benign"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-910",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-06-24 15:24:20 UTC 资产 `web-app-04` 当前出现仅用于边界说明的背景事件 `scanner-cdn.example / 198.51.100.177`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "time": "2026-06-24 15:24:20 UTC",
+      "subject": "web-app-04",
+      "action": "对外通信",
+      "object": "scanner-cdn.example / 198.51.100.177",
+      "qualifiers": {
+        "event_id": "evt-910",
+        "kind": "flow",
+        "stages": [],
+        "classification": "benign"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-911",
+      "fact_type": "event",
+      "status": "candidate",
+      "summary_line": "2026-06-24 15:30:00 UTC 资产 `web-app-05` 与 `cdn-auth-edge.net` 出现待确认关联命中。",
+      "evidence_refs": [
+        "obs-002"
+      ],
+      "time": "2026-06-24 15:30:00 UTC",
+      "subject": "web-app-05",
+      "action": "解析域名",
+      "object": "cdn-auth-edge.net",
+      "qualifiers": {
+        "event_id": "evt-911",
+        "kind": "dns",
+        "stages": [],
+        "classification": "unknown"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-912",
+      "fact_type": "event",
+      "status": "candidate",
+      "summary_line": "2026-06-24 15:32:20 UTC 资产 `web-app-05` 与 `cdn-auth-edge.net / 198.51.100.177` 出现待确认关联命中。",
+      "evidence_refs": [
+        "obs-002"
+      ],
+      "time": "2026-06-24 15:32:20 UTC",
+      "subject": "web-app-05",
+      "action": "对外通信",
+      "object": "cdn-auth-edge.net / 198.51.100.177",
+      "qualifiers": {
+        "event_id": "evt-912",
+        "kind": "flow",
+        "stages": [],
+        "classification": "unknown"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-913",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-06-24 15:34:00 UTC 资产 `web-app-02` 当前出现仅用于边界说明的背景事件 `Updated WAF rules blocked repeated admin-portal payloads after the seed alert.`。",
+      "evidence_refs": [
+        "obs-002"
+      ],
+      "time": "2026-06-24 15:34:00 UTC",
+      "subject": "web-app-02",
+      "action": "出现关联事件",
+      "object": "Updated WAF rules blocked repeated admin-portal payloads after the seed alert.",
+      "qualifiers": {
+        "event_id": "evt-913",
+        "kind": "security_control",
+        "stages": [],
+        "classification": "benign"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-914",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-06-24 15:50:00 UTC 资产 `web-app-02` 当前出现仅用于边界说明的背景事件 `主机侧上下文线索`。",
+      "evidence_refs": [
+        "obs-002"
+      ],
+      "time": "2026-06-24 15:50:00 UTC",
+      "subject": "web-app-02",
+      "action": "出现关联事件",
+      "object": "主机侧上下文线索",
+      "qualifiers": {
+        "event_id": "evt-914",
+        "kind": "asset_context",
+        "stages": [],
+        "classification": "unknown"
+      }
+    },
+    {
+      "fact_id": "fact-scope-obj-01",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `web-app-02` 当前作为调查锚点保留在主调查链中。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "entity": "web-app-02",
+      "role": "seed_asset",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-02",
+      "fact_type": "scope",
+      "status": "candidate",
+      "summary_line": "对象 `web-app-05` 当前作为待确认关联资产保留为待确认范围。",
+      "evidence_refs": [
+        "obs-002"
+      ],
+      "entity": "web-app-05",
+      "role": "related_asset",
+      "scope_status": "candidate_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-03",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `198.51.100.177` 当前作为已确认关联基础设施纳入主证据链。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "entity": "198.51.100.177",
+      "role": "core_external_indicator",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-04",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `auth-edge-panel.net` 当前作为已确认关联基础设施纳入主证据链。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "entity": "auth-edge-panel.net",
+      "role": "core_external_indicator",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-08",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `10.61.2.20` 当前作为内网关联对象纳入主证据链。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "entity": "10.61.2.20",
+      "role": "related_internal_address",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-09",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `10.61.2.44` 当前作为内网关联对象纳入主证据链。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "entity": "10.61.2.44",
+      "role": "related_internal_address",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-10",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `10.61.2.55` 当前作为内网关联对象纳入主证据链。",
+      "evidence_refs": [
+        "obs-002"
+      ],
+      "entity": "10.61.2.55",
+      "role": "related_internal_address",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-05",
+      "fact_type": "scope",
+      "status": "background",
+      "summary_line": "对象 `scanner-cdn.example` 当前只作为背景指标保留为背景指标。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "entity": "scanner-cdn.example",
+      "role": "contextual_indicator",
+      "scope_status": "background_only"
+    },
+    {
+      "fact_id": "fact-scope-obj-07",
+      "fact_type": "scope",
+      "status": "background",
+      "summary_line": "对象 `Possible web beacon without host corroboration` 当前只作为背景提示保留为背景指标。",
+      "evidence_refs": [],
+      "entity": "Possible web beacon without host corroboration",
+      "role": "family_hint",
+      "scope_status": "background_only"
+    },
+    {
+      "fact_id": "fact-scope-obj-06",
+      "fact_type": "scope",
+      "status": "background",
+      "summary_line": "对象 `t13d1517h2_22adbe210bc1_11cae1281e22` 当前只作为种子指标保留为背景指标。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "entity": "t13d1517h2_22adbe210bc1_11cae1281e22",
+      "role": "seed_fingerprint",
+      "scope_status": "background_only"
+    },
+    {
+      "fact_id": "fact-scope-obj-12",
+      "fact_type": "scope",
+      "status": "candidate",
+      "summary_line": "对象 `cdn-auth-edge.net` 当前作为候选扩展对象保留为待确认范围。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "entity": "cdn-auth-edge.net",
+      "role": "expansion_candidate",
+      "scope_status": "candidate_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-13",
+      "fact_type": "scope",
+      "status": "candidate",
+      "summary_line": "对象 `t13d1517h2_22adbe210bc1_11cae1281e22` 当前作为候选扩展对象保留为待确认范围。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "entity": "t13d1517h2_22adbe210bc1_11cae1281e22",
+      "role": "expansion_candidate",
+      "scope_status": "candidate_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-11",
+      "fact_type": "scope",
+      "status": "candidate",
+      "summary_line": "对象 `web-app-04` 当前作为候选扩展对象保留为待确认范围。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "entity": "web-app-04",
+      "role": "expansion_candidate",
+      "scope_status": "candidate_scope"
+    },
+    {
+      "fact_id": "fact-gap-expand_cluster_scope",
+      "fact_type": "gap",
+      "status": "blocked",
+      "summary_line": "当前仍需对“仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。”补充独立确认。",
+      "evidence_refs": [],
+      "question": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "blocking_effect": "仍需围绕当前 枢纽 做一次显式扩线，确认是否存在同指标的更大范围复现。"
+    },
+    {
+      "fact_id": "fact-gap-execution_gap",
+      "fact_type": "gap",
+      "status": "candidate",
+      "summary_line": "当前仍需对“是否存在主机侧执行、持久化或横向移动证据？”补充独立确认。",
+      "evidence_refs": [],
+      "question": "是否存在主机侧执行、持久化或横向移动证据？",
+      "blocking_effect": "是否存在主机侧执行、持久化或横向移动证据？"
+    },
+    {
+      "fact_id": "fact-gap-related_assets_review",
+      "fact_type": "gap",
+      "status": "candidate",
+      "summary_line": "当前仍需对“关联资产 web-app-05 是否真正受影响？”补充独立确认。",
+      "evidence_refs": [],
+      "question": "关联资产 web-app-05 是否真正受影响？",
+      "blocking_effect": "该 gap 当前只限制边界说明，不再阻塞核心结论交付。"
+    },
+    {
+      "fact_id": "fact-gap-ground_external_context",
+      "fact_type": "gap",
+      "status": "candidate",
+      "summary_line": "当前仍需对“补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。”补充独立确认。",
+      "evidence_refs": [],
+      "question": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+      "blocking_effect": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。"
+    },
+    {
+      "fact_id": "fact-gap-check_counterevidence",
+      "fact_type": "gap",
+      "status": "candidate",
+      "summary_line": "当前仍需对“仍需显式检查维护窗口、补丁、备份或共享基线等反证。”补充独立确认。",
+      "evidence_refs": [],
+      "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "blocking_effect": "该 gap 当前只限制边界说明，不再阻塞核心结论交付。"
+    },
+    {
+      "fact_id": "fact-gap-structure_evidence",
+      "fact_type": "gap",
+      "status": "candidate",
+      "summary_line": "当前仍需对“仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。”补充独立确认。",
+      "evidence_refs": [],
+      "question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+      "blocking_effect": "该 gap 当前只限制边界说明，不再阻塞核心结论交付。"
+    },
+    {
+      "fact_id": "fact-gap-validate_family_hint",
+      "fact_type": "gap",
+      "status": "candidate",
+      "summary_line": "当前仍需对“seed 自带的家族提示 Possible web beacon without host corroboration 是否有更多外部证据支撑？”补充独立确认。",
+      "evidence_refs": [],
+      "question": "seed 自带的家族提示 Possible web beacon without host corroboration 是否有更多外部证据支撑？",
+      "blocking_effect": "seed 自带的家族提示 Possible web beacon without host corroboration 是否有更多外部证据支撑？"
+    },
+    {
+      "fact_id": "fact-action-01",
+      "fact_type": "action_basis",
+      "status": "confirmed",
+      "summary_line": "优先隔离或重点监控资产：web-app-02",
+      "evidence_refs": [],
+      "recommended_action": "优先隔离或重点监控资产：web-app-02",
+      "priority": "immediate"
+    },
+    {
+      "fact_id": "fact-action-02",
+      "fact_type": "action_basis",
+      "status": "confirmed",
+      "summary_line": "在边界和代理设备上排查并封禁外部基础设施：198.51.100.177、auth-edge-panel.net",
+      "evidence_refs": [],
+      "recommended_action": "在边界和代理设备上排查并封禁外部基础设施：198.51.100.177、auth-edge-panel.net",
+      "priority": "immediate"
+    },
+    {
+      "fact_id": "fact-action-03",
+      "fact_type": "action_basis",
+      "status": "confirmed",
+      "summary_line": "继续核实待确认关联资产 web-app-05",
+      "evidence_refs": [],
+      "recommended_action": "继续核实待确认关联资产 web-app-05",
+      "priority": "short_term"
+    },
+    {
+      "fact_id": "fact-action-04",
+      "fact_type": "action_basis",
+      "status": "confirmed",
+      "summary_line": "优先补查：仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现",
+      "evidence_refs": [],
+      "recommended_action": "优先补查：仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现",
+      "priority": "follow_up"
+    }
+  ],
+  "verdict_packet": {
+    "severity": "中",
+    "confidence": "高",
+    "conclusion_statement": "web-app-02 围绕 198.51.100.177、auth-edge-panel.net 已出现连续异常迹象，但 web-app-05 仍需独立确认。",
+    "supporting_fact_ids": [
+      "fact-event-evt-901",
+      "fact-event-evt-902",
+      "fact-event-evt-903",
+      "fact-scope-obj-01",
+      "fact-scope-obj-03",
+      "fact-scope-obj-04"
+    ]
+  },
+  "scope_packet": {
+    "confirmed_entities": [],
+    "candidate_entities": [
+      "web-app-05"
+    ],
+    "supporting_fact_ids": [
+      "fact-scope-obj-03",
+      "fact-scope-obj-04",
+      "fact-scope-obj-02",
+      "fact-scope-obj-12",
+      "fact-scope-obj-13",
+      "fact-scope-obj-11"
+    ]
+  },
+  "constraint_packet": {
+    "blocking_gaps": [
+      "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "是否存在主机侧执行、持久化或横向移动证据？",
+      "关联资产 web-app-05 是否真正受影响？",
+      "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+      "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+      "seed 自带的家族提示 Possible web beacon without host corroboration 是否有更多外部证据支撑？"
+    ],
+    "counterevidence": [],
+    "boundary_statement": "是否存在主机侧执行、持久化或横向移动证据？",
+    "supporting_fact_ids": [
+      "fact-gap-expand_cluster_scope",
+      "fact-gap-execution_gap",
+      "fact-gap-related_assets_review",
+      "fact-gap-ground_external_context",
+      "fact-gap-check_counterevidence",
+      "fact-gap-structure_evidence",
+      "fact-gap-validate_family_hint",
+      "fact-event-evt-911",
+      "fact-event-evt-912"
+    ]
+  },
+  "action_packet": {
+    "immediate_actions": [
+      "优先隔离或重点监控资产：web-app-02",
+      "在边界和代理设备上排查并封禁外部基础设施：198.51.100.177、auth-edge-panel.net"
+    ],
+    "next_steps": [
+      "继续核实待确认关联资产 web-app-05",
+      "优先补查：仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现"
+    ],
+    "supporting_fact_ids": [
+      "fact-scope-obj-01",
+      "fact-scope-obj-03",
+      "fact-scope-obj-04",
+      "fact-gap-expand_cluster_scope",
+      "fact-gap-execution_gap",
+      "fact-action-01",
+      "fact-action-02",
+      "fact-action-03",
+      "fact-action-04"
+    ]
+  }
+}

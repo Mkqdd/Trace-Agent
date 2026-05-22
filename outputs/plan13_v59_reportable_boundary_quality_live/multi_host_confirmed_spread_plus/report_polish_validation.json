@@ -1,0 +1,22 @@
+{
+  "schema_version": "report-polish-validation-v1",
+  "applied": true,
+  "status": "soft_warn",
+  "summary": "发现 0 条 hard-fail 和 1 条 soft-warn。",
+  "issue_counts": {
+    "hard_fail": 0,
+    "soft_warn": 1
+  },
+  "issues": [
+    {
+      "severity": "soft_warn",
+      "code": "time_precision_drift",
+      "section": "6. 处置建议与后续核查",
+      "sentence": "在代理及 DNS 日志中回溯 2026-07-14 01:28 至 01:39 UTC 的所有相关查询与连接，确认是否仅 ws-eng-05 受影响，是否存在其他客户端解析或连接该域名。",
+      "message": "正文把事实卡中的精确时间写成了分钟级表述 `2026-07-14 01:28`。",
+      "evidence": [
+        "2026-07-14 01:28"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "stop_reason": "runtime_budget_exhausted",
+  "stop_reason_in_enum": true,
+  "secondary_stop_reasons": [],
+  "ready_for_delivery_at_stop": false,
+  "actionable_path_at_stop": true,
+  "blocking_gap_count_at_stop": 1,
+  "tool_history_length": 5,
+  "agent_round_count": 6,
+  "reviewer_round_count": 5,
+  "reviewer_replacement_count": 0,
+  "execution_source_counts": {
+    "investigator_preflight_approved": 5,
+    "preflight_blocked": 1
+  },
+  "invalid_proposal_count": 0,
+  "duplicate_deterministic_call_count": 0,
+  "preflight_block_count": 1,
+  "reviewer_block_count": 2,
+  "prompt_payload_bytes": {
+    "agent_total": 102447,
+    "reviewer_total": 422965,
+    "agent_context_v1_preview_total": 98013,
+    "total": 525412
+  }
+}

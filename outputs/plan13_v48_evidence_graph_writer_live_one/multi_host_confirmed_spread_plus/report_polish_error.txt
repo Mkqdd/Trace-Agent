@@ -1,0 +1,1 @@
+evidence_graph_writer:InternalServerError: Error code: 502 - {'error': {'message': 'all providers failed for model "chat", last error: do request: Post "http://8.146.237.20:8000/v1/chat/completions": dial tcp 8.146.237.20:8000: connect: connection refused', 'type': 'upstream_error', 'param': None, 'code': None}}

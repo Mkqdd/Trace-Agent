@@ -1,0 +1,5844 @@
+{
+  "schema_version": "report-graph-writer-brief-v1",
+  "writer_mode": "evidence_graph",
+  "case_header": {
+    "title": "ws-legal-03 Suspicious shared-infra beacon requiring review 调查报告",
+    "analysis_window": "2026-06-20 10:04:30 UTC 至 2026-06-20 11:18:00 UTC",
+    "seed_alert": {
+      "event_time": "2026-06-20 10:12:00",
+      "simulated": false,
+      "src": {
+        "ip": "10.44.1.18",
+        "port": null
+      },
+      "dst": {
+        "ip": "198.51.100.131",
+        "port": null
+      },
+      "protocol": "TLS",
+      "trigger_fingerprint": {
+        "type": "JA4",
+        "value": "t13d190900_7711aa22bb33_9911ccddee77",
+        "matched": true
+      },
+      "enrichment": {
+        "info": "Suspicious shared-infra beacon requiring review",
+        "reference": "fixture",
+        "update_time": "2026-06-20 10:12:00"
+      },
+      "raw_alert": {
+        "timestamp": "2026-06-20 10:12:00",
+        "src_ip": "10.44.1.18",
+        "dst_ip": "198.51.100.131",
+        "protocol": "TLS",
+        "trigger_fingerprint": {
+          "type": "JA4",
+          "value": "t13d190900_7711aa22bb33_9911ccddee77"
+        },
+        "info": "Suspicious shared-infra beacon requiring review",
+        "reference": "fixture",
+        "update_time": "2026-06-20 10:12:00"
+      }
+    },
+    "final_verdict": {
+      "status": "needs_review",
+      "status_label": "可疑事件，建议继续复核",
+      "confidence": 70,
+      "severity": "中危",
+      "rationale": [
+        "当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。",
+        "seed alert 自带家族/工具提示：Suspicious shared-infra beacon requiring review。",
+        "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。",
+        "同时也存在可解释为背景活动的信号，因此暂未自动推进为确认事件。",
+        "交付门槛尚未满足：仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。"
+      ],
+      "delivery_ready": false,
+      "blocked_by": [],
+      "provisional_status": "needs_review",
+      "provisional_status_label": "待人工复核"
+    },
+    "delivery_status": "needs_review",
+    "delivery_status_label": "可疑事件，建议继续复核",
+    "severity": "中危",
+    "confidence": "较高",
+    "source_layer": "delivery_decision"
+  },
+  "source_counts": {
+    "observations": 9,
+    "events": 15,
+    "claims": 10,
+    "objects": 25,
+    "gaps": 9
+  },
+  "source_fact_catalog": [
+    {
+      "fact_id": "fact-verdict-delivery",
+      "source_id": "verdict:delivery",
+      "fact_type": "verdict",
+      "status": "",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "可疑事件，建议继续复核；当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。；seed alert 自带家族/工具提示：Suspicious shared-infra beacon requiring review。；已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。；同时也存在可解释为背景活动的信号，因此暂未自动推进为确认事件。；交付门槛尚未满足：仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "exact_fact_text": "可疑事件，建议继续复核；当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。；seed alert 自带家族/工具提示：Suspicious shared-infra beacon requiring review。；已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。；同时也存在可解释为背景活动的信号，因此暂未自动推进为确认事件。；交付门槛尚未满足：仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "reporting_focus": "交付结论",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-event-evt-701",
+      "source_id": "event:evt-701",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "unknown",
+      "kind": "dns",
+      "stages": [],
+      "tags": [
+        "rare"
+      ],
+      "time": "2026-06-20T10:04:30Z",
+      "asset": "ws-legal-03",
+      "objects": [
+        "auth-queue-sync.net",
+        "10.44.1.18",
+        "ws-legal-03"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-20 10:04:30 UTC，资产 `ws-legal-03`，关联对象 `auth-queue-sync.net`，The seed workstation resolved auth-queue-sync.net, a rare domain mapped to a shared hosting IP, before the alert.，源地址 `10.44.1.18`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-20 10:04:30 UTC，资产 `ws-legal-03`，关联对象 `auth-queue-sync.net`，The seed workstation resolved auth-queue-sync.net, a rare domain mapped to a shared hosting IP, before the alert.，源地址 `10.44.1.18`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-702",
+      "source_id": "event:evt-702",
+      "fact_type": "event",
+      "status": "confirmed",
+      "classification": "needs_review",
+      "kind": "alert",
+      "stages": [],
+      "tags": [
+        "outlier"
+      ],
+      "time": "2026-06-20T10:12:00Z",
+      "asset": "ws-legal-03",
+      "objects": [
+        "auth-queue-sync.net",
+        "198.51.100.131",
+        "10.44.1.18",
+        "ws-legal-03"
+      ],
+      "summary_line": "2026-06-20 10:12:00 UTC，资产 `ws-legal-03`，关联对象 `auth-queue-sync.net / 198.51.100.131`，Seed JA4 alert observed an unusual TLS session to auth-queue-sync.net on shared infrastructure.，源地址 `10.44.1.18`",
+      "exact_fact_text": "2026-06-20 10:12:00 UTC，资产 `ws-legal-03`，关联对象 `auth-queue-sync.net / 198.51.100.131`，Seed JA4 alert observed an unusual TLS session to auth-queue-sync.net on shared infrastructure.，源地址 `10.44.1.18`",
+      "reporting_focus": "事件时间线事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-event-evt-703",
+      "source_id": "event:evt-703",
+      "fact_type": "event",
+      "status": "confirmed",
+      "classification": "suspicious",
+      "kind": "flow",
+      "stages": [
+        "command-and-control"
+      ],
+      "tags": [
+        "command-and-control",
+        "beacon"
+      ],
+      "time": "2026-06-20T10:16:20Z",
+      "asset": "ws-legal-03",
+      "objects": [
+        "auth-queue-sync.net",
+        "198.51.100.131",
+        "10.44.1.18",
+        "ws-legal-03"
+      ],
+      "summary_line": "2026-06-20 10:16:20 UTC，资产 `ws-legal-03`，关联对象 `auth-queue-sync.net / 198.51.100.131`，The seed workstation reconnected to the same auth-queue-sync.net endpoint after the seed alert.，源地址 `10.44.1.18`",
+      "exact_fact_text": "2026-06-20 10:16:20 UTC，资产 `ws-legal-03`，关联对象 `auth-queue-sync.net / 198.51.100.131`，The seed workstation reconnected to the same auth-queue-sync.net endpoint after the seed alert.，源地址 `10.44.1.18`",
+      "reporting_focus": "事件时间线事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-event-evt-704",
+      "source_id": "event:evt-704",
+      "fact_type": "event",
+      "status": "confirmed",
+      "classification": "suspicious",
+      "kind": "flow",
+      "stages": [
+        "command-and-control"
+      ],
+      "tags": [
+        "command-and-control"
+      ],
+      "time": "2026-06-20T10:21:40Z",
+      "asset": "ws-legal-03",
+      "objects": [
+        "auth-queue-sync.net",
+        "198.51.100.131",
+        "10.44.1.18",
+        "ws-legal-03"
+      ],
+      "summary_line": "2026-06-20 10:21:40 UTC，资产 `ws-legal-03`，关联对象 `auth-queue-sync.net / 198.51.100.131`，A second short TLS session from ws-legal-03 reused the same domain and JA4-adjacent shared hosting path.，源地址 `10.44.1.18`",
+      "exact_fact_text": "2026-06-20 10:21:40 UTC，资产 `ws-legal-03`，关联对象 `auth-queue-sync.net / 198.51.100.131`，A second short TLS session from ws-legal-03 reused the same domain and JA4-adjacent shared hosting path.，源地址 `10.44.1.18`",
+      "reporting_focus": "事件时间线事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-event-evt-705",
+      "source_id": "event:evt-705",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "unknown",
+      "kind": "asset_context",
+      "stages": [],
+      "tags": [
+        "telemetry-gap"
+      ],
+      "time": "2026-06-20T10:24:00Z",
+      "asset": "ws-legal-03",
+      "objects": [
+        "10.44.1.18",
+        "ws-legal-03"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-20 10:24:00 UTC，资产 `ws-legal-03`，Endpoint coverage for ws-legal-03 did not include command-line telemetry during the relevant window.，源地址 `10.44.1.18`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-20 10:24:00 UTC，资产 `ws-legal-03`，Endpoint coverage for ws-legal-03 did not include command-line telemetry during the relevant window.，源地址 `10.44.1.18`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-706",
+      "source_id": "event:evt-706",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "unknown",
+      "kind": "flow",
+      "stages": [],
+      "tags": [
+        "rare"
+      ],
+      "time": "2026-06-20T10:39:00Z",
+      "asset": "ws-legal-09",
+      "objects": [
+        "cdn-auth-queue.net",
+        "198.51.100.131",
+        "10.44.1.29",
+        "ws-legal-09"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-20 10:39:00 UTC，资产 `ws-legal-09`，关联对象 `cdn-auth-queue.net / 198.51.100.131`，A second workstation contacted cdn-auth-queue.net on the same shared IP, but only through one weak network signal.，源地址 `10.44.1.29`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-20 10:39:00 UTC，资产 `ws-legal-09`，关联对象 `cdn-auth-queue.net / 198.51.100.131`，A second workstation contacted cdn-auth-queue.net on the same shared IP, but only through one weak network signal.，源地址 `10.44.1.29`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-707",
+      "source_id": "event:evt-707",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "unknown",
+      "kind": "dns",
+      "stages": [],
+      "tags": [
+        "rare"
+      ],
+      "time": "2026-06-20T10:42:00Z",
+      "asset": "ws-legal-09",
+      "objects": [
+        "cdn-auth-queue.net",
+        "10.44.1.29",
+        "ws-legal-09"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-20 10:42:00 UTC，资产 `ws-legal-09`，关联对象 `cdn-auth-queue.net`，The second workstation resolved a sibling domain pointing to the same shared infrastructure.，源地址 `10.44.1.29`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-20 10:42:00 UTC，资产 `ws-legal-09`，关联对象 `cdn-auth-queue.net`，The second workstation resolved a sibling domain pointing to the same shared infrastructure.，源地址 `10.44.1.29`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-708",
+      "source_id": "event:evt-708",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "benign",
+      "kind": "flow",
+      "stages": [],
+      "tags": [
+        "shared-hosting",
+        "browser-sso"
+      ],
+      "time": "2026-06-20T10:46:10Z",
+      "asset": "ws-legal-09",
+      "objects": [
+        "identity-cache.vendor.example",
+        "198.51.100.131",
+        "10.44.1.29",
+        "ws-legal-09"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-20 10:46:10 UTC，资产 `ws-legal-09`，关联对象 `identity-cache.vendor.example / 198.51.100.131`，The same workstation also used a sanctioned identity-cache vendor domain on the shared hosting IP.，源地址 `10.44.1.29`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-20 10:46:10 UTC，资产 `ws-legal-09`，关联对象 `identity-cache.vendor.example / 198.51.100.131`，The same workstation also used a sanctioned identity-cache vendor domain on the shared hosting IP.，源地址 `10.44.1.29`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-709",
+      "source_id": "event:evt-709",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "unknown",
+      "kind": "flow",
+      "stages": [],
+      "tags": [
+        "shared-hosting"
+      ],
+      "time": "2026-06-20T10:49:30Z",
+      "asset": "ws-legal-12",
+      "objects": [
+        "legal-docs-cdn.example",
+        "198.51.100.131",
+        "10.44.1.42",
+        "ws-legal-12"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-20 10:49:30 UTC，资产 `ws-legal-12`，关联对象 `legal-docs-cdn.example / 198.51.100.131`，A legal-document review workstation touched the same IP through a different business SaaS domain, suggesting shared infrastructure.，源地址 `10.44.1.42`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-20 10:49:30 UTC，资产 `ws-legal-12`，关联对象 `legal-docs-cdn.example / 198.51.100.131`，A legal-document review workstation touched the same IP through a different business SaaS domain, suggesting shared infrastructure.，源地址 `10.44.1.42`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-710",
+      "source_id": "event:evt-710",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "benign",
+      "kind": "infra_context",
+      "stages": [],
+      "tags": [
+        "shared-hosting",
+        "external-context"
+      ],
+      "time": "2026-06-20T10:52:00Z",
+      "asset": "",
+      "objects": [
+        "auth-queue-sync.net",
+        "198.51.100.131"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-20 10:52:00 UTC，关联对象 `auth-queue-sync.net / 198.51.100.131`，Passive infrastructure context showed the IP hosted multiple unrelated customer domains during the same week.",
+      "exact_fact_text": "背景/替代解释事件：2026-06-20 10:52:00 UTC，关联对象 `auth-queue-sync.net / 198.51.100.131`，Passive infrastructure context showed the IP hosted multiple unrelated customer domains during the same week.",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-711",
+      "source_id": "event:evt-711",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "benign",
+      "kind": "asset_context",
+      "stages": [],
+      "tags": [
+        "browser-update",
+        "maintenance"
+      ],
+      "time": "2026-06-20T10:55:00Z",
+      "asset": "ws-legal-03",
+      "objects": [
+        "10.44.1.18",
+        "ws-legal-03"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-20 10:55:00 UTC，资产 `ws-legal-03`，An approved SSO browser extension update on ws-legal-03 overlapped the first suspicious TLS session.，源地址 `10.44.1.18`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-20 10:55:00 UTC，资产 `ws-legal-03`，An approved SSO browser extension update on ws-legal-03 overlapped the first suspicious TLS session.，源地址 `10.44.1.18`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-712",
+      "source_id": "event:evt-712",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "benign",
+      "kind": "flow",
+      "stages": [],
+      "tags": [
+        "identity",
+        "baseline"
+      ],
+      "time": "2026-06-20T11:01:20Z",
+      "asset": "ws-legal-03",
+      "objects": [
+        "login.microsoftonline.com",
+        "20.190.160.22",
+        "10.44.1.18",
+        "ws-legal-03"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-20 11:01:20 UTC，资产 `ws-legal-03`，关联对象 `login.microsoftonline.com / 20.190.160.22`，Normal Microsoft identity traffic from ws-legal-03 appeared in the same SSO workflow window.，源地址 `10.44.1.18`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-20 11:01:20 UTC，资产 `ws-legal-03`，关联对象 `login.microsoftonline.com / 20.190.160.22`，Normal Microsoft identity traffic from ws-legal-03 appeared in the same SSO workflow window.，源地址 `10.44.1.18`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-713",
+      "source_id": "event:evt-713",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "unknown",
+      "kind": "dns",
+      "stages": [],
+      "tags": [
+        "rare"
+      ],
+      "time": "2026-06-20T11:08:30Z",
+      "asset": "ws-legal-03",
+      "objects": [
+        "login-queue-cdn.net",
+        "10.44.1.18",
+        "ws-legal-03"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-20 11:08:30 UTC，资产 `ws-legal-03`，关联对象 `login-queue-cdn.net`，The seed workstation later resolved a second rare queue-themed domain, but it did not share the seed IP.，源地址 `10.44.1.18`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-20 11:08:30 UTC，资产 `ws-legal-03`，关联对象 `login-queue-cdn.net`，The seed workstation later resolved a second rare queue-themed domain, but it did not share the seed IP.，源地址 `10.44.1.18`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-714",
+      "source_id": "event:evt-714",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "unknown",
+      "kind": "flow",
+      "stages": [],
+      "tags": [
+        "rare"
+      ],
+      "time": "2026-06-20T11:11:00Z",
+      "asset": "ws-legal-03",
+      "objects": [
+        "login-queue-cdn.net",
+        "203.0.113.131",
+        "10.44.1.18",
+        "ws-legal-03"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-20 11:11:00 UTC，资产 `ws-legal-03`，关联对象 `login-queue-cdn.net / 203.0.113.131`，A single TLS connection to the second queue-themed domain remained an unresolved follow-on indicator without host corroboration.，源地址 `10.44.1.18`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-20 11:11:00 UTC，资产 `ws-legal-03`，关联对象 `login-queue-cdn.net / 203.0.113.131`，A single TLS connection to the second queue-themed domain remained an unresolved follow-on indicator without host corroboration.，源地址 `10.44.1.18`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-715",
+      "source_id": "event:evt-715",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "unknown",
+      "kind": "asset_context",
+      "stages": [],
+      "tags": [
+        "telemetry-gap"
+      ],
+      "time": "2026-06-20T11:18:00Z",
+      "asset": "ws-legal-09",
+      "objects": [
+        "10.44.1.29",
+        "ws-legal-09"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-20 11:18:00 UTC，资产 `ws-legal-09`，EDR coverage for ws-legal-09 did not include command-line telemetry in this window, limiting scope confirmation.，源地址 `10.44.1.29`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-20 11:18:00 UTC，资产 `ws-legal-09`，EDR coverage for ws-legal-09 did not include command-line telemetry in this window, limiting scope confirmation.，源地址 `10.44.1.29`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-01",
+      "source_id": "object:OBJ-01",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "ws-legal-03"
+      ],
+      "summary_line": "对象 `ws-legal-03`，类型为资产，当前角色为种子资产，种子告警首先落在该资产上。；当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。",
+      "exact_fact_text": "对象 `ws-legal-03`，类型为资产，当前角色为种子资产，种子告警首先落在该资产上。；当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。",
+      "reporting_focus": "已确认受影响对象",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-02",
+      "source_id": "object:OBJ-02",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "ws-legal-09"
+      ],
+      "summary_line": "对象 `ws-legal-09`，类型为资产，当前角色为待确认关联资产，当前仍需独立验证是否真正受影响。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。",
+      "exact_fact_text": "对象 `ws-legal-09`，类型为资产，当前角色为待确认关联资产，当前仍需独立验证是否真正受影响。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-03",
+      "source_id": "object:OBJ-03",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "ws-legal-12"
+      ],
+      "summary_line": "对象 `ws-legal-12`，类型为资产，当前角色为待确认关联资产，当前仍需独立验证是否真正受影响。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。",
+      "exact_fact_text": "对象 `ws-legal-12`，类型为资产，当前角色为待确认关联资产，当前仍需独立验证是否真正受影响。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-04",
+      "source_id": "object:OBJ-04",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "198.51.100.131"
+      ],
+      "summary_line": "对象 `198.51.100.131`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选地址。",
+      "exact_fact_text": "对象 `198.51.100.131`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选地址。",
+      "reporting_focus": "核心外部基础设施",
+      "boundary_note": "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象。",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-05",
+      "source_id": "object:OBJ-05",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "auth-queue-sync.net"
+      ],
+      "summary_line": "对象 `auth-queue-sync.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `auth-queue-sync.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "核心外部基础设施",
+      "boundary_note": "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象。",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-06",
+      "source_id": "object:OBJ-06",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "20.190.160.22"
+      ],
+      "summary_line": "对象 `20.190.160.22`，类型为IP，当前角色为背景/上下文指标，用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选地址。",
+      "exact_fact_text": "对象 `20.190.160.22`，类型为IP，当前角色为背景/上下文指标，用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选地址。",
+      "reporting_focus": "背景对象",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-07",
+      "source_id": "object:OBJ-07",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "identity-cache.vendor.example"
+      ],
+      "summary_line": "对象 `identity-cache.vendor.example`，类型为域名，当前角色为背景/上下文指标，用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `identity-cache.vendor.example`，类型为域名，当前角色为背景/上下文指标，用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "背景对象",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-08",
+      "source_id": "object:OBJ-08",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "login.microsoftonline.com"
+      ],
+      "summary_line": "对象 `login.microsoftonline.com`，类型为域名，当前角色为背景/上下文指标，用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `login.microsoftonline.com`，类型为域名，当前角色为背景/上下文指标，用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "背景对象",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-09",
+      "source_id": "object:OBJ-09",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "t13d190900_7711aa22bb33_9911ccddee77"
+      ],
+      "summary_line": "对象 `t13d190900_7711aa22bb33_9911ccddee77`，类型为JA4，当前角色为种子命中指纹，种子告警命中的关键通信指纹。",
+      "exact_fact_text": "对象 `t13d190900_7711aa22bb33_9911ccddee77`，类型为JA4，当前角色为种子命中指纹，种子告警命中的关键通信指纹。",
+      "reporting_focus": "对象角色事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-10",
+      "source_id": "object:OBJ-10",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "Suspicious shared-infra beacon requiring review"
+      ],
+      "summary_line": "对象 `Suspicious shared-infra beacon requiring review`，类型为家族提示，当前角色为家族/工具提示，辅助解释本案的家族或工具背景，不直接等于强归因。",
+      "exact_fact_text": "对象 `Suspicious shared-infra beacon requiring review`，类型为家族提示，当前角色为家族/工具提示，辅助解释本案的家族或工具背景，不直接等于强归因。",
+      "reporting_focus": "对象角色事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-11",
+      "source_id": "object:OBJ-11",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "10.44.1.18"
+      ],
+      "summary_line": "对象 `10.44.1.18`，类型为内网 IP，当前角色为关联内部地址，事件链中出现的内部地址。",
+      "exact_fact_text": "对象 `10.44.1.18`，类型为内网 IP，当前角色为关联内部地址，事件链中出现的内部地址。",
+      "reporting_focus": "对象角色事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-12",
+      "source_id": "object:OBJ-12",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "10.44.1.29"
+      ],
+      "summary_line": "对象 `10.44.1.29`，类型为内网 IP，当前角色为关联内部地址，事件链中出现的内部地址。",
+      "exact_fact_text": "对象 `10.44.1.29`，类型为内网 IP，当前角色为关联内部地址，事件链中出现的内部地址。",
+      "reporting_focus": "对象角色事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-13",
+      "source_id": "object:OBJ-13",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "10.44.1.42"
+      ],
+      "summary_line": "对象 `10.44.1.42`，类型为内网 IP，当前角色为关联内部地址，事件链中出现的内部地址。",
+      "exact_fact_text": "对象 `10.44.1.42`，类型为内网 IP，当前角色为关联内部地址，事件链中出现的内部地址。",
+      "reporting_focus": "对象角色事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-14",
+      "source_id": "object:OBJ-14",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "203.0.113.131"
+      ],
+      "summary_line": "对象 `203.0.113.131`，类型为IP，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选地址。",
+      "exact_fact_text": "对象 `203.0.113.131`，类型为IP，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选地址。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-15",
+      "source_id": "object:OBJ-15",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "cdn-auth-queue.net"
+      ],
+      "summary_line": "对象 `cdn-auth-queue.net`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `cdn-auth-queue.net`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-16",
+      "source_id": "object:OBJ-16",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "legal-docs-cdn.example"
+      ],
+      "summary_line": "对象 `legal-docs-cdn.example`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `legal-docs-cdn.example`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-17",
+      "source_id": "object:OBJ-17",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "login-queue-cdn.net"
+      ],
+      "summary_line": "对象 `login-queue-cdn.net`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `login-queue-cdn.net`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-18",
+      "source_id": "object:OBJ-18",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "socket.io"
+      ],
+      "summary_line": "对象 `socket.io`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `socket.io`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-19",
+      "source_id": "object:OBJ-19",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "vercel.app"
+      ],
+      "summary_line": "对象 `vercel.app`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `vercel.app`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-20",
+      "source_id": "object:OBJ-20",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "www.microsoft.com"
+      ],
+      "summary_line": "对象 `www.microsoft.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `www.microsoft.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-21",
+      "source_id": "object:OBJ-21",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "www.opswat.com"
+      ],
+      "summary_line": "对象 `www.opswat.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `www.opswat.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-22",
+      "source_id": "object:OBJ-22",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "www.reddit.com"
+      ],
+      "summary_line": "对象 `www.reddit.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `www.reddit.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-23",
+      "source_id": "object:OBJ-23",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "www.safeaeon.com"
+      ],
+      "summary_line": "对象 `www.safeaeon.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `www.safeaeon.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-24",
+      "source_id": "object:OBJ-24",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "www.stamus-networks.com"
+      ],
+      "summary_line": "对象 `www.stamus-networks.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `www.stamus-networks.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-25",
+      "source_id": "object:OBJ-25",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "t13d190900_7711aa22bb33_9911ccddee77"
+      ],
+      "summary_line": "对象 `t13d190900_7711aa22bb33_9911ccddee77`，类型为指纹，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选指纹。",
+      "exact_fact_text": "对象 `t13d190900_7711aa22bb33_9911ccddee77`，类型为指纹，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选指纹。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-claim-cl-01",
+      "source_id": "claim:CL-01",
+      "fact_type": "claim",
+      "status": "supporting",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、198.51.100.131 展开。",
+      "exact_fact_text": "检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、198.51.100.131 展开。",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-claim-cl-02",
+      "source_id": "claim:CL-02",
+      "fact_type": "claim",
+      "status": "counterevidence",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "exact_fact_text": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-claim-cl-03",
+      "source_id": "claim:CL-03",
+      "fact_type": "claim",
+      "status": "candidate",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "exact_fact_text": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-claim-cl-04",
+      "source_id": "claim:CL-04",
+      "fact_type": "claim",
+      "status": "candidate",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "exact_fact_text": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-claim-cl-05",
+      "source_id": "claim:CL-05",
+      "fact_type": "claim",
+      "status": "counterevidence",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "exact_fact_text": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-claim-cl-06",
+      "source_id": "claim:CL-06",
+      "fact_type": "claim",
+      "status": "context",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "候选技术来源包括：Contagious Interview: Malware delivered through fake ...；Financially motivated threat actors misusing App Installer；Inside the attack chain: Threat activity targeting Azure Blob ...",
+      "exact_fact_text": "候选技术来源包括：Contagious Interview: Malware delivered through fake ...；Financially motivated threat actors misusing App Installer；Inside the attack chain: Threat activity targeting Azure Blob ...",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-claim-cl-07",
+      "source_id": "claim:CL-07",
+      "fact_type": "claim",
+      "status": "context",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "malware_profile_lookup 返回了 8 条候选技术来源，可用于后续正文证据提取。",
+      "exact_fact_text": "malware_profile_lookup 返回了 8 条候选技术来源，可用于后续正文证据提取。",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-claim-cl-08",
+      "source_id": "claim:CL-08",
+      "fact_type": "claim",
+      "status": "candidate",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "exact_fact_text": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-claim-cl-09",
+      "source_id": "claim:CL-09",
+      "fact_type": "claim",
+      "status": "context",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "成功读取技术页面正文，可继续抽取 claim 和实体。",
+      "exact_fact_text": "成功读取技术页面正文，可继续抽取 claim 和实体。",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-claim-cl-10",
+      "source_id": "claim:CL-10",
+      "fact_type": "claim",
+      "status": "counterevidence",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+      "exact_fact_text": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-gap-execution-gap",
+      "source_id": "gap:execution_gap",
+      "fact_type": "gap",
+      "status": "stalled",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "是否存在主机侧执行、持久化或横向移动证据？",
+      "exact_fact_text": "是否存在主机侧执行、持久化或横向移动证据？",
+      "reporting_focus": "未闭合缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-expand-cluster-scope",
+      "source_id": "gap:expand_cluster_scope",
+      "fact_type": "gap",
+      "status": "stalled",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "exact_fact_text": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "reporting_focus": "未闭合缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-related-assets-review",
+      "source_id": "gap:related_assets_review",
+      "fact_type": "gap",
+      "status": "stalled",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "关联资产 ws-legal-09、ws-legal-12 是否真正受影响？",
+      "exact_fact_text": "关联资产 ws-legal-09、ws-legal-12 是否真正受影响？",
+      "reporting_focus": "未闭合缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-validate-family-hint",
+      "source_id": "gap:validate_family_hint",
+      "fact_type": "gap",
+      "status": "reportable_unresolved",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "seed 自带的家族提示 Suspicious shared-infra beacon requiring review 是否有更多外部证据支撑？",
+      "exact_fact_text": "seed 自带的家族提示 Suspicious shared-infra beacon requiring review 是否有更多外部证据支撑？",
+      "reporting_focus": "未闭合缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-check-counterevidence",
+      "source_id": "gap:check_counterevidence",
+      "fact_type": "gap",
+      "status": "closed",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "exact_fact_text": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "reporting_focus": "已关闭缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-ground-external-context",
+      "source_id": "gap:ground_external_context",
+      "fact_type": "gap",
+      "status": "closed",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+      "exact_fact_text": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+      "reporting_focus": "已关闭缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-structure-evidence",
+      "source_id": "gap:structure_evidence",
+      "fact_type": "gap",
+      "status": "closed",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+      "exact_fact_text": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+      "reporting_focus": "已关闭缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-build-context",
+      "source_id": "gap:build_context",
+      "fact_type": "gap",
+      "status": "closed",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "仍需围绕 seed alert 补足最小上下文。",
+      "exact_fact_text": "仍需围绕 seed alert 补足最小上下文。",
+      "reporting_focus": "已关闭缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-identify-assets",
+      "source_id": "gap:identify_assets",
+      "fact_type": "gap",
+      "status": "closed",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "仍需确认事件涉及的关键资产。",
+      "exact_fact_text": "仍需确认事件涉及的关键资产。",
+      "reporting_focus": "已关闭缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-action-1",
+      "source_id": "action:1",
+      "fact_type": "action",
+      "status": "",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。",
+      "exact_fact_text": "对重点资产补采主机侧日志，确认是否存在执行、持久化或横向移动证据。",
+      "reporting_focus": "行动建议",
+      "boundary_note": "行动建议不是已观测事实，正文应写成后续处置或核查动作。",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-action-2",
+      "source_id": "action:2",
+      "fact_type": "action",
+      "status": "",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "继续围绕同域名 / 同 dst_ip / 同 JA4 搜索更宽时间窗内的关联事件。",
+      "exact_fact_text": "继续围绕同域名 / 同 dst_ip / 同 JA4 搜索更宽时间窗内的关联事件。",
+      "reporting_focus": "行动建议",
+      "boundary_note": "行动建议不是已观测事实，正文应写成后续处置或核查动作。",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-action-3",
+      "source_id": "action:3",
+      "fact_type": "action",
+      "status": "",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "把关联资产 ws-legal-09、ws-legal-12 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。",
+      "exact_fact_text": "把关联资产 ws-legal-09、ws-legal-12 纳入复核清单，确认它们是共享基础设施背景还是真实受影响对象。",
+      "reporting_focus": "行动建议",
+      "boundary_note": "行动建议不是已观测事实，正文应写成后续处置或核查动作。",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-obs-obs-001",
+      "source_id": "obs:obs-001",
+      "fact_type": "trace_store.seed_context",
+      "status": "ok",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、198.51.100.131 展开。",
+      "exact_fact_text": "检索到 3 条偏可疑事件，围绕 auth-queue-sync.net、198.51.100.131 展开。",
+      "reporting_focus": "obs",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-obs-obs-002",
+      "source_id": "obs:obs-002",
+      "fact_type": "trace_store.asset_context",
+      "status": "ok",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "exact_fact_text": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "reporting_focus": "obs",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-obs-obs-003",
+      "source_id": "obs:obs-003",
+      "fact_type": "trace_store.related_events",
+      "status": "ok",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "exact_fact_text": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "reporting_focus": "obs",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-obs-obs-004",
+      "source_id": "obs:obs-004",
+      "fact_type": "trace_store.related_events",
+      "status": "ok",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "exact_fact_text": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "reporting_focus": "obs",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-obs-obs-005",
+      "source_id": "obs:obs-005",
+      "fact_type": "trace_store.asset_context",
+      "status": "ok",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "exact_fact_text": "检索到 1 条更接近维护、更新或正常基线的事件。",
+      "reporting_focus": "obs",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-obs-obs-006",
+      "source_id": "obs:obs-006",
+      "fact_type": "intel_tool",
+      "status": "ok",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "malware_profile_lookup 返回了 8 条候选技术来源，可用于后续正文证据提取。",
+      "exact_fact_text": "malware_profile_lookup 返回了 8 条候选技术来源，可用于后续正文证据提取。",
+      "reporting_focus": "obs",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-obs-obs-007",
+      "source_id": "obs:obs-007",
+      "fact_type": "trace_store.related_events",
+      "status": "ok",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "exact_fact_text": "扩线检索到 3 条可疑关联事件，围绕 auth-queue-sync.net、198.51.100.131 展开；当前先作为待验证候选线索。",
+      "reporting_focus": "obs",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-obs-obs-008",
+      "source_id": "obs:obs-008",
+      "fact_type": "page_content",
+      "status": "ok",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "成功读取技术页面正文，可继续抽取 claim 和实体。",
+      "exact_fact_text": "成功读取技术页面正文，可继续抽取 claim 和实体。",
+      "reporting_focus": "obs",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-obs-obs-009",
+      "source_id": "obs:obs-009",
+      "fact_type": "trace_store.asset_context",
+      "status": "ok",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+      "exact_fact_text": "显式反证检查发现 3 条更接近维护、更新、补丁或备份背景的事件。",
+      "reporting_focus": "obs",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    }
+  ],
+  "evidence_graph": {
+    "schema_version": "report-evidence-graph-v1",
+    "case_header": {
+      "title": "ws-legal-03 Suspicious shared-infra beacon requiring review 调查报告",
+      "analysis_window": "2026-06-20 10:04:30 UTC 至 2026-06-20 11:18:00 UTC",
+      "seed_alert": {
+        "event_time": "2026-06-20 10:12:00",
+        "simulated": false,
+        "src": {
+          "ip": "10.44.1.18",
+          "port": null
+        },
+        "dst": {
+          "ip": "198.51.100.131",
+          "port": null
+        },
+        "protocol": "TLS",
+        "trigger_fingerprint": {
+          "type": "JA4",
+          "value": "t13d190900_7711aa22bb33_9911ccddee77",
+          "matched": true
+        },
+        "enrichment": {
+          "info": "Suspicious shared-infra beacon requiring review",
+          "reference": "fixture",
+          "update_time": "2026-06-20 10:12:00"
+        },
+        "raw_alert": {
+          "timestamp": "2026-06-20 10:12:00",
+          "src_ip": "10.44.1.18",
+          "dst_ip": "198.51.100.131",
+          "protocol": "TLS",
+          "trigger_fingerprint": {
+            "type": "JA4",
+            "value": "t13d190900_7711aa22bb33_9911ccddee77"
+          },
+          "info": "Suspicious shared-infra beacon requiring review",
+          "reference": "fixture",
+          "update_time": "2026-06-20 10:12:00"
+        }
+      },
+      "final_verdict": {
+        "status": "needs_review",
+        "status_label": "可疑事件，建议继续复核",
+        "confidence": 70,
+        "severity": "中危",
+        "rationale": [
+          "当前已形成可疑事件簇，但关键阶段或影响范围仍需人工复核。",
+          "seed alert 自带家族/工具提示：Suspicious shared-infra beacon requiring review。",
+          "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。",
+          "同时也存在可解释为背景活动的信号，因此暂未自动推进为确认事件。",
+          "交付门槛尚未满足：仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。"
+        ],
+        "delivery_ready": false,
+        "blocked_by": [],
+        "provisional_status": "needs_review",
+        "provisional_status_label": "待人工复核"
+      },
+      "delivery_status": "needs_review",
+      "delivery_status_label": "可疑事件，建议继续复核",
+      "severity": "中危",
+      "confidence": "较高",
+      "source_layer": "delivery_decision"
+    },
+    "source_counts": {
+      "observations": 9,
+      "events": 15,
+      "claims": 10,
+      "objects": 25,
+      "gaps": 9
+    },
+    "nodes": [
+      {
+        "node_id": "asset:t13d190900_7711aa22bb33_9911ccddee77",
+        "node_type": "asset",
+        "label": "t13d190900_7711aa22bb33_9911ccddee77",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-09",
+          "fact-object-obj-25"
+        ],
+        "source_ids": [
+          "object:OBJ-09",
+          "object:OBJ-25"
+        ],
+        "roles": [
+          "object",
+          "对象角色事实",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "asset:ws-legal-03",
+        "node_type": "asset",
+        "label": "ws-legal-03",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-event-evt-712",
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-01"
+        ],
+        "source_ids": [
+          "event:evt-701",
+          "event:evt-702",
+          "event:evt-703",
+          "event:evt-704",
+          "event:evt-705",
+          "event:evt-711",
+          "event:evt-712",
+          "event:evt-713",
+          "event:evt-714",
+          "object:OBJ-01"
+        ],
+        "roles": [
+          "event",
+          "dns",
+          "unknown",
+          "rare",
+          "背景或替代解释事件",
+          "alert",
+          "needs_review",
+          "outlier",
+          "事件时间线事实",
+          "flow",
+          "suspicious",
+          "command-and-control",
+          "beacon",
+          "asset_context",
+          "telemetry-gap",
+          "benign",
+          "browser-update",
+          "maintenance",
+          "identity",
+          "baseline",
+          "object",
+          "已确认受影响对象"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:04:30Z"
+        }
+      },
+      {
+        "node_id": "asset:ws-legal-09",
+        "node_type": "asset",
+        "label": "ws-legal-09",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-event-evt-708",
+          "fact-event-evt-715",
+          "fact-object-obj-02"
+        ],
+        "source_ids": [
+          "event:evt-706",
+          "event:evt-707",
+          "event:evt-708",
+          "event:evt-715",
+          "object:OBJ-02"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "rare",
+          "背景或替代解释事件",
+          "dns",
+          "benign",
+          "shared-hosting",
+          "browser-sso",
+          "asset_context",
+          "telemetry-gap",
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:39:00Z"
+        }
+      },
+      {
+        "node_id": "asset:ws-legal-12",
+        "node_type": "asset",
+        "label": "ws-legal-12",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-709",
+          "fact-object-obj-03"
+        ],
+        "source_ids": [
+          "event:evt-709",
+          "object:OBJ-03"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "shared-hosting",
+          "背景或替代解释事件",
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:49:30Z"
+        }
+      },
+      {
+        "node_id": "domain:auth-queue-sync.net",
+        "node_type": "domain",
+        "label": "auth-queue-sync.net",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-710",
+          "fact-object-obj-05"
+        ],
+        "source_ids": [
+          "event:evt-701",
+          "event:evt-702",
+          "event:evt-703",
+          "event:evt-704",
+          "event:evt-710",
+          "object:OBJ-05"
+        ],
+        "roles": [
+          "event",
+          "dns",
+          "unknown",
+          "rare",
+          "背景或替代解释事件",
+          "alert",
+          "needs_review",
+          "outlier",
+          "事件时间线事实",
+          "flow",
+          "suspicious",
+          "command-and-control",
+          "beacon",
+          "infra_context",
+          "benign",
+          "shared-hosting",
+          "external-context",
+          "object",
+          "核心外部基础设施"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:04:30Z"
+        }
+      },
+      {
+        "node_id": "domain:cdn-auth-queue.net",
+        "node_type": "domain",
+        "label": "cdn-auth-queue.net",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-object-obj-15"
+        ],
+        "source_ids": [
+          "event:evt-706",
+          "event:evt-707",
+          "object:OBJ-15"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "rare",
+          "背景或替代解释事件",
+          "dns",
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:39:00Z"
+        }
+      },
+      {
+        "node_id": "domain:identity-cache.vendor.example",
+        "node_type": "domain",
+        "label": "identity-cache.vendor.example",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-708",
+          "fact-object-obj-07"
+        ],
+        "source_ids": [
+          "event:evt-708",
+          "object:OBJ-07"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "benign",
+          "shared-hosting",
+          "browser-sso",
+          "背景或替代解释事件",
+          "object",
+          "背景对象"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:46:10Z"
+        }
+      },
+      {
+        "node_id": "domain:legal-docs-cdn.example",
+        "node_type": "domain",
+        "label": "legal-docs-cdn.example",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-709",
+          "fact-object-obj-16"
+        ],
+        "source_ids": [
+          "event:evt-709",
+          "object:OBJ-16"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "shared-hosting",
+          "背景或替代解释事件",
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:49:30Z"
+        }
+      },
+      {
+        "node_id": "domain:login-queue-cdn.net",
+        "node_type": "domain",
+        "label": "login-queue-cdn.net",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-17"
+        ],
+        "source_ids": [
+          "event:evt-713",
+          "event:evt-714",
+          "object:OBJ-17"
+        ],
+        "roles": [
+          "event",
+          "dns",
+          "unknown",
+          "rare",
+          "背景或替代解释事件",
+          "flow",
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T11:08:30Z"
+        }
+      },
+      {
+        "node_id": "domain:login.microsoftonline.com",
+        "node_type": "domain",
+        "label": "login.microsoftonline.com",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-712",
+          "fact-object-obj-08"
+        ],
+        "source_ids": [
+          "event:evt-712",
+          "object:OBJ-08"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "benign",
+          "identity",
+          "baseline",
+          "背景或替代解释事件",
+          "object",
+          "背景对象"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T11:01:20Z"
+        }
+      },
+      {
+        "node_id": "domain:socket.io",
+        "node_type": "domain",
+        "label": "socket.io",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-18"
+        ],
+        "source_ids": [
+          "object:OBJ-18"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "domain:vercel.app",
+        "node_type": "domain",
+        "label": "vercel.app",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-19"
+        ],
+        "source_ids": [
+          "object:OBJ-19"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "domain:www.microsoft.com",
+        "node_type": "domain",
+        "label": "www.microsoft.com",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-20"
+        ],
+        "source_ids": [
+          "object:OBJ-20"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "domain:www.opswat.com",
+        "node_type": "domain",
+        "label": "www.opswat.com",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-21"
+        ],
+        "source_ids": [
+          "object:OBJ-21"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "domain:www.reddit.com",
+        "node_type": "domain",
+        "label": "www.reddit.com",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-22"
+        ],
+        "source_ids": [
+          "object:OBJ-22"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "domain:www.safeaeon.com",
+        "node_type": "domain",
+        "label": "www.safeaeon.com",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-23"
+        ],
+        "source_ids": [
+          "object:OBJ-23"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "domain:www.stamus-networks.com",
+        "node_type": "domain",
+        "label": "www.stamus-networks.com",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-24"
+        ],
+        "source_ids": [
+          "object:OBJ-24"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-action-1",
+        "node_type": "fact",
+        "label": "fact-action-1",
+        "status": "unknown",
+        "fact_ids": [
+          "fact-action-1"
+        ],
+        "source_ids": [
+          "action:1"
+        ],
+        "roles": [
+          "action",
+          "行动建议"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-action-2",
+        "node_type": "fact",
+        "label": "fact-action-2",
+        "status": "unknown",
+        "fact_ids": [
+          "fact-action-2"
+        ],
+        "source_ids": [
+          "action:2"
+        ],
+        "roles": [
+          "action",
+          "行动建议"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-action-3",
+        "node_type": "fact",
+        "label": "fact-action-3",
+        "status": "unknown",
+        "fact_ids": [
+          "fact-action-3"
+        ],
+        "source_ids": [
+          "action:3"
+        ],
+        "roles": [
+          "action",
+          "行动建议"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-claim-cl-01",
+        "node_type": "fact",
+        "label": "fact-claim-cl-01",
+        "status": "supporting",
+        "fact_ids": [
+          "fact-claim-cl-01"
+        ],
+        "source_ids": [
+          "claim:CL-01"
+        ],
+        "roles": [
+          "claim",
+          "归纳判断或观察"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-claim-cl-02",
+        "node_type": "fact",
+        "label": "fact-claim-cl-02",
+        "status": "counterevidence",
+        "fact_ids": [
+          "fact-claim-cl-02"
+        ],
+        "source_ids": [
+          "claim:CL-02"
+        ],
+        "roles": [
+          "claim",
+          "归纳判断或观察"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-claim-cl-03",
+        "node_type": "fact",
+        "label": "fact-claim-cl-03",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-claim-cl-03"
+        ],
+        "source_ids": [
+          "claim:CL-03"
+        ],
+        "roles": [
+          "claim",
+          "归纳判断或观察"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-claim-cl-04",
+        "node_type": "fact",
+        "label": "fact-claim-cl-04",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-claim-cl-04"
+        ],
+        "source_ids": [
+          "claim:CL-04"
+        ],
+        "roles": [
+          "claim",
+          "归纳判断或观察"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-claim-cl-05",
+        "node_type": "fact",
+        "label": "fact-claim-cl-05",
+        "status": "counterevidence",
+        "fact_ids": [
+          "fact-claim-cl-05"
+        ],
+        "source_ids": [
+          "claim:CL-05"
+        ],
+        "roles": [
+          "claim",
+          "归纳判断或观察"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-claim-cl-06",
+        "node_type": "fact",
+        "label": "fact-claim-cl-06",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-claim-cl-06"
+        ],
+        "source_ids": [
+          "claim:CL-06"
+        ],
+        "roles": [
+          "claim",
+          "归纳判断或观察"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-claim-cl-07",
+        "node_type": "fact",
+        "label": "fact-claim-cl-07",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-claim-cl-07"
+        ],
+        "source_ids": [
+          "claim:CL-07"
+        ],
+        "roles": [
+          "claim",
+          "归纳判断或观察"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-claim-cl-08",
+        "node_type": "fact",
+        "label": "fact-claim-cl-08",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-claim-cl-08"
+        ],
+        "source_ids": [
+          "claim:CL-08"
+        ],
+        "roles": [
+          "claim",
+          "归纳判断或观察"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-claim-cl-09",
+        "node_type": "fact",
+        "label": "fact-claim-cl-09",
+        "status": "context",
+        "fact_ids": [
+          "fact-claim-cl-09"
+        ],
+        "source_ids": [
+          "claim:CL-09"
+        ],
+        "roles": [
+          "claim",
+          "归纳判断或观察"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-claim-cl-10",
+        "node_type": "fact",
+        "label": "fact-claim-cl-10",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-claim-cl-10"
+        ],
+        "source_ids": [
+          "claim:CL-10"
+        ],
+        "roles": [
+          "claim",
+          "归纳判断或观察"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-event-evt-701",
+        "node_type": "fact",
+        "label": "fact-event-evt-701",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-701"
+        ],
+        "source_ids": [
+          "event:evt-701"
+        ],
+        "roles": [
+          "event",
+          "dns",
+          "unknown",
+          "rare",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:04:30Z"
+        }
+      },
+      {
+        "node_id": "fact:fact-event-evt-702",
+        "node_type": "fact",
+        "label": "fact-event-evt-702",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-702"
+        ],
+        "source_ids": [
+          "event:evt-702"
+        ],
+        "roles": [
+          "event",
+          "alert",
+          "needs_review",
+          "outlier",
+          "事件时间线事实"
+        ],
+        "boundary": false,
+        "properties": {
+          "first_time": "2026-06-20T10:12:00Z"
+        }
+      },
+      {
+        "node_id": "fact:fact-event-evt-703",
+        "node_type": "fact",
+        "label": "fact-event-evt-703",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-703"
+        ],
+        "source_ids": [
+          "event:evt-703"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "suspicious",
+          "command-and-control",
+          "beacon",
+          "事件时间线事实"
+        ],
+        "boundary": false,
+        "properties": {
+          "first_time": "2026-06-20T10:16:20Z"
+        }
+      },
+      {
+        "node_id": "fact:fact-event-evt-704",
+        "node_type": "fact",
+        "label": "fact-event-evt-704",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-704"
+        ],
+        "source_ids": [
+          "event:evt-704"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "suspicious",
+          "command-and-control",
+          "事件时间线事实"
+        ],
+        "boundary": false,
+        "properties": {
+          "first_time": "2026-06-20T10:21:40Z"
+        }
+      },
+      {
+        "node_id": "fact:fact-event-evt-705",
+        "node_type": "fact",
+        "label": "fact-event-evt-705",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-705"
+        ],
+        "source_ids": [
+          "event:evt-705"
+        ],
+        "roles": [
+          "event",
+          "asset_context",
+          "unknown",
+          "telemetry-gap",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:24:00Z"
+        }
+      },
+      {
+        "node_id": "fact:fact-event-evt-706",
+        "node_type": "fact",
+        "label": "fact-event-evt-706",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-706"
+        ],
+        "source_ids": [
+          "event:evt-706"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "rare",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:39:00Z"
+        }
+      },
+      {
+        "node_id": "fact:fact-event-evt-707",
+        "node_type": "fact",
+        "label": "fact-event-evt-707",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-707"
+        ],
+        "source_ids": [
+          "event:evt-707"
+        ],
+        "roles": [
+          "event",
+          "dns",
+          "unknown",
+          "rare",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:42:00Z"
+        }
+      },
+      {
+        "node_id": "fact:fact-event-evt-708",
+        "node_type": "fact",
+        "label": "fact-event-evt-708",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-708"
+        ],
+        "source_ids": [
+          "event:evt-708"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "benign",
+          "shared-hosting",
+          "browser-sso",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:46:10Z"
+        }
+      },
+      {
+        "node_id": "fact:fact-event-evt-709",
+        "node_type": "fact",
+        "label": "fact-event-evt-709",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-709"
+        ],
+        "source_ids": [
+          "event:evt-709"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "shared-hosting",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:49:30Z"
+        }
+      },
+      {
+        "node_id": "fact:fact-event-evt-710",
+        "node_type": "fact",
+        "label": "fact-event-evt-710",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-710"
+        ],
+        "source_ids": [
+          "event:evt-710"
+        ],
+        "roles": [
+          "event",
+          "infra_context",
+          "benign",
+          "shared-hosting",
+          "external-context",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:52:00Z"
+        }
+      },
+      {
+        "node_id": "fact:fact-event-evt-711",
+        "node_type": "fact",
+        "label": "fact-event-evt-711",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-711"
+        ],
+        "source_ids": [
+          "event:evt-711"
+        ],
+        "roles": [
+          "event",
+          "asset_context",
+          "benign",
+          "browser-update",
+          "maintenance",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:55:00Z"
+        }
+      },
+      {
+        "node_id": "fact:fact-event-evt-712",
+        "node_type": "fact",
+        "label": "fact-event-evt-712",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-712"
+        ],
+        "source_ids": [
+          "event:evt-712"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "benign",
+          "identity",
+          "baseline",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T11:01:20Z"
+        }
+      },
+      {
+        "node_id": "fact:fact-event-evt-713",
+        "node_type": "fact",
+        "label": "fact-event-evt-713",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-713"
+        ],
+        "source_ids": [
+          "event:evt-713"
+        ],
+        "roles": [
+          "event",
+          "dns",
+          "unknown",
+          "rare",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T11:08:30Z"
+        }
+      },
+      {
+        "node_id": "fact:fact-event-evt-714",
+        "node_type": "fact",
+        "label": "fact-event-evt-714",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-714"
+        ],
+        "source_ids": [
+          "event:evt-714"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "rare",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T11:11:00Z"
+        }
+      },
+      {
+        "node_id": "fact:fact-event-evt-715",
+        "node_type": "fact",
+        "label": "fact-event-evt-715",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-715"
+        ],
+        "source_ids": [
+          "event:evt-715"
+        ],
+        "roles": [
+          "event",
+          "asset_context",
+          "unknown",
+          "telemetry-gap",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T11:18:00Z"
+        }
+      },
+      {
+        "node_id": "fact:fact-gap-build-context",
+        "node_type": "fact",
+        "label": "fact-gap-build-context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-gap-build-context"
+        ],
+        "source_ids": [
+          "gap:build_context"
+        ],
+        "roles": [
+          "gap",
+          "已关闭缺口"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-gap-check-counterevidence",
+        "node_type": "fact",
+        "label": "fact-gap-check-counterevidence",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-gap-check-counterevidence"
+        ],
+        "source_ids": [
+          "gap:check_counterevidence"
+        ],
+        "roles": [
+          "gap",
+          "已关闭缺口"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-gap-execution-gap",
+        "node_type": "fact",
+        "label": "fact-gap-execution-gap",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-gap-execution-gap"
+        ],
+        "source_ids": [
+          "gap:execution_gap"
+        ],
+        "roles": [
+          "gap",
+          "未闭合缺口"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-gap-expand-cluster-scope",
+        "node_type": "fact",
+        "label": "fact-gap-expand-cluster-scope",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-gap-expand-cluster-scope"
+        ],
+        "source_ids": [
+          "gap:expand_cluster_scope"
+        ],
+        "roles": [
+          "gap",
+          "未闭合缺口"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-gap-ground-external-context",
+        "node_type": "fact",
+        "label": "fact-gap-ground-external-context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-gap-ground-external-context"
+        ],
+        "source_ids": [
+          "gap:ground_external_context"
+        ],
+        "roles": [
+          "gap",
+          "已关闭缺口"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-gap-identify-assets",
+        "node_type": "fact",
+        "label": "fact-gap-identify-assets",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-gap-identify-assets"
+        ],
+        "source_ids": [
+          "gap:identify_assets"
+        ],
+        "roles": [
+          "gap",
+          "已关闭缺口"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-gap-related-assets-review",
+        "node_type": "fact",
+        "label": "fact-gap-related-assets-review",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-gap-related-assets-review"
+        ],
+        "source_ids": [
+          "gap:related_assets_review"
+        ],
+        "roles": [
+          "gap",
+          "未闭合缺口"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-gap-structure-evidence",
+        "node_type": "fact",
+        "label": "fact-gap-structure-evidence",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-gap-structure-evidence"
+        ],
+        "source_ids": [
+          "gap:structure_evidence"
+        ],
+        "roles": [
+          "gap",
+          "已关闭缺口"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-gap-validate-family-hint",
+        "node_type": "fact",
+        "label": "fact-gap-validate-family-hint",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-gap-validate-family-hint"
+        ],
+        "source_ids": [
+          "gap:validate_family_hint"
+        ],
+        "roles": [
+          "gap",
+          "未闭合缺口"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-01",
+        "node_type": "fact",
+        "label": "fact-object-obj-01",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-01"
+        ],
+        "source_ids": [
+          "object:OBJ-01"
+        ],
+        "roles": [
+          "object",
+          "已确认受影响对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-02",
+        "node_type": "fact",
+        "label": "fact-object-obj-02",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-02"
+        ],
+        "source_ids": [
+          "object:OBJ-02"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-03",
+        "node_type": "fact",
+        "label": "fact-object-obj-03",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-03"
+        ],
+        "source_ids": [
+          "object:OBJ-03"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-04",
+        "node_type": "fact",
+        "label": "fact-object-obj-04",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-04"
+        ],
+        "source_ids": [
+          "object:OBJ-04"
+        ],
+        "roles": [
+          "object",
+          "核心外部基础设施"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-05",
+        "node_type": "fact",
+        "label": "fact-object-obj-05",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-05"
+        ],
+        "source_ids": [
+          "object:OBJ-05"
+        ],
+        "roles": [
+          "object",
+          "核心外部基础设施"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-06",
+        "node_type": "fact",
+        "label": "fact-object-obj-06",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-06"
+        ],
+        "source_ids": [
+          "object:OBJ-06"
+        ],
+        "roles": [
+          "object",
+          "背景对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-07",
+        "node_type": "fact",
+        "label": "fact-object-obj-07",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-07"
+        ],
+        "source_ids": [
+          "object:OBJ-07"
+        ],
+        "roles": [
+          "object",
+          "背景对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-08",
+        "node_type": "fact",
+        "label": "fact-object-obj-08",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-08"
+        ],
+        "source_ids": [
+          "object:OBJ-08"
+        ],
+        "roles": [
+          "object",
+          "背景对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-09",
+        "node_type": "fact",
+        "label": "fact-object-obj-09",
+        "status": "已确认",
+        "fact_ids": [
+          "fact-object-obj-09"
+        ],
+        "source_ids": [
+          "object:OBJ-09"
+        ],
+        "roles": [
+          "object",
+          "对象角色事实"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-10",
+        "node_type": "fact",
+        "label": "fact-object-obj-10",
+        "status": "已确认",
+        "fact_ids": [
+          "fact-object-obj-10"
+        ],
+        "source_ids": [
+          "object:OBJ-10"
+        ],
+        "roles": [
+          "object",
+          "对象角色事实"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-11",
+        "node_type": "fact",
+        "label": "fact-object-obj-11",
+        "status": "已确认",
+        "fact_ids": [
+          "fact-object-obj-11"
+        ],
+        "source_ids": [
+          "object:OBJ-11"
+        ],
+        "roles": [
+          "object",
+          "对象角色事实"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-12",
+        "node_type": "fact",
+        "label": "fact-object-obj-12",
+        "status": "已确认",
+        "fact_ids": [
+          "fact-object-obj-12"
+        ],
+        "source_ids": [
+          "object:OBJ-12"
+        ],
+        "roles": [
+          "object",
+          "对象角色事实"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-13",
+        "node_type": "fact",
+        "label": "fact-object-obj-13",
+        "status": "已确认",
+        "fact_ids": [
+          "fact-object-obj-13"
+        ],
+        "source_ids": [
+          "object:OBJ-13"
+        ],
+        "roles": [
+          "object",
+          "对象角色事实"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-14",
+        "node_type": "fact",
+        "label": "fact-object-obj-14",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-14"
+        ],
+        "source_ids": [
+          "object:OBJ-14"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-15",
+        "node_type": "fact",
+        "label": "fact-object-obj-15",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-15"
+        ],
+        "source_ids": [
+          "object:OBJ-15"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-16",
+        "node_type": "fact",
+        "label": "fact-object-obj-16",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-16"
+        ],
+        "source_ids": [
+          "object:OBJ-16"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-17",
+        "node_type": "fact",
+        "label": "fact-object-obj-17",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-17"
+        ],
+        "source_ids": [
+          "object:OBJ-17"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-18",
+        "node_type": "fact",
+        "label": "fact-object-obj-18",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-18"
+        ],
+        "source_ids": [
+          "object:OBJ-18"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-19",
+        "node_type": "fact",
+        "label": "fact-object-obj-19",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-19"
+        ],
+        "source_ids": [
+          "object:OBJ-19"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-20",
+        "node_type": "fact",
+        "label": "fact-object-obj-20",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-20"
+        ],
+        "source_ids": [
+          "object:OBJ-20"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-21",
+        "node_type": "fact",
+        "label": "fact-object-obj-21",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-21"
+        ],
+        "source_ids": [
+          "object:OBJ-21"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-22",
+        "node_type": "fact",
+        "label": "fact-object-obj-22",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-22"
+        ],
+        "source_ids": [
+          "object:OBJ-22"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-23",
+        "node_type": "fact",
+        "label": "fact-object-obj-23",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-23"
+        ],
+        "source_ids": [
+          "object:OBJ-23"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-24",
+        "node_type": "fact",
+        "label": "fact-object-obj-24",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-24"
+        ],
+        "source_ids": [
+          "object:OBJ-24"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-object-obj-25",
+        "node_type": "fact",
+        "label": "fact-object-obj-25",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-25"
+        ],
+        "source_ids": [
+          "object:OBJ-25"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-obs-obs-001",
+        "node_type": "fact",
+        "label": "fact-obs-obs-001",
+        "status": "ok",
+        "fact_ids": [
+          "fact-obs-obs-001"
+        ],
+        "source_ids": [
+          "obs:obs-001"
+        ],
+        "roles": [
+          "trace_store.seed_context",
+          "obs"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-obs-obs-002",
+        "node_type": "fact",
+        "label": "fact-obs-obs-002",
+        "status": "ok",
+        "fact_ids": [
+          "fact-obs-obs-002"
+        ],
+        "source_ids": [
+          "obs:obs-002"
+        ],
+        "roles": [
+          "trace_store.asset_context",
+          "obs"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-obs-obs-003",
+        "node_type": "fact",
+        "label": "fact-obs-obs-003",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-obs-obs-003"
+        ],
+        "source_ids": [
+          "obs:obs-003"
+        ],
+        "roles": [
+          "trace_store.related_events",
+          "obs"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-obs-obs-004",
+        "node_type": "fact",
+        "label": "fact-obs-obs-004",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-obs-obs-004"
+        ],
+        "source_ids": [
+          "obs:obs-004"
+        ],
+        "roles": [
+          "trace_store.related_events",
+          "obs"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-obs-obs-005",
+        "node_type": "fact",
+        "label": "fact-obs-obs-005",
+        "status": "ok",
+        "fact_ids": [
+          "fact-obs-obs-005"
+        ],
+        "source_ids": [
+          "obs:obs-005"
+        ],
+        "roles": [
+          "trace_store.asset_context",
+          "obs"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-obs-obs-006",
+        "node_type": "fact",
+        "label": "fact-obs-obs-006",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-obs-obs-006"
+        ],
+        "source_ids": [
+          "obs:obs-006"
+        ],
+        "roles": [
+          "intel_tool",
+          "obs"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-obs-obs-007",
+        "node_type": "fact",
+        "label": "fact-obs-obs-007",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-obs-obs-007"
+        ],
+        "source_ids": [
+          "obs:obs-007"
+        ],
+        "roles": [
+          "trace_store.related_events",
+          "obs"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-obs-obs-008",
+        "node_type": "fact",
+        "label": "fact-obs-obs-008",
+        "status": "ok",
+        "fact_ids": [
+          "fact-obs-obs-008"
+        ],
+        "source_ids": [
+          "obs:obs-008"
+        ],
+        "roles": [
+          "page_content",
+          "obs"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-obs-obs-009",
+        "node_type": "fact",
+        "label": "fact-obs-obs-009",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-obs-obs-009"
+        ],
+        "source_ids": [
+          "obs:obs-009"
+        ],
+        "roles": [
+          "trace_store.asset_context",
+          "obs"
+        ],
+        "boundary": true,
+        "properties": {}
+      },
+      {
+        "node_id": "fact:fact-verdict-delivery",
+        "node_type": "fact",
+        "label": "fact-verdict-delivery",
+        "status": "unknown",
+        "fact_ids": [
+          "fact-verdict-delivery"
+        ],
+        "source_ids": [
+          "verdict:delivery"
+        ],
+        "roles": [
+          "verdict",
+          "交付结论"
+        ],
+        "boundary": false,
+        "properties": {}
+      },
+      {
+        "node_id": "ip:10.44.1.18",
+        "node_type": "ip",
+        "label": "10.44.1.18",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-event-evt-712",
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-11"
+        ],
+        "source_ids": [
+          "event:evt-701",
+          "event:evt-702",
+          "event:evt-703",
+          "event:evt-704",
+          "event:evt-705",
+          "event:evt-711",
+          "event:evt-712",
+          "event:evt-713",
+          "event:evt-714",
+          "object:OBJ-11"
+        ],
+        "roles": [
+          "event",
+          "dns",
+          "unknown",
+          "rare",
+          "背景或替代解释事件",
+          "alert",
+          "needs_review",
+          "outlier",
+          "事件时间线事实",
+          "flow",
+          "suspicious",
+          "command-and-control",
+          "beacon",
+          "asset_context",
+          "telemetry-gap",
+          "benign",
+          "browser-update",
+          "maintenance",
+          "identity",
+          "baseline",
+          "object",
+          "对象角色事实"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:04:30Z"
+        }
+      },
+      {
+        "node_id": "ip:10.44.1.29",
+        "node_type": "ip",
+        "label": "10.44.1.29",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-event-evt-708",
+          "fact-event-evt-715",
+          "fact-object-obj-12"
+        ],
+        "source_ids": [
+          "event:evt-706",
+          "event:evt-707",
+          "event:evt-708",
+          "event:evt-715",
+          "object:OBJ-12"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "rare",
+          "背景或替代解释事件",
+          "dns",
+          "benign",
+          "shared-hosting",
+          "browser-sso",
+          "asset_context",
+          "telemetry-gap",
+          "object",
+          "对象角色事实"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:39:00Z"
+        }
+      },
+      {
+        "node_id": "ip:10.44.1.42",
+        "node_type": "ip",
+        "label": "10.44.1.42",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-709",
+          "fact-object-obj-13"
+        ],
+        "source_ids": [
+          "event:evt-709",
+          "object:OBJ-13"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "shared-hosting",
+          "背景或替代解释事件",
+          "object",
+          "对象角色事实"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:49:30Z"
+        }
+      },
+      {
+        "node_id": "ip:198.51.100.131",
+        "node_type": "ip",
+        "label": "198.51.100.131",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-706",
+          "fact-event-evt-708",
+          "fact-event-evt-709",
+          "fact-event-evt-710",
+          "fact-object-obj-04"
+        ],
+        "source_ids": [
+          "event:evt-702",
+          "event:evt-703",
+          "event:evt-704",
+          "event:evt-706",
+          "event:evt-708",
+          "event:evt-709",
+          "event:evt-710",
+          "object:OBJ-04"
+        ],
+        "roles": [
+          "event",
+          "alert",
+          "needs_review",
+          "outlier",
+          "事件时间线事实",
+          "flow",
+          "suspicious",
+          "command-and-control",
+          "beacon",
+          "unknown",
+          "rare",
+          "背景或替代解释事件",
+          "benign",
+          "shared-hosting",
+          "browser-sso",
+          "infra_context",
+          "external-context",
+          "object",
+          "核心外部基础设施"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T10:12:00Z"
+        }
+      },
+      {
+        "node_id": "ip:20.190.160.22",
+        "node_type": "ip",
+        "label": "20.190.160.22",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-712",
+          "fact-object-obj-06"
+        ],
+        "source_ids": [
+          "event:evt-712",
+          "object:OBJ-06"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "benign",
+          "identity",
+          "baseline",
+          "背景或替代解释事件",
+          "object",
+          "背景对象"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T11:01:20Z"
+        }
+      },
+      {
+        "node_id": "ip:203.0.113.131",
+        "node_type": "ip",
+        "label": "203.0.113.131",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-714",
+          "fact-object-obj-14"
+        ],
+        "source_ids": [
+          "event:evt-714",
+          "object:OBJ-14"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "rare",
+          "背景或替代解释事件",
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "properties": {
+          "first_time": "2026-06-20T11:11:00Z"
+        }
+      },
+      {
+        "node_id": "object:15e122613499",
+        "node_type": "object",
+        "label": "Suspicious shared-infra beacon requiring review",
+        "status": "已确认",
+        "fact_ids": [
+          "fact-object-obj-10"
+        ],
+        "source_ids": [
+          "object:OBJ-10"
+        ],
+        "roles": [
+          "object",
+          "对象角色事实"
+        ],
+        "boundary": false,
+        "properties": {}
+      }
+    ],
+    "edges": [
+      {
+        "edge_id": "edge:007afe9bd393",
+        "source": "fact:fact-event-evt-709",
+        "target": "asset:ws-legal-12",
+        "relation": "mentions_asset",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-709"
+        ],
+        "source_ids": [
+          "event:evt-709"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "shared-hosting",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:03ee1848185d",
+        "source": "asset:ws-legal-03",
+        "target": "ip:198.51.100.131",
+        "relation": "provides_context",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-702",
+          "fact-event-evt-704"
+        ],
+        "source_ids": [
+          "event:evt-702",
+          "event:evt-704"
+        ],
+        "roles": [
+          "event",
+          "alert",
+          "needs_review",
+          "outlier",
+          "事件时间线事实",
+          "flow",
+          "suspicious",
+          "command-and-control"
+        ],
+        "boundary": false,
+        "boundary_note": ""
+      },
+      {
+        "edge_id": "edge:03fb25ba8b9c",
+        "source": "fact:fact-event-evt-706",
+        "target": "asset:ws-legal-09",
+        "relation": "mentions_asset",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-706"
+        ],
+        "source_ids": [
+          "event:evt-706"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "rare",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:05c9035321f1",
+        "source": "asset:ws-legal-09",
+        "target": "domain:cdn-auth-queue.net",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-706",
+          "fact-event-evt-707"
+        ],
+        "source_ids": [
+          "event:evt-706",
+          "event:evt-707"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "rare",
+          "背景或替代解释事件",
+          "dns"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:05ff0d7eecfd",
+        "source": "fact:fact-object-obj-11",
+        "target": "ip:10.44.1.18",
+        "relation": "observed_with",
+        "status": "已确认",
+        "fact_ids": [
+          "fact-object-obj-11"
+        ],
+        "source_ids": [
+          "object:OBJ-11"
+        ],
+        "roles": [
+          "object",
+          "对象角色事实"
+        ],
+        "boundary": false,
+        "boundary_note": ""
+      },
+      {
+        "edge_id": "edge:0679edc059aa",
+        "source": "asset:ws-legal-12",
+        "target": "domain:legal-docs-cdn.example",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-709"
+        ],
+        "source_ids": [
+          "event:evt-709"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "shared-hosting",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:0ace6c341a8a",
+        "source": "fact:fact-event-evt-707",
+        "target": "asset:ws-legal-09",
+        "relation": "mentions_asset",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-707"
+        ],
+        "source_ids": [
+          "event:evt-707"
+        ],
+        "roles": [
+          "event",
+          "dns",
+          "unknown",
+          "rare",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:112e44f96335",
+        "source": "fact:fact-event-evt-715",
+        "target": "asset:ws-legal-09",
+        "relation": "mentions_asset",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-715"
+        ],
+        "source_ids": [
+          "event:evt-715"
+        ],
+        "roles": [
+          "event",
+          "asset_context",
+          "unknown",
+          "telemetry-gap",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:1656be362d15",
+        "source": "asset:ws-legal-03",
+        "target": "domain:login-queue-cdn.net",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-713",
+          "fact-event-evt-714"
+        ],
+        "source_ids": [
+          "event:evt-713",
+          "event:evt-714"
+        ],
+        "roles": [
+          "event",
+          "dns",
+          "unknown",
+          "rare",
+          "背景或替代解释事件",
+          "flow"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:1a506afc30df",
+        "source": "fact:fact-event-evt-708",
+        "target": "asset:ws-legal-09",
+        "relation": "mentions_asset",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-708"
+        ],
+        "source_ids": [
+          "event:evt-708"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "benign",
+          "shared-hosting",
+          "browser-sso",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:29e6eb609f2b",
+        "source": "asset:ws-legal-03",
+        "target": "ip:10.44.1.18",
+        "relation": "observed_with",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-703"
+        ],
+        "source_ids": [
+          "event:evt-703"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "suspicious",
+          "command-and-control",
+          "beacon",
+          "事件时间线事实"
+        ],
+        "boundary": false,
+        "boundary_note": ""
+      },
+      {
+        "edge_id": "edge:2cd89ffd69e1",
+        "source": "fact:fact-object-obj-03",
+        "target": "asset:ws-legal-12",
+        "relation": "candidate_related_to",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-03"
+        ],
+        "source_ids": [
+          "object:OBJ-03"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "edge_id": "edge:2d44f01df057",
+        "source": "fact:fact-object-obj-13",
+        "target": "ip:10.44.1.42",
+        "relation": "observed_with",
+        "status": "已确认",
+        "fact_ids": [
+          "fact-object-obj-13"
+        ],
+        "source_ids": [
+          "object:OBJ-13"
+        ],
+        "roles": [
+          "object",
+          "对象角色事实"
+        ],
+        "boundary": false,
+        "boundary_note": ""
+      },
+      {
+        "edge_id": "edge:335ce7cd6c09",
+        "source": "fact:fact-object-obj-10",
+        "target": "object:15e122613499",
+        "relation": "provides_context",
+        "status": "已确认",
+        "fact_ids": [
+          "fact-object-obj-10"
+        ],
+        "source_ids": [
+          "object:OBJ-10"
+        ],
+        "roles": [
+          "object",
+          "对象角色事实"
+        ],
+        "boundary": false,
+        "boundary_note": ""
+      },
+      {
+        "edge_id": "edge:3b54d60ab9a6",
+        "source": "fact:fact-object-obj-08",
+        "target": "domain:login.microsoftonline.com",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-08"
+        ],
+        "source_ids": [
+          "object:OBJ-08"
+        ],
+        "roles": [
+          "object",
+          "背景对象"
+        ],
+        "boundary": true,
+        "boundary_note": ""
+      },
+      {
+        "edge_id": "edge:41c9dcf87b82",
+        "source": "asset:ws-legal-03",
+        "target": "domain:login.microsoftonline.com",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-712"
+        ],
+        "source_ids": [
+          "event:evt-712"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "benign",
+          "identity",
+          "baseline",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:4290b3df6ecb",
+        "source": "fact:fact-event-evt-704",
+        "target": "asset:ws-legal-03",
+        "relation": "mentions_asset",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-704"
+        ],
+        "source_ids": [
+          "event:evt-704"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "suspicious",
+          "command-and-control",
+          "事件时间线事实"
+        ],
+        "boundary": false,
+        "boundary_note": ""
+      },
+      {
+        "edge_id": "edge:43c7f7893d4c",
+        "source": "fact:fact-object-obj-04",
+        "target": "ip:198.51.100.131",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-04"
+        ],
+        "source_ids": [
+          "object:OBJ-04"
+        ],
+        "roles": [
+          "object",
+          "核心外部基础设施"
+        ],
+        "boundary": true,
+        "boundary_note": "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象。"
+      },
+      {
+        "edge_id": "edge:47f0730daf63",
+        "source": "fact:fact-object-obj-16",
+        "target": "domain:legal-docs-cdn.example",
+        "relation": "candidate_related_to",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-16"
+        ],
+        "source_ids": [
+          "object:OBJ-16"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "edge_id": "edge:4f50a214e44d",
+        "source": "asset:ws-legal-03",
+        "target": "ip:20.190.160.22",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-712"
+        ],
+        "source_ids": [
+          "event:evt-712"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "benign",
+          "identity",
+          "baseline",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:58ab265a7cb7",
+        "source": "fact:fact-object-obj-01",
+        "target": "asset:ws-legal-03",
+        "relation": "candidate_related_to",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-01"
+        ],
+        "source_ids": [
+          "object:OBJ-01"
+        ],
+        "roles": [
+          "object",
+          "已确认受影响对象"
+        ],
+        "boundary": true,
+        "boundary_note": ""
+      },
+      {
+        "edge_id": "edge:5f9078fbe3f3",
+        "source": "asset:ws-legal-03",
+        "target": "domain:auth-queue-sync.net",
+        "relation": "observed_with",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-703"
+        ],
+        "source_ids": [
+          "event:evt-703"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "suspicious",
+          "command-and-control",
+          "beacon",
+          "事件时间线事实"
+        ],
+        "boundary": false,
+        "boundary_note": ""
+      },
+      {
+        "edge_id": "edge:61d7629d7848",
+        "source": "fact:fact-object-obj-17",
+        "target": "domain:login-queue-cdn.net",
+        "relation": "candidate_related_to",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-17"
+        ],
+        "source_ids": [
+          "object:OBJ-17"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "edge_id": "edge:67d51bc16393",
+        "source": "fact:fact-object-obj-22",
+        "target": "domain:www.reddit.com",
+        "relation": "candidate_related_to",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-22"
+        ],
+        "source_ids": [
+          "object:OBJ-22"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "edge_id": "edge:6913b5f1785b",
+        "source": "asset:ws-legal-03",
+        "target": "domain:auth-queue-sync.net",
+        "relation": "provides_context",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-704"
+        ],
+        "source_ids": [
+          "event:evt-701",
+          "event:evt-702",
+          "event:evt-704"
+        ],
+        "roles": [
+          "event",
+          "dns",
+          "unknown",
+          "rare",
+          "背景或替代解释事件",
+          "alert",
+          "needs_review",
+          "outlier",
+          "事件时间线事实",
+          "flow",
+          "suspicious",
+          "command-and-control"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:6b275ec95e69",
+        "source": "fact:fact-object-obj-02",
+        "target": "asset:ws-legal-09",
+        "relation": "candidate_related_to",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-02"
+        ],
+        "source_ids": [
+          "object:OBJ-02"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "edge_id": "edge:6b2d02700468",
+        "source": "asset:ws-legal-03",
+        "target": "ip:10.44.1.18",
+        "relation": "provides_context",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-704",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-event-evt-712",
+          "fact-event-evt-713",
+          "fact-event-evt-714"
+        ],
+        "source_ids": [
+          "event:evt-701",
+          "event:evt-702",
+          "event:evt-704",
+          "event:evt-705",
+          "event:evt-711",
+          "event:evt-712",
+          "event:evt-713",
+          "event:evt-714"
+        ],
+        "roles": [
+          "event",
+          "dns",
+          "unknown",
+          "rare",
+          "背景或替代解释事件",
+          "alert",
+          "needs_review",
+          "outlier",
+          "事件时间线事实",
+          "flow",
+          "suspicious",
+          "command-and-control",
+          "asset_context",
+          "telemetry-gap",
+          "benign",
+          "browser-update",
+          "maintenance",
+          "identity",
+          "baseline"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:70ad2e79eee0",
+        "source": "fact:fact-event-evt-710",
+        "target": "ip:198.51.100.131",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-710"
+        ],
+        "source_ids": [
+          "event:evt-710"
+        ],
+        "roles": [
+          "event",
+          "infra_context",
+          "benign",
+          "shared-hosting",
+          "external-context",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:788666449dbb",
+        "source": "fact:fact-object-obj-21",
+        "target": "domain:www.opswat.com",
+        "relation": "candidate_related_to",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-21"
+        ],
+        "source_ids": [
+          "object:OBJ-21"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "edge_id": "edge:7993c3b5051d",
+        "source": "fact:fact-event-evt-705",
+        "target": "asset:ws-legal-03",
+        "relation": "mentions_asset",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-705"
+        ],
+        "source_ids": [
+          "event:evt-705"
+        ],
+        "roles": [
+          "event",
+          "asset_context",
+          "unknown",
+          "telemetry-gap",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:8141dc05fb39",
+        "source": "fact:fact-object-obj-24",
+        "target": "domain:www.stamus-networks.com",
+        "relation": "candidate_related_to",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-24"
+        ],
+        "source_ids": [
+          "object:OBJ-24"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "edge_id": "edge:8cf7e45f1643",
+        "source": "fact:fact-event-evt-714",
+        "target": "asset:ws-legal-03",
+        "relation": "mentions_asset",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-714"
+        ],
+        "source_ids": [
+          "event:evt-714"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "rare",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:8fe484c42a32",
+        "source": "fact:fact-object-obj-15",
+        "target": "domain:cdn-auth-queue.net",
+        "relation": "candidate_related_to",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-15"
+        ],
+        "source_ids": [
+          "object:OBJ-15"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "edge_id": "edge:98075a14d0a3",
+        "source": "asset:ws-legal-12",
+        "target": "ip:10.44.1.42",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-709"
+        ],
+        "source_ids": [
+          "event:evt-709"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "shared-hosting",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:997b0d3b1371",
+        "source": "fact:fact-object-obj-07",
+        "target": "domain:identity-cache.vendor.example",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-07"
+        ],
+        "source_ids": [
+          "object:OBJ-07"
+        ],
+        "roles": [
+          "object",
+          "背景对象"
+        ],
+        "boundary": true,
+        "boundary_note": ""
+      },
+      {
+        "edge_id": "edge:9c71c9aa66e8",
+        "source": "fact:fact-object-obj-12",
+        "target": "ip:10.44.1.29",
+        "relation": "observed_with",
+        "status": "已确认",
+        "fact_ids": [
+          "fact-object-obj-12"
+        ],
+        "source_ids": [
+          "object:OBJ-12"
+        ],
+        "roles": [
+          "object",
+          "对象角色事实"
+        ],
+        "boundary": false,
+        "boundary_note": ""
+      },
+      {
+        "edge_id": "edge:9c927997b4f7",
+        "source": "fact:fact-event-evt-713",
+        "target": "asset:ws-legal-03",
+        "relation": "mentions_asset",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-713"
+        ],
+        "source_ids": [
+          "event:evt-713"
+        ],
+        "roles": [
+          "event",
+          "dns",
+          "unknown",
+          "rare",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:a02732ba7385",
+        "source": "asset:ws-legal-09",
+        "target": "domain:identity-cache.vendor.example",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-708"
+        ],
+        "source_ids": [
+          "event:evt-708"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "benign",
+          "shared-hosting",
+          "browser-sso",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:a1ebc8d5b72e",
+        "source": "asset:ws-legal-03",
+        "target": "ip:198.51.100.131",
+        "relation": "observed_with",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-703"
+        ],
+        "source_ids": [
+          "event:evt-703"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "suspicious",
+          "command-and-control",
+          "beacon",
+          "事件时间线事实"
+        ],
+        "boundary": false,
+        "boundary_note": ""
+      },
+      {
+        "edge_id": "edge:a9b6d68d1189",
+        "source": "asset:ws-legal-09",
+        "target": "ip:198.51.100.131",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-706",
+          "fact-event-evt-708"
+        ],
+        "source_ids": [
+          "event:evt-706",
+          "event:evt-708"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "rare",
+          "背景或替代解释事件",
+          "benign",
+          "shared-hosting",
+          "browser-sso"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:abc841d9bc75",
+        "source": "asset:ws-legal-12",
+        "target": "ip:198.51.100.131",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-709"
+        ],
+        "source_ids": [
+          "event:evt-709"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "shared-hosting",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:ae3607ce5680",
+        "source": "fact:fact-event-evt-710",
+        "target": "domain:auth-queue-sync.net",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-710"
+        ],
+        "source_ids": [
+          "event:evt-710"
+        ],
+        "roles": [
+          "event",
+          "infra_context",
+          "benign",
+          "shared-hosting",
+          "external-context",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:af0cb407f138",
+        "source": "fact:fact-object-obj-23",
+        "target": "domain:www.safeaeon.com",
+        "relation": "candidate_related_to",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-23"
+        ],
+        "source_ids": [
+          "object:OBJ-23"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "edge_id": "edge:b397765c8624",
+        "source": "fact:fact-event-evt-712",
+        "target": "asset:ws-legal-03",
+        "relation": "mentions_asset",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-712"
+        ],
+        "source_ids": [
+          "event:evt-712"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "benign",
+          "identity",
+          "baseline",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:bfca301f33fd",
+        "source": "fact:fact-object-obj-20",
+        "target": "domain:www.microsoft.com",
+        "relation": "candidate_related_to",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-20"
+        ],
+        "source_ids": [
+          "object:OBJ-20"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "edge_id": "edge:c00e2578edac",
+        "source": "fact:fact-event-evt-703",
+        "target": "asset:ws-legal-03",
+        "relation": "mentions_asset",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-703"
+        ],
+        "source_ids": [
+          "event:evt-703"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "suspicious",
+          "command-and-control",
+          "beacon",
+          "事件时间线事实"
+        ],
+        "boundary": false,
+        "boundary_note": ""
+      },
+      {
+        "edge_id": "edge:c2752a2be97c",
+        "source": "fact:fact-object-obj-09",
+        "target": "asset:t13d190900_7711aa22bb33_9911ccddee77",
+        "relation": "observed_with",
+        "status": "已确认",
+        "fact_ids": [
+          "fact-object-obj-09"
+        ],
+        "source_ids": [
+          "object:OBJ-09"
+        ],
+        "roles": [
+          "object",
+          "对象角色事实"
+        ],
+        "boundary": false,
+        "boundary_note": ""
+      },
+      {
+        "edge_id": "edge:c3e33fa89486",
+        "source": "fact:fact-object-obj-14",
+        "target": "ip:203.0.113.131",
+        "relation": "candidate_related_to",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-14"
+        ],
+        "source_ids": [
+          "object:OBJ-14"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "edge_id": "edge:c70d9701eddc",
+        "source": "asset:ws-legal-09",
+        "target": "ip:10.44.1.29",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-event-evt-708",
+          "fact-event-evt-715"
+        ],
+        "source_ids": [
+          "event:evt-706",
+          "event:evt-707",
+          "event:evt-708",
+          "event:evt-715"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "rare",
+          "背景或替代解释事件",
+          "dns",
+          "benign",
+          "shared-hosting",
+          "browser-sso",
+          "asset_context",
+          "telemetry-gap"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:c937969678a1",
+        "source": "fact:fact-object-obj-19",
+        "target": "domain:vercel.app",
+        "relation": "candidate_related_to",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-19"
+        ],
+        "source_ids": [
+          "object:OBJ-19"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "edge_id": "edge:ca0ddceb91f3",
+        "source": "fact:fact-event-evt-701",
+        "target": "asset:ws-legal-03",
+        "relation": "mentions_asset",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-701"
+        ],
+        "source_ids": [
+          "event:evt-701"
+        ],
+        "roles": [
+          "event",
+          "dns",
+          "unknown",
+          "rare",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:cb7eaba12b9c",
+        "source": "fact:fact-object-obj-18",
+        "target": "domain:socket.io",
+        "relation": "candidate_related_to",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-18"
+        ],
+        "source_ids": [
+          "object:OBJ-18"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "edge_id": "edge:ce1c8608f0ba",
+        "source": "fact:fact-object-obj-25",
+        "target": "asset:t13d190900_7711aa22bb33_9911ccddee77",
+        "relation": "candidate_related_to",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-25"
+        ],
+        "source_ids": [
+          "object:OBJ-25"
+        ],
+        "roles": [
+          "object",
+          "待确认对象"
+        ],
+        "boundary": true,
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "edge_id": "edge:d0f33b462669",
+        "source": "fact:fact-object-obj-05",
+        "target": "domain:auth-queue-sync.net",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-05"
+        ],
+        "source_ids": [
+          "object:OBJ-05"
+        ],
+        "roles": [
+          "object",
+          "核心外部基础设施"
+        ],
+        "boundary": true,
+        "boundary_note": "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象。"
+      },
+      {
+        "edge_id": "edge:d143bb6d408b",
+        "source": "asset:ws-legal-03",
+        "target": "ip:203.0.113.131",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-714"
+        ],
+        "source_ids": [
+          "event:evt-714"
+        ],
+        "roles": [
+          "event",
+          "flow",
+          "unknown",
+          "rare",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:eb3cf78dcd40",
+        "source": "fact:fact-object-obj-06",
+        "target": "ip:20.190.160.22",
+        "relation": "provides_context",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-object-obj-06"
+        ],
+        "source_ids": [
+          "object:OBJ-06"
+        ],
+        "roles": [
+          "object",
+          "背景对象"
+        ],
+        "boundary": true,
+        "boundary_note": ""
+      },
+      {
+        "edge_id": "edge:ede86117e96f",
+        "source": "fact:fact-event-evt-711",
+        "target": "asset:ws-legal-03",
+        "relation": "mentions_asset",
+        "status": "candidate",
+        "fact_ids": [
+          "fact-event-evt-711"
+        ],
+        "source_ids": [
+          "event:evt-711"
+        ],
+        "roles": [
+          "event",
+          "asset_context",
+          "benign",
+          "browser-update",
+          "maintenance",
+          "背景或替代解释事件"
+        ],
+        "boundary": true,
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "edge_id": "edge:f599ed6909da",
+        "source": "fact:fact-event-evt-702",
+        "target": "asset:ws-legal-03",
+        "relation": "mentions_asset",
+        "status": "confirmed",
+        "fact_ids": [
+          "fact-event-evt-702"
+        ],
+        "source_ids": [
+          "event:evt-702"
+        ],
+        "roles": [
+          "event",
+          "alert",
+          "needs_review",
+          "outlier",
+          "事件时间线事实"
+        ],
+        "boundary": false,
+        "boundary_note": ""
+      }
+    ],
+    "graph_stats": {
+      "fact_count": 72,
+      "node_count": 96,
+      "edge_count": 58
+    }
+  },
+  "graph_lenses": {
+    "schema_version": "report-evidence-graph-lenses-v1",
+    "lenses": {
+      "main_chain": {
+        "purpose": "已确认主链与核心证据",
+        "node_ids": [
+          "fact:fact-action-1",
+          "fact:fact-action-2",
+          "fact:fact-action-3",
+          "fact:fact-claim-cl-01",
+          "fact:fact-claim-cl-02",
+          "fact:fact-claim-cl-05",
+          "fact:fact-claim-cl-09",
+          "fact:fact-event-evt-702",
+          "fact:fact-event-evt-703",
+          "fact:fact-event-evt-704",
+          "fact:fact-object-obj-09",
+          "fact:fact-object-obj-10",
+          "fact:fact-object-obj-11",
+          "fact:fact-object-obj-12",
+          "fact:fact-object-obj-13",
+          "fact:fact-obs-obs-001",
+          "fact:fact-obs-obs-002",
+          "fact:fact-obs-obs-005",
+          "fact:fact-obs-obs-008",
+          "fact:fact-verdict-delivery",
+          "object:15e122613499"
+        ],
+        "fact_ids": [
+          "fact-action-1",
+          "fact-action-2",
+          "fact-action-3",
+          "fact-claim-cl-01",
+          "fact-claim-cl-02",
+          "fact-claim-cl-05",
+          "fact-claim-cl-09",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-object-obj-09",
+          "fact-object-obj-10",
+          "fact-object-obj-11",
+          "fact-object-obj-12",
+          "fact-object-obj-13",
+          "fact-obs-obs-001",
+          "fact-obs-obs-002",
+          "fact-obs-obs-005",
+          "fact-obs-obs-008",
+          "fact-verdict-delivery"
+        ],
+        "boundary_policy": "confirmed_or_context_only"
+      },
+      "candidate_expansion": {
+        "purpose": "候选扩线、待验证资产和边界事件",
+        "node_ids": [
+          "asset:t13d190900_7711aa22bb33_9911ccddee77",
+          "asset:ws-legal-03",
+          "asset:ws-legal-09",
+          "asset:ws-legal-12",
+          "domain:auth-queue-sync.net",
+          "domain:cdn-auth-queue.net",
+          "domain:identity-cache.vendor.example",
+          "domain:legal-docs-cdn.example",
+          "domain:login-queue-cdn.net",
+          "domain:login.microsoftonline.com",
+          "domain:socket.io",
+          "domain:vercel.app",
+          "domain:www.microsoft.com",
+          "domain:www.opswat.com",
+          "domain:www.reddit.com",
+          "domain:www.safeaeon.com",
+          "domain:www.stamus-networks.com",
+          "fact:fact-claim-cl-03",
+          "fact:fact-claim-cl-04",
+          "fact:fact-claim-cl-06",
+          "fact:fact-claim-cl-07",
+          "fact:fact-claim-cl-08",
+          "fact:fact-claim-cl-10",
+          "fact:fact-event-evt-701",
+          "fact:fact-event-evt-705",
+          "fact:fact-event-evt-706",
+          "fact:fact-event-evt-707",
+          "fact:fact-event-evt-708",
+          "fact:fact-event-evt-709",
+          "fact:fact-event-evt-710",
+          "fact:fact-event-evt-711",
+          "fact:fact-event-evt-712",
+          "fact:fact-event-evt-713",
+          "fact:fact-event-evt-714",
+          "fact:fact-event-evt-715",
+          "fact:fact-gap-build-context",
+          "fact:fact-gap-check-counterevidence",
+          "fact:fact-gap-execution-gap",
+          "fact:fact-gap-expand-cluster-scope",
+          "fact:fact-gap-ground-external-context",
+          "fact:fact-gap-identify-assets",
+          "fact:fact-gap-related-assets-review",
+          "fact:fact-gap-structure-evidence",
+          "fact:fact-gap-validate-family-hint",
+          "fact:fact-object-obj-01",
+          "fact:fact-object-obj-02",
+          "fact:fact-object-obj-03",
+          "fact:fact-object-obj-04",
+          "fact:fact-object-obj-05",
+          "fact:fact-object-obj-06",
+          "fact:fact-object-obj-07",
+          "fact:fact-object-obj-08",
+          "fact:fact-object-obj-14",
+          "fact:fact-object-obj-15",
+          "fact:fact-object-obj-16",
+          "fact:fact-object-obj-17",
+          "fact:fact-object-obj-18",
+          "fact:fact-object-obj-19",
+          "fact:fact-object-obj-20",
+          "fact:fact-object-obj-21",
+          "fact:fact-object-obj-22",
+          "fact:fact-object-obj-23",
+          "fact:fact-object-obj-24",
+          "fact:fact-object-obj-25",
+          "fact:fact-obs-obs-003",
+          "fact:fact-obs-obs-004",
+          "fact:fact-obs-obs-006",
+          "fact:fact-obs-obs-007",
+          "fact:fact-obs-obs-009",
+          "ip:10.44.1.18",
+          "ip:10.44.1.29",
+          "ip:10.44.1.42",
+          "ip:198.51.100.131",
+          "ip:20.190.160.22",
+          "ip:203.0.113.131"
+        ],
+        "fact_ids": [
+          "fact-object-obj-09",
+          "fact-object-obj-25",
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-event-evt-712",
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-01",
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-event-evt-708",
+          "fact-event-evt-715",
+          "fact-object-obj-02",
+          "fact-event-evt-709",
+          "fact-object-obj-03",
+          "fact-event-evt-710",
+          "fact-object-obj-05",
+          "fact-object-obj-15",
+          "fact-object-obj-07",
+          "fact-object-obj-16",
+          "fact-object-obj-17",
+          "fact-object-obj-08",
+          "fact-object-obj-18",
+          "fact-object-obj-19",
+          "fact-object-obj-20",
+          "fact-object-obj-21",
+          "fact-object-obj-22",
+          "fact-object-obj-23",
+          "fact-object-obj-24",
+          "fact-claim-cl-03",
+          "fact-claim-cl-04",
+          "fact-claim-cl-06",
+          "fact-claim-cl-07",
+          "fact-claim-cl-08",
+          "fact-claim-cl-10",
+          "fact-gap-build-context",
+          "fact-gap-check-counterevidence",
+          "fact-gap-execution-gap",
+          "fact-gap-expand-cluster-scope",
+          "fact-gap-ground-external-context",
+          "fact-gap-identify-assets",
+          "fact-gap-related-assets-review",
+          "fact-gap-structure-evidence",
+          "fact-gap-validate-family-hint",
+          "fact-object-obj-04",
+          "fact-object-obj-06",
+          "fact-object-obj-14",
+          "fact-obs-obs-003",
+          "fact-obs-obs-004",
+          "fact-obs-obs-006",
+          "fact-obs-obs-007",
+          "fact-obs-obs-009",
+          "fact-object-obj-11",
+          "fact-object-obj-12",
+          "fact-object-obj-13"
+        ],
+        "boundary_policy": "candidate_only"
+      },
+      "external_infrastructure": {
+        "purpose": "外联域名、IP、共享基础设施和封禁对象",
+        "node_ids": [
+          "domain:auth-queue-sync.net",
+          "domain:cdn-auth-queue.net",
+          "domain:identity-cache.vendor.example",
+          "domain:legal-docs-cdn.example",
+          "domain:login-queue-cdn.net",
+          "domain:login.microsoftonline.com",
+          "domain:socket.io",
+          "domain:vercel.app",
+          "domain:www.microsoft.com",
+          "domain:www.opswat.com",
+          "domain:www.reddit.com",
+          "domain:www.safeaeon.com",
+          "domain:www.stamus-networks.com",
+          "ip:10.44.1.18",
+          "ip:10.44.1.29",
+          "ip:10.44.1.42",
+          "ip:198.51.100.131",
+          "ip:20.190.160.22",
+          "ip:203.0.113.131"
+        ],
+        "fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-710",
+          "fact-object-obj-05",
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-object-obj-15",
+          "fact-event-evt-708",
+          "fact-object-obj-07",
+          "fact-event-evt-709",
+          "fact-object-obj-16",
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-17",
+          "fact-event-evt-712",
+          "fact-object-obj-08",
+          "fact-object-obj-18",
+          "fact-object-obj-19",
+          "fact-object-obj-20",
+          "fact-object-obj-21",
+          "fact-object-obj-22",
+          "fact-object-obj-23",
+          "fact-object-obj-24",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-object-obj-11",
+          "fact-event-evt-715",
+          "fact-object-obj-12",
+          "fact-object-obj-13",
+          "fact-object-obj-04",
+          "fact-object-obj-06",
+          "fact-object-obj-14"
+        ],
+        "boundary_policy": "external_not_affected_asset"
+      },
+      "counterevidence": {
+        "purpose": "背景、替代解释和反证",
+        "node_ids": [
+          "asset:ws-legal-03",
+          "asset:ws-legal-09",
+          "asset:ws-legal-12",
+          "domain:auth-queue-sync.net",
+          "domain:cdn-auth-queue.net",
+          "domain:identity-cache.vendor.example",
+          "domain:legal-docs-cdn.example",
+          "domain:login-queue-cdn.net",
+          "domain:login.microsoftonline.com",
+          "fact:fact-event-evt-701",
+          "fact:fact-event-evt-702",
+          "fact:fact-event-evt-703",
+          "fact:fact-event-evt-704",
+          "fact:fact-event-evt-705",
+          "fact:fact-event-evt-706",
+          "fact:fact-event-evt-707",
+          "fact:fact-event-evt-708",
+          "fact:fact-event-evt-709",
+          "fact:fact-event-evt-710",
+          "fact:fact-event-evt-711",
+          "fact:fact-event-evt-712",
+          "fact:fact-event-evt-713",
+          "fact:fact-event-evt-714",
+          "fact:fact-event-evt-715",
+          "fact:fact-object-obj-01",
+          "fact:fact-object-obj-02",
+          "fact:fact-object-obj-03",
+          "fact:fact-object-obj-04",
+          "fact:fact-object-obj-05",
+          "fact:fact-object-obj-06",
+          "fact:fact-object-obj-07",
+          "fact:fact-object-obj-08",
+          "fact:fact-object-obj-11",
+          "fact:fact-object-obj-12",
+          "fact:fact-object-obj-13",
+          "fact:fact-object-obj-14",
+          "fact:fact-object-obj-15",
+          "fact:fact-object-obj-16",
+          "fact:fact-object-obj-17",
+          "ip:10.44.1.18",
+          "ip:10.44.1.29",
+          "ip:10.44.1.42",
+          "ip:198.51.100.131",
+          "ip:20.190.160.22",
+          "ip:203.0.113.131"
+        ],
+        "fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-event-evt-712",
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-01",
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-event-evt-708",
+          "fact-event-evt-715",
+          "fact-object-obj-02",
+          "fact-event-evt-709",
+          "fact-object-obj-03",
+          "fact-event-evt-710",
+          "fact-object-obj-05",
+          "fact-object-obj-15",
+          "fact-object-obj-07",
+          "fact-object-obj-16",
+          "fact-object-obj-17",
+          "fact-object-obj-08",
+          "fact-object-obj-06",
+          "fact-object-obj-11",
+          "fact-object-obj-12",
+          "fact-object-obj-13",
+          "fact-object-obj-04",
+          "fact-object-obj-14"
+        ],
+        "boundary_policy": "limits_stronger_claims"
+      },
+      "open_gaps": {
+        "purpose": "仍需补证的缺口",
+        "node_ids": [
+          "asset:ws-legal-03",
+          "asset:ws-legal-09",
+          "domain:auth-queue-sync.net",
+          "domain:cdn-auth-queue.net",
+          "domain:identity-cache.vendor.example",
+          "domain:login-queue-cdn.net",
+          "domain:login.microsoftonline.com",
+          "fact:fact-event-evt-701",
+          "fact:fact-event-evt-702",
+          "fact:fact-event-evt-703",
+          "fact:fact-event-evt-704",
+          "fact:fact-event-evt-705",
+          "fact:fact-event-evt-706",
+          "fact:fact-event-evt-707",
+          "fact:fact-event-evt-708",
+          "fact:fact-event-evt-711",
+          "fact:fact-event-evt-712",
+          "fact:fact-event-evt-713",
+          "fact:fact-event-evt-714",
+          "fact:fact-event-evt-715",
+          "fact:fact-gap-build-context",
+          "fact:fact-gap-check-counterevidence",
+          "fact:fact-gap-execution-gap",
+          "fact:fact-gap-expand-cluster-scope",
+          "fact:fact-gap-ground-external-context",
+          "fact:fact-gap-identify-assets",
+          "fact:fact-gap-related-assets-review",
+          "fact:fact-gap-structure-evidence",
+          "fact:fact-gap-validate-family-hint",
+          "fact:fact-object-obj-01",
+          "fact:fact-object-obj-02",
+          "fact:fact-object-obj-11",
+          "fact:fact-object-obj-12",
+          "ip:10.44.1.18",
+          "ip:10.44.1.29",
+          "ip:198.51.100.131",
+          "ip:20.190.160.22",
+          "ip:203.0.113.131"
+        ],
+        "fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-event-evt-712",
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-01",
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-event-evt-708",
+          "fact-event-evt-715",
+          "fact-object-obj-02",
+          "fact-gap-build-context",
+          "fact-gap-check-counterevidence",
+          "fact-gap-execution-gap",
+          "fact-gap-expand-cluster-scope",
+          "fact-gap-ground-external-context",
+          "fact-gap-identify-assets",
+          "fact-gap-related-assets-review",
+          "fact-gap-structure-evidence",
+          "fact-gap-validate-family-hint",
+          "fact-object-obj-11",
+          "fact-object-obj-12"
+        ],
+        "boundary_policy": "report_as_limits"
+      },
+      "actions": {
+        "purpose": "面向运维的下一步核查和处置",
+        "node_ids": [
+          "fact:fact-action-1",
+          "fact:fact-action-2",
+          "fact:fact-action-3"
+        ],
+        "fact_ids": [
+          "fact-action-1",
+          "fact-action-2",
+          "fact-action-3"
+        ],
+        "boundary_policy": "recommendation_not_observation"
+      }
+    }
+  },
+  "hypothesis_board": {
+    "schema_version": "report-hypothesis-board-v1",
+    "graph_schema_version": "report-evidence-graph-v1",
+    "hypotheses": [
+      {
+        "hypothesis_id": "confirmed_main_chain",
+        "claim": "当前已确认主链足以支撑交付结论。",
+        "supporting_fact_ids": [
+          "fact-action-1",
+          "fact-action-2",
+          "fact-action-3",
+          "fact-claim-cl-01",
+          "fact-claim-cl-02",
+          "fact-claim-cl-05",
+          "fact-claim-cl-09",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-object-obj-09",
+          "fact-object-obj-10",
+          "fact-object-obj-11",
+          "fact-object-obj-12",
+          "fact-object-obj-13",
+          "fact-obs-obs-001",
+          "fact-obs-obs-002",
+          "fact-obs-obs-005",
+          "fact-obs-obs-008",
+          "fact-verdict-delivery"
+        ],
+        "refuting_fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-event-evt-712",
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-01",
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-event-evt-708",
+          "fact-event-evt-715",
+          "fact-object-obj-02",
+          "fact-event-evt-709",
+          "fact-object-obj-03",
+          "fact-event-evt-710",
+          "fact-object-obj-05",
+          "fact-object-obj-15",
+          "fact-object-obj-07",
+          "fact-object-obj-16",
+          "fact-object-obj-17",
+          "fact-object-obj-08",
+          "fact-object-obj-06",
+          "fact-object-obj-11",
+          "fact-object-obj-12",
+          "fact-object-obj-13",
+          "fact-object-obj-04",
+          "fact-object-obj-14"
+        ],
+        "gap_fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-event-evt-712",
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-01",
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-event-evt-708",
+          "fact-event-evt-715",
+          "fact-object-obj-02",
+          "fact-gap-build-context",
+          "fact-gap-check-counterevidence",
+          "fact-gap-execution-gap",
+          "fact-gap-expand-cluster-scope",
+          "fact-gap-ground-external-context",
+          "fact-gap-identify-assets",
+          "fact-gap-related-assets-review",
+          "fact-gap-structure-evidence",
+          "fact-gap-validate-family-hint",
+          "fact-object-obj-11",
+          "fact-object-obj-12"
+        ],
+        "action_fact_ids": [
+          "fact-action-1",
+          "fact-action-2",
+          "fact-action-3"
+        ],
+        "claim_policy": "can_support_current_verdict_only"
+      },
+      {
+        "hypothesis_id": "candidate_expansion",
+        "claim": "候选资产或候选事件可能扩大影响范围，但尚需独立验证。",
+        "supporting_fact_ids": [
+          "fact-object-obj-09",
+          "fact-object-obj-25",
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-event-evt-712",
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-01",
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-event-evt-708",
+          "fact-event-evt-715",
+          "fact-object-obj-02",
+          "fact-event-evt-709",
+          "fact-object-obj-03",
+          "fact-event-evt-710",
+          "fact-object-obj-05",
+          "fact-object-obj-15",
+          "fact-object-obj-07",
+          "fact-object-obj-16",
+          "fact-object-obj-17",
+          "fact-object-obj-08",
+          "fact-object-obj-18",
+          "fact-object-obj-19",
+          "fact-object-obj-20",
+          "fact-object-obj-21",
+          "fact-object-obj-22",
+          "fact-object-obj-23",
+          "fact-object-obj-24",
+          "fact-claim-cl-03",
+          "fact-claim-cl-04",
+          "fact-claim-cl-06",
+          "fact-claim-cl-07",
+          "fact-claim-cl-08",
+          "fact-claim-cl-10",
+          "fact-gap-build-context",
+          "fact-gap-check-counterevidence",
+          "fact-gap-execution-gap",
+          "fact-gap-expand-cluster-scope",
+          "fact-gap-ground-external-context",
+          "fact-gap-identify-assets",
+          "fact-gap-related-assets-review",
+          "fact-gap-structure-evidence",
+          "fact-gap-validate-family-hint",
+          "fact-object-obj-04",
+          "fact-object-obj-06",
+          "fact-object-obj-14",
+          "fact-obs-obs-003",
+          "fact-obs-obs-004",
+          "fact-obs-obs-006",
+          "fact-obs-obs-007",
+          "fact-obs-obs-009",
+          "fact-object-obj-11",
+          "fact-object-obj-12",
+          "fact-object-obj-13"
+        ],
+        "refuting_fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-event-evt-712",
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-01",
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-event-evt-708",
+          "fact-event-evt-715",
+          "fact-object-obj-02",
+          "fact-event-evt-709",
+          "fact-object-obj-03",
+          "fact-event-evt-710",
+          "fact-object-obj-05",
+          "fact-object-obj-15",
+          "fact-object-obj-07",
+          "fact-object-obj-16",
+          "fact-object-obj-17",
+          "fact-object-obj-08",
+          "fact-object-obj-06",
+          "fact-object-obj-11",
+          "fact-object-obj-12",
+          "fact-object-obj-13",
+          "fact-object-obj-04",
+          "fact-object-obj-14"
+        ],
+        "gap_fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-event-evt-712",
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-01",
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-event-evt-708",
+          "fact-event-evt-715",
+          "fact-object-obj-02",
+          "fact-gap-build-context",
+          "fact-gap-check-counterevidence",
+          "fact-gap-execution-gap",
+          "fact-gap-expand-cluster-scope",
+          "fact-gap-ground-external-context",
+          "fact-gap-identify-assets",
+          "fact-gap-related-assets-review",
+          "fact-gap-structure-evidence",
+          "fact-gap-validate-family-hint",
+          "fact-object-obj-11",
+          "fact-object-obj-12"
+        ],
+        "action_fact_ids": [
+          "fact-action-1",
+          "fact-action-2",
+          "fact-action-3"
+        ],
+        "claim_policy": "candidate_not_confirmed"
+      },
+      {
+        "hypothesis_id": "benign_or_shared_infra_alternative",
+        "claim": "共享基础设施、维护窗口或正常业务背景可能解释部分边界信号。",
+        "supporting_fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-event-evt-712",
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-01",
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-event-evt-708",
+          "fact-event-evt-715",
+          "fact-object-obj-02",
+          "fact-event-evt-709",
+          "fact-object-obj-03",
+          "fact-event-evt-710",
+          "fact-object-obj-05",
+          "fact-object-obj-15",
+          "fact-object-obj-07",
+          "fact-object-obj-16",
+          "fact-object-obj-17",
+          "fact-object-obj-08",
+          "fact-object-obj-06",
+          "fact-object-obj-11",
+          "fact-object-obj-12",
+          "fact-object-obj-13",
+          "fact-object-obj-04",
+          "fact-object-obj-14"
+        ],
+        "refuting_fact_ids": [
+          "fact-action-1",
+          "fact-action-2",
+          "fact-action-3",
+          "fact-claim-cl-01",
+          "fact-claim-cl-02",
+          "fact-claim-cl-05",
+          "fact-claim-cl-09",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-object-obj-09",
+          "fact-object-obj-10",
+          "fact-object-obj-11",
+          "fact-object-obj-12",
+          "fact-object-obj-13",
+          "fact-obs-obs-001",
+          "fact-obs-obs-002",
+          "fact-obs-obs-005",
+          "fact-obs-obs-008",
+          "fact-verdict-delivery"
+        ],
+        "gap_fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-event-evt-712",
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-01",
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-event-evt-708",
+          "fact-event-evt-715",
+          "fact-object-obj-02",
+          "fact-gap-build-context",
+          "fact-gap-check-counterevidence",
+          "fact-gap-execution-gap",
+          "fact-gap-expand-cluster-scope",
+          "fact-gap-ground-external-context",
+          "fact-gap-identify-assets",
+          "fact-gap-related-assets-review",
+          "fact-gap-structure-evidence",
+          "fact-gap-validate-family-hint",
+          "fact-object-obj-11",
+          "fact-object-obj-12"
+        ],
+        "action_fact_ids": [
+          "fact-action-1",
+          "fact-action-2",
+          "fact-action-3"
+        ],
+        "claim_policy": "limits_stronger_claims"
+      },
+      {
+        "hypothesis_id": "insufficient_evidence_limits",
+        "claim": "未闭合缺口限制攻击者控制、持久化、横向闭环或外传闭环等更强结论。",
+        "supporting_fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-event-evt-712",
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-01",
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-event-evt-708",
+          "fact-event-evt-715",
+          "fact-object-obj-02",
+          "fact-gap-build-context",
+          "fact-gap-check-counterevidence",
+          "fact-gap-execution-gap",
+          "fact-gap-expand-cluster-scope",
+          "fact-gap-ground-external-context",
+          "fact-gap-identify-assets",
+          "fact-gap-related-assets-review",
+          "fact-gap-structure-evidence",
+          "fact-gap-validate-family-hint",
+          "fact-object-obj-11",
+          "fact-object-obj-12"
+        ],
+        "refuting_fact_ids": [],
+        "gap_fact_ids": [
+          "fact-event-evt-701",
+          "fact-event-evt-702",
+          "fact-event-evt-703",
+          "fact-event-evt-704",
+          "fact-event-evt-705",
+          "fact-event-evt-711",
+          "fact-event-evt-712",
+          "fact-event-evt-713",
+          "fact-event-evt-714",
+          "fact-object-obj-01",
+          "fact-event-evt-706",
+          "fact-event-evt-707",
+          "fact-event-evt-708",
+          "fact-event-evt-715",
+          "fact-object-obj-02",
+          "fact-gap-build-context",
+          "fact-gap-check-counterevidence",
+          "fact-gap-execution-gap",
+          "fact-gap-expand-cluster-scope",
+          "fact-gap-ground-external-context",
+          "fact-gap-identify-assets",
+          "fact-gap-related-assets-review",
+          "fact-gap-structure-evidence",
+          "fact-gap-validate-family-hint",
+          "fact-object-obj-11",
+          "fact-object-obj-12"
+        ],
+        "action_fact_ids": [
+          "fact-action-1",
+          "fact-action-2",
+          "fact-action-3"
+        ],
+        "claim_policy": "must_be_reported_as_boundary"
+      }
+    ]
+  },
+  "writing_contract": {
+    "purpose": "测试证据图和假设板是否能在不依赖 LLM material agent 的情况下，帮助 writer 组织报告论证。",
+    "required_shape": [
+      "# 首页摘要",
+      "## 1. 事件结论与当前判断",
+      "## 2. 事件过程与关键时间线",
+      "## 3. 关键证据判断",
+      "## 4. 影响范围、候选对象与外部基础设施",
+      "## 5. 反证、替代解释与未闭合缺口",
+      "## 6. 处置建议与后续核查"
+    ],
+    "section_lenses": {
+      "timeline_process": [
+        "main_chain",
+        "candidate_expansion"
+      ],
+      "evidence_judgment": [
+        "main_chain",
+        "open_gaps"
+      ],
+      "relationship_scope": [
+        "main_chain",
+        "candidate_expansion",
+        "external_infrastructure"
+      ],
+      "counterevidence_limits": [
+        "counterevidence",
+        "open_gaps",
+        "candidate_expansion"
+      ],
+      "actions": [
+        "actions",
+        "open_gaps",
+        "candidate_expansion"
+      ]
+    },
+    "section_hypotheses": {
+      "evidence_judgment": [
+        "confirmed_main_chain",
+        "insufficient_evidence_limits"
+      ],
+      "relationship_scope": [
+        "candidate_expansion"
+      ],
+      "counterevidence_limits": [
+        "benign_or_shared_infra_alternative",
+        "insufficient_evidence_limits"
+      ],
+      "actions": [
+        "candidate_expansion",
+        "insufficient_evidence_limits"
+      ]
+    },
+    "claim_policies": [
+      "confirmed_main_chain: may support current verdict, but not stronger conclusions absent supporting facts",
+      "candidate_not_confirmed: candidate facts remain candidate until independent evidence appears",
+      "limits_stronger_claims: counterevidence limits overclaiming rather than deleting the incident",
+      "recommendation_not_observation: action facts are future work, not observed events"
+    ]
+  }
+}

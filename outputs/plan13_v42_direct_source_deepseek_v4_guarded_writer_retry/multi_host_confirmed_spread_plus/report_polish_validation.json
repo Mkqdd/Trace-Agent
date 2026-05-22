@@ -1,0 +1,22 @@
+{
+  "schema_version": "report-polish-validation-v1",
+  "applied": true,
+  "status": "hard_fail",
+  "summary": "发现 1 条 hard-fail 和 0 条 soft-warn。",
+  "issue_counts": {
+    "hard_fail": 1,
+    "soft_warn": 0
+  },
+  "issues": [
+    {
+      "severity": "hard_fail",
+      "code": "candidate_promoted_to_confirmed",
+      "section": "4. 影响范围、候选对象与外部基础设施",
+      "sentence": "因此，目前没有足够证据将 `ws-eng-09` 提升到“已确认受影响”状态，它仅作为可能被推进的潜在候选边界保留。",
+      "message": "候选对象 `ws-eng-09` 在正文里被写成了接近已确认状态。",
+      "evidence": [
+        "ws-eng-09"
+      ]
+    }
+  ]
+}

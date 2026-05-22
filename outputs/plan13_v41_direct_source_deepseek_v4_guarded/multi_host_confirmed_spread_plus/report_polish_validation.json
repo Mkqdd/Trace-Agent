@@ -1,0 +1,22 @@
+{
+  "schema_version": "report-polish-validation-v1",
+  "applied": true,
+  "status": "hard_fail",
+  "summary": "发现 1 条 hard-fail 和 0 条 soft-warn。",
+  "issue_counts": {
+    "hard_fail": 1,
+    "soft_warn": 0
+  },
+  "issues": [
+    {
+      "severity": "hard_fail",
+      "code": "candidate_promoted_to_confirmed",
+      "section": "6. 处置建议与后续核查",
+      "sentence": "目标：决定是否将 `ws-eng-09` 提升为已确认受影响范围。",
+      "message": "候选对象 `ws-eng-09` 在正文里被写成了接近已确认状态。",
+      "evidence": [
+        "ws-eng-09"
+      ]
+    }
+  ]
+}

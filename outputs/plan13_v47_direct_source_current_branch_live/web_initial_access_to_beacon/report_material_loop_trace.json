@@ -1,0 +1,9 @@
+{
+  "schema_version": "report-material-loop-trace-v1",
+  "status": "skipped_direct_source_writer",
+  "material_agent_bypassed": true,
+  "validation": {
+    "ok": true,
+    "mode": "direct_source"
+  }
+}

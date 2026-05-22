@@ -26,6 +26,8 @@ from ..tools import (
 from ..types.event import normalize_alert
 from .contracts import infer_stages, parse_timestamp, severity_from_confidence, suspicion_score, unique_preserve_order
 from .evidence_store import build_runtime_evidence_store
+from .investigation_graph import build_investigation_graph
+from .investigation_planner import score_investigation_opportunities
 from .pipeline import (
     _annotate_events,
     _build_decision_basis,
@@ -90,6 +92,16 @@ REVIEWER_DECISIONS = {"allow", "block", "redundant", "deliverable", "not_deliver
 REVIEWER_NEXT_ACTION_TYPES = {"tool", "finish", "none"}
 POST_ACTION_REVIEW_RESULTS = {"continue", "needs_retry", "stop_ready", "low_value", "boundary"}
 POST_ACTION_MATERIAL_DELTA_LEVELS = {"high", "medium", "low", "none"}
+POST_ACTION_DELTA_LABELS = {
+    "new_confirmed_event",
+    "new_candidate_event",
+    "new_background_or_counterevidence",
+    "candidate_grounded",
+    "candidate_weakened",
+    "scope_changed",
+    "actionability_improved",
+    "no_material_delta",
+}
 STOP_REASON_STEP_BUDGET = "step_budget_exhausted"
 STOP_REASON_TOOL_BUDGET = "tool_budget_exhausted"
 STOP_REASON_RUNTIME_BUDGET = "runtime_budget_exhausted"
@@ -154,9 +166,11 @@ Trace-Agent 是一个面向安全告警调查的事件研判代理：它从一�
 - 如果 control_constraints.recent_low_value_steps >= 2，只有在出现新状态、未尝试工具、或明确 blocking gap 时才继续；否则建议 finish。
 - 如果 reviewer_feedback.next_round_feedback 存在，应先吸收其中的限制和边界提醒，再选择下一步动作。
 - 如果 blocking_checks 仍存在，不要建议 finish，除非 tool_catalog 中没有任何工具能直接缩小这些检查对应的问题。
-- 如果 agent_context.hypothesis_board.active 存在多个合理假设，优先选择最能区分这些假设的工具调用。
+- 如果 agent_context.hypothesis_board.hypotheses 中存在多个 status=open/supported 的合理假设，优先选择最能区分这些假设的工具调用。
   例如：真实传播 vs 共享基础设施背景，优先查询候选资产主机侧证据和共享基础设施上下文。
 - hypothesis_board 是 advisory planning state，不是交付硬门槛；不能因为 hypothesis_board 仍有开放候选就自动拒绝 finish。主证据链可交付且剩余问题可写成边界时，可以建议 finish。
+- agent_context.investigation_graph / investigation_opportunity_trace 是程序从当前证据编译出的可审计调查状态；top_k 代表当前可执行动作的信息增益排序，不是新的事实来源。
+- 如果 value_of_information.level 是 high 或 medium，优先在 top_k 或 action_options 中选择能缩小对应 hypothesis/gap 的工具；只有当这些动作不可执行、预算不足、重复低收益或剩余问题已可报告为边界时，才建议 finish。
 
 工具选择规则：
 - 不要重复调用同一输入已经成功执行过的确定性工具。
@@ -238,6 +252,7 @@ Trace-Agent 是一个面向安全告警调查的事件研判代理；investigato
 - seed、review_context、finish_request 是唯一事实来源；缺失字段视为 unknown，不得脑补。
 - review_context.acceptance_state 是交付门槛视图；hard blocking gap / blocking_checks 不能被越过。
 - 若剩余问题已经标记为 reportable、boundary、reviewer_judgment 或 blocks_delivery_now=false，你可以接受 finish，但必须在 reason/next_round_feedback 中说明它们应进入报告边界。
+- 如果 review_context.control_summary.high_value_action_available 为 true，且预算尚未耗尽，那么即使 ready_for_delivery/deliverable_now 为 true，也应优先拒绝 finish；只有当价值评估已经降为 low/exhausted、stop_recommendation 明确建议停止，或剩余问题只适合写成 reportable/boundary 时，才可以接受 finish。
 - 如果仍存在 hard blocking material gap，只能说明“为什么不能 finish”和“剩余不确定性是什么”，不能建议具体工具或参数。
 
 冲突优先级：
@@ -288,6 +303,7 @@ Trace-Agent 是一个面向安全告警调查的事件研判代理；investigato
 - 必填字段：review_result、material_delta、reason、next_round_feedback、constraints、stop_recommendation。
 - review_result 只能是 "continue"、"needs_retry"、"stop_ready"、"low_value"、"boundary"。
 - material_delta 只能是 "high"、"medium"、"low"、"none"。
+- 可选字段 delta_labels 只能使用：new_confirmed_event、new_candidate_event、new_background_or_counterevidence、candidate_grounded、candidate_weakened、scope_changed、actionability_improved、no_material_delta。
 - next_round_feedback 是 0 到 3 条自然语言反馈；不能包含可执行 params。
 - constraints 是 0 到 3 条对象；type 只能是 "avoid_tool"、"requires_override"、"boundary_note"；如果 type 涉及工具，tool_name 只能是本轮 executed_step.action.tool_name 或最近低收益工具。
 - stop_recommendation 必须包含 should_stop 和 reason；should_stop 只是建议，不是命令。
@@ -1163,10 +1179,80 @@ def _initial_working_hypotheses(seed_event: Dict[str, Any]) -> List[Dict[str, An
 
 def _initial_investigation_hypothesis_board() -> Dict[str, Any]:
     return {
-        "schema_version": "investigation-hypothesis-board-v1",
-        "active": [],
-        "closed": [],
+        "schema_version": "investigation-hypothesis-board-v2",
         "last_updated_round": 0,
+        "hypotheses": [
+            {
+                "hypothesis_id": "confirmed_main_chain",
+                "claim": "The confirmed main chain is sufficient for the current incident verdict.",
+                "status": "open",
+                "priority": 0,
+                "support_event_ids": [],
+                "support_observation_ids": [],
+                "refute_event_ids": [],
+                "refute_observation_ids": [],
+                "gap_ids": [],
+                "candidate_action_ids": [],
+                "last_updated_round": 0,
+                "why_next": "Keep the main chain tightly bounded and avoid promoting candidate evidence to confirmed without grounding.",
+            },
+            {
+                "hypothesis_id": "candidate_spread",
+                "claim": "Candidate spread may extend the incident scope and still needs validation.",
+                "status": "open",
+                "priority": 1,
+                "support_event_ids": [],
+                "support_observation_ids": [],
+                "refute_event_ids": [],
+                "refute_observation_ids": [],
+                "gap_ids": [],
+                "candidate_action_ids": [],
+                "last_updated_round": 0,
+                "why_next": "Validate whether candidate spread is real before merging it into the confirmed scope.",
+            },
+            {
+                "hypothesis_id": "benign_or_shared_infra_alternative",
+                "claim": "Shared infrastructure, maintenance, or benign background may explain part of the signal.",
+                "status": "open",
+                "priority": 2,
+                "support_event_ids": [],
+                "support_observation_ids": [],
+                "refute_event_ids": [],
+                "refute_observation_ids": [],
+                "gap_ids": [],
+                "candidate_action_ids": [],
+                "last_updated_round": 0,
+                "why_next": "Continue checking shared infrastructure and background explanations before stronger attribution.",
+            },
+            {
+                "hypothesis_id": "insufficient_evidence_limits",
+                "claim": "Missing evidence still limits stronger claims about scope, attribution, or closure.",
+                "status": "open",
+                "priority": 3,
+                "support_event_ids": [],
+                "support_observation_ids": [],
+                "refute_event_ids": [],
+                "refute_observation_ids": [],
+                "gap_ids": [],
+                "candidate_action_ids": [],
+                "last_updated_round": 0,
+                "why_next": "Close the remaining gaps before claiming a stronger conclusion.",
+            },
+            {
+                "hypothesis_id": "false_positive_or_noise",
+                "claim": "The seed could still be false positive or background noise if support stays weak.",
+                "status": "open",
+                "priority": 4,
+                "support_event_ids": [],
+                "support_observation_ids": [],
+                "refute_event_ids": [],
+                "refute_observation_ids": [],
+                "gap_ids": [],
+                "candidate_action_ids": [],
+                "last_updated_round": 0,
+                "why_next": "Only revisit this hypothesis if the seed remains weak after the main chain is checked.",
+            },
+        ],
     }
 
 
@@ -1511,6 +1597,38 @@ def _material_delta_score(delta: Dict[str, Any]) -> int:
 
 def _editorial_delta_score(delta: Dict[str, Any]) -> int:
     return int(delta.get("new_claim_count") or 0) + int(delta.get("new_page_document_count") or 0)
+
+
+def _post_action_delta_labels(action: Dict[str, Any], observation: Dict[str, Any]) -> List[str]:
+    delta = dict(observation.get("output_delta") or {})
+    relation = str(observation.get("relation") or observation.get("source_type") or "").strip().lower()
+    tool_name = str(action.get("tool_name") or observation.get("tool_name") or "").strip()
+    labels: List[str] = []
+    new_event_count = int(delta.get("new_event_count") or 0)
+    new_scope_count = (
+        int(delta.get("new_asset_count") or 0)
+        + int(delta.get("new_domain_count") or 0)
+        + int(delta.get("new_external_ip_count") or 0)
+        + int(delta.get("new_family_count") or 0)
+    )
+    if new_event_count > 0:
+        if relation in {"candidate", "related", "scope"} or tool_name in {"search_related_events", "expand_asset_scope"}:
+            labels.append("new_candidate_event")
+        elif relation in {"counterevidence", "background", "benign"}:
+            labels.append("new_background_or_counterevidence")
+        else:
+            labels.append("new_confirmed_event")
+    if relation in {"counterevidence", "background", "benign"} and int(delta.get("novelty_score") or 0) > 0:
+        labels.append("new_background_or_counterevidence")
+    if int(delta.get("closed_candidate_event_count") or 0) > 0:
+        labels.append("candidate_grounded")
+    if new_scope_count > 0:
+        labels.append("scope_changed")
+    if int(delta.get("closed_gap_count") or 0) > 0 or bool(delta.get("became_ready")) or bool(delta.get("verdict_changed")):
+        labels.append("actionability_improved")
+    if not labels:
+        labels.append("no_material_delta")
+    return [label for label in unique_preserve_order(labels) if label in POST_ACTION_DELTA_LABELS]
 
 
 def _tool_recent_stats(session_state: Dict[str, Any], tool_name: str) -> Dict[str, Any]:
@@ -2080,6 +2198,13 @@ def _control_summary(
             )[:3],
         }
 
+    opportunity_trace = dict(session_state.get("investigation_opportunity_trace") or {})
+    value_of_information = dict(opportunity_trace.get("value_of_information") or session_state.get("value_of_information") or {})
+    stop_recommendation = dict(opportunity_trace.get("stop_recommendation") or {})
+    value_level = str(value_of_information.get("level") or "").strip()
+    value_best_action = str(value_of_information.get("best_action") or "").strip()
+    high_value_action_available = bool(value_best_action and value_level in {"high", "medium"})
+
     return {
         "focus_mode": focus_mode,
         "primary_goal": primary_goal,
@@ -2104,7 +2229,60 @@ def _control_summary(
             for item in scope_followup_actions
             if str(item.get("tool_name") or "").strip()
         ],
+        "value_of_information": value_of_information,
+        "value_of_information_level": value_level,
+        "value_of_information_best_action": value_best_action,
+        "value_of_information_stop_recommendation": stop_recommendation,
+        "high_value_action_available": high_value_action_available,
         "compat_phase": compat_phase,
+    }
+
+
+def _refresh_investigation_state(
+    seed_event: Dict[str, Any],
+    session_state: Dict[str, Any],
+    incident_state: Dict[str, Any],
+    finalized: Dict[str, Any],
+    tool_catalog: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+    graph = build_investigation_graph(seed_event, session_state, incident_state, finalized)
+    trace = score_investigation_opportunities(
+        graph,
+        tool_catalog,
+        budgets=dict(session_state.get("budgets") or {}),
+        recent_tool_effects=_recent_tool_effects(session_state),
+        top_k=3,
+    )
+    trace["step_index"] = int(session_state.get("step_index") or 0)
+    trace_signature = _stable_hash(
+        {
+            "step_index": trace.get("step_index"),
+            "top_k": trace.get("top_k"),
+            "value_of_information": trace.get("value_of_information"),
+            "stop_recommendation": trace.get("stop_recommendation"),
+        }
+    )
+    trace["trace_signature"] = trace_signature
+    history = list(session_state.get("investigation_opportunity_history") or [])
+    if not history or str((history[-1] or {}).get("trace_signature") or "").strip() != trace_signature:
+        history.append(trace)
+    session_state["investigation_opportunity_history"] = history[-20:]
+    board = dict(graph.get("hypothesis_board") or {})
+    session_state["investigation_graph"] = graph
+    session_state["investigation_hypothesis_board"] = board
+    session_state["hypothesis_board"] = board
+    session_state["investigation_opportunity_trace"] = trace
+    session_state["value_of_information"] = dict(trace.get("value_of_information") or {})
+    incident_state["investigation_graph"] = graph
+    incident_state["investigation_hypothesis_board"] = board
+    incident_state["investigation_opportunity_trace"] = trace
+    incident_state["investigation_opportunity_history"] = list(session_state.get("investigation_opportunity_history") or [])
+    incident_state["value_of_information"] = dict(trace.get("value_of_information") or {})
+    return {
+        "graph": graph,
+        "hypothesis_board": board,
+        "opportunity_trace": trace,
+        "value_of_information": dict(trace.get("value_of_information") or {}),
     }
 
 
@@ -2586,10 +2764,13 @@ def _recent_tool_effects(session_state: Dict[str, Any]) -> List[Dict[str, Any]]:
                 "step_index": item.get("step_index"),
                 "tool_name": item.get("tool_name"),
                 "input_fingerprint": item.get("input_fingerprint"),
+                "target_gap_ids": list(item.get("target_gap_ids") or []),
                 "status": item.get("status"),
                 "novelty_score": int(delta.get("novelty_score") or 0),
                 "material_score": _material_delta_score(delta),
                 "editorial_score": _editorial_delta_score(delta),
+                "closed_candidate_event_count": int(delta.get("closed_candidate_event_count") or 0),
+                "closed_gap_count": int(delta.get("closed_gap_count") or 0),
                 "delta_summary": str(delta.get("summary") or "").strip(),
             }
         )
@@ -2655,6 +2836,41 @@ def _text_list(value: Any, *, limit: int = 8) -> List[str]:
     if not isinstance(value, list):
         return []
     return unique_preserve_order(str(item or "").strip() for item in value if str(item or "").strip())[:limit]
+
+
+def _investigation_graph_summary_view(graph: Any) -> Dict[str, Any]:
+    graph = dict(graph or {})
+    return {
+        "schema_version": str(graph.get("schema_version") or "").strip(),
+        "graph_stats": dict(graph.get("graph_stats") or {}),
+        "runtime_summary": dict(graph.get("runtime_summary") or {}),
+    }
+
+
+def _investigation_opportunity_summary_view(trace: Any) -> Dict[str, Any]:
+    trace = dict(trace or {})
+    top_k: List[Dict[str, Any]] = []
+    for item in list(trace.get("top_k") or [])[:3]:
+        if not isinstance(item, dict):
+            continue
+        top_k.append(
+            {
+                "tool_name": str(item.get("tool_name") or "").strip(),
+                "score": int(item.get("score") or 0),
+                "eligible": bool(item.get("eligible")),
+                "target_hypothesis_ids": list(item.get("target_hypothesis_ids") or []),
+                "expected_information_gain": str(item.get("expected_information_gain") or "").strip(),
+                "expected_report_impact": str(item.get("expected_report_impact") or "").strip(),
+                "why_not_finish": str(item.get("why_not_finish") or "").strip(),
+            }
+        )
+    return {
+        "schema_version": str(trace.get("schema_version") or "").strip(),
+        "value_of_information": dict(trace.get("value_of_information") or {}),
+        "stop_recommendation": dict(trace.get("stop_recommendation") or {}),
+        "hypothesis_status_counts": dict(trace.get("hypothesis_status_counts") or {}),
+        "top_k": top_k,
+    }
 
 
 def _sanitize_pivots(value: Any) -> Dict[str, List[str]]:
@@ -2929,6 +3145,11 @@ def _available_tool_catalog(seed_event: Dict[str, Any], session_state: Dict[str,
     acceptance_state = _acceptance_state(seed_event, session_state, incident_state)
     control_summary = _control_summary(seed_event, session_state, incident_state)
     material_gaps = list(acceptance_state.get("material_gaps") or _material_gap_view(seed_event, session_state, incident_state))
+    opportunity_by_tool = {
+        str(item.get("tool_name") or "").strip(): dict(item)
+        for item in list((session_state.get("investigation_opportunity_trace") or {}).get("ranked_actions") or [])
+        if str(item.get("tool_name") or "").strip()
+    }
     active_cooldown_map = {
         str(item.get("tool_name") or "").strip(): dict(item)
         for item in _active_tool_cooldowns(session_state, incident_state)
@@ -3089,6 +3310,7 @@ def _available_tool_catalog(seed_event: Dict[str, Any], session_state: Dict[str,
             and priority_tier in {"primary_focus", "blocking_gap", "actionable_gap"}
             and not (bool(acceptance_state.get("preferred_stop")) and priority_tier not in {"primary_focus", "blocking_gap"})
         )
+        opportunity = dict(opportunity_by_tool.get(tool_name) or {})
         catalog.append(
             {
                 "tool_name": tool_name,
@@ -3123,6 +3345,10 @@ def _available_tool_catalog(seed_event: Dict[str, Any], session_state: Dict[str,
                 "cooldown_release_hint": str(cooldown.get("release_hint") or "").strip(),
                 "cooldown_related_gap_ids": list(cooldown.get("related_gap_ids") or []),
                 "recommended_now": recommended_now,
+                "opportunity_score": int(opportunity.get("score") or 0),
+                "opportunity_level": str((opportunity.get("expected_information_gain") or "")).strip(),
+                "opportunity_target_hypotheses": list(opportunity.get("target_hypothesis_ids") or []),
+                "opportunity_why_not_finish": str(opportunity.get("why_not_finish") or "").strip(),
                 "why_now": (
                     str(cooldown.get("reason") or "").strip()
                     if bool(cooldown)
@@ -3145,6 +3371,11 @@ def _action_candidates(seed_event: Dict[str, Any], session_state: Dict[str, Any]
     acceptance_state = _acceptance_state(seed_event, session_state, incident_state)
     control_summary = _control_summary(seed_event, session_state, incident_state)
     material_gaps = list(acceptance_state.get("material_gaps") or _material_gap_view(seed_event, session_state, incident_state))
+    opportunity_by_tool = {
+        str(item.get("tool_name") or "").strip(): dict(item)
+        for item in list((session_state.get("investigation_opportunity_trace") or {}).get("ranked_actions") or [])
+        if str(item.get("tool_name") or "").strip()
+    }
     filtered_candidates: List[Dict[str, Any]] = []
     for tool_entry in _available_tool_catalog(seed_event, session_state, incident_state):
         tool_name = str(tool_entry.get("tool_name") or "").strip()
@@ -3176,7 +3407,14 @@ def _action_candidates(seed_event: Dict[str, Any], session_state: Dict[str, Any]
         item["recent_material_score"] = int(tool_entry.get("recent_material_score") or 0)
         item["recent_materially_depleted"] = bool(tool_entry.get("recent_materially_depleted"))
         item["acceptance_priority_bonus"] = _acceptance_priority_bonus(item, acceptance_state, control_summary)
-        item["candidate_score"] = _candidate_action_priority(item, material_gaps)
+        base_candidate_score = _candidate_action_priority(item, material_gaps)
+        opportunity = dict(opportunity_by_tool.get(tool_name) or {})
+        item["opportunity_score"] = int(opportunity.get("score") or 0)
+        item["target_hypothesis_ids"] = list(opportunity.get("target_hypothesis_ids") or [])
+        item["expected_information_gain"] = str(opportunity.get("expected_information_gain") or "").strip()
+        item["expected_report_impact"] = str(opportunity.get("expected_report_impact") or "").strip()
+        item["why_not_finish"] = str(opportunity.get("why_not_finish") or "").strip()
+        item["candidate_score"] = max(base_candidate_score, int(item.get("opportunity_score") or 0))
         filtered_candidates.append(item)
     filtered_candidates.sort(
         key=lambda item: (
@@ -3234,6 +3472,12 @@ def _format_llm_session_summary(
         "material_gaps": list(acceptance_state.get("material_gaps") or []),
         "working_hypotheses": list(session_state.get("working_hypotheses") or []),
         "hypothesis_board": dict(session_state.get("hypothesis_board") or {}),
+        "investigation_graph_summary": {
+            "graph_stats": dict((session_state.get("investigation_graph") or {}).get("graph_stats") or {}),
+            "runtime_summary": dict((session_state.get("investigation_graph") or {}).get("runtime_summary") or {}),
+        },
+        "value_of_information": dict(session_state.get("value_of_information") or {}),
+        "top_investigation_opportunities": list((session_state.get("investigation_opportunity_trace") or {}).get("top_k") or [])[:3],
         "budgets": session_state.get("budgets") or {},
         "latest_evidence": latest_ledger,
         "tool_history": _recent_tool_effects(session_state),
@@ -3304,6 +3548,9 @@ def _action_options_view(tool_catalog: List[Dict[str, Any]]) -> List[Dict[str, A
                 "expected_gain": str(item.get("expected_gain") or "").strip(),
                 "input_fingerprint": str(item.get("input_fingerprint") or "").strip(),
                 "alignment": _candidate_alignment_view(dict(item.get("alignment") or {})),
+                "opportunity_score": int(item.get("opportunity_score") or 0),
+                "target_hypothesis_ids": list(item.get("opportunity_target_hypotheses") or []),
+                "opportunity_why_not_finish": str(item.get("opportunity_why_not_finish") or "").strip(),
             }
         )
     return options[:8]
@@ -3452,6 +3699,10 @@ def _build_agent_context_v1(
         "action_options": _action_options_view(tool_catalog),
         "control_constraints": _control_constraints_view(session_state, incident_state, finalized),
         "reviewer_feedback": _reviewer_feedback_view(session_state),
+        "investigation_graph_summary": _investigation_graph_summary_view(session_state.get("investigation_graph") or {}),
+        "investigation_hypothesis_board": dict(session_state.get("investigation_hypothesis_board") or session_state.get("hypothesis_board") or {}),
+        "investigation_opportunity_summary": _investigation_opportunity_summary_view(session_state.get("investigation_opportunity_trace") or {}),
+        "value_of_information": dict(session_state.get("value_of_information") or {}),
     }
 
 
@@ -3949,8 +4200,11 @@ def _reviewer_context_view(
 ) -> Dict[str, Any]:
     acceptance_state = _acceptance_state(seed_event, session_state, incident_state, finalized)
     control_summary = _control_summary(seed_event, session_state, incident_state, finalized)
+    runtime_summary = dict(incident_state.get("reviewer_input") or {})
+    if not runtime_summary:
+        runtime_summary = _format_llm_session_summary(seed_event, session_state, incident_state, finalized)
     return {
-        "runtime": _format_llm_session_summary(seed_event, session_state, incident_state, finalized),
+        "runtime": runtime_summary,
         "gap_ledger": list((finalized or {}).get("gap_ledger") or incident_state.get("gap_ledger") or []),
         "recent_tool_effects": _recent_tool_effects(session_state),
         "acceptance_state": acceptance_state,
@@ -3962,6 +4216,10 @@ def _reviewer_context_view(
         "control_phase": str(control_summary.get("compat_phase") or ""),
         "active_tool_cooldowns": _active_tool_cooldowns(session_state, incident_state, finalized),
         "hypothesis_board": dict(session_state.get("hypothesis_board") or {}),
+        "investigation_graph_summary": _investigation_graph_summary_view(session_state.get("investigation_graph") or {}),
+        "investigation_hypothesis_board": dict(session_state.get("investigation_hypothesis_board") or session_state.get("hypothesis_board") or {}),
+        "investigation_opportunity_summary": _investigation_opportunity_summary_view(session_state.get("investigation_opportunity_trace") or {}),
+        "value_of_information": dict(session_state.get("value_of_information") or {}),
     }
 
 
@@ -4116,6 +4374,7 @@ def _fallback_post_action_review(
         "role": "post_action_reviewer",
         "review_result": review_result,
         "material_delta": material_delta,
+        "delta_labels": _post_action_delta_labels(action, observation),
         "closed_gap_ids": _text_list(delta.get("closed_gap_ids"), limit=6),
         "remaining_focus": (
             {
@@ -4625,6 +4884,42 @@ def _legacy_review_open_agent_proposal(
     return review
 
 
+def _finish_review_high_value_action_deferral(
+    session_state: Dict[str, Any],
+    acceptance_state: Dict[str, Any],
+    control_summary: Dict[str, Any],
+) -> Dict[str, Any]:
+    value_of_information = dict(control_summary.get("value_of_information") or session_state.get("value_of_information") or {})
+    value_level = str(value_of_information.get("level") or "").strip().lower()
+    value_best_action = str(value_of_information.get("best_action") or "").strip()
+    if value_level not in {"high", "medium"} or not value_best_action:
+        return {}
+    if not bool(control_summary.get("high_value_action_available")):
+        return {}
+    if not bool(acceptance_state.get("deliverable_now")):
+        return {}
+    stop_recommendation = dict(control_summary.get("value_of_information_stop_recommendation") or {})
+    if bool(stop_recommendation.get("should_stop")):
+        return {}
+    budgets = dict(session_state.get("budgets") or {})
+    if int(budgets.get("remaining_steps") or 0) <= 0 or int(budgets.get("remaining_tool_calls") or 0) <= 0:
+        return {}
+    focus_gap = dict(control_summary.get("next_focus") or {})
+    reason = (
+        "finish 暂缓：当前价值评估仍显示有预算内的高价值调查动作；"
+        "先让 investigator 继续收敛该问题，再决定是否收尾。"
+    )
+    next_round_feedback = [reason]
+    focus_question = str(focus_gap.get("question") or "").strip()
+    if focus_question:
+        next_round_feedback.append(f"当前主焦点仍是：{focus_question}。")
+    return {
+        "reason": reason,
+        "next_round_feedback": next_round_feedback[:3],
+        "next_focus": focus_gap,
+    }
+
+
 def _finish_review_fallback(
     seed_event: Dict[str, Any],
     session_state: Dict[str, Any],
@@ -4635,7 +4930,9 @@ def _finish_review_fallback(
     fallback_reason: str = "",
 ) -> Dict[str, Any]:
     acceptance_state = _acceptance_state(seed_event, session_state, incident_state, finalized)
-    deliverable_now = bool(acceptance_state.get("deliverable_now"))
+    control_summary = _control_summary(seed_event, session_state, incident_state, finalized)
+    finish_deferral = _finish_review_high_value_action_deferral(session_state, acceptance_state, control_summary)
+    deliverable_now = bool(acceptance_state.get("deliverable_now")) and not bool(finish_deferral)
     material_gaps = list(acceptance_state.get("material_gaps") or [])
     blocking_gaps = [] if deliverable_now else _canonical_blocking_gaps(material_gaps)
     reason = str(acceptance_state.get("preferred_stop_reason") or "").strip()
@@ -4647,6 +4944,8 @@ def _finish_review_fallback(
         and not str(fallback_reason).startswith("finish_reviewer_error:")
     ):
         reason = str(fallback_reason).strip()
+    if finish_deferral:
+        reason = str(finish_deferral.get("reason") or reason).strip()
     if not reason:
         reason = (
             "当前已达到交付门槛，可以结束调查。"
@@ -4656,7 +4955,9 @@ def _finish_review_fallback(
     focus_gap = dict(blocking_gaps[0]) if blocking_gaps else {}
     next_round_feedback: List[str] = []
     if not deliverable_now:
-        if focus_gap:
+        if finish_deferral:
+            next_round_feedback.extend(list(finish_deferral.get("next_round_feedback") or [])[:3])
+        elif focus_gap:
             gap_id = str(focus_gap.get("gap_id") or focus_gap.get("id") or "").strip()
             gap_reason = str(focus_gap.get("reason") or focus_gap.get("question") or "").strip()
             next_round_feedback.append(
@@ -4717,6 +5018,7 @@ def _review_finish_request(
 ) -> Dict[str, Any]:
     acceptance_state = _acceptance_state(seed_event, session_state, incident_state, finalized)
     review_context = _reviewer_context_view(seed_event, session_state, incident_state, finalized)
+    control_summary = dict(review_context.get("control_summary") or {})
     review = {
         "step_index": int(session_state.get("step_index") or 0) + 1,
         "role": "finish_reviewer",
@@ -4792,6 +5094,12 @@ def _review_finish_request(
             acceptance_state.get("blocking_actionable_gaps")
         )
         parsed_deliverable_now = bool(parsed.get("deliverable_now")) and decision == "deliverable"
+        finish_deferral = _finish_review_high_value_action_deferral(session_state, acceptance_state, control_summary)
+        if parsed_deliverable_now and finish_deferral:
+            decision = "not_deliverable"
+            parsed_deliverable_now = False
+            if not blocking_gaps:
+                blocking_gaps = _canonical_blocking_gaps(list(acceptance_state.get("material_gaps") or []))
         if parsed_deliverable_now and hard_finish_blocked:
             decision = "not_deliverable"
             parsed_deliverable_now = False
@@ -4838,6 +5146,16 @@ def _review_finish_request(
             proposal,
             fallback_reason=f"finish_reviewer_error:{exc}",
         )
+
+    if finish_deferral and not parsed_deliverable_now:
+        review["reason"] = str(finish_deferral.get("reason") or review.get("reason") or "").strip()
+        review["next_round_feedback"] = list(finish_deferral.get("next_round_feedback") or [])[:3]
+        review["stop_recommendation"] = {
+            "should_stop": False,
+            "reason": str(finish_deferral.get("reason") or review.get("reason") or "").strip(),
+        }
+        review["next_action"] = {"action_type": "none", "reason": str(finish_deferral.get("reason") or review.get("reason") or "").strip()}
+        review["outcome"] = "not_deliverable"
 
     if not str(review.get("reason") or "").strip():
         review["reason"] = str(acceptance_state.get("preferred_stop_reason") or "").strip()
@@ -4964,6 +5282,7 @@ def _review_executed_step(
         "role": "post_action_reviewer",
         "review_result": "continue",
         "material_delta": "none",
+        "delta_labels": _post_action_delta_labels(action, observation),
         "closed_gap_ids": [],
         "remaining_focus": {},
         "next_round_feedback": [],
@@ -5036,6 +5355,15 @@ def _review_executed_step(
         material_delta = str(parsed.get("material_delta") or "none").strip().lower()
         if material_delta not in POST_ACTION_MATERIAL_DELTA_LEVELS:
             material_delta = "none"
+        parsed_delta_labels = [
+            item
+            for item in _text_list(parsed.get("delta_labels"), limit=6)
+            if item in POST_ACTION_DELTA_LABELS
+        ]
+        deterministic_delta_labels = _post_action_delta_labels(action, observation)
+        delta_labels = unique_preserve_order(parsed_delta_labels + deterministic_delta_labels)
+        if "no_material_delta" in delta_labels and len(delta_labels) > 1:
+            delta_labels = [item for item in delta_labels if item != "no_material_delta"]
         raw_remaining_focus = parsed.get("remaining_focus") or {}
         remaining_focus = dict(raw_remaining_focus) if isinstance(raw_remaining_focus, dict) else {}
         known_gap_ids = {
@@ -5052,6 +5380,7 @@ def _review_executed_step(
             {
                 "review_result": review_result,
                 "material_delta": material_delta,
+                "delta_labels": delta_labels,
                 "closed_gap_ids": _text_list(parsed.get("closed_gap_ids"), limit=6),
                 "remaining_focus": remaining_focus,
                 "next_round_feedback": _text_list(parsed.get("next_round_feedback"), limit=3),
@@ -6876,6 +7205,8 @@ def _run_approved_tool_step(
         session_state["consecutive_low_value_steps"] = int(session_state.get("consecutive_low_value_steps") or 0) + 1
 
     session_state.setdefault("tool_history", []).append(_tool_history_record(action, observation, session_state))
+    post_tool_catalog = _available_tool_catalog(seed_event, session_state, incident_state)
+    _refresh_investigation_state(seed_event, session_state, incident_state, finalized_after, post_tool_catalog)
     followup = (
         {"stop": False, "reason": STOP_REASON_PENDING_POST_ACTION_REVIEW}
         if defer_stop_decision
@@ -6931,6 +7262,8 @@ def _investigation_run_metrics(
     agent_history = [dict(item) for item in list(session_state.get("agent_history") or []) if isinstance(item, dict)]
     reviewer_history = [dict(item) for item in list(session_state.get("reviewer_history") or []) if isinstance(item, dict)]
     tool_history = [dict(item) for item in list(session_state.get("tool_history") or []) if isinstance(item, dict)]
+    graph = dict(session_state.get("investigation_graph") or {})
+    board = dict(session_state.get("investigation_hypothesis_board") or session_state.get("hypothesis_board") or {})
 
     reviewer_replacement_count = 0
     execution_source_counts: Dict[str, int] = {}
@@ -6976,6 +7309,19 @@ def _investigation_run_metrics(
 
     stop_reason = str(session_state.get("stop_reason") or "").strip()
     stop_reason_in_enum = stop_reason in STOP_REASON_ENUM
+    delta_label_counts: Dict[str, int] = {}
+    for item in reviewer_history:
+        labels = _text_list(item.get("delta_labels"), limit=8)
+        if not labels:
+            labels = [str(item.get("material_delta") or item.get("review_result") or "").strip() or "unknown"]
+        for label in labels:
+            delta_label_counts[label] = delta_label_counts.get(label, 0) + 1
+    hypothesis_status_counts: Dict[str, int] = {}
+    for item in list(board.get("hypotheses") or []):
+        status = str((item or {}).get("status") or "").strip() or "unknown"
+        hypothesis_status_counts[status] = hypothesis_status_counts.get(status, 0) + 1
+    value_of_information = dict(session_state.get("value_of_information") or {})
+    runtime_summary = dict(graph.get("runtime_summary") or {})
     return {
         "stop_reason": stop_reason,
         "stop_reason_in_enum": stop_reason_in_enum,
@@ -6983,6 +7329,11 @@ def _investigation_run_metrics(
         "ready_for_delivery_at_stop": bool(session_state.get("ready_for_delivery_at_stop")),
         "actionable_path_at_stop": bool(session_state.get("actionable_path_at_stop")),
         "blocking_gap_count_at_stop": int(session_state.get("blocking_gap_count_at_stop") or 0),
+        "value_of_information_at_stop": value_of_information,
+        "hypothesis_status_counts": hypothesis_status_counts,
+        "delta_label_counts": delta_label_counts,
+        "candidate_event_count": int(runtime_summary.get("candidate_count") or 0),
+        "background_event_count": int(runtime_summary.get("background_count") or 0),
         "tool_history_length": len(tool_history),
         "agent_round_count": len(agent_history),
         "reviewer_round_count": len(reviewer_history),
@@ -7320,9 +7671,13 @@ def _stop_decision(
     budgets = session_state.get("budgets") or {}
     elapsed_s = time.perf_counter() - started_at
     acceptance_state = _acceptance_state(seed_event, session_state, incident_state, finalized)
+    control_summary = _control_summary(seed_event, session_state, incident_state, finalized)
     delivery_decision = dict(finalized.get("delivery_decision") or incident_state.get("delivery_decision") or {})
     blocking_gaps = [dict(item) for item in list(delivery_decision.get("blocking_gaps") or [])]
     actionable_gaps = [dict(item) for item in list(acceptance_state.get("actionable_gaps") or [])]
+    value_of_information = dict(control_summary.get("value_of_information") or session_state.get("value_of_information") or {})
+    value_level = str(value_of_information.get("level") or "").strip()
+    high_value_action_available = bool(str(value_of_information.get("best_action") or "").strip() and value_level in {"high", "medium"})
     insufficient_progress_signals = [
         str(item).strip()
         for item in list(
@@ -7352,6 +7707,7 @@ def _stop_decision(
         and ready_for_delivery
         and not blocking_gaps
         and not has_actionable_path
+        and not high_value_action_available
     ):
         return _stop_result(
             stop=True,
@@ -7365,6 +7721,7 @@ def _stop_decision(
         decision_mode != DECISION_MODE_LLM_AGENT
         and acceptance_prefers_stop
         and int(session_state.get("step_index") or 0) >= 2
+        and not high_value_action_available
     ):
         return _stop_result(
             stop=True,
@@ -7381,6 +7738,7 @@ def _stop_decision(
         and acceptance_prefers_stop
         and not blocking_gaps
         and not has_actionable_path
+        and not high_value_action_available
     ):
         return _stop_result(
             stop=True,
@@ -7397,6 +7755,7 @@ def _stop_decision(
         and ready_for_delivery
         and not blocking_gaps
         and not has_actionable_path
+        and not high_value_action_available
     ):
         return _stop_result(
             stop=True,
@@ -7436,6 +7795,7 @@ def _stop_decision(
             or (post_action_recommends_stop and (ready_for_delivery or not has_actionable_path))
             or (not blocking_gaps and not has_actionable_path)
         )
+        and not high_value_action_available
     ):
         return _stop_result(
             stop=True,
@@ -7478,10 +7838,14 @@ def run_incident_agent_case(
     while True:
         open_agent_mode = str(session_state.get("decision_mode") or "") == DECISION_MODE_LLM_AGENT
         finalized = _finalize_runtime_state(seed_event, session_state, incident_state)
-        candidates = _action_candidates(seed_event, session_state, incident_state)
         runtime_control = _control_summary(seed_event, session_state, incident_state, finalized)
         completion_advice = _completion_advice(seed_event, session_state, incident_state, finalized)
         tool_catalog = _available_tool_catalog(seed_event, session_state, incident_state)
+        _refresh_investigation_state(seed_event, session_state, incident_state, finalized, tool_catalog)
+        runtime_control = _control_summary(seed_event, session_state, incident_state, finalized)
+        completion_advice = _completion_advice(seed_event, session_state, incident_state, finalized)
+        tool_catalog = _available_tool_catalog(seed_event, session_state, incident_state)
+        candidates = _action_candidates(seed_event, session_state, incident_state)
         agent_context_v1 = _build_agent_context_v1(seed_event, session_state, incident_state, finalized, tool_catalog)
         agent_context_v1_payload = _prompt_payload_summary(agent_context_v1=agent_context_v1)
         decision = _stop_decision(seed_event, started_at, session_state, incident_state, finalized)
@@ -7880,6 +8244,7 @@ def run_incident_agent_case(
             step_trace["reviewer_feedback_preview"] = {
                 "review_result": str(reviewer_decision.get("review_result") or "").strip(),
                 "material_delta": str(reviewer_decision.get("material_delta") or "").strip(),
+                "delta_labels": list(reviewer_decision.get("delta_labels") or []),
                 "next_round_feedback": list(reviewer_decision.get("next_round_feedback") or []),
                 "constraints": list(reviewer_decision.get("constraints") or []),
                 "stop_recommendation": dict(reviewer_decision.get("stop_recommendation") or {}),
@@ -7887,6 +8252,7 @@ def run_incident_agent_case(
             step_trace.setdefault("state_updates", {})["post_action_review"] = {
                 "review_result": str(reviewer_decision.get("review_result") or "").strip(),
                 "material_delta": str(reviewer_decision.get("material_delta") or "").strip(),
+                "delta_labels": list(reviewer_decision.get("delta_labels") or []),
                 "remaining_focus": dict(reviewer_decision.get("remaining_focus") or {}),
                 "stop_recommendation": dict(reviewer_decision.get("stop_recommendation") or {}),
             }
@@ -8019,6 +8385,8 @@ def run_incident_agent_case(
             break
 
     finalized = _finalize_runtime_state(seed_event, session_state, incident_state)
+    final_tool_catalog = _available_tool_catalog(seed_event, session_state, incident_state)
+    _refresh_investigation_state(seed_event, session_state, incident_state, finalized, final_tool_catalog)
     run_metrics = _investigation_run_metrics(session_state, investigation_trace)
     incident = {
         "schema_version": "0.3",
@@ -8039,6 +8407,10 @@ def run_incident_agent_case(
         "selector_history": list(session_state.get("selector_history") or []),
         "agent_history": list(session_state.get("agent_history") or []),
         "reviewer_history": list(session_state.get("reviewer_history") or []),
+        "investigation_graph": dict(session_state.get("investigation_graph") or {}),
+        "investigation_hypothesis_board": dict(session_state.get("investigation_hypothesis_board") or session_state.get("hypothesis_board") or {}),
+        "investigation_opportunity_trace": dict(session_state.get("investigation_opportunity_trace") or {}),
+        "investigation_opportunity_history": list(session_state.get("investigation_opportunity_history") or []),
         "incident_state": {
             "seed": seed_event,
             "pivots": incident_state.get("pivots") or {},
@@ -8098,6 +8470,10 @@ def run_incident_agent_case(
     return {
         "incident": incident,
         "investigation_trace": investigation_trace,
+        "investigation_graph": dict(session_state.get("investigation_graph") or {}),
+        "investigation_hypothesis_board": dict(session_state.get("investigation_hypothesis_board") or session_state.get("hypothesis_board") or {}),
+        "investigation_opportunity_trace": dict(session_state.get("investigation_opportunity_trace") or {}),
+        "investigation_opportunity_history": list(session_state.get("investigation_opportunity_history") or []),
         "report_markdown": rendered_report.get("report_markdown") or "",
         "report_polished_markdown": rendered_report.get("report_polished_markdown") or "",
         "report_appendix_markdown": rendered_report.get("report_appendix_markdown") or "",

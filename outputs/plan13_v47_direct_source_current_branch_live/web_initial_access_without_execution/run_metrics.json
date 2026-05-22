@@ -1,0 +1,26 @@
+{
+  "stop_reason": "preflight_block_loop",
+  "stop_reason_in_enum": true,
+  "secondary_stop_reasons": [],
+  "ready_for_delivery_at_stop": false,
+  "actionable_path_at_stop": false,
+  "blocking_gap_count_at_stop": 0,
+  "tool_history_length": 4,
+  "agent_round_count": 6,
+  "reviewer_round_count": 4,
+  "reviewer_replacement_count": 0,
+  "execution_source_counts": {
+    "investigator_preflight_approved": 4,
+    "preflight_blocked": 2
+  },
+  "invalid_proposal_count": 0,
+  "duplicate_deterministic_call_count": 0,
+  "preflight_block_count": 2,
+  "reviewer_block_count": 1,
+  "prompt_payload_bytes": {
+    "agent_total": 102667,
+    "reviewer_total": 333676,
+    "agent_context_v1_preview_total": 98233,
+    "total": 436343
+  }
+}

@@ -1,0 +1,2371 @@
+{
+  "schema_version": "report-direct-source-writer-brief-v1",
+  "writer_mode": "direct_source",
+  "case_header": {
+    "title": "ws-rnd-04 Suspected cloud-storage exfil chain 调查报告",
+    "analysis_window": "2026-06-03 16:28:00 UTC 至 2026-06-03 17:24:40 UTC",
+    "seed_alert": {
+      "event_time": "2026-06-03 16:40:00",
+      "simulated": false,
+      "src": {
+        "ip": "10.90.2.44",
+        "port": null
+      },
+      "dst": {
+        "ip": "198.51.100.144",
+        "port": null
+      },
+      "protocol": "TLS",
+      "trigger_fingerprint": {
+        "type": "JA4",
+        "value": "t13d190900_44ac2200b3c1_ab11cd22ee44",
+        "matched": true
+      },
+      "enrichment": {
+        "info": "Suspected cloud-storage exfil chain",
+        "reference": "fixture",
+        "update_time": "2026-06-03 16:40:00"
+      },
+      "raw_alert": {
+        "timestamp": "2026-06-03 16:40:00",
+        "src_ip": "10.90.2.44",
+        "dst_ip": "198.51.100.144",
+        "protocol": "TLS",
+        "trigger_fingerprint": {
+          "type": "JA4",
+          "value": "t13d190900_44ac2200b3c1_ab11cd22ee44"
+        },
+        "info": "Suspected cloud-storage exfil chain",
+        "reference": "fixture",
+        "update_time": "2026-06-03 16:40:00"
+      }
+    },
+    "final_verdict": {
+      "status": "confirmed_incident",
+      "status_label": "确认安全事件",
+      "confidence": 94,
+      "severity": "高危",
+      "rationale": [
+        "事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。",
+        "seed alert 自带家族/工具提示：Suspected cloud-storage exfil chain。",
+        "已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。",
+        "主支撑证据和范围已达到确认事件交付门槛；剩余候选扩线、反证或背景材料应作为报告边界呈现。"
+      ],
+      "delivery_ready": true,
+      "blocked_by": [],
+      "provisional_status": "confirmed_incident",
+      "provisional_status_label": "确认事件"
+    },
+    "delivery_status": "confirmed_incident",
+    "delivery_status_label": "确认安全事件",
+    "severity": "高危",
+    "confidence": "高",
+    "source_layer": "delivery_decision"
+  },
+  "source_counts": {
+    "observations": 6,
+    "events": 15,
+    "claims": 7,
+    "objects": 25,
+    "gaps": 9
+  },
+  "fact_counts_by_type": {
+    "verdict": 1,
+    "event": 15,
+    "object": 25,
+    "claim": 7,
+    "gap": 9,
+    "action": 3,
+    "trace_store.seed_context": 1,
+    "intel_tool": 2,
+    "trace_store.related_events": 2,
+    "candidate_grounding": 1
+  },
+  "fact_lanes": {
+    "confirmed_timeline": [
+      {
+        "fact_id": "fact-event-evt-603",
+        "source_id": "event:evt-603",
+        "fact_type": "event",
+        "status": "confirmed",
+        "classification": "malicious",
+        "reporting_focus": "主支撑事件",
+        "candidate_or_boundary": false,
+        "summary_line": "2026-06-03 16:40:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，Seed JA4 alert matched a suspicious TLS beacon to the rare storage edge.，源地址 `10.90.2.44`",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-event-evt-604",
+        "source_id": "event:evt-604",
+        "fact_type": "event",
+        "status": "confirmed",
+        "classification": "suspicious",
+        "reporting_focus": "事件时间线事实",
+        "candidate_or_boundary": false,
+        "summary_line": "2026-06-03 16:42:30 UTC，资产 `ws-rnd-04`，PowerShell launched from the user profile and invoked a staging script under C:\\Users\\analyst\\AppData\\Roaming\\sync.ps1.，源地址 `10.90.2.44`",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-event-evt-605",
+        "source_id": "event:evt-605",
+        "fact_type": "event",
+        "status": "confirmed",
+        "classification": "suspicious",
+        "reporting_focus": "事件时间线事实",
+        "candidate_or_boundary": false,
+        "summary_line": "2026-06-03 16:44:00 UTC，资产 `ws-rnd-04`，Archive utility 7z.exe created RND-Q2-prototype.zip from a project workspace shortly before outbound transfer.，源地址 `10.90.2.44`",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-event-evt-606",
+        "source_id": "event:evt-606",
+        "fact_type": "event",
+        "status": "confirmed",
+        "classification": "suspicious",
+        "reporting_focus": "事件时间线事实",
+        "candidate_or_boundary": false,
+        "summary_line": "2026-06-03 16:45:40 UTC，资产 `ws-rnd-04`，The newly created RND-Q2-prototype.zip was staged under C:\\Users\\Public\\Music\\cache.dat for transfer.，源地址 `10.90.2.44`",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-event-evt-607",
+        "source_id": "event:evt-607",
+        "fact_type": "event",
+        "status": "confirmed",
+        "classification": "suspicious",
+        "reporting_focus": "事件时间线事实",
+        "candidate_or_boundary": false,
+        "summary_line": "2026-06-03 16:47:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，A large outbound HTTPS upload to files-sync-share.net followed the archive creation, with roughly 640 MB sent.，源地址 `10.90.2.44`",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-event-evt-608",
+        "source_id": "event:evt-608",
+        "fact_type": "event",
+        "status": "confirmed",
+        "classification": "needs_review",
+        "reporting_focus": "事件时间线事实",
+        "candidate_or_boundary": false,
+        "summary_line": "2026-06-03 16:50:10 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，DLP recorded the encrypted outbound transfer size but could not inspect the archive contents.，源地址 `10.90.2.44`",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-event-evt-609",
+        "source_id": "event:evt-609",
+        "fact_type": "event",
+        "status": "confirmed",
+        "classification": "suspicious",
+        "reporting_focus": "事件时间线事实",
+        "candidate_or_boundary": false,
+        "summary_line": "2026-06-03 16:52:30 UTC，资产 `ws-rnd-04`，关联对象 `api.files-sync-share.net`，The same workstation resolved api.files-sync-share.net, a sibling domain on the same storage edge.，源地址 `10.90.2.44`",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-event-evt-610",
+        "source_id": "event:evt-610",
+        "fact_type": "event",
+        "status": "confirmed",
+        "classification": "suspicious",
+        "reporting_focus": "事件时间线事实",
+        "candidate_or_boundary": false,
+        "summary_line": "2026-06-03 16:55:00 UTC，资产 `ws-rnd-04`，关联对象 `api.files-sync-share.net / 198.51.100.144`，A follow-on TLS session used the sibling API domain after the large upload completed.，源地址 `10.90.2.44`",
+        "boundary_note": ""
+      }
+    ],
+    "confirmed_scope": [
+      {
+        "fact_id": "fact-verdict-delivery",
+        "source_id": "verdict:delivery",
+        "fact_type": "verdict",
+        "status": "",
+        "classification": "",
+        "reporting_focus": "交付结论",
+        "candidate_or_boundary": false,
+        "summary_line": "确认安全事件；事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。；seed alert 自带家族/工具提示：Suspected cloud-storage exfil chain。；已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。；主支撑证据和范围已达到确认事件交付门槛；剩余候选扩线、反证或背景材料应作为报告边界呈现。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-event-evt-603",
+        "source_id": "event:evt-603",
+        "fact_type": "event",
+        "status": "confirmed",
+        "classification": "malicious",
+        "reporting_focus": "主支撑事件",
+        "candidate_or_boundary": false,
+        "summary_line": "2026-06-03 16:40:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，Seed JA4 alert matched a suspicious TLS beacon to the rare storage edge.，源地址 `10.90.2.44`",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-object-obj-01",
+        "source_id": "object:OBJ-01",
+        "fact_type": "object",
+        "status": "已确认",
+        "classification": "",
+        "reporting_focus": "已确认受影响对象",
+        "candidate_or_boundary": false,
+        "summary_line": "对象 `ws-rnd-04`，类型为资产，当前角色为种子资产，种子告警首先落在该资产上。；当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-object-obj-03",
+        "source_id": "object:OBJ-03",
+        "fact_type": "object",
+        "status": "已确认",
+        "classification": "",
+        "reporting_focus": "核心外部基础设施",
+        "candidate_or_boundary": false,
+        "summary_line": "对象 `198.51.100.144`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选地址。",
+        "boundary_note": "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象。"
+      },
+      {
+        "fact_id": "fact-object-obj-04",
+        "source_id": "object:OBJ-04",
+        "fact_type": "object",
+        "status": "已确认",
+        "classification": "",
+        "reporting_focus": "核心外部基础设施",
+        "candidate_or_boundary": false,
+        "summary_line": "对象 `api.files-sync-share.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象。"
+      },
+      {
+        "fact_id": "fact-object-obj-05",
+        "source_id": "object:OBJ-05",
+        "fact_type": "object",
+        "status": "已确认",
+        "classification": "",
+        "reporting_focus": "核心外部基础设施",
+        "candidate_or_boundary": false,
+        "summary_line": "对象 `files-sync-share.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象。"
+      }
+    ],
+    "external_infrastructure": [
+      {
+        "fact_id": "fact-object-obj-03",
+        "source_id": "object:OBJ-03",
+        "fact_type": "object",
+        "status": "已确认",
+        "classification": "",
+        "reporting_focus": "核心外部基础设施",
+        "candidate_or_boundary": false,
+        "summary_line": "对象 `198.51.100.144`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选地址。",
+        "boundary_note": "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象。"
+      },
+      {
+        "fact_id": "fact-object-obj-04",
+        "source_id": "object:OBJ-04",
+        "fact_type": "object",
+        "status": "已确认",
+        "classification": "",
+        "reporting_focus": "核心外部基础设施",
+        "candidate_or_boundary": false,
+        "summary_line": "对象 `api.files-sync-share.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象。"
+      },
+      {
+        "fact_id": "fact-object-obj-05",
+        "source_id": "object:OBJ-05",
+        "fact_type": "object",
+        "status": "已确认",
+        "classification": "",
+        "reporting_focus": "核心外部基础设施",
+        "candidate_or_boundary": false,
+        "summary_line": "对象 `files-sync-share.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象。"
+      }
+    ],
+    "candidate_or_boundary": [
+      {
+        "fact_id": "fact-event-evt-601",
+        "source_id": "event:evt-601",
+        "fact_type": "event",
+        "status": "background",
+        "classification": "unknown",
+        "reporting_focus": "背景或替代解释事件",
+        "candidate_or_boundary": true,
+        "summary_line": "背景/替代解释事件：2026-06-03 16:28:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net`，The R&D workstation resolved files-sync-share.net, a rare storage-themed domain, before the seed alert.，源地址 `10.90.2.44`",
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "fact_id": "fact-event-evt-602",
+        "source_id": "event:evt-602",
+        "fact_type": "event",
+        "status": "confirmed",
+        "classification": "suspicious",
+        "reporting_focus": "事件时间线事实",
+        "candidate_or_boundary": false,
+        "summary_line": "2026-06-03 16:34:20 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，The workstation opened a short TLS session to the rare storage edge before the larger transfer sequence.，源地址 `10.90.2.44`",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-event-evt-611",
+        "source_id": "event:evt-611",
+        "fact_type": "event",
+        "status": "background",
+        "classification": "unknown",
+        "reporting_focus": "背景或替代解释事件",
+        "candidate_or_boundary": true,
+        "summary_line": "背景/替代解释事件：2026-06-03 17:05:00 UTC，资产 `ws-rnd-09`，关联对象 `files-sync-share.net / 198.51.100.144`，A second R&D workstation briefly connected to the same storage edge, but only once and without host corroboration.，源地址 `10.90.2.49`",
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "fact_id": "fact-event-evt-612",
+        "source_id": "event:evt-612",
+        "fact_type": "event",
+        "status": "background",
+        "classification": "benign",
+        "reporting_focus": "背景或替代解释事件",
+        "candidate_or_boundary": true,
+        "summary_line": "背景/替代解释事件：2026-06-03 17:08:20 UTC，资产 `ws-rnd-09`，ws-rnd-09 had an approved backup job running in the same hour, explaining some storage-oriented traffic.，源地址 `10.90.2.49`",
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "fact_id": "fact-event-evt-613",
+        "source_id": "event:evt-613",
+        "fact_type": "event",
+        "status": "background",
+        "classification": "benign",
+        "reporting_focus": "背景或替代解释事件",
+        "candidate_or_boundary": true,
+        "summary_line": "背景/替代解释事件：2026-06-03 17:12:00 UTC，资产 `ws-rnd-04`，关联对象 `company-my.sharepoint.com / 13.107.136.9`，Normal corporate SharePoint sync traffic from ws-rnd-04 was also present during the investigation window.，源地址 `10.90.2.44`",
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "fact_id": "fact-event-evt-614",
+        "source_id": "event:evt-614",
+        "fact_type": "event",
+        "status": "background",
+        "classification": "unknown",
+        "reporting_focus": "背景或替代解释事件",
+        "candidate_or_boundary": true,
+        "summary_line": "背景/替代解释事件：2026-06-03 17:18:00 UTC，资产 `ws-rnd-04`，EDR did not preserve the full PowerShell command line, limiting reconstruction of the staging script.，源地址 `10.90.2.44`",
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "fact_id": "fact-event-evt-615",
+        "source_id": "event:evt-615",
+        "fact_type": "event",
+        "status": "background",
+        "classification": "benign",
+        "reporting_focus": "背景或替代解释事件",
+        "candidate_or_boundary": true,
+        "summary_line": "背景/替代解释事件：2026-06-03 17:24:40 UTC，资产 `ws-rnd-12`，关联对象 `filesync-cdn.example / 198.51.100.144`，A lab workstation reached the same IP through a different vendor CDN domain, indicating the IP is not uniquely malicious.，源地址 `10.90.8.12`",
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "fact_id": "fact-object-obj-02",
+        "source_id": "object:OBJ-02",
+        "fact_type": "object",
+        "status": "待确认",
+        "classification": "",
+        "reporting_focus": "待确认对象",
+        "candidate_or_boundary": true,
+        "summary_line": "对象 `ws-rnd-09`，类型为资产，当前角色为待确认关联资产，当前仍需独立验证是否真正受影响。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。",
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "fact_id": "fact-object-obj-14",
+        "source_id": "object:OBJ-14",
+        "fact_type": "object",
+        "status": "待确认",
+        "classification": "",
+        "reporting_focus": "待确认对象",
+        "candidate_or_boundary": true,
+        "summary_line": "对象 `ws-rnd-12`，类型为资产，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选资产。",
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "fact_id": "fact-object-obj-15",
+        "source_id": "object:OBJ-15",
+        "fact_type": "object",
+        "status": "待确认",
+        "classification": "",
+        "reporting_focus": "待确认对象",
+        "candidate_or_boundary": true,
+        "summary_line": "对象 `attack.mitre.org`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "fact_id": "fact-object-obj-16",
+        "source_id": "object:OBJ-16",
+        "fact_type": "object",
+        "status": "待确认",
+        "classification": "",
+        "reporting_focus": "待确认对象",
+        "candidate_or_boundary": true,
+        "summary_line": "对象 `blockchainhealthcaretoday.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "fact_id": "fact-object-obj-17",
+        "source_id": "object:OBJ-17",
+        "fact_type": "object",
+        "status": "待确认",
+        "classification": "",
+        "reporting_focus": "待确认对象",
+        "candidate_or_boundary": true,
+        "summary_line": "对象 `blog.talosintelligence.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "fact_id": "fact-object-obj-18",
+        "source_id": "object:OBJ-18",
+        "fact_type": "object",
+        "status": "待确认",
+        "classification": "",
+        "reporting_focus": "待确认对象",
+        "candidate_or_boundary": true,
+        "summary_line": "对象 `cert.ssi.gouv.fr`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "fact_id": "fact-object-obj-19",
+        "source_id": "object:OBJ-19",
+        "fact_type": "object",
+        "status": "待确认",
+        "classification": "",
+        "reporting_focus": "待确认对象",
+        "candidate_or_boundary": true,
+        "summary_line": "对象 `lmntrix.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "fact_id": "fact-object-obj-20",
+        "source_id": "object:OBJ-20",
+        "fact_type": "object",
+        "status": "待确认",
+        "classification": "",
+        "reporting_focus": "待确认对象",
+        "candidate_or_boundary": true,
+        "summary_line": "对象 `www.fortinet.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "fact_id": "fact-object-obj-21",
+        "source_id": "object:OBJ-21",
+        "fact_type": "object",
+        "status": "待确认",
+        "classification": "",
+        "reporting_focus": "待确认对象",
+        "candidate_or_boundary": true,
+        "summary_line": "对象 `www.hhs.gov`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "fact_id": "fact-object-obj-22",
+        "source_id": "object:OBJ-22",
+        "fact_type": "object",
+        "status": "待确认",
+        "classification": "",
+        "reporting_focus": "待确认对象",
+        "candidate_or_boundary": true,
+        "summary_line": "对象 `www.mimecast.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "fact_id": "fact-object-obj-23",
+        "source_id": "object:OBJ-23",
+        "fact_type": "object",
+        "status": "待确认",
+        "classification": "",
+        "reporting_focus": "待确认对象",
+        "candidate_or_boundary": true,
+        "summary_line": "对象 `www.vectra.ai`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "fact_id": "fact-object-obj-24",
+        "source_id": "object:OBJ-24",
+        "fact_type": "object",
+        "status": "待确认",
+        "classification": "",
+        "reporting_focus": "待确认对象",
+        "candidate_or_boundary": true,
+        "summary_line": "对象 `www.vmware.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "fact_id": "fact-object-obj-25",
+        "source_id": "object:OBJ-25",
+        "fact_type": "object",
+        "status": "待确认",
+        "classification": "",
+        "reporting_focus": "待确认对象",
+        "candidate_or_boundary": true,
+        "summary_line": "对象 `t13d190900_44ac2200b3c1_ab11cd22ee44`，类型为指纹，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选指纹。",
+        "boundary_note": "待确认对象不能写成已确认受影响范围。"
+      },
+      {
+        "fact_id": "fact-claim-cl-05",
+        "source_id": "claim:CL-05",
+        "fact_type": "claim",
+        "status": "candidate",
+        "classification": "",
+        "reporting_focus": "归纳判断或观察",
+        "candidate_or_boundary": true,
+        "summary_line": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-claim-cl-07",
+        "source_id": "claim:CL-07",
+        "fact_type": "claim",
+        "status": "candidate",
+        "classification": "",
+        "reporting_focus": "归纳判断或观察",
+        "candidate_or_boundary": true,
+        "summary_line": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-obs-obs-005",
+        "source_id": "obs:obs-005",
+        "fact_type": "candidate_grounding",
+        "status": "ok",
+        "classification": "",
+        "reporting_focus": "obs",
+        "candidate_or_boundary": false,
+        "summary_line": "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。",
+        "boundary_note": ""
+      }
+    ],
+    "background_or_alternative": [
+      {
+        "fact_id": "fact-event-evt-601",
+        "source_id": "event:evt-601",
+        "fact_type": "event",
+        "status": "background",
+        "classification": "unknown",
+        "reporting_focus": "背景或替代解释事件",
+        "candidate_or_boundary": true,
+        "summary_line": "背景/替代解释事件：2026-06-03 16:28:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net`，The R&D workstation resolved files-sync-share.net, a rare storage-themed domain, before the seed alert.，源地址 `10.90.2.44`",
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "fact_id": "fact-event-evt-611",
+        "source_id": "event:evt-611",
+        "fact_type": "event",
+        "status": "background",
+        "classification": "unknown",
+        "reporting_focus": "背景或替代解释事件",
+        "candidate_or_boundary": true,
+        "summary_line": "背景/替代解释事件：2026-06-03 17:05:00 UTC，资产 `ws-rnd-09`，关联对象 `files-sync-share.net / 198.51.100.144`，A second R&D workstation briefly connected to the same storage edge, but only once and without host corroboration.，源地址 `10.90.2.49`",
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "fact_id": "fact-event-evt-612",
+        "source_id": "event:evt-612",
+        "fact_type": "event",
+        "status": "background",
+        "classification": "benign",
+        "reporting_focus": "背景或替代解释事件",
+        "candidate_or_boundary": true,
+        "summary_line": "背景/替代解释事件：2026-06-03 17:08:20 UTC，资产 `ws-rnd-09`，ws-rnd-09 had an approved backup job running in the same hour, explaining some storage-oriented traffic.，源地址 `10.90.2.49`",
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "fact_id": "fact-event-evt-613",
+        "source_id": "event:evt-613",
+        "fact_type": "event",
+        "status": "background",
+        "classification": "benign",
+        "reporting_focus": "背景或替代解释事件",
+        "candidate_or_boundary": true,
+        "summary_line": "背景/替代解释事件：2026-06-03 17:12:00 UTC，资产 `ws-rnd-04`，关联对象 `company-my.sharepoint.com / 13.107.136.9`，Normal corporate SharePoint sync traffic from ws-rnd-04 was also present during the investigation window.，源地址 `10.90.2.44`",
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "fact_id": "fact-event-evt-614",
+        "source_id": "event:evt-614",
+        "fact_type": "event",
+        "status": "background",
+        "classification": "unknown",
+        "reporting_focus": "背景或替代解释事件",
+        "candidate_or_boundary": true,
+        "summary_line": "背景/替代解释事件：2026-06-03 17:18:00 UTC，资产 `ws-rnd-04`，EDR did not preserve the full PowerShell command line, limiting reconstruction of the staging script.，源地址 `10.90.2.44`",
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "fact_id": "fact-event-evt-615",
+        "source_id": "event:evt-615",
+        "fact_type": "event",
+        "status": "background",
+        "classification": "benign",
+        "reporting_focus": "背景或替代解释事件",
+        "candidate_or_boundary": true,
+        "summary_line": "背景/替代解释事件：2026-06-03 17:24:40 UTC，资产 `ws-rnd-12`，关联对象 `filesync-cdn.example / 198.51.100.144`，A lab workstation reached the same IP through a different vendor CDN domain, indicating the IP is not uniquely malicious.，源地址 `10.90.8.12`",
+        "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。"
+      },
+      {
+        "fact_id": "fact-object-obj-03",
+        "source_id": "object:OBJ-03",
+        "fact_type": "object",
+        "status": "已确认",
+        "classification": "",
+        "reporting_focus": "核心外部基础设施",
+        "candidate_or_boundary": false,
+        "summary_line": "对象 `198.51.100.144`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选地址。",
+        "boundary_note": "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象。"
+      },
+      {
+        "fact_id": "fact-object-obj-06",
+        "source_id": "object:OBJ-06",
+        "fact_type": "object",
+        "status": "已确认",
+        "classification": "",
+        "reporting_focus": "背景对象",
+        "candidate_or_boundary": false,
+        "summary_line": "对象 `13.107.136.9`，类型为IP，当前角色为背景/上下文指标，用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选地址。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-object-obj-07",
+        "source_id": "object:OBJ-07",
+        "fact_type": "object",
+        "status": "已确认",
+        "classification": "",
+        "reporting_focus": "背景对象",
+        "candidate_or_boundary": false,
+        "summary_line": "对象 `company-my.sharepoint.com`，类型为域名，当前角色为背景/上下文指标，用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-object-obj-08",
+        "source_id": "object:OBJ-08",
+        "fact_type": "object",
+        "status": "已确认",
+        "classification": "",
+        "reporting_focus": "背景对象",
+        "candidate_or_boundary": false,
+        "summary_line": "对象 `filesync-cdn.example`，类型为域名，当前角色为背景/上下文指标，用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选域名。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-object-obj-10",
+        "source_id": "object:OBJ-10",
+        "fact_type": "object",
+        "status": "已确认",
+        "classification": "",
+        "reporting_focus": "对象角色事实",
+        "candidate_or_boundary": false,
+        "summary_line": "对象 `Suspected cloud-storage exfil chain`，类型为家族提示，当前角色为家族/工具提示，辅助解释本案的家族或工具背景，不直接等于强归因。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-claim-cl-02",
+        "source_id": "claim:CL-02",
+        "fact_type": "claim",
+        "status": "context",
+        "classification": "",
+        "reporting_focus": "归纳判断或观察",
+        "candidate_or_boundary": false,
+        "summary_line": "本地情报库未命中该指示物。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-claim-cl-03",
+        "source_id": "claim:CL-03",
+        "fact_type": "claim",
+        "status": "context",
+        "classification": "",
+        "reporting_focus": "归纳判断或观察",
+        "candidate_or_boundary": false,
+        "summary_line": "候选技术来源包括：Exfiltration to Cloud Storage, Sub-technique T1567.002；Exfiltration Over C2 Channel, Technique T1041 - Enterprise；Exfiltration Over Unencrypted Non-C2 Protocol, Sub ...",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-claim-cl-04",
+        "source_id": "claim:CL-04",
+        "fact_type": "claim",
+        "status": "context",
+        "classification": "",
+        "reporting_focus": "归纳判断或观察",
+        "candidate_or_boundary": false,
+        "summary_line": "technical_source_search 返回了 14 条候选技术来源，可用于后续正文证据提取。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-claim-cl-06",
+        "source_id": "claim:CL-06",
+        "fact_type": "claim",
+        "status": "context",
+        "classification": "",
+        "reporting_focus": "归纳判断或观察",
+        "candidate_or_boundary": false,
+        "summary_line": "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-gap-validate-candidate-events",
+        "source_id": "gap:validate_candidate_events",
+        "fact_type": "gap",
+        "status": "closed",
+        "classification": "",
+        "reporting_focus": "已关闭缺口",
+        "candidate_or_boundary": true,
+        "summary_line": "扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？",
+        "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。"
+      },
+      {
+        "fact_id": "fact-gap-ground-external-context",
+        "source_id": "gap:ground_external_context",
+        "fact_type": "gap",
+        "status": "closed",
+        "classification": "",
+        "reporting_focus": "已关闭缺口",
+        "candidate_or_boundary": true,
+        "summary_line": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+        "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。"
+      },
+      {
+        "fact_id": "fact-gap-structure-evidence",
+        "source_id": "gap:structure_evidence",
+        "fact_type": "gap",
+        "status": "closed",
+        "classification": "",
+        "reporting_focus": "已关闭缺口",
+        "candidate_or_boundary": true,
+        "summary_line": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+        "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。"
+      },
+      {
+        "fact_id": "fact-gap-execution-gap",
+        "source_id": "gap:execution_gap",
+        "fact_type": "gap",
+        "status": "closed",
+        "classification": "",
+        "reporting_focus": "已关闭缺口",
+        "candidate_or_boundary": true,
+        "summary_line": "是否存在主机侧执行、持久化或横向移动证据？",
+        "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。"
+      },
+      {
+        "fact_id": "fact-gap-build-context",
+        "source_id": "gap:build_context",
+        "fact_type": "gap",
+        "status": "closed",
+        "classification": "",
+        "reporting_focus": "已关闭缺口",
+        "candidate_or_boundary": true,
+        "summary_line": "仍需围绕 seed alert 补足最小上下文。",
+        "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。"
+      },
+      {
+        "fact_id": "fact-gap-identify-assets",
+        "source_id": "gap:identify_assets",
+        "fact_type": "gap",
+        "status": "closed",
+        "classification": "",
+        "reporting_focus": "已关闭缺口",
+        "candidate_or_boundary": true,
+        "summary_line": "仍需确认事件涉及的关键资产。",
+        "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。"
+      },
+      {
+        "fact_id": "fact-gap-validate-family-hint",
+        "source_id": "gap:validate_family_hint",
+        "fact_type": "gap",
+        "status": "closed",
+        "classification": "",
+        "reporting_focus": "已关闭缺口",
+        "candidate_or_boundary": true,
+        "summary_line": "seed 自带的家族提示 Suspected cloud-storage exfil chain 是否有更多外部证据支撑？",
+        "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。"
+      },
+      {
+        "fact_id": "fact-obs-obs-001",
+        "source_id": "obs:obs-001",
+        "fact_type": "trace_store.seed_context",
+        "status": "ok",
+        "classification": "",
+        "reporting_focus": "obs",
+        "candidate_or_boundary": false,
+        "summary_line": "检索到 9 条偏可疑事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开。",
+        "boundary_note": ""
+      }
+    ],
+    "open_gaps": [
+      {
+        "fact_id": "fact-gap-expand-cluster-scope",
+        "source_id": "gap:expand_cluster_scope",
+        "fact_type": "gap",
+        "status": "open",
+        "classification": "",
+        "reporting_focus": "未闭合缺口",
+        "candidate_or_boundary": true,
+        "summary_line": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+        "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。"
+      },
+      {
+        "fact_id": "fact-gap-check-counterevidence",
+        "source_id": "gap:check_counterevidence",
+        "fact_type": "gap",
+        "status": "open",
+        "classification": "",
+        "reporting_focus": "未闭合缺口",
+        "candidate_or_boundary": true,
+        "summary_line": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+        "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。"
+      }
+    ],
+    "actions": [
+      {
+        "fact_id": "fact-action-1",
+        "source_id": "action:1",
+        "fact_type": "action",
+        "status": "",
+        "classification": "",
+        "reporting_focus": "行动建议",
+        "candidate_or_boundary": false,
+        "summary_line": "优先隔离或重点监控资产：ws-rnd-04。",
+        "boundary_note": "行动建议不是已观测事实，正文应写成后续处置或核查动作。"
+      },
+      {
+        "fact_id": "fact-action-2",
+        "source_id": "action:2",
+        "fact_type": "action",
+        "status": "",
+        "classification": "",
+        "reporting_focus": "行动建议",
+        "candidate_or_boundary": false,
+        "summary_line": "在边界和代理设备上排查并封禁外部基础设施：198.51.100.144、files-sync-share.net、api.files-sync-share.net。",
+        "boundary_note": "行动建议不是已观测事实，正文应写成后续处置或核查动作。"
+      },
+      {
+        "fact_id": "fact-action-3",
+        "source_id": "action:3",
+        "fact_type": "action",
+        "status": "",
+        "classification": "",
+        "reporting_focus": "行动建议",
+        "candidate_or_boundary": false,
+        "summary_line": "以 seed 指标和事件簇中的域名 / IP 为 pivot，继续检索同时间窗内的重复通信。",
+        "boundary_note": "行动建议不是已观测事实，正文应写成后续处置或核查动作。"
+      }
+    ],
+    "context_claims": [
+      {
+        "fact_id": "fact-verdict-delivery",
+        "source_id": "verdict:delivery",
+        "fact_type": "verdict",
+        "status": "",
+        "classification": "",
+        "reporting_focus": "交付结论",
+        "candidate_or_boundary": false,
+        "summary_line": "确认安全事件；事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。；seed alert 自带家族/工具提示：Suspected cloud-storage exfil chain。；已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。；主支撑证据和范围已达到确认事件交付门槛；剩余候选扩线、反证或背景材料应作为报告边界呈现。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-claim-cl-01",
+        "source_id": "claim:CL-01",
+        "fact_type": "claim",
+        "status": "supporting",
+        "classification": "",
+        "reporting_focus": "归纳判断或观察",
+        "candidate_or_boundary": false,
+        "summary_line": "检索到 9 条偏可疑事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-claim-cl-02",
+        "source_id": "claim:CL-02",
+        "fact_type": "claim",
+        "status": "context",
+        "classification": "",
+        "reporting_focus": "归纳判断或观察",
+        "candidate_or_boundary": false,
+        "summary_line": "本地情报库未命中该指示物。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-claim-cl-03",
+        "source_id": "claim:CL-03",
+        "fact_type": "claim",
+        "status": "context",
+        "classification": "",
+        "reporting_focus": "归纳判断或观察",
+        "candidate_or_boundary": false,
+        "summary_line": "候选技术来源包括：Exfiltration to Cloud Storage, Sub-technique T1567.002；Exfiltration Over C2 Channel, Technique T1041 - Enterprise；Exfiltration Over Unencrypted Non-C2 Protocol, Sub ...",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-claim-cl-04",
+        "source_id": "claim:CL-04",
+        "fact_type": "claim",
+        "status": "context",
+        "classification": "",
+        "reporting_focus": "归纳判断或观察",
+        "candidate_or_boundary": false,
+        "summary_line": "technical_source_search 返回了 14 条候选技术来源，可用于后续正文证据提取。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-claim-cl-06",
+        "source_id": "claim:CL-06",
+        "fact_type": "claim",
+        "status": "context",
+        "classification": "",
+        "reporting_focus": "归纳判断或观察",
+        "candidate_or_boundary": false,
+        "summary_line": "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-obs-obs-001",
+        "source_id": "obs:obs-001",
+        "fact_type": "trace_store.seed_context",
+        "status": "ok",
+        "classification": "",
+        "reporting_focus": "obs",
+        "candidate_or_boundary": false,
+        "summary_line": "检索到 9 条偏可疑事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-obs-obs-002",
+        "source_id": "obs:obs-002",
+        "fact_type": "intel_tool",
+        "status": "empty",
+        "classification": "",
+        "reporting_focus": "obs",
+        "candidate_or_boundary": false,
+        "summary_line": "本地情报库未命中该指示物。",
+        "boundary_note": ""
+      },
+      {
+        "fact_id": "fact-obs-obs-003",
+        "source_id": "obs:obs-003",
+        "fact_type": "intel_tool",
+        "status": "ok",
+        "classification": "",
+        "reporting_focus": "obs",
+        "candidate_or_boundary": false,
+        "summary_line": "technical_source_search 返回了 14 条候选技术来源，可用于后续正文证据提取。",
+        "boundary_note": ""
+      }
+    ]
+  },
+  "source_fact_catalog": [
+    {
+      "fact_id": "fact-verdict-delivery",
+      "source_id": "verdict:delivery",
+      "fact_type": "verdict",
+      "status": "",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "确认安全事件；事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。；seed alert 自带家族/工具提示：Suspected cloud-storage exfil chain。；已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。；主支撑证据和范围已达到确认事件交付门槛；剩余候选扩线、反证或背景材料应作为报告边界呈现。",
+      "exact_fact_text": "确认安全事件；事件簇已经从单点异常推进到高风险阶段或保守收敛后的多资产范围，足以支撑事件成立。；seed alert 自带家族/工具提示：Suspected cloud-storage exfil chain。；已观察到关联资产或共享基础设施上的扩展信号，但尚需继续确认是否属于同一事件。；主支撑证据和范围已达到确认事件交付门槛；剩余候选扩线、反证或背景材料应作为报告边界呈现。",
+      "reporting_focus": "交付结论",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-event-evt-601",
+      "source_id": "event:evt-601",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "unknown",
+      "kind": "dns",
+      "stages": [],
+      "tags": [
+        "rare"
+      ],
+      "time": "2026-06-03T16:28:00Z",
+      "asset": "ws-rnd-04",
+      "objects": [
+        "files-sync-share.net",
+        "10.90.2.44",
+        "ws-rnd-04"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-03 16:28:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net`，The R&D workstation resolved files-sync-share.net, a rare storage-themed domain, before the seed alert.，源地址 `10.90.2.44`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-03 16:28:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net`，The R&D workstation resolved files-sync-share.net, a rare storage-themed domain, before the seed alert.，源地址 `10.90.2.44`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-602",
+      "source_id": "event:evt-602",
+      "fact_type": "event",
+      "status": "confirmed",
+      "classification": "suspicious",
+      "kind": "flow",
+      "stages": [
+        "command-and-control"
+      ],
+      "tags": [
+        "command-and-control"
+      ],
+      "time": "2026-06-03T16:34:20Z",
+      "asset": "ws-rnd-04",
+      "objects": [
+        "files-sync-share.net",
+        "198.51.100.144",
+        "10.90.2.44",
+        "ws-rnd-04"
+      ],
+      "summary_line": "2026-06-03 16:34:20 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，The workstation opened a short TLS session to the rare storage edge before the larger transfer sequence.，源地址 `10.90.2.44`",
+      "exact_fact_text": "2026-06-03 16:34:20 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，The workstation opened a short TLS session to the rare storage edge before the larger transfer sequence.，源地址 `10.90.2.44`",
+      "reporting_focus": "事件时间线事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-event-evt-603",
+      "source_id": "event:evt-603",
+      "fact_type": "event",
+      "status": "confirmed",
+      "classification": "malicious",
+      "kind": "alert",
+      "stages": [
+        "command-and-control"
+      ],
+      "tags": [
+        "command-and-control",
+        "beacon"
+      ],
+      "time": "2026-06-03T16:40:00Z",
+      "asset": "ws-rnd-04",
+      "objects": [
+        "files-sync-share.net",
+        "198.51.100.144",
+        "10.90.2.44",
+        "ws-rnd-04"
+      ],
+      "summary_line": "2026-06-03 16:40:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，Seed JA4 alert matched a suspicious TLS beacon to the rare storage edge.，源地址 `10.90.2.44`",
+      "exact_fact_text": "2026-06-03 16:40:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，Seed JA4 alert matched a suspicious TLS beacon to the rare storage edge.，源地址 `10.90.2.44`",
+      "reporting_focus": "主支撑事件",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-event-evt-604",
+      "source_id": "event:evt-604",
+      "fact_type": "event",
+      "status": "confirmed",
+      "classification": "suspicious",
+      "kind": "process",
+      "stages": [
+        "execution"
+      ],
+      "tags": [
+        "execution"
+      ],
+      "time": "2026-06-03T16:42:30Z",
+      "asset": "ws-rnd-04",
+      "objects": [
+        "10.90.2.44",
+        "ws-rnd-04"
+      ],
+      "summary_line": "2026-06-03 16:42:30 UTC，资产 `ws-rnd-04`，PowerShell launched from the user profile and invoked a staging script under C:\\Users\\analyst\\AppData\\Roaming\\sync.ps1.，源地址 `10.90.2.44`",
+      "exact_fact_text": "2026-06-03 16:42:30 UTC，资产 `ws-rnd-04`，PowerShell launched from the user profile and invoked a staging script under C:\\Users\\analyst\\AppData\\Roaming\\sync.ps1.，源地址 `10.90.2.44`",
+      "reporting_focus": "事件时间线事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-event-evt-605",
+      "source_id": "event:evt-605",
+      "fact_type": "event",
+      "status": "confirmed",
+      "classification": "suspicious",
+      "kind": "process",
+      "stages": [
+        "execution",
+        "exfiltration"
+      ],
+      "tags": [
+        "execution"
+      ],
+      "time": "2026-06-03T16:44:00Z",
+      "asset": "ws-rnd-04",
+      "objects": [
+        "10.90.2.44",
+        "ws-rnd-04"
+      ],
+      "summary_line": "2026-06-03 16:44:00 UTC，资产 `ws-rnd-04`，Archive utility 7z.exe created RND-Q2-prototype.zip from a project workspace shortly before outbound transfer.，源地址 `10.90.2.44`",
+      "exact_fact_text": "2026-06-03 16:44:00 UTC，资产 `ws-rnd-04`，Archive utility 7z.exe created RND-Q2-prototype.zip from a project workspace shortly before outbound transfer.，源地址 `10.90.2.44`",
+      "reporting_focus": "事件时间线事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-event-evt-606",
+      "source_id": "event:evt-606",
+      "fact_type": "event",
+      "status": "confirmed",
+      "classification": "suspicious",
+      "kind": "file",
+      "stages": [
+        "exfiltration"
+      ],
+      "tags": [
+        "exfiltration"
+      ],
+      "time": "2026-06-03T16:45:40Z",
+      "asset": "ws-rnd-04",
+      "objects": [
+        "10.90.2.44",
+        "ws-rnd-04"
+      ],
+      "summary_line": "2026-06-03 16:45:40 UTC，资产 `ws-rnd-04`，The newly created RND-Q2-prototype.zip was staged under C:\\Users\\Public\\Music\\cache.dat for transfer.，源地址 `10.90.2.44`",
+      "exact_fact_text": "2026-06-03 16:45:40 UTC，资产 `ws-rnd-04`，The newly created RND-Q2-prototype.zip was staged under C:\\Users\\Public\\Music\\cache.dat for transfer.，源地址 `10.90.2.44`",
+      "reporting_focus": "事件时间线事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-event-evt-607",
+      "source_id": "event:evt-607",
+      "fact_type": "event",
+      "status": "confirmed",
+      "classification": "suspicious",
+      "kind": "flow",
+      "stages": [
+        "exfiltration"
+      ],
+      "tags": [
+        "exfiltration",
+        "upload"
+      ],
+      "time": "2026-06-03T16:47:00Z",
+      "asset": "ws-rnd-04",
+      "objects": [
+        "files-sync-share.net",
+        "198.51.100.144",
+        "10.90.2.44",
+        "ws-rnd-04"
+      ],
+      "summary_line": "2026-06-03 16:47:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，A large outbound HTTPS upload to files-sync-share.net followed the archive creation, with roughly 640 MB sent.，源地址 `10.90.2.44`",
+      "exact_fact_text": "2026-06-03 16:47:00 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，A large outbound HTTPS upload to files-sync-share.net followed the archive creation, with roughly 640 MB sent.，源地址 `10.90.2.44`",
+      "reporting_focus": "事件时间线事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-event-evt-608",
+      "source_id": "event:evt-608",
+      "fact_type": "event",
+      "status": "confirmed",
+      "classification": "needs_review",
+      "kind": "dlp",
+      "stages": [
+        "exfiltration"
+      ],
+      "tags": [
+        "exfiltration",
+        "telemetry-gap"
+      ],
+      "time": "2026-06-03T16:50:10Z",
+      "asset": "ws-rnd-04",
+      "objects": [
+        "files-sync-share.net",
+        "198.51.100.144",
+        "10.90.2.44",
+        "ws-rnd-04"
+      ],
+      "summary_line": "2026-06-03 16:50:10 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，DLP recorded the encrypted outbound transfer size but could not inspect the archive contents.，源地址 `10.90.2.44`",
+      "exact_fact_text": "2026-06-03 16:50:10 UTC，资产 `ws-rnd-04`，关联对象 `files-sync-share.net / 198.51.100.144`，DLP recorded the encrypted outbound transfer size but could not inspect the archive contents.，源地址 `10.90.2.44`",
+      "reporting_focus": "事件时间线事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-event-evt-609",
+      "source_id": "event:evt-609",
+      "fact_type": "event",
+      "status": "confirmed",
+      "classification": "suspicious",
+      "kind": "dns",
+      "stages": [],
+      "tags": [
+        "rare"
+      ],
+      "time": "2026-06-03T16:52:30Z",
+      "asset": "ws-rnd-04",
+      "objects": [
+        "api.files-sync-share.net",
+        "10.90.2.44",
+        "ws-rnd-04"
+      ],
+      "summary_line": "2026-06-03 16:52:30 UTC，资产 `ws-rnd-04`，关联对象 `api.files-sync-share.net`，The same workstation resolved api.files-sync-share.net, a sibling domain on the same storage edge.，源地址 `10.90.2.44`",
+      "exact_fact_text": "2026-06-03 16:52:30 UTC，资产 `ws-rnd-04`，关联对象 `api.files-sync-share.net`，The same workstation resolved api.files-sync-share.net, a sibling domain on the same storage edge.，源地址 `10.90.2.44`",
+      "reporting_focus": "事件时间线事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-event-evt-610",
+      "source_id": "event:evt-610",
+      "fact_type": "event",
+      "status": "confirmed",
+      "classification": "suspicious",
+      "kind": "flow",
+      "stages": [
+        "command-and-control",
+        "exfiltration"
+      ],
+      "tags": [
+        "command-and-control"
+      ],
+      "time": "2026-06-03T16:55:00Z",
+      "asset": "ws-rnd-04",
+      "objects": [
+        "api.files-sync-share.net",
+        "198.51.100.144",
+        "10.90.2.44",
+        "ws-rnd-04"
+      ],
+      "summary_line": "2026-06-03 16:55:00 UTC，资产 `ws-rnd-04`，关联对象 `api.files-sync-share.net / 198.51.100.144`，A follow-on TLS session used the sibling API domain after the large upload completed.，源地址 `10.90.2.44`",
+      "exact_fact_text": "2026-06-03 16:55:00 UTC，资产 `ws-rnd-04`，关联对象 `api.files-sync-share.net / 198.51.100.144`，A follow-on TLS session used the sibling API domain after the large upload completed.，源地址 `10.90.2.44`",
+      "reporting_focus": "事件时间线事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-event-evt-611",
+      "source_id": "event:evt-611",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "unknown",
+      "kind": "flow",
+      "stages": [],
+      "tags": [
+        "rare"
+      ],
+      "time": "2026-06-03T17:05:00Z",
+      "asset": "ws-rnd-09",
+      "objects": [
+        "files-sync-share.net",
+        "198.51.100.144",
+        "10.90.2.49",
+        "ws-rnd-09"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-03 17:05:00 UTC，资产 `ws-rnd-09`，关联对象 `files-sync-share.net / 198.51.100.144`，A second R&D workstation briefly connected to the same storage edge, but only once and without host corroboration.，源地址 `10.90.2.49`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-03 17:05:00 UTC，资产 `ws-rnd-09`，关联对象 `files-sync-share.net / 198.51.100.144`，A second R&D workstation briefly connected to the same storage edge, but only once and without host corroboration.，源地址 `10.90.2.49`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-612",
+      "source_id": "event:evt-612",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "benign",
+      "kind": "asset_context",
+      "stages": [],
+      "tags": [
+        "backup",
+        "baseline"
+      ],
+      "time": "2026-06-03T17:08:20Z",
+      "asset": "ws-rnd-09",
+      "objects": [
+        "10.90.2.49",
+        "ws-rnd-09"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-03 17:08:20 UTC，资产 `ws-rnd-09`，ws-rnd-09 had an approved backup job running in the same hour, explaining some storage-oriented traffic.，源地址 `10.90.2.49`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-03 17:08:20 UTC，资产 `ws-rnd-09`，ws-rnd-09 had an approved backup job running in the same hour, explaining some storage-oriented traffic.，源地址 `10.90.2.49`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-613",
+      "source_id": "event:evt-613",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "benign",
+      "kind": "flow",
+      "stages": [],
+      "tags": [
+        "cloud-sync",
+        "baseline"
+      ],
+      "time": "2026-06-03T17:12:00Z",
+      "asset": "ws-rnd-04",
+      "objects": [
+        "company-my.sharepoint.com",
+        "13.107.136.9",
+        "10.90.2.44",
+        "ws-rnd-04"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-03 17:12:00 UTC，资产 `ws-rnd-04`，关联对象 `company-my.sharepoint.com / 13.107.136.9`，Normal corporate SharePoint sync traffic from ws-rnd-04 was also present during the investigation window.，源地址 `10.90.2.44`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-03 17:12:00 UTC，资产 `ws-rnd-04`，关联对象 `company-my.sharepoint.com / 13.107.136.9`，Normal corporate SharePoint sync traffic from ws-rnd-04 was also present during the investigation window.，源地址 `10.90.2.44`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-614",
+      "source_id": "event:evt-614",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "unknown",
+      "kind": "asset_context",
+      "stages": [
+        "execution"
+      ],
+      "tags": [
+        "telemetry-gap"
+      ],
+      "time": "2026-06-03T17:18:00Z",
+      "asset": "ws-rnd-04",
+      "objects": [
+        "10.90.2.44",
+        "ws-rnd-04"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-03 17:18:00 UTC，资产 `ws-rnd-04`，EDR did not preserve the full PowerShell command line, limiting reconstruction of the staging script.，源地址 `10.90.2.44`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-03 17:18:00 UTC，资产 `ws-rnd-04`，EDR did not preserve the full PowerShell command line, limiting reconstruction of the staging script.，源地址 `10.90.2.44`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-event-evt-615",
+      "source_id": "event:evt-615",
+      "fact_type": "event",
+      "status": "background",
+      "classification": "benign",
+      "kind": "flow",
+      "stages": [],
+      "tags": [
+        "shared-hosting",
+        "unrelated"
+      ],
+      "time": "2026-06-03T17:24:40Z",
+      "asset": "ws-rnd-12",
+      "objects": [
+        "filesync-cdn.example",
+        "198.51.100.144",
+        "10.90.8.12",
+        "ws-rnd-12"
+      ],
+      "summary_line": "背景/替代解释事件：2026-06-03 17:24:40 UTC，资产 `ws-rnd-12`，关联对象 `filesync-cdn.example / 198.51.100.144`，A lab workstation reached the same IP through a different vendor CDN domain, indicating the IP is not uniquely malicious.，源地址 `10.90.8.12`",
+      "exact_fact_text": "背景/替代解释事件：2026-06-03 17:24:40 UTC，资产 `ws-rnd-12`，关联对象 `filesync-cdn.example / 198.51.100.144`，A lab workstation reached the same IP through a different vendor CDN domain, indicating the IP is not uniquely malicious.，源地址 `10.90.8.12`",
+      "reporting_focus": "背景或替代解释事件",
+      "boundary_note": "背景或替代解释只能用于收窄边界，不能单独推翻主链。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-01",
+      "source_id": "object:OBJ-01",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "ws-rnd-04"
+      ],
+      "summary_line": "对象 `ws-rnd-04`，类型为资产，当前角色为种子资产，种子告警首先落在该资产上。；当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。",
+      "exact_fact_text": "对象 `ws-rnd-04`，类型为资产，当前角色为种子资产，种子告警首先落在该资产上。；当前已纳入主证据链的资产。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。",
+      "reporting_focus": "已确认受影响对象",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-02",
+      "source_id": "object:OBJ-02",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "ws-rnd-09"
+      ],
+      "summary_line": "对象 `ws-rnd-09`，类型为资产，当前角色为待确认关联资产，当前仍需独立验证是否真正受影响。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。",
+      "exact_fact_text": "对象 `ws-rnd-09`，类型为资产，当前角色为待确认关联资产，当前仍需独立验证是否真正受影响。；事件中出现过的资产对象。；当前 pivot 里出现的扩线候选资产。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-03",
+      "source_id": "object:OBJ-03",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "198.51.100.144"
+      ],
+      "summary_line": "对象 `198.51.100.144`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选地址。",
+      "exact_fact_text": "对象 `198.51.100.144`，类型为IP，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选地址。",
+      "reporting_focus": "核心外部基础设施",
+      "boundary_note": "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象。",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-04",
+      "source_id": "object:OBJ-04",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "api.files-sync-share.net"
+      ],
+      "summary_line": "对象 `api.files-sync-share.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `api.files-sync-share.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "核心外部基础设施",
+      "boundary_note": "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象。",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-05",
+      "source_id": "object:OBJ-05",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "files-sync-share.net"
+      ],
+      "summary_line": "对象 `files-sync-share.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `files-sync-share.net`，类型为域名，当前角色为核心外部基础设施，当前主证据链中反复出现的关键对象。；当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "核心外部基础设施",
+      "boundary_note": "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象。",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-06",
+      "source_id": "object:OBJ-06",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "13.107.136.9"
+      ],
+      "summary_line": "对象 `13.107.136.9`，类型为IP，当前角色为背景/上下文指标，用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选地址。",
+      "exact_fact_text": "对象 `13.107.136.9`，类型为IP，当前角色为背景/上下文指标，用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选地址。",
+      "reporting_focus": "背景对象",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-07",
+      "source_id": "object:OBJ-07",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "company-my.sharepoint.com"
+      ],
+      "summary_line": "对象 `company-my.sharepoint.com`，类型为域名，当前角色为背景/上下文指标，用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `company-my.sharepoint.com`，类型为域名，当前角色为背景/上下文指标，用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "背景对象",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-08",
+      "source_id": "object:OBJ-08",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "filesync-cdn.example"
+      ],
+      "summary_line": "对象 `filesync-cdn.example`，类型为域名，当前角色为背景/上下文指标，用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `filesync-cdn.example`，类型为域名，当前角色为背景/上下文指标，用于补充边界或背景解释的对象。；当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "背景对象",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-09",
+      "source_id": "object:OBJ-09",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "t13d190900_44ac2200b3c1_ab11cd22ee44"
+      ],
+      "summary_line": "对象 `t13d190900_44ac2200b3c1_ab11cd22ee44`，类型为JA4，当前角色为种子命中指纹，种子告警命中的关键通信指纹。",
+      "exact_fact_text": "对象 `t13d190900_44ac2200b3c1_ab11cd22ee44`，类型为JA4，当前角色为种子命中指纹，种子告警命中的关键通信指纹。",
+      "reporting_focus": "对象角色事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-10",
+      "source_id": "object:OBJ-10",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "Suspected cloud-storage exfil chain"
+      ],
+      "summary_line": "对象 `Suspected cloud-storage exfil chain`，类型为家族提示，当前角色为家族/工具提示，辅助解释本案的家族或工具背景，不直接等于强归因。",
+      "exact_fact_text": "对象 `Suspected cloud-storage exfil chain`，类型为家族提示，当前角色为家族/工具提示，辅助解释本案的家族或工具背景，不直接等于强归因。",
+      "reporting_focus": "对象角色事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-11",
+      "source_id": "object:OBJ-11",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "10.90.2.44"
+      ],
+      "summary_line": "对象 `10.90.2.44`，类型为内网 IP，当前角色为关联内部地址，事件链中出现的内部地址。",
+      "exact_fact_text": "对象 `10.90.2.44`，类型为内网 IP，当前角色为关联内部地址，事件链中出现的内部地址。",
+      "reporting_focus": "对象角色事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-12",
+      "source_id": "object:OBJ-12",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "10.90.2.49"
+      ],
+      "summary_line": "对象 `10.90.2.49`，类型为内网 IP，当前角色为关联内部地址，事件链中出现的内部地址。",
+      "exact_fact_text": "对象 `10.90.2.49`，类型为内网 IP，当前角色为关联内部地址，事件链中出现的内部地址。",
+      "reporting_focus": "对象角色事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-13",
+      "source_id": "object:OBJ-13",
+      "fact_type": "object",
+      "status": "已确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "10.90.8.12"
+      ],
+      "summary_line": "对象 `10.90.8.12`，类型为内网 IP，当前角色为关联内部地址，事件链中出现的内部地址。",
+      "exact_fact_text": "对象 `10.90.8.12`，类型为内网 IP，当前角色为关联内部地址，事件链中出现的内部地址。",
+      "reporting_focus": "对象角色事实",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-object-obj-14",
+      "source_id": "object:OBJ-14",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "ws-rnd-12"
+      ],
+      "summary_line": "对象 `ws-rnd-12`，类型为资产，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选资产。",
+      "exact_fact_text": "对象 `ws-rnd-12`，类型为资产，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选资产。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-15",
+      "source_id": "object:OBJ-15",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "attack.mitre.org"
+      ],
+      "summary_line": "对象 `attack.mitre.org`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `attack.mitre.org`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-16",
+      "source_id": "object:OBJ-16",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "blockchainhealthcaretoday.com"
+      ],
+      "summary_line": "对象 `blockchainhealthcaretoday.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `blockchainhealthcaretoday.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-17",
+      "source_id": "object:OBJ-17",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "blog.talosintelligence.com"
+      ],
+      "summary_line": "对象 `blog.talosintelligence.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `blog.talosintelligence.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-18",
+      "source_id": "object:OBJ-18",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "cert.ssi.gouv.fr"
+      ],
+      "summary_line": "对象 `cert.ssi.gouv.fr`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `cert.ssi.gouv.fr`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-19",
+      "source_id": "object:OBJ-19",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "lmntrix.com"
+      ],
+      "summary_line": "对象 `lmntrix.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `lmntrix.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-20",
+      "source_id": "object:OBJ-20",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "www.fortinet.com"
+      ],
+      "summary_line": "对象 `www.fortinet.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `www.fortinet.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-21",
+      "source_id": "object:OBJ-21",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "www.hhs.gov"
+      ],
+      "summary_line": "对象 `www.hhs.gov`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `www.hhs.gov`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-22",
+      "source_id": "object:OBJ-22",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "www.mimecast.com"
+      ],
+      "summary_line": "对象 `www.mimecast.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `www.mimecast.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-23",
+      "source_id": "object:OBJ-23",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "www.vectra.ai"
+      ],
+      "summary_line": "对象 `www.vectra.ai`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `www.vectra.ai`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-24",
+      "source_id": "object:OBJ-24",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "www.vmware.com"
+      ],
+      "summary_line": "对象 `www.vmware.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "exact_fact_text": "对象 `www.vmware.com`，类型为域名，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选域名。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-object-obj-25",
+      "source_id": "object:OBJ-25",
+      "fact_type": "object",
+      "status": "待确认",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [
+        "t13d190900_44ac2200b3c1_ab11cd22ee44"
+      ],
+      "summary_line": "对象 `t13d190900_44ac2200b3c1_ab11cd22ee44`，类型为指纹，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选指纹。",
+      "exact_fact_text": "对象 `t13d190900_44ac2200b3c1_ab11cd22ee44`，类型为指纹，当前角色为扩展查询候选，当前 pivot 里出现的扩线候选指纹。",
+      "reporting_focus": "待确认对象",
+      "boundary_note": "待确认对象不能写成已确认受影响范围。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-claim-cl-01",
+      "source_id": "claim:CL-01",
+      "fact_type": "claim",
+      "status": "supporting",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "检索到 9 条偏可疑事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开。",
+      "exact_fact_text": "检索到 9 条偏可疑事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开。",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-claim-cl-02",
+      "source_id": "claim:CL-02",
+      "fact_type": "claim",
+      "status": "context",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "本地情报库未命中该指示物。",
+      "exact_fact_text": "本地情报库未命中该指示物。",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-claim-cl-03",
+      "source_id": "claim:CL-03",
+      "fact_type": "claim",
+      "status": "context",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "候选技术来源包括：Exfiltration to Cloud Storage, Sub-technique T1567.002；Exfiltration Over C2 Channel, Technique T1041 - Enterprise；Exfiltration Over Unencrypted Non-C2 Protocol, Sub ...",
+      "exact_fact_text": "候选技术来源包括：Exfiltration to Cloud Storage, Sub-technique T1567.002；Exfiltration Over C2 Channel, Technique T1041 - Enterprise；Exfiltration Over Unencrypted Non-C2 Protocol, Sub ...",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-claim-cl-04",
+      "source_id": "claim:CL-04",
+      "fact_type": "claim",
+      "status": "context",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "technical_source_search 返回了 14 条候选技术来源，可用于后续正文证据提取。",
+      "exact_fact_text": "technical_source_search 返回了 14 条候选技术来源，可用于后续正文证据提取。",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-claim-cl-05",
+      "source_id": "claim:CL-05",
+      "fact_type": "claim",
+      "status": "candidate",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
+      "exact_fact_text": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-claim-cl-06",
+      "source_id": "claim:CL-06",
+      "fact_type": "claim",
+      "status": "context",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。",
+      "exact_fact_text": "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-claim-cl-07",
+      "source_id": "claim:CL-07",
+      "fact_type": "claim",
+      "status": "candidate",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
+      "exact_fact_text": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
+      "reporting_focus": "归纳判断或观察",
+      "boundary_note": "",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-expand-cluster-scope",
+      "source_id": "gap:expand_cluster_scope",
+      "fact_type": "gap",
+      "status": "open",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "exact_fact_text": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "reporting_focus": "未闭合缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-check-counterevidence",
+      "source_id": "gap:check_counterevidence",
+      "fact_type": "gap",
+      "status": "open",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "exact_fact_text": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "reporting_focus": "未闭合缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-validate-candidate-events",
+      "source_id": "gap:validate_candidate_events",
+      "fact_type": "gap",
+      "status": "closed",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？",
+      "exact_fact_text": "扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？",
+      "reporting_focus": "已关闭缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-ground-external-context",
+      "source_id": "gap:ground_external_context",
+      "fact_type": "gap",
+      "status": "closed",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+      "exact_fact_text": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+      "reporting_focus": "已关闭缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-structure-evidence",
+      "source_id": "gap:structure_evidence",
+      "fact_type": "gap",
+      "status": "closed",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+      "exact_fact_text": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+      "reporting_focus": "已关闭缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-execution-gap",
+      "source_id": "gap:execution_gap",
+      "fact_type": "gap",
+      "status": "closed",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "是否存在主机侧执行、持久化或横向移动证据？",
+      "exact_fact_text": "是否存在主机侧执行、持久化或横向移动证据？",
+      "reporting_focus": "已关闭缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-build-context",
+      "source_id": "gap:build_context",
+      "fact_type": "gap",
+      "status": "closed",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "仍需围绕 seed alert 补足最小上下文。",
+      "exact_fact_text": "仍需围绕 seed alert 补足最小上下文。",
+      "reporting_focus": "已关闭缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-identify-assets",
+      "source_id": "gap:identify_assets",
+      "fact_type": "gap",
+      "status": "closed",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "仍需确认事件涉及的关键资产。",
+      "exact_fact_text": "仍需确认事件涉及的关键资产。",
+      "reporting_focus": "已关闭缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-gap-validate-family-hint",
+      "source_id": "gap:validate_family_hint",
+      "fact_type": "gap",
+      "status": "closed",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "seed 自带的家族提示 Suspected cloud-storage exfil chain 是否有更多外部证据支撑？",
+      "exact_fact_text": "seed 自带的家族提示 Suspected cloud-storage exfil chain 是否有更多外部证据支撑？",
+      "reporting_focus": "已关闭缺口",
+      "boundary_note": "该缺口限制更强结论或范围扩展，但不等于否定当前已支撑事实。",
+      "candidate_or_boundary": true
+    },
+    {
+      "fact_id": "fact-action-1",
+      "source_id": "action:1",
+      "fact_type": "action",
+      "status": "",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "优先隔离或重点监控资产：ws-rnd-04。",
+      "exact_fact_text": "优先隔离或重点监控资产：ws-rnd-04。",
+      "reporting_focus": "行动建议",
+      "boundary_note": "行动建议不是已观测事实，正文应写成后续处置或核查动作。",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-action-2",
+      "source_id": "action:2",
+      "fact_type": "action",
+      "status": "",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "在边界和代理设备上排查并封禁外部基础设施：198.51.100.144、files-sync-share.net、api.files-sync-share.net。",
+      "exact_fact_text": "在边界和代理设备上排查并封禁外部基础设施：198.51.100.144、files-sync-share.net、api.files-sync-share.net。",
+      "reporting_focus": "行动建议",
+      "boundary_note": "行动建议不是已观测事实，正文应写成后续处置或核查动作。",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-action-3",
+      "source_id": "action:3",
+      "fact_type": "action",
+      "status": "",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "以 seed 指标和事件簇中的域名 / IP 为 pivot，继续检索同时间窗内的重复通信。",
+      "exact_fact_text": "以 seed 指标和事件簇中的域名 / IP 为 pivot，继续检索同时间窗内的重复通信。",
+      "reporting_focus": "行动建议",
+      "boundary_note": "行动建议不是已观测事实，正文应写成后续处置或核查动作。",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-obs-obs-001",
+      "source_id": "obs:obs-001",
+      "fact_type": "trace_store.seed_context",
+      "status": "ok",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "检索到 9 条偏可疑事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开。",
+      "exact_fact_text": "检索到 9 条偏可疑事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开。",
+      "reporting_focus": "obs",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-obs-obs-002",
+      "source_id": "obs:obs-002",
+      "fact_type": "intel_tool",
+      "status": "empty",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "本地情报库未命中该指示物。",
+      "exact_fact_text": "本地情报库未命中该指示物。",
+      "reporting_focus": "obs",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-obs-obs-003",
+      "source_id": "obs:obs-003",
+      "fact_type": "intel_tool",
+      "status": "ok",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "technical_source_search 返回了 14 条候选技术来源，可用于后续正文证据提取。",
+      "exact_fact_text": "technical_source_search 返回了 14 条候选技术来源，可用于后续正文证据提取。",
+      "reporting_focus": "obs",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-obs-obs-004",
+      "source_id": "obs:obs-004",
+      "fact_type": "trace_store.related_events",
+      "status": "ok",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
+      "exact_fact_text": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
+      "reporting_focus": "obs",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-obs-obs-005",
+      "source_id": "obs:obs-005",
+      "fact_type": "candidate_grounding",
+      "status": "ok",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。",
+      "exact_fact_text": "候选事件 evt-614 缺少可独立验证的指示物，当前不并入主证据链，仅保留为边界线索。",
+      "reporting_focus": "obs",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    },
+    {
+      "fact_id": "fact-obs-obs-006",
+      "source_id": "obs:obs-006",
+      "fact_type": "trace_store.related_events",
+      "status": "ok",
+      "classification": "",
+      "kind": "",
+      "stages": [],
+      "tags": [],
+      "time": "",
+      "asset": "",
+      "objects": [],
+      "summary_line": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
+      "exact_fact_text": "扩线检索到 10 条可疑关联事件，围绕 files-sync-share.net、api.files-sync-share.net、198.51.100.144 展开；当前先作为待验证候选线索。",
+      "reporting_focus": "obs",
+      "boundary_note": "",
+      "candidate_or_boundary": false
+    }
+  ],
+  "writing_contract": {
+    "purpose": "测试强 writer 是否能在不依赖 LLM material agent 的情况下，直接从事实目录组织报告。",
+    "required_shape": [
+      "# 首页摘要",
+      "## 1. 事件结论与当前判断",
+      "## 2. 事件过程与关键时间线",
+      "## 3. 关键证据判断",
+      "## 4. 影响范围、候选对象与外部基础设施",
+      "## 5. 反证、替代解释与未闭合缺口",
+      "## 6. 处置建议与后续核查"
+    ],
+    "boundary_fact_ids": [
+      "fact-event-evt-601",
+      "fact-event-evt-611",
+      "fact-event-evt-612",
+      "fact-event-evt-613",
+      "fact-event-evt-614",
+      "fact-event-evt-615",
+      "fact-object-obj-02",
+      "fact-object-obj-14",
+      "fact-object-obj-15",
+      "fact-object-obj-16",
+      "fact-object-obj-17",
+      "fact-object-obj-18",
+      "fact-object-obj-19",
+      "fact-object-obj-20",
+      "fact-object-obj-21",
+      "fact-object-obj-22",
+      "fact-object-obj-23",
+      "fact-object-obj-24",
+      "fact-object-obj-25",
+      "fact-claim-cl-05",
+      "fact-claim-cl-07",
+      "fact-gap-expand-cluster-scope",
+      "fact-gap-check-counterevidence",
+      "fact-gap-validate-candidate-events",
+      "fact-gap-ground-external-context",
+      "fact-gap-structure-evidence",
+      "fact-gap-execution-gap",
+      "fact-gap-build-context",
+      "fact-gap-identify-assets",
+      "fact-gap-validate-family-hint"
+    ],
+    "external_infrastructure_fact_ids": [
+      "fact-object-obj-03",
+      "fact-object-obj-04",
+      "fact-object-obj-05"
+    ],
+    "action_fact_ids": [
+      "fact-action-1",
+      "fact-action-2",
+      "fact-action-3"
+    ],
+    "global_rules": [
+      "只能使用 source_fact_catalog 中的事实，不得新增 IOC、资产、时间、动作、阶段或结论。",
+      "fact_lanes 只是由 fact 元数据生成的导航索引，不是额外事实；若 fact_lanes 与 source_fact_catalog 有冲突，以 source_fact_catalog 的原始字段为准。",
+      "candidate_or_boundary=true 的事实只能写成候选、待确认、边界、反证或缺口，不能写成已确认传播或已确认受影响。",
+      "外部基础设施只能写成外联对象、关联基础设施或排查封禁对象，不能写成受影响资产。",
+      "action fact 只代表建议动作，不能改写成已经观测到的事实。",
+      "如果事实只显示 rundll32、脚本、远程服务、远程进程或载荷加载线索，只能写成可疑执行或潜在远程操作；除非事实明确支持，不要升级为已确认恶意软件执行、已确认横向移动或攻击者已控制。",
+      "处置建议要尽量具体到对象、字段和验证目标；避免只写“补充主机侧日志”这类无法执行的泛句。"
+    ]
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "root": "outputs/plan13_v47_direct_source_current_branch_live",
+  "cases": [
+    {
+      "case": "multi_host_confirmed_spread_plus",
+      "writer_mode": "direct_source",
+      "report_chars": 14494,
+      "report_lines": 274,
+      "validation_status": "clean",
+      "validation_issues": {
+        "hard_fail": 0,
+        "soft_warn": 0
+      },
+      "material_status": "skipped_direct_source_writer",
+      "material_agent_bypassed": true,
+      "mentions_candidate": true,
+      "mentions_boundary": true,
+      "mentions_action_fields": true,
+      "manual_scores": {
+        "factual_grounding": null,
+        "boundary_correctness": null,
+        "actionability": null,
+        "analytical_depth": null,
+        "non_repetition": null,
+        "operator_readability": null
+      }
+    },
+    {
+      "case": "shared_infra_multi_asset_needs_review",
+      "writer_mode": "direct_source",
+      "report_chars": 12111,
+      "report_lines": 207,
+      "validation_status": "clean",
+      "validation_issues": {
+        "hard_fail": 0,
+        "soft_warn": 0
+      },
+      "material_status": "skipped_direct_source_writer",
+      "material_agent_bypassed": true,
+      "mentions_candidate": true,
+      "mentions_boundary": true,
+      "mentions_action_fields": true,
+      "manual_scores": {
+        "factual_grounding": null,
+        "boundary_correctness": null,
+        "actionability": null,
+        "analytical_depth": null,
+        "non_repetition": null,
+        "operator_readability": null
+      }
+    },
+    {
+      "case": "suspected_exfil_after_execution",
+      "writer_mode": "direct_source",
+      "report_chars": 13569,
+      "report_lines": 258,
+      "validation_status": "clean",
+      "validation_issues": {
+        "hard_fail": 0,
+        "soft_warn": 0
+      },
+      "material_status": "skipped_direct_source_writer",
+      "material_agent_bypassed": true,
+      "mentions_candidate": true,
+      "mentions_boundary": true,
+      "mentions_action_fields": true,
+      "manual_scores": {
+        "factual_grounding": null,
+        "boundary_correctness": null,
+        "actionability": null,
+        "analytical_depth": null,
+        "non_repetition": null,
+        "operator_readability": null
+      }
+    },
+    {
+      "case": "web_initial_access_to_beacon",
+      "writer_mode": "direct_source",
+      "report_chars": 14752,
+      "report_lines": 259,
+      "validation_status": "hard_fail",
+      "validation_issues": {
+        "hard_fail": 1,
+        "soft_warn": 0
+      },
+      "material_status": "skipped_direct_source_writer",
+      "material_agent_bypassed": true,
+      "mentions_candidate": true,
+      "mentions_boundary": true,
+      "mentions_action_fields": true,
+      "manual_scores": {
+        "factual_grounding": null,
+        "boundary_correctness": null,
+        "actionability": null,
+        "analytical_depth": null,
+        "non_repetition": null,
+        "operator_readability": null
+      }
+    },
+    {
+      "case": "web_initial_access_without_execution",
+      "writer_mode": "direct_source",
+      "report_chars": 13406,
+      "report_lines": 241,
+      "validation_status": "clean",
+      "validation_issues": {
+        "hard_fail": 0,
+        "soft_warn": 0
+      },
+      "material_status": "skipped_direct_source_writer",
+      "material_agent_bypassed": true,
+      "mentions_candidate": true,
+      "mentions_boundary": true,
+      "mentions_action_fields": true,
+      "manual_scores": {
+        "factual_grounding": null,
+        "boundary_correctness": null,
+        "actionability": null,
+        "analytical_depth": null,
+        "non_repetition": null,
+        "operator_readability": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "schema_version": "report-material-loop-trace-v1",
+  "status": "skipped_evidence_graph_writer",
+  "material_agent_bypassed": true,
+  "validation": {
+    "ok": true,
+    "mode": "evidence_graph"
+  }
+}

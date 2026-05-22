@@ -1,0 +1,53 @@
+{
+  "stop_reason": "runtime_budget_exhausted",
+  "stop_reason_in_enum": true,
+  "secondary_stop_reasons": [],
+  "ready_for_delivery_at_stop": true,
+  "actionable_path_at_stop": true,
+  "blocking_gap_count_at_stop": 0,
+  "value_of_information_at_stop": {
+    "level": "high",
+    "best_action": "ground_candidate_event",
+    "best_action_score": 16,
+    "finish_score": 1,
+    "active_hypothesis_ids": [
+      "candidate_spread",
+      "benign_or_shared_infra_alternative",
+      "insufficient_evidence_limits"
+    ],
+    "reason": "Best action ground_candidate_event scores 16 against active hypotheses candidate_spread, benign_or_shared_infra_alternative, insufficient_evidence_limits."
+  },
+  "hypothesis_status_counts": {
+    "closed": 1,
+    "supported": 2,
+    "open": 1,
+    "weakened": 1
+  },
+  "delta_label_counts": {
+    "new_confirmed_event": 1,
+    "scope_changed": 2,
+    "actionability_improved": 2,
+    "new_candidate_event": 1,
+    "candidate_grounded": 1,
+    "candidate_weakened": 1
+  },
+  "candidate_event_count": 2,
+  "background_event_count": 2,
+  "tool_history_length": 3,
+  "agent_round_count": 3,
+  "reviewer_round_count": 3,
+  "reviewer_replacement_count": 0,
+  "execution_source_counts": {
+    "investigator_preflight_approved": 3
+  },
+  "invalid_proposal_count": 0,
+  "duplicate_deterministic_call_count": 0,
+  "preflight_block_count": 0,
+  "reviewer_block_count": 0,
+  "prompt_payload_bytes": {
+    "agent_total": 86010,
+    "reviewer_total": 179540,
+    "agent_context_v1_preview_total": 83877,
+    "total": 265550
+  }
+}

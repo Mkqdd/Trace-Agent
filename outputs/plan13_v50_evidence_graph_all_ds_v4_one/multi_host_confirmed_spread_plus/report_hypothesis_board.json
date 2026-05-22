@@ -1,0 +1,159 @@
+{
+  "schema_version": "report-hypothesis-board-v1",
+  "graph_schema_version": "report-evidence-graph-v1",
+  "hypotheses": [
+    {
+      "hypothesis_id": "confirmed_main_chain",
+      "claim": "当前已确认主链足以支撑交付结论。",
+      "supporting_fact_ids": [
+        "fact-action-1",
+        "fact-action-3",
+        "fact-claim-cl-01",
+        "fact-claim-cl-02",
+        "fact-event-evt-801",
+        "fact-event-evt-802",
+        "fact-event-evt-803",
+        "fact-event-evt-804",
+        "fact-event-evt-805",
+        "fact-event-evt-808",
+        "fact-object-obj-05",
+        "fact-object-obj-06",
+        "fact-object-obj-07",
+        "fact-obs-obs-001",
+        "fact-obs-obs-002"
+      ],
+      "refuting_fact_ids": [],
+      "gap_fact_ids": [
+        "fact-gap-build-context",
+        "fact-gap-check-counterevidence",
+        "fact-gap-execution-gap",
+        "fact-gap-expand-cluster-scope",
+        "fact-gap-ground-external-context",
+        "fact-gap-identify-assets",
+        "fact-gap-structure-evidence",
+        "fact-gap-validate-family-hint"
+      ],
+      "action_fact_ids": [
+        "fact-action-1",
+        "fact-action-2",
+        "fact-action-3"
+      ],
+      "claim_policy": "can_support_current_verdict_only"
+    },
+    {
+      "hypothesis_id": "candidate_expansion",
+      "claim": "候选资产或候选事件可能扩大影响范围，但尚需独立验证。",
+      "supporting_fact_ids": [
+        "fact-object-obj-05",
+        "fact-object-obj-09",
+        "fact-event-evt-801",
+        "fact-event-evt-802",
+        "fact-event-evt-803",
+        "fact-event-evt-804",
+        "fact-event-evt-805",
+        "fact-object-obj-01",
+        "fact-event-evt-808",
+        "fact-object-obj-02",
+        "fact-object-obj-04",
+        "fact-action-2",
+        "fact-gap-build-context",
+        "fact-gap-check-counterevidence",
+        "fact-gap-execution-gap",
+        "fact-gap-expand-cluster-scope",
+        "fact-gap-ground-external-context",
+        "fact-gap-identify-assets",
+        "fact-gap-structure-evidence",
+        "fact-gap-validate-family-hint",
+        "fact-object-obj-03",
+        "fact-object-obj-08",
+        "fact-verdict-delivery"
+      ],
+      "refuting_fact_ids": [],
+      "gap_fact_ids": [
+        "fact-gap-build-context",
+        "fact-gap-check-counterevidence",
+        "fact-gap-execution-gap",
+        "fact-gap-expand-cluster-scope",
+        "fact-gap-ground-external-context",
+        "fact-gap-identify-assets",
+        "fact-gap-structure-evidence",
+        "fact-gap-validate-family-hint"
+      ],
+      "action_fact_ids": [
+        "fact-action-1",
+        "fact-action-2",
+        "fact-action-3"
+      ],
+      "claim_policy": "candidate_not_confirmed"
+    },
+    {
+      "hypothesis_id": "benign_or_shared_infra_alternative",
+      "claim": "共享基础设施、维护窗口或正常业务背景可能解释部分边界信号。",
+      "supporting_fact_ids": [],
+      "refuting_fact_ids": [
+        "fact-action-1",
+        "fact-action-3",
+        "fact-claim-cl-01",
+        "fact-claim-cl-02",
+        "fact-event-evt-801",
+        "fact-event-evt-802",
+        "fact-event-evt-803",
+        "fact-event-evt-804",
+        "fact-event-evt-805",
+        "fact-event-evt-808",
+        "fact-object-obj-05",
+        "fact-object-obj-06",
+        "fact-object-obj-07",
+        "fact-obs-obs-001",
+        "fact-obs-obs-002"
+      ],
+      "gap_fact_ids": [
+        "fact-gap-build-context",
+        "fact-gap-check-counterevidence",
+        "fact-gap-execution-gap",
+        "fact-gap-expand-cluster-scope",
+        "fact-gap-ground-external-context",
+        "fact-gap-identify-assets",
+        "fact-gap-structure-evidence",
+        "fact-gap-validate-family-hint"
+      ],
+      "action_fact_ids": [
+        "fact-action-1",
+        "fact-action-2",
+        "fact-action-3"
+      ],
+      "claim_policy": "limits_stronger_claims"
+    },
+    {
+      "hypothesis_id": "insufficient_evidence_limits",
+      "claim": "未闭合缺口限制攻击者控制、持久化、横向闭环或外传闭环等更强结论。",
+      "supporting_fact_ids": [
+        "fact-gap-build-context",
+        "fact-gap-check-counterevidence",
+        "fact-gap-execution-gap",
+        "fact-gap-expand-cluster-scope",
+        "fact-gap-ground-external-context",
+        "fact-gap-identify-assets",
+        "fact-gap-structure-evidence",
+        "fact-gap-validate-family-hint"
+      ],
+      "refuting_fact_ids": [],
+      "gap_fact_ids": [
+        "fact-gap-build-context",
+        "fact-gap-check-counterevidence",
+        "fact-gap-execution-gap",
+        "fact-gap-expand-cluster-scope",
+        "fact-gap-ground-external-context",
+        "fact-gap-identify-assets",
+        "fact-gap-structure-evidence",
+        "fact-gap-validate-family-hint"
+      ],
+      "action_fact_ids": [
+        "fact-action-1",
+        "fact-action-2",
+        "fact-action-3"
+      ],
+      "claim_policy": "must_be_reported_as_boundary"
+    }
+  ]
+}

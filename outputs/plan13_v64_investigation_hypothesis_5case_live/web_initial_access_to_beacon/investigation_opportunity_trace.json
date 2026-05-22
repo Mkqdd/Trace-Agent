@@ -1,0 +1,2712 @@
+{
+  "schema_version": "investigation-opportunity-trace-history-v1",
+  "latest": {
+    "schema_version": "investigation-opportunity-trace-v1",
+    "graph_schema_version": "investigation-graph-v1",
+    "ranked_actions": [
+      {
+        "tool_name": "check_counterevidence",
+        "score": 2,
+        "eligible": true,
+        "target_gap_ids": [
+          "check_counterevidence"
+        ],
+        "target_hypothesis_ids": [
+          "benign_or_shared_infra_alternative"
+        ],
+        "expected_information_gain": "low",
+        "expected_report_impact": "scope_or_boundary_change",
+        "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_counterevidence_boundary",
+        "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+        "score_reasons": [
+          "documents_reportable_boundary",
+          "counterevidence_boundary_progress",
+          "report_quality_counterevidence_boundary"
+        ],
+        "penalty_reasons": [],
+        "input_fingerprint": "568ebf50d110",
+        "recommended_params": {
+          "asset_ids": [
+            "web-app-01",
+            "app-db-01"
+          ],
+          "focus": "maintenance_or_backup"
+        }
+      },
+      {
+        "tool_name": "search_related_events",
+        "score": 2,
+        "eligible": true,
+        "target_gap_ids": [
+          "expand_cluster_scope"
+        ],
+        "target_hypothesis_ids": [
+          "candidate_spread",
+          "insufficient_evidence_limits"
+        ],
+        "expected_information_gain": "low",
+        "expected_report_impact": "scope_or_boundary_change",
+        "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary",
+        "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+        "score_reasons": [
+          "documents_reportable_boundary",
+          "report_quality_candidate_boundary"
+        ],
+        "penalty_reasons": [],
+        "input_fingerprint": "9ccc6156d9e7",
+        "recommended_params": {
+          "asset_ids": [
+            "web-app-01",
+            "app-db-01"
+          ],
+          "dst_ips": [
+            "198.51.100.88",
+            "10.60.2.34"
+          ],
+          "domains": [
+            "cdn-auth-check.net"
+          ]
+        }
+      },
+      {
+        "tool_name": "local_intel_lookup",
+        "score": 0,
+        "eligible": false,
+        "target_gap_ids": [
+          "ground_external_context"
+        ],
+        "target_hypothesis_ids": [
+          "benign_or_shared_infra_alternative"
+        ],
+        "expected_information_gain": "none",
+        "expected_report_impact": "scope_or_boundary_change",
+        "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+        "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+        "score_reasons": [
+          "documents_reportable_boundary",
+          "already_safe_candidate"
+        ],
+        "penalty_reasons": [
+          "reportable_boundary_not_delivery_blocking"
+        ],
+        "input_fingerprint": "ce809bc6dda8",
+        "recommended_params": {
+          "indicator_type": "IP",
+          "indicator_value": "198.51.100.88",
+          "label": "primary_indicator",
+          "event_id": ""
+        }
+      },
+      {
+        "tool_name": "malware_profile_lookup",
+        "score": 0,
+        "eligible": false,
+        "target_gap_ids": [
+          "ground_external_context"
+        ],
+        "target_hypothesis_ids": [
+          "benign_or_shared_infra_alternative"
+        ],
+        "expected_information_gain": "none",
+        "expected_report_impact": "scope_or_boundary_change",
+        "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+        "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+        "score_reasons": [
+          "documents_reportable_boundary",
+          "already_safe_candidate"
+        ],
+        "penalty_reasons": [
+          "reportable_boundary_not_delivery_blocking"
+        ],
+        "input_fingerprint": "67a1eba4f762",
+        "recommended_params": {
+          "query": "Confirmed web initial access to beacon chain"
+        }
+      },
+      {
+        "tool_name": "pivot_related_indicators",
+        "score": 0,
+        "eligible": false,
+        "target_gap_ids": [
+          "ground_external_context"
+        ],
+        "target_hypothesis_ids": [
+          "benign_or_shared_infra_alternative",
+          "candidate_spread"
+        ],
+        "expected_information_gain": "none",
+        "expected_report_impact": "scope_or_boundary_change",
+        "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+        "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+        "score_reasons": [
+          "documents_reportable_boundary",
+          "already_safe_candidate"
+        ],
+        "penalty_reasons": [
+          "reportable_boundary_not_delivery_blocking"
+        ],
+        "input_fingerprint": "1550bb54459d",
+        "recommended_params": {
+          "query": "198.51.100.88"
+        }
+      },
+      {
+        "tool_name": "technical_source_search",
+        "score": 0,
+        "eligible": false,
+        "target_gap_ids": [
+          "ground_external_context"
+        ],
+        "target_hypothesis_ids": [
+          "benign_or_shared_infra_alternative"
+        ],
+        "expected_information_gain": "none",
+        "expected_report_impact": "scope_or_boundary_change",
+        "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+        "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+        "score_reasons": [
+          "documents_reportable_boundary",
+          "already_safe_candidate"
+        ],
+        "penalty_reasons": [
+          "reportable_boundary_not_delivery_blocking"
+        ],
+        "input_fingerprint": "560f2db41d0a",
+        "recommended_params": {
+          "query": "Confirmed web initial access to beacon chain",
+          "goal": "behavior_context"
+        }
+      }
+    ],
+    "top_k": [
+      {
+        "tool_name": "check_counterevidence",
+        "score": 2,
+        "eligible": true,
+        "target_gap_ids": [
+          "check_counterevidence"
+        ],
+        "target_hypothesis_ids": [
+          "benign_or_shared_infra_alternative"
+        ],
+        "expected_information_gain": "low",
+        "expected_report_impact": "scope_or_boundary_change",
+        "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_counterevidence_boundary",
+        "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+        "score_reasons": [
+          "documents_reportable_boundary",
+          "counterevidence_boundary_progress",
+          "report_quality_counterevidence_boundary"
+        ],
+        "penalty_reasons": [],
+        "input_fingerprint": "568ebf50d110",
+        "recommended_params": {
+          "asset_ids": [
+            "web-app-01",
+            "app-db-01"
+          ],
+          "focus": "maintenance_or_backup"
+        }
+      },
+      {
+        "tool_name": "search_related_events",
+        "score": 2,
+        "eligible": true,
+        "target_gap_ids": [
+          "expand_cluster_scope"
+        ],
+        "target_hypothesis_ids": [
+          "candidate_spread",
+          "insufficient_evidence_limits"
+        ],
+        "expected_information_gain": "low",
+        "expected_report_impact": "scope_or_boundary_change",
+        "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary",
+        "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+        "score_reasons": [
+          "documents_reportable_boundary",
+          "report_quality_candidate_boundary"
+        ],
+        "penalty_reasons": [],
+        "input_fingerprint": "9ccc6156d9e7",
+        "recommended_params": {
+          "asset_ids": [
+            "web-app-01",
+            "app-db-01"
+          ],
+          "dst_ips": [
+            "198.51.100.88",
+            "10.60.2.34"
+          ],
+          "domains": [
+            "cdn-auth-check.net"
+          ]
+        }
+      },
+      {
+        "tool_name": "local_intel_lookup",
+        "score": 0,
+        "eligible": false,
+        "target_gap_ids": [
+          "ground_external_context"
+        ],
+        "target_hypothesis_ids": [
+          "benign_or_shared_infra_alternative"
+        ],
+        "expected_information_gain": "none",
+        "expected_report_impact": "scope_or_boundary_change",
+        "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+        "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+        "score_reasons": [
+          "documents_reportable_boundary",
+          "already_safe_candidate"
+        ],
+        "penalty_reasons": [
+          "reportable_boundary_not_delivery_blocking"
+        ],
+        "input_fingerprint": "ce809bc6dda8",
+        "recommended_params": {
+          "indicator_type": "IP",
+          "indicator_value": "198.51.100.88",
+          "label": "primary_indicator",
+          "event_id": ""
+        }
+      }
+    ],
+    "value_of_information": {
+      "level": "low",
+      "best_action": "check_counterevidence",
+      "best_action_score": 2,
+      "finish_score": 2,
+      "active_hypothesis_ids": [
+        "benign_or_shared_infra_alternative",
+        "insufficient_evidence_limits"
+      ],
+      "reason": "Best action check_counterevidence scores 2 against active hypotheses benign_or_shared_infra_alternative, insufficient_evidence_limits."
+    },
+    "stop_recommendation": {
+      "should_stop": true,
+      "reason": "Remaining actions are low value or exhausted; unresolved items should become reportable boundaries."
+    },
+    "hypothesis_status_counts": {
+      "closed": 1,
+      "weakened": 2,
+      "supported": 1,
+      "open": 1
+    },
+    "step_index": 4,
+    "trace_signature": "36caba01a52a"
+  },
+  "rounds": [
+    {
+      "schema_version": "investigation-opportunity-trace-v1",
+      "graph_schema_version": "investigation-graph-v1",
+      "ranked_actions": [
+        {
+          "tool_name": "search_seed_context",
+          "score": 13,
+          "eligible": true,
+          "target_gap_ids": [
+            "build_context",
+            "identify_assets",
+            "expand_cluster_scope"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "high",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "closes_blocking_gap; actionable_gap; candidate_boundary_impact; limit_reduction; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: insufficient_evidence_limits, candidate_spread",
+          "score_reasons": [
+            "closes_blocking_gap",
+            "actionable_gap",
+            "candidate_boundary_impact",
+            "limit_reduction",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "aa071cfa13e3",
+          "recommended_params": {
+            "src_ip": "10.60.1.14",
+            "dst_ip": "198.51.100.88"
+          }
+        },
+        {
+          "tool_name": "extract_claim_candidates_from_page",
+          "score": 5,
+          "eligible": true,
+          "target_gap_ids": [
+            "structure_evidence"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary; report_quality_candidate_boundary",
+          "why_not_finish": "High-value hypotheses remain open: insufficient_evidence_limits, candidate_spread",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "a258ca21a528",
+          "recommended_params": {
+            "content_ref": "investigation_digest",
+            "focus": "Confirmed web initial access to beacon chain"
+          }
+        },
+        {
+          "tool_name": "extract_entities_from_page",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "structure_evidence"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "limit_reduction",
+          "why_this_tool": "documents_reportable_boundary; report_quality_limit_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_limit_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "3e5c971f4969",
+          "recommended_params": {
+            "content_ref": "investigation_digest"
+          }
+        },
+        {
+          "tool_name": "malware_profile_lookup",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context",
+            "validate_family_hint"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "67a1eba4f762",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain"
+          }
+        },
+        {
+          "tool_name": "pivot_related_indicators",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context",
+            "validate_family_hint"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "bc814dc1a3f5",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain"
+          }
+        },
+        {
+          "tool_name": "technical_source_search",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context",
+            "validate_family_hint"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "560f2db41d0a",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain",
+            "goal": "behavior_context"
+          }
+        }
+      ],
+      "top_k": [
+        {
+          "tool_name": "search_seed_context",
+          "score": 13,
+          "eligible": true,
+          "target_gap_ids": [
+            "build_context",
+            "identify_assets",
+            "expand_cluster_scope"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "high",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "closes_blocking_gap; actionable_gap; candidate_boundary_impact; limit_reduction; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: insufficient_evidence_limits, candidate_spread",
+          "score_reasons": [
+            "closes_blocking_gap",
+            "actionable_gap",
+            "candidate_boundary_impact",
+            "limit_reduction",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "aa071cfa13e3",
+          "recommended_params": {
+            "src_ip": "10.60.1.14",
+            "dst_ip": "198.51.100.88"
+          }
+        },
+        {
+          "tool_name": "extract_claim_candidates_from_page",
+          "score": 5,
+          "eligible": true,
+          "target_gap_ids": [
+            "structure_evidence"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary; report_quality_candidate_boundary",
+          "why_not_finish": "High-value hypotheses remain open: insufficient_evidence_limits, candidate_spread",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "a258ca21a528",
+          "recommended_params": {
+            "content_ref": "investigation_digest",
+            "focus": "Confirmed web initial access to beacon chain"
+          }
+        },
+        {
+          "tool_name": "extract_entities_from_page",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "structure_evidence"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "limit_reduction",
+          "why_this_tool": "documents_reportable_boundary; report_quality_limit_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_limit_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "3e5c971f4969",
+          "recommended_params": {
+            "content_ref": "investigation_digest"
+          }
+        }
+      ],
+      "value_of_information": {
+        "level": "high",
+        "best_action": "search_seed_context",
+        "best_action_score": 13,
+        "finish_score": 1,
+        "active_hypothesis_ids": [
+          "confirmed_main_chain",
+          "candidate_spread",
+          "benign_or_shared_infra_alternative",
+          "insufficient_evidence_limits",
+          "false_positive_or_noise"
+        ],
+        "reason": "Best action search_seed_context scores 13 against active hypotheses confirmed_main_chain, candidate_spread, benign_or_shared_infra_alternative, insufficient_evidence_limits."
+      },
+      "stop_recommendation": {
+        "should_stop": false,
+        "reason": "At least one high-value investigation action remains."
+      },
+      "hypothesis_status_counts": {
+        "open": 5
+      },
+      "step_index": 0,
+      "trace_signature": "eb2308856abb"
+    },
+    {
+      "schema_version": "investigation-opportunity-trace-v1",
+      "graph_schema_version": "investigation-graph-v1",
+      "ranked_actions": [
+        {
+          "tool_name": "expand_asset_scope",
+          "score": 4,
+          "eligible": true,
+          "target_gap_ids": [
+            "execution_gap",
+            "expand_cluster_scope"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits",
+            "candidate_spread",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: insufficient_evidence_limits, candidate_spread, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_candidate_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "db5d33384da5",
+          "recommended_params": {
+            "asset_ids": [
+              "app-db-01"
+            ]
+          }
+        },
+        {
+          "tool_name": "search_related_events",
+          "score": 3,
+          "eligible": true,
+          "target_gap_ids": [
+            "execution_gap",
+            "expand_cluster_scope"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: insufficient_evidence_limits, candidate_spread",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "9ccc6156d9e7",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "dst_ips": [
+              "198.51.100.88",
+              "10.60.2.34"
+            ],
+            "domains": [
+              "cdn-auth-check.net"
+            ]
+          }
+        },
+        {
+          "tool_name": "check_counterevidence",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "check_counterevidence"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_counterevidence_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_counterevidence_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "568ebf50d110",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "focus": "maintenance_or_backup"
+          }
+        },
+        {
+          "tool_name": "extract_claim_candidates_from_page",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "structure_evidence"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "17899ab6e39d",
+          "recommended_params": {
+            "content_ref": "investigation_digest",
+            "focus": "Confirmed web initial access to beacon chain"
+          }
+        },
+        {
+          "tool_name": "extract_entities_from_page",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "structure_evidence"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "limit_reduction",
+          "why_this_tool": "documents_reportable_boundary; report_quality_limit_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_limit_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "deffe4bb86bf",
+          "recommended_params": {
+            "content_ref": "investigation_digest"
+          }
+        },
+        {
+          "tool_name": "local_intel_lookup",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "ce809bc6dda8",
+          "recommended_params": {
+            "indicator_type": "IP",
+            "indicator_value": "198.51.100.88",
+            "label": "primary_indicator",
+            "event_id": ""
+          }
+        },
+        {
+          "tool_name": "malware_profile_lookup",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "67a1eba4f762",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain"
+          }
+        },
+        {
+          "tool_name": "pivot_related_indicators",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "1550bb54459d",
+          "recommended_params": {
+            "query": "198.51.100.88"
+          }
+        },
+        {
+          "tool_name": "technical_source_search",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "560f2db41d0a",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain",
+            "goal": "behavior_context"
+          }
+        }
+      ],
+      "top_k": [
+        {
+          "tool_name": "expand_asset_scope",
+          "score": 4,
+          "eligible": true,
+          "target_gap_ids": [
+            "execution_gap",
+            "expand_cluster_scope"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits",
+            "candidate_spread",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: insufficient_evidence_limits, candidate_spread, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_candidate_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "db5d33384da5",
+          "recommended_params": {
+            "asset_ids": [
+              "app-db-01"
+            ]
+          }
+        },
+        {
+          "tool_name": "search_related_events",
+          "score": 3,
+          "eligible": true,
+          "target_gap_ids": [
+            "execution_gap",
+            "expand_cluster_scope"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: insufficient_evidence_limits, candidate_spread",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "9ccc6156d9e7",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "dst_ips": [
+              "198.51.100.88",
+              "10.60.2.34"
+            ],
+            "domains": [
+              "cdn-auth-check.net"
+            ]
+          }
+        },
+        {
+          "tool_name": "check_counterevidence",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "check_counterevidence"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_counterevidence_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_counterevidence_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "568ebf50d110",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "focus": "maintenance_or_backup"
+          }
+        }
+      ],
+      "value_of_information": {
+        "level": "medium",
+        "best_action": "expand_asset_scope",
+        "best_action_score": 4,
+        "finish_score": 1,
+        "active_hypothesis_ids": [
+          "benign_or_shared_infra_alternative",
+          "insufficient_evidence_limits"
+        ],
+        "reason": "Best action expand_asset_scope scores 4 against active hypotheses benign_or_shared_infra_alternative, insufficient_evidence_limits."
+      },
+      "stop_recommendation": {
+        "should_stop": false,
+        "reason": "At least one high-value investigation action remains."
+      },
+      "hypothesis_status_counts": {
+        "closed": 1,
+        "weakened": 2,
+        "supported": 1,
+        "open": 1
+      },
+      "step_index": 1,
+      "trace_signature": "1fa6bbb1833a"
+    },
+    {
+      "schema_version": "investigation-opportunity-trace-v1",
+      "graph_schema_version": "investigation-graph-v1",
+      "ranked_actions": [
+        {
+          "tool_name": "expand_asset_scope",
+          "score": 3,
+          "eligible": true,
+          "target_gap_ids": [
+            "expand_cluster_scope"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "db5d33384da5",
+          "recommended_params": {
+            "asset_ids": [
+              "app-db-01"
+            ]
+          }
+        },
+        {
+          "tool_name": "check_counterevidence",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "check_counterevidence"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_counterevidence_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_counterevidence_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "568ebf50d110",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "focus": "maintenance_or_backup"
+          }
+        },
+        {
+          "tool_name": "extract_claim_candidates_from_page",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "structure_evidence"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "c573b9bee51a",
+          "recommended_params": {
+            "content_ref": "investigation_digest",
+            "focus": "Confirmed web initial access to beacon chain"
+          }
+        },
+        {
+          "tool_name": "extract_entities_from_page",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "structure_evidence"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "limit_reduction",
+          "why_this_tool": "documents_reportable_boundary; report_quality_limit_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_limit_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "44fcfc50514c",
+          "recommended_params": {
+            "content_ref": "investigation_digest"
+          }
+        },
+        {
+          "tool_name": "search_related_events",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "expand_cluster_scope"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "9ccc6156d9e7",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "dst_ips": [
+              "198.51.100.88",
+              "10.60.2.34"
+            ],
+            "domains": [
+              "cdn-auth-check.net"
+            ]
+          }
+        },
+        {
+          "tool_name": "local_intel_lookup",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "ce809bc6dda8",
+          "recommended_params": {
+            "indicator_type": "IP",
+            "indicator_value": "198.51.100.88",
+            "label": "primary_indicator",
+            "event_id": ""
+          }
+        },
+        {
+          "tool_name": "malware_profile_lookup",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "67a1eba4f762",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain"
+          }
+        },
+        {
+          "tool_name": "pivot_related_indicators",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "1550bb54459d",
+          "recommended_params": {
+            "query": "198.51.100.88"
+          }
+        },
+        {
+          "tool_name": "technical_source_search",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "560f2db41d0a",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain",
+            "goal": "behavior_context"
+          }
+        }
+      ],
+      "top_k": [
+        {
+          "tool_name": "expand_asset_scope",
+          "score": 3,
+          "eligible": true,
+          "target_gap_ids": [
+            "expand_cluster_scope"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "db5d33384da5",
+          "recommended_params": {
+            "asset_ids": [
+              "app-db-01"
+            ]
+          }
+        },
+        {
+          "tool_name": "check_counterevidence",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "check_counterevidence"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_counterevidence_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_counterevidence_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "568ebf50d110",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "focus": "maintenance_or_backup"
+          }
+        },
+        {
+          "tool_name": "extract_claim_candidates_from_page",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "structure_evidence"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "c573b9bee51a",
+          "recommended_params": {
+            "content_ref": "investigation_digest",
+            "focus": "Confirmed web initial access to beacon chain"
+          }
+        }
+      ],
+      "value_of_information": {
+        "level": "medium",
+        "best_action": "expand_asset_scope",
+        "best_action_score": 3,
+        "finish_score": 1,
+        "active_hypothesis_ids": [
+          "benign_or_shared_infra_alternative",
+          "insufficient_evidence_limits"
+        ],
+        "reason": "Best action expand_asset_scope scores 3 against active hypotheses benign_or_shared_infra_alternative, insufficient_evidence_limits."
+      },
+      "stop_recommendation": {
+        "should_stop": false,
+        "reason": "At least one high-value investigation action remains."
+      },
+      "hypothesis_status_counts": {
+        "closed": 1,
+        "weakened": 2,
+        "supported": 1,
+        "open": 1
+      },
+      "step_index": 1,
+      "trace_signature": "3b84bc202c4d"
+    },
+    {
+      "schema_version": "investigation-opportunity-trace-v1",
+      "graph_schema_version": "investigation-graph-v1",
+      "ranked_actions": [
+        {
+          "tool_name": "ground_candidate_event",
+          "score": 4,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_candidate_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "53dd5846f1ff",
+          "recommended_params": {
+            "event_id": "evt-310",
+            "asset_id": "app-db-01",
+            "dst_ip": "",
+            "domain": "cdn-auth-check.net",
+            "ja4": "",
+            "ja3": ""
+          }
+        },
+        {
+          "tool_name": "local_intel_lookup",
+          "score": 4,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_candidate_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "9010313ddc6b",
+          "recommended_params": {
+            "indicator_type": "DOMAIN",
+            "indicator_value": "cdn-auth-check.net",
+            "label": "domain",
+            "event_id": "evt-310"
+          }
+        },
+        {
+          "tool_name": "malware_profile_lookup",
+          "score": 4,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_candidate_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "67a1eba4f762",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain"
+          }
+        },
+        {
+          "tool_name": "pivot_related_indicators",
+          "score": 4,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_candidate_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "09d8be02f123",
+          "recommended_params": {
+            "query": "cdn-auth-check.net"
+          }
+        },
+        {
+          "tool_name": "technical_source_search",
+          "score": 4,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_candidate_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "560f2db41d0a",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain",
+            "goal": "behavior_context"
+          }
+        },
+        {
+          "tool_name": "check_counterevidence",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "check_counterevidence"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_counterevidence_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_counterevidence_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "568ebf50d110",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "focus": "maintenance_or_backup"
+          }
+        },
+        {
+          "tool_name": "extract_claim_candidates_from_page",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "structure_evidence"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "9840d3562326",
+          "recommended_params": {
+            "content_ref": "investigation_digest",
+            "focus": "Confirmed web initial access to beacon chain"
+          }
+        },
+        {
+          "tool_name": "extract_entities_from_page",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "structure_evidence"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "limit_reduction",
+          "why_this_tool": "documents_reportable_boundary; report_quality_limit_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_limit_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "c7718692a9c8",
+          "recommended_params": {
+            "content_ref": "investigation_digest"
+          }
+        },
+        {
+          "tool_name": "search_related_events",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "expand_cluster_scope"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "9ccc6156d9e7",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "dst_ips": [
+              "198.51.100.88",
+              "10.60.2.34"
+            ],
+            "domains": [
+              "cdn-auth-check.net"
+            ]
+          }
+        }
+      ],
+      "top_k": [
+        {
+          "tool_name": "ground_candidate_event",
+          "score": 4,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_candidate_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "53dd5846f1ff",
+          "recommended_params": {
+            "event_id": "evt-310",
+            "asset_id": "app-db-01",
+            "dst_ip": "",
+            "domain": "cdn-auth-check.net",
+            "ja4": "",
+            "ja3": ""
+          }
+        },
+        {
+          "tool_name": "local_intel_lookup",
+          "score": 4,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_candidate_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "9010313ddc6b",
+          "recommended_params": {
+            "indicator_type": "DOMAIN",
+            "indicator_value": "cdn-auth-check.net",
+            "label": "domain",
+            "event_id": "evt-310"
+          }
+        },
+        {
+          "tool_name": "malware_profile_lookup",
+          "score": 4,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_candidate_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "67a1eba4f762",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain"
+          }
+        }
+      ],
+      "value_of_information": {
+        "level": "medium",
+        "best_action": "ground_candidate_event",
+        "best_action_score": 4,
+        "finish_score": 1,
+        "active_hypothesis_ids": [
+          "benign_or_shared_infra_alternative",
+          "insufficient_evidence_limits"
+        ],
+        "reason": "Best action ground_candidate_event scores 4 against active hypotheses benign_or_shared_infra_alternative, insufficient_evidence_limits."
+      },
+      "stop_recommendation": {
+        "should_stop": false,
+        "reason": "At least one high-value investigation action remains."
+      },
+      "hypothesis_status_counts": {
+        "closed": 1,
+        "weakened": 2,
+        "supported": 1,
+        "open": 1
+      },
+      "step_index": 2,
+      "trace_signature": "366c3ecc8aab"
+    },
+    {
+      "schema_version": "investigation-opportunity-trace-v1",
+      "graph_schema_version": "investigation-graph-v1",
+      "ranked_actions": [
+        {
+          "tool_name": "ground_candidate_event",
+          "score": 7,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "high",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary",
+            "counterevidence_boundary_progress",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "53dd5846f1ff",
+          "recommended_params": {
+            "event_id": "evt-310",
+            "asset_id": "app-db-01",
+            "dst_ip": "",
+            "domain": "cdn-auth-check.net",
+            "ja4": "",
+            "ja3": ""
+          }
+        },
+        {
+          "tool_name": "local_intel_lookup",
+          "score": 7,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "high",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary",
+            "counterevidence_boundary_progress",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "9010313ddc6b",
+          "recommended_params": {
+            "indicator_type": "DOMAIN",
+            "indicator_value": "cdn-auth-check.net",
+            "label": "domain",
+            "event_id": "evt-310"
+          }
+        },
+        {
+          "tool_name": "malware_profile_lookup",
+          "score": 7,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "high",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary",
+            "counterevidence_boundary_progress",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "67a1eba4f762",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain"
+          }
+        },
+        {
+          "tool_name": "pivot_related_indicators",
+          "score": 7,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "high",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary",
+            "counterevidence_boundary_progress",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "09d8be02f123",
+          "recommended_params": {
+            "query": "cdn-auth-check.net"
+          }
+        },
+        {
+          "tool_name": "technical_source_search",
+          "score": 7,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "high",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary",
+            "counterevidence_boundary_progress",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "560f2db41d0a",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain",
+            "goal": "behavior_context"
+          }
+        },
+        {
+          "tool_name": "extract_claim_candidates_from_page",
+          "score": 5,
+          "eligible": true,
+          "target_gap_ids": [
+            "structure_evidence"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary; report_quality_candidate_boundary",
+          "why_not_finish": "High-value hypotheses remain open: insufficient_evidence_limits, candidate_spread",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "9840d3562326",
+          "recommended_params": {
+            "content_ref": "investigation_digest",
+            "focus": "Confirmed web initial access to beacon chain"
+          }
+        },
+        {
+          "tool_name": "search_related_events",
+          "score": 5,
+          "eligible": true,
+          "target_gap_ids": [
+            "expand_cluster_scope"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits"
+          ],
+          "expected_information_gain": "medium",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary; report_quality_candidate_boundary",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "9ccc6156d9e7",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "dst_ips": [
+              "198.51.100.88",
+              "10.60.2.34"
+            ],
+            "domains": [
+              "cdn-auth-check.net"
+            ]
+          }
+        },
+        {
+          "tool_name": "check_counterevidence",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "check_counterevidence"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_counterevidence_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_counterevidence_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "568ebf50d110",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "focus": "maintenance_or_backup"
+          }
+        },
+        {
+          "tool_name": "extract_entities_from_page",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "structure_evidence"
+          ],
+          "target_hypothesis_ids": [
+            "insufficient_evidence_limits"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "limit_reduction",
+          "why_this_tool": "documents_reportable_boundary; report_quality_limit_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_limit_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "c7718692a9c8",
+          "recommended_params": {
+            "content_ref": "investigation_digest"
+          }
+        }
+      ],
+      "top_k": [
+        {
+          "tool_name": "ground_candidate_event",
+          "score": 7,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "high",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary",
+            "counterevidence_boundary_progress",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "53dd5846f1ff",
+          "recommended_params": {
+            "event_id": "evt-310",
+            "asset_id": "app-db-01",
+            "dst_ip": "",
+            "domain": "cdn-auth-check.net",
+            "ja4": "",
+            "ja3": ""
+          }
+        },
+        {
+          "tool_name": "local_intel_lookup",
+          "score": 7,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "high",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary",
+            "counterevidence_boundary_progress",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "9010313ddc6b",
+          "recommended_params": {
+            "indicator_type": "DOMAIN",
+            "indicator_value": "cdn-auth-check.net",
+            "label": "domain",
+            "event_id": "evt-310"
+          }
+        },
+        {
+          "tool_name": "malware_profile_lookup",
+          "score": 7,
+          "eligible": true,
+          "target_gap_ids": [
+            "validate_candidate_events",
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits",
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "high",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary; counterevidence_boundary_progress; report_quality_candidate_boundary; already_safe_candidate",
+          "why_not_finish": "High-value hypotheses remain open: candidate_spread, insufficient_evidence_limits, benign_or_shared_infra_alternative",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary",
+            "counterevidence_boundary_progress",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "67a1eba4f762",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain"
+          }
+        }
+      ],
+      "value_of_information": {
+        "level": "high",
+        "best_action": "ground_candidate_event",
+        "best_action_score": 7,
+        "finish_score": 1,
+        "active_hypothesis_ids": [
+          "candidate_spread",
+          "benign_or_shared_infra_alternative",
+          "insufficient_evidence_limits"
+        ],
+        "reason": "Best action ground_candidate_event scores 7 against active hypotheses candidate_spread, benign_or_shared_infra_alternative, insufficient_evidence_limits."
+      },
+      "stop_recommendation": {
+        "should_stop": false,
+        "reason": "At least one high-value investigation action remains."
+      },
+      "hypothesis_status_counts": {
+        "closed": 1,
+        "supported": 2,
+        "open": 1,
+        "weakened": 1
+      },
+      "step_index": 2,
+      "trace_signature": "935947474ddf"
+    },
+    {
+      "schema_version": "investigation-opportunity-trace-v1",
+      "graph_schema_version": "investigation-graph-v1",
+      "ranked_actions": [
+        {
+          "tool_name": "check_counterevidence",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "check_counterevidence"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_counterevidence_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_counterevidence_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "568ebf50d110",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "focus": "maintenance_or_backup"
+          }
+        },
+        {
+          "tool_name": "search_related_events",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "expand_cluster_scope"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "9ccc6156d9e7",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "dst_ips": [
+              "198.51.100.88",
+              "10.60.2.34"
+            ],
+            "domains": [
+              "cdn-auth-check.net"
+            ]
+          }
+        },
+        {
+          "tool_name": "local_intel_lookup",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "ce809bc6dda8",
+          "recommended_params": {
+            "indicator_type": "IP",
+            "indicator_value": "198.51.100.88",
+            "label": "primary_indicator",
+            "event_id": ""
+          }
+        },
+        {
+          "tool_name": "malware_profile_lookup",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "67a1eba4f762",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain"
+          }
+        },
+        {
+          "tool_name": "pivot_related_indicators",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "1550bb54459d",
+          "recommended_params": {
+            "query": "198.51.100.88"
+          }
+        },
+        {
+          "tool_name": "technical_source_search",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "560f2db41d0a",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain",
+            "goal": "behavior_context"
+          }
+        }
+      ],
+      "top_k": [
+        {
+          "tool_name": "check_counterevidence",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "check_counterevidence"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_counterevidence_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_counterevidence_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "568ebf50d110",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "focus": "maintenance_or_backup"
+          }
+        },
+        {
+          "tool_name": "search_related_events",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "expand_cluster_scope"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "9ccc6156d9e7",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "dst_ips": [
+              "198.51.100.88",
+              "10.60.2.34"
+            ],
+            "domains": [
+              "cdn-auth-check.net"
+            ]
+          }
+        },
+        {
+          "tool_name": "local_intel_lookup",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "ce809bc6dda8",
+          "recommended_params": {
+            "indicator_type": "IP",
+            "indicator_value": "198.51.100.88",
+            "label": "primary_indicator",
+            "event_id": ""
+          }
+        }
+      ],
+      "value_of_information": {
+        "level": "low",
+        "best_action": "check_counterevidence",
+        "best_action_score": 2,
+        "finish_score": 2,
+        "active_hypothesis_ids": [
+          "benign_or_shared_infra_alternative",
+          "insufficient_evidence_limits"
+        ],
+        "reason": "Best action check_counterevidence scores 2 against active hypotheses benign_or_shared_infra_alternative, insufficient_evidence_limits."
+      },
+      "stop_recommendation": {
+        "should_stop": true,
+        "reason": "Remaining actions are low value or exhausted; unresolved items should become reportable boundaries."
+      },
+      "hypothesis_status_counts": {
+        "closed": 1,
+        "weakened": 2,
+        "supported": 1,
+        "open": 1
+      },
+      "step_index": 3,
+      "trace_signature": "3105ffa7419c"
+    },
+    {
+      "schema_version": "investigation-opportunity-trace-v1",
+      "graph_schema_version": "investigation-graph-v1",
+      "ranked_actions": [
+        {
+          "tool_name": "check_counterevidence",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "check_counterevidence"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_counterevidence_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_counterevidence_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "568ebf50d110",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "focus": "maintenance_or_backup"
+          }
+        },
+        {
+          "tool_name": "search_related_events",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "expand_cluster_scope"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "9ccc6156d9e7",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "dst_ips": [
+              "198.51.100.88",
+              "10.60.2.34"
+            ],
+            "domains": [
+              "cdn-auth-check.net"
+            ]
+          }
+        },
+        {
+          "tool_name": "local_intel_lookup",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "ce809bc6dda8",
+          "recommended_params": {
+            "indicator_type": "IP",
+            "indicator_value": "198.51.100.88",
+            "label": "primary_indicator",
+            "event_id": ""
+          }
+        },
+        {
+          "tool_name": "malware_profile_lookup",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "67a1eba4f762",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain"
+          }
+        },
+        {
+          "tool_name": "pivot_related_indicators",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative",
+            "candidate_spread"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "1550bb54459d",
+          "recommended_params": {
+            "query": "198.51.100.88"
+          }
+        },
+        {
+          "tool_name": "technical_source_search",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "560f2db41d0a",
+          "recommended_params": {
+            "query": "Confirmed web initial access to beacon chain",
+            "goal": "behavior_context"
+          }
+        }
+      ],
+      "top_k": [
+        {
+          "tool_name": "check_counterevidence",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "check_counterevidence"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; counterevidence_boundary_progress; report_quality_counterevidence_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "counterevidence_boundary_progress",
+            "report_quality_counterevidence_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "568ebf50d110",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "focus": "maintenance_or_backup"
+          }
+        },
+        {
+          "tool_name": "search_related_events",
+          "score": 2,
+          "eligible": true,
+          "target_gap_ids": [
+            "expand_cluster_scope"
+          ],
+          "target_hypothesis_ids": [
+            "candidate_spread",
+            "insufficient_evidence_limits"
+          ],
+          "expected_information_gain": "low",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; report_quality_candidate_boundary",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "report_quality_candidate_boundary"
+          ],
+          "penalty_reasons": [],
+          "input_fingerprint": "9ccc6156d9e7",
+          "recommended_params": {
+            "asset_ids": [
+              "web-app-01",
+              "app-db-01"
+            ],
+            "dst_ips": [
+              "198.51.100.88",
+              "10.60.2.34"
+            ],
+            "domains": [
+              "cdn-auth-check.net"
+            ]
+          }
+        },
+        {
+          "tool_name": "local_intel_lookup",
+          "score": 0,
+          "eligible": false,
+          "target_gap_ids": [
+            "ground_external_context"
+          ],
+          "target_hypothesis_ids": [
+            "benign_or_shared_infra_alternative"
+          ],
+          "expected_information_gain": "none",
+          "expected_report_impact": "scope_or_boundary_change",
+          "why_this_tool": "documents_reportable_boundary; already_safe_candidate",
+          "why_not_finish": "No high-value targeted action remains beyond reportable boundaries.",
+          "score_reasons": [
+            "documents_reportable_boundary",
+            "already_safe_candidate"
+          ],
+          "penalty_reasons": [
+            "reportable_boundary_not_delivery_blocking"
+          ],
+          "input_fingerprint": "ce809bc6dda8",
+          "recommended_params": {
+            "indicator_type": "IP",
+            "indicator_value": "198.51.100.88",
+            "label": "primary_indicator",
+            "event_id": ""
+          }
+        }
+      ],
+      "value_of_information": {
+        "level": "low",
+        "best_action": "check_counterevidence",
+        "best_action_score": 2,
+        "finish_score": 2,
+        "active_hypothesis_ids": [
+          "benign_or_shared_infra_alternative",
+          "insufficient_evidence_limits"
+        ],
+        "reason": "Best action check_counterevidence scores 2 against active hypotheses benign_or_shared_infra_alternative, insufficient_evidence_limits."
+      },
+      "stop_recommendation": {
+        "should_stop": true,
+        "reason": "Remaining actions are low value or exhausted; unresolved items should become reportable boundaries."
+      },
+      "hypothesis_status_counts": {
+        "closed": 1,
+        "weakened": 2,
+        "supported": 1,
+        "open": 1
+      },
+      "step_index": 4,
+      "trace_signature": "36caba01a52a"
+    }
+  ]
+}

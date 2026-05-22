@@ -1,0 +1,22 @@
+{
+  "schema_version": "report-polish-validation-v1",
+  "applied": true,
+  "status": "hard_fail",
+  "summary": "发现 1 条 hard-fail 和 0 条 soft-warn。",
+  "issue_counts": {
+    "hard_fail": 1,
+    "soft_warn": 0
+  },
+  "issues": [
+    {
+      "severity": "hard_fail",
+      "code": "unknown_time",
+      "section": "6. 处置建议与后续核查",
+      "sentence": "同时查询代理/DNS 历史日志中，在 2026-05-11 14:00:00 到 14:55:00 UTC 窗口内，所有内网 IP 对上述两个 IOCs 以及候选域名 `api-cdn-auth-check.net` 的解析或连接记录。",
+      "message": "正文引用了事实卡中不存在的时间 `2026-05-11 14:00:00`。",
+      "evidence": [
+        "2026-05-11 14:00:00"
+      ]
+    }
+  ]
+}

@@ -45,6 +45,29 @@ Full live LLM regression is slow, costly, and may call external services. Ask be
 - Do not let fallback hide agent failure. If fallback is used, trace/status must clearly say so.
 - Do not overfit report quality by expanding prompts alone. Inspect artifacts first: `incident.json`, `readiness`, `report_source_bundle.json`, `report_material_loop_trace.json`, `report_writer_materials.json`, `report_writer_brief.json`, and final report.
 
+## Hypothesis Contract
+
+In Trace-Agent, a `hypothesis` is not a decorative label, a richer summary, or a synonym for "topic". It is a testable claim about either the incident mechanism or an agent behavior change. A valid hypothesis must state what it predicts, what evidence would support it, what evidence would weaken or falsify it, and what agent decision it is supposed to influence.
+
+Use three different kinds of hypotheses and keep their boundaries clear:
+
+- Investigation hypothesis: a candidate explanation of the alert or attack chain. It should drive investigation focus, tool/action ranking, stop/continue reasoning, or the confirmed/candidate/unresolved boundary.
+- Report hypothesis: a candidate narrative claim for the report. It may organize evidence, but it must not turn candidate or background material into a confirmed conclusion unless the source bundle supports that promotion.
+- Experiment hypothesis: a claim about a code or prompt change. It must say which behavior should change, why this mechanism should cause the change, which artifacts or metrics will show the effect, and what result would count as failure.
+
+Before adding or changing hypothesis-related code, answer these questions in the plan, comments, tests, or review notes:
+
+- What behavior should change: investigation focus, tool choice, stop decision, readiness, material routing, writer grounding, or report boundary language?
+- By what mechanism: what new information, ranking rule, evidence graph, prompt constraint, or validator rule causes the behavior change?
+- How will it be observed: which trace, artifact, fixture outcome, or report property should move?
+- What would falsify it: what output pattern proves the change is useless, unsafe, or merely cosmetic?
+
+Success means the hypothesis changes a real decision while preserving evidence boundaries. Good outcomes include selecting a higher-value follow-up, stopping when remaining work is low-value, keeping a confirmed main chain deliverable while labeling candidate expansions as candidates, making source-grounded report claims easier to audit, or exposing a real unresolved limit.
+
+Failure means the hypothesis is present but does not control anything. Treat it as failed if it only adds generic prose, produces longer reports without better grounding, encourages extra rounds without value-of-information or budget justification, hides uncertainty, promotes candidates into conclusions, blocks delivery only because unrelated candidates remain open, or cannot be traced back to concrete evidence and a concrete decision.
+
+Tests and evals for hypothesis features should include negative or control cases whenever practical. A useful test should show not only when a hypothesis is supported, but also when it stays unresolved, is rejected, or should not affect delivery.
+
 ## Report Pipeline Boundaries
 
 - `report_source_bundle` is the factual input boundary.

@@ -1,0 +1,518 @@
+{
+  "schema_version": "report-polish-input-v2",
+  "source_mode": "fact_cards_v2",
+  "audience": "运维人员与安全运营协同对象",
+  "goal": "在不引入新事实的前提下，基于统一事实卡和结论 packet 写成更像分析师交付给运维的中文 Markdown 报告。",
+  "fact_card_count": 39,
+  "packet_refs": [
+    "verdict_packet",
+    "scope_packet",
+    "constraint_packet",
+    "action_packet"
+  ],
+  "report_header": {
+    "title": "ws-rnd-04 Suspected cloud-storage exfil chain 调查报告",
+    "analysis_window": "2026-06-03 16:28:00 UTC 至 2026-06-03 17:24:40 UTC",
+    "final_verdict": "确认安全事件",
+    "severity": "高",
+    "confidence": "高",
+    "confirmed_scope": "ws-rnd-04",
+    "one_sentence_summary": "ws-rnd-04 围绕 198.51.100.144、files-sync-share.net 已形成可以稳定交付的异常链。"
+  },
+  "packets": {
+    "verdict_packet": {
+      "severity": "高",
+      "confidence": "高",
+      "conclusion_statement": "ws-rnd-04 围绕 198.51.100.144、files-sync-share.net 已形成可以稳定交付的异常链。",
+      "supporting_fact_ids": [
+        "fact-event-evt-602",
+        "fact-event-evt-603",
+        "fact-event-evt-604",
+        "fact-scope-obj-01",
+        "fact-scope-obj-03",
+        "fact-scope-obj-04"
+      ]
+    },
+    "scope_packet": {
+      "confirmed_entities": [
+        "ws-rnd-04"
+      ],
+      "candidate_entities": [
+        "ws-rnd-09"
+      ],
+      "supporting_fact_ids": [
+        "fact-scope-obj-03",
+        "fact-scope-obj-04",
+        "fact-scope-obj-05",
+        "fact-scope-obj-02",
+        "fact-scope-obj-15",
+        "fact-scope-obj-14"
+      ]
+    },
+    "constraint_packet": {
+      "blocking_gaps": [
+        "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+        "扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？",
+        "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+        "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+        "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。"
+      ],
+      "boundary_statement": "当前确认范围收敛在 ws-rnd-04；ws-rnd-09 保持待确认状态。",
+      "supporting_fact_ids": [
+        "fact-gap-expand_cluster_scope",
+        "fact-gap-validate_candidate_events",
+        "fact-gap-ground_external_context",
+        "fact-gap-check_counterevidence",
+        "fact-gap-structure_evidence",
+        "fact-event-evt-611",
+        "fact-event-evt-614"
+      ]
+    },
+    "action_packet": {
+      "immediate_actions": [
+        "优先隔离或重点监控已确认受影响资产：ws-rnd-04",
+        "在边界和代理设备上排查并封禁外部基础设施：198.51.100.144、files-sync-share.net、api.files-sync-share.net"
+      ],
+      "next_steps": [
+        "继续核实待确认关联资产 ws-rnd-09",
+        "优先补查：仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现"
+      ],
+      "supporting_fact_ids": [
+        "fact-scope-obj-01",
+        "fact-scope-obj-03",
+        "fact-scope-obj-04",
+        "fact-gap-expand_cluster_scope",
+        "fact-gap-validate_candidate_events",
+        "fact-action-01",
+        "fact-action-02",
+        "fact-action-03",
+        "fact-action-04"
+      ]
+    }
+  },
+  "fact_catalog": [
+    {
+      "group_title": "已确认事件事实",
+      "facts": [
+        {
+          "fact_id": "fact-event-evt-602",
+          "fact_type": "event",
+          "status": "confirmed",
+          "summary_line": "2026-06-03 16:34:20 UTC 资产 `ws-rnd-04` 对外通信 `files-sync-share.net / 198.51.100.144`。",
+          "reporting_focus": "落地外联",
+          "boundary_note": "仍需结合复现或主机侧线索共同定性"
+        },
+        {
+          "fact_id": "fact-event-evt-603",
+          "fact_type": "event",
+          "status": "confirmed",
+          "summary_line": "2026-06-03 16:40:00 UTC 资产 `ws-rnd-04` 对外通信 `files-sync-share.net / 198.51.100.144`。",
+          "reporting_focus": "落地外联",
+          "boundary_note": "仍需结合复现或主机侧线索共同定性"
+        },
+        {
+          "fact_id": "fact-event-evt-604",
+          "fact_type": "event",
+          "status": "confirmed",
+          "summary_line": "2026-06-03 16:42:30 UTC 资产 `ws-rnd-04` 出现执行迹象 `相关主机执行活动`。",
+          "reporting_focus": "主机升级",
+          "boundary_note": "可确认风险升级，但仍缺少更细载荷细节"
+        },
+        {
+          "fact_id": "fact-event-evt-609",
+          "fact_type": "event",
+          "status": "confirmed",
+          "summary_line": "2026-06-03 16:52:30 UTC 资产 `ws-rnd-04` 解析域名 `api.files-sync-share.net`。",
+          "reporting_focus": "异常起点",
+          "boundary_note": "单次解析不足以独立定性"
+        }
+      ]
+    },
+    {
+      "group_title": "待确认事件事实",
+      "facts": [
+        {
+          "fact_id": "fact-event-evt-611",
+          "fact_type": "event",
+          "status": "candidate",
+          "summary_line": "2026-06-03 17:05:00 UTC 资产 `ws-rnd-09` 与 `files-sync-share.net / 198.51.100.144` 出现待确认关联命中。",
+          "reporting_focus": "待确认扩展",
+          "boundary_note": "未独立验证，不能并入已确认范围"
+        },
+        {
+          "fact_id": "fact-event-evt-614",
+          "fact_type": "event",
+          "status": "candidate",
+          "summary_line": "2026-06-03 17:18:00 UTC 资产 `ws-rnd-04` 与 `主机侧上下文线索` 出现待确认关联命中。",
+          "reporting_focus": "待确认扩展",
+          "boundary_note": "未独立验证，不能并入已确认范围"
+        }
+      ]
+    },
+    {
+      "group_title": "背景事件事实",
+      "facts": [
+        {
+          "fact_id": "fact-event-evt-601",
+          "fact_type": "event",
+          "status": "background",
+          "summary_line": "2026-06-03 16:28:00 UTC 资产 `ws-rnd-04` 当前出现仅用于边界说明的背景事件 `files-sync-share.net`。",
+          "reporting_focus": "背景反证",
+          "boundary_note": "只能帮助收窄边界，不能单独推翻主结论"
+        }
+      ]
+    },
+    {
+      "group_title": "调查锚点对象",
+      "facts": [
+        {
+          "fact_id": "fact-scope-obj-01",
+          "fact_type": "scope",
+          "status": "confirmed",
+          "summary_line": "对象 `ws-rnd-04` 当前作为调查锚点保留在主调查链中。",
+          "reporting_focus": "调查锚点",
+          "boundary_note": "作为起点表述，不等于单点即可完成定性，也不要写成已确认受影响范围"
+        }
+      ]
+    },
+    {
+      "group_title": "待确认范围对象",
+      "facts": [
+        {
+          "fact_id": "fact-scope-obj-02",
+          "fact_type": "scope",
+          "status": "candidate",
+          "summary_line": "对象 `ws-rnd-09` 当前作为待确认关联资产保留为待确认范围。",
+          "reporting_focus": "待确认对象",
+          "boundary_note": "保持待确认，不写成已确认受影响"
+        },
+        {
+          "fact_id": "fact-scope-obj-15",
+          "fact_type": "scope",
+          "status": "candidate",
+          "summary_line": "对象 `t13d190900_44ac2200b3c1_ab11cd22ee44` 当前作为候选扩展对象保留为待确认范围。",
+          "reporting_focus": "待确认对象",
+          "boundary_note": "仍需独立验证，不能直接升格"
+        },
+        {
+          "fact_id": "fact-scope-obj-14",
+          "fact_type": "scope",
+          "status": "candidate",
+          "summary_line": "对象 `ws-rnd-12` 当前作为候选扩展对象保留为待确认范围。",
+          "reporting_focus": "待确认对象",
+          "boundary_note": "仍需独立验证，不能直接升格"
+        }
+      ]
+    },
+    {
+      "group_title": "已确认关联基础设施",
+      "facts": [
+        {
+          "fact_id": "fact-scope-obj-03",
+          "fact_type": "scope",
+          "status": "confirmed",
+          "summary_line": "对象 `198.51.100.144` 当前作为已确认关联基础设施纳入主证据链。",
+          "reporting_focus": "已确认关联基础设施",
+          "boundary_note": "只应写入外联判断或边界封禁动作，不写成已确认受影响范围"
+        },
+        {
+          "fact_id": "fact-scope-obj-04",
+          "fact_type": "scope",
+          "status": "confirmed",
+          "summary_line": "对象 `api.files-sync-share.net` 当前作为已确认关联基础设施纳入主证据链。",
+          "reporting_focus": "已确认关联基础设施",
+          "boundary_note": "只应写入外联判断或边界封禁动作，不写成已确认受影响范围"
+        },
+        {
+          "fact_id": "fact-scope-obj-05",
+          "fact_type": "scope",
+          "status": "confirmed",
+          "summary_line": "对象 `files-sync-share.net` 当前作为已确认关联基础设施纳入主证据链。",
+          "reporting_focus": "已确认关联基础设施",
+          "boundary_note": "只应写入外联判断或边界封禁动作，不写成已确认受影响范围"
+        }
+      ]
+    },
+    {
+      "group_title": "缺口事实",
+      "facts": [
+        {
+          "fact_id": "fact-gap-expand_cluster_scope",
+          "fact_type": "gap",
+          "status": "candidate",
+          "summary_line": "当前仍需对“仍需围绕当前关键关联指标开展一轮扩线核查，确认是否存在同指标的更大范围复现。”补充独立确认。",
+          "reporting_focus": "交付边界",
+          "boundary_note": "限制范围继续扩大，但不否定当前主结论"
+        },
+        {
+          "fact_id": "fact-gap-validate_candidate_events",
+          "fact_type": "gap",
+          "status": "candidate",
+          "summary_line": "当前仍需对“扩线得到的 1 条关联事件尚未完成独立验证，是否应并入主事件范围？”补充独立确认。",
+          "reporting_focus": "交付边界",
+          "boundary_note": "限制范围继续扩大，但不否定当前主结论"
+        },
+        {
+          "fact_id": "fact-gap-ground_external_context",
+          "fact_type": "gap",
+          "status": "candidate",
+          "summary_line": "当前仍需对“补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。”补充独立确认。",
+          "reporting_focus": "交付边界",
+          "boundary_note": "限制范围继续扩大，但不否定当前主结论"
+        },
+        {
+          "fact_id": "fact-gap-check_counterevidence",
+          "fact_type": "gap",
+          "status": "candidate",
+          "summary_line": "当前仍需对“仍需显式检查维护窗口、补丁、备份或共享基线等反证。”补充独立确认。",
+          "reporting_focus": "交付边界",
+          "boundary_note": "限制范围继续扩大，但不否定当前主结论"
+        },
+        {
+          "fact_id": "fact-gap-structure_evidence",
+          "fact_type": "gap",
+          "status": "candidate",
+          "summary_line": "当前仍需对“仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。”补充独立确认。",
+          "reporting_focus": "交付边界",
+          "boundary_note": "限制范围继续扩大，但不否定当前主结论"
+        }
+      ]
+    },
+    {
+      "group_title": "动作依据事实",
+      "facts": [
+        {
+          "fact_id": "fact-action-01",
+          "fact_type": "action_basis",
+          "status": "confirmed",
+          "summary_line": "优先隔离或重点监控已确认受影响资产：ws-rnd-04",
+          "reporting_focus": "处置动作",
+          "boundary_note": "动作需回扣前文证据或边界判断"
+        },
+        {
+          "fact_id": "fact-action-02",
+          "fact_type": "action_basis",
+          "status": "confirmed",
+          "summary_line": "在边界和代理设备上排查并封禁外部基础设施：198.51.100.144、files-sync-share.net、api.files-sync-share.net",
+          "reporting_focus": "处置动作",
+          "boundary_note": "动作需回扣前文证据或边界判断"
+        },
+        {
+          "fact_id": "fact-action-03",
+          "fact_type": "action_basis",
+          "status": "confirmed",
+          "summary_line": "继续核实待确认关联资产 ws-rnd-09",
+          "reporting_focus": "处置动作",
+          "boundary_note": "动作需回扣前文证据或边界判断"
+        },
+        {
+          "fact_id": "fact-action-04",
+          "fact_type": "action_basis",
+          "status": "confirmed",
+          "summary_line": "优先补查：仍需围绕当前关键关联指标开展一轮扩线核查，确认是否存在同指标的更大范围复现",
+          "reporting_focus": "处置动作",
+          "boundary_note": "动作需回扣前文证据或边界判断"
+        }
+      ]
+    }
+  ],
+  "section_fact_map": [
+    {
+      "section_id": "summary",
+      "section_title": "首页摘要",
+      "objective": "只收敛结论、严重度、把握度、已确认受影响范围和立即动作，不展开附录型对象清单；如果当前只有调查锚点而没有已确认受影响资产，不要把调查锚点改写成已确认影响范围。",
+      "packet_refs": [
+        "verdict_packet",
+        "scope_packet",
+        "action_packet"
+      ],
+      "allowed_fact_ids": [
+        "fact-event-evt-602",
+        "fact-event-evt-603",
+        "fact-event-evt-604",
+        "fact-scope-obj-01",
+        "fact-scope-obj-03"
+      ]
+    },
+    {
+      "section_id": "1",
+      "section_title": "1. 事件背景与已知线索",
+      "objective": "说明事件为什么进入调查、调查起点资产是什么、初始异常是什么，以及当前最关键的外部基础设施是什么。",
+      "packet_refs": [
+        "verdict_packet",
+        "scope_packet"
+      ],
+      "allowed_fact_ids": [
+        "fact-event-evt-609",
+        "fact-event-evt-602",
+        "fact-scope-obj-01",
+        "fact-scope-obj-03",
+        "fact-scope-obj-04"
+      ]
+    },
+    {
+      "section_id": "2",
+      "section_title": "2. 范围界定与调查假设",
+      "objective": "说明调查锚点、已确认受影响范围和待确认对象各落在哪里，以及为什么边界停在这里。",
+      "packet_refs": [
+        "scope_packet",
+        "constraint_packet"
+      ],
+      "allowed_fact_ids": [
+        "fact-scope-obj-01",
+        "fact-scope-obj-03",
+        "fact-scope-obj-04",
+        "fact-scope-obj-02",
+        "fact-gap-expand_cluster_scope"
+      ]
+    },
+    {
+      "section_id": "3",
+      "section_title": "3. 对象覆盖策略与关键实体",
+      "objective": "区分调查锚点、已确认受影响对象、待确认对象、核心外部基础设施和背景指标，只点关键对象。",
+      "packet_refs": [
+        "scope_packet"
+      ],
+      "allowed_fact_ids": [
+        "fact-scope-obj-01",
+        "fact-scope-obj-02",
+        "fact-scope-obj-03",
+        "fact-scope-obj-04"
+      ]
+    },
+    {
+      "section_id": "4",
+      "section_title": "4. 事件机制分解",
+      "objective": "按推进关系解释事件从异常通信到执行/横向的主链，不逐条重放所有时间点。",
+      "packet_refs": [
+        "verdict_packet",
+        "scope_packet"
+      ],
+      "allowed_fact_ids": [
+        "fact-event-evt-609",
+        "fact-event-evt-602",
+        "fact-event-evt-604"
+      ]
+    },
+    {
+      "section_id": "5",
+      "section_title": "5. 关键证据与异常事实",
+      "objective": "只抓最关键的支撑事实与反证边界，写清它们为什么改变判断。",
+      "packet_refs": [
+        "verdict_packet",
+        "constraint_packet"
+      ],
+      "allowed_fact_ids": [
+        "fact-event-evt-602",
+        "fact-event-evt-604"
+      ]
+    },
+    {
+      "section_id": "6",
+      "section_title": "6. 时序特征与行为模式",
+      "objective": "只保留少量关键时间节点，并说明这些节点对判断意味着什么。",
+      "packet_refs": [
+        "verdict_packet",
+        "constraint_packet"
+      ],
+      "allowed_fact_ids": [
+        "fact-event-evt-609",
+        "fact-event-evt-602",
+        "fact-event-evt-604",
+        "fact-event-evt-601"
+      ]
+    },
+    {
+      "section_id": "7",
+      "section_title": "7. 传播与关联分析",
+      "objective": "说明哪些关联已经进入主判断，哪些扩线结果仍只是候选或边界说明，不要把调查锚点直接写成范围扩大。",
+      "packet_refs": [
+        "scope_packet",
+        "constraint_packet"
+      ],
+      "allowed_fact_ids": [
+        "fact-event-evt-611",
+        "fact-event-evt-614",
+        "fact-scope-obj-02"
+      ]
+    },
+    {
+      "section_id": "8",
+      "section_title": "8. 影响分析",
+      "objective": "说明已确认受影响范围、已确认异常行为和仍待确认部分之间的区别；如果没有已确认受影响资产，必须写成“当前尚无已确认受影响资产；已观察到的异常行为主要落在调查锚点”，不要使用“影响范围仅限于调查锚点”这类表述。",
+      "packet_refs": [
+        "verdict_packet",
+        "scope_packet",
+        "action_packet"
+      ],
+      "allowed_fact_ids": [
+        "fact-scope-obj-01",
+        "fact-scope-obj-02",
+        "fact-scope-obj-03",
+        "fact-scope-obj-04",
+        "fact-event-evt-604"
+      ]
+    },
+    {
+      "section_id": "9",
+      "section_title": "9. 证据链摘要与观测缺口",
+      "objective": "说明判断上限、当前仍未闭合的缺口，以及为什么这些缺口没有推翻主判断。",
+      "packet_refs": [
+        "constraint_packet"
+      ],
+      "allowed_fact_ids": [
+        "fact-gap-expand_cluster_scope",
+        "fact-gap-validate_candidate_events",
+        "fact-gap-ground_external_context",
+        "fact-gap-check_counterevidence",
+        "fact-gap-structure_evidence",
+        "fact-event-evt-611",
+        "fact-event-evt-614"
+      ]
+    },
+    {
+      "section_id": "10",
+      "section_title": "10. 结论与后续建议",
+      "objective": "按立即处置、短期核查、持续复核三类写动作建议，并回扣前文证据边界。",
+      "packet_refs": [
+        "verdict_packet",
+        "action_packet",
+        "constraint_packet"
+      ],
+      "allowed_fact_ids": [
+        "fact-scope-obj-01",
+        "fact-scope-obj-03",
+        "fact-scope-obj-04",
+        "fact-gap-expand_cluster_scope",
+        "fact-gap-validate_candidate_events",
+        "fact-action-01",
+        "fact-action-02",
+        "fact-action-03",
+        "fact-action-04"
+      ]
+    },
+    {
+      "section_id": "11",
+      "section_title": "11. 技术附录提示",
+      "objective": "只提示附录里有哪些技术明细可以进一步查阅，不重复附录内容。",
+      "packet_refs": [
+        "scope_packet",
+        "constraint_packet"
+      ],
+      "allowed_fact_ids": [
+        "fact-gap-expand_cluster_scope"
+      ]
+    }
+  ],
+  "output_requirements": {
+    "must_keep_single_report": true,
+    "technical_appendix_will_be_appended": true,
+    "appendix_note": "系统会在正文后自动追加完整技术附录；正文只需在第11节提示读者重点关注哪些技术明细。",
+    "writer_style": [
+      "优先解释为什么判断成立、为什么边界停在这里、运维最该先做什么。",
+      "正文只基于 packet 与各节允许引用的 fact cards 写作，不要重新发明新的事实层。",
+      "相近事实要归并叙述，不要把重复通信逐条写成同一句话的改写版。",
+      "不要引入新事实，不要暴露内部实现术语。"
+    ]
+  }
+}

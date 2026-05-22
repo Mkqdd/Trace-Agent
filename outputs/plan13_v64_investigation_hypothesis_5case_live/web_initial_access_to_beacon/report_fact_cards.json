@@ -1,0 +1,475 @@
+{
+  "schema_version": "report-fact-cards-v1",
+  "source_contract": {
+    "evidence_store_schema": "evidence-store-v1",
+    "delivery_decision_schema": "delivery-decision-v1"
+  },
+  "card_counts": {
+    "event": 11,
+    "scope": 9,
+    "gap": 3,
+    "action_basis": 3
+  },
+  "fact_cards": [
+    {
+      "fact_id": "fact-event-evt-301",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-05-11 14:02:00 UTC 资产 `web-app-01` 出现关联事件 `Public-facing web server received exploit requests against the login endpoint before external TLS traffic began.`。",
+      "evidence_refs": [
+        "obs-001"
+      ],
+      "time": "2026-05-11 14:02:00 UTC",
+      "subject": "web-app-01",
+      "action": "出现关联事件",
+      "object": "Public-facing web server received exploit requests against the login endpoint before external TLS traffic began.",
+      "qualifiers": {
+        "event_id": "evt-301",
+        "kind": "alert",
+        "stages": [
+          "initial-access"
+        ],
+        "classification": "suspicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-302",
+      "fact_type": "event",
+      "status": "background",
+      "summary_line": "2026-05-11 14:04:40 UTC 资产 `web-app-01` 当前出现仅用于边界说明的背景事件 `WAF telemetry also showed generic scanner payloads blocked earlier in the same window.`。",
+      "evidence_refs": [
+        "obs-001"
+      ],
+      "time": "2026-05-11 14:04:40 UTC",
+      "subject": "web-app-01",
+      "action": "出现关联事件",
+      "object": "WAF telemetry also showed generic scanner payloads blocked earlier in the same window.",
+      "qualifiers": {
+        "event_id": "evt-302",
+        "kind": "waf",
+        "stages": [],
+        "classification": "benign"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-303",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-05-11 14:07:30 UTC 资产 `web-app-01` 解析域名 `cdn-auth-check.net`。",
+      "evidence_refs": [
+        "obs-001"
+      ],
+      "time": "2026-05-11 14:07:30 UTC",
+      "subject": "web-app-01",
+      "action": "解析域名",
+      "object": "cdn-auth-check.net",
+      "qualifiers": {
+        "event_id": "evt-303",
+        "kind": "dns",
+        "stages": [
+          "initial-access",
+          "command-and-control"
+        ],
+        "classification": "suspicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-304",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-05-11 14:12:00 UTC 资产 `web-app-01` 对外通信 `cdn-auth-check.net / 198.51.100.88`。",
+      "evidence_refs": [
+        "obs-001"
+      ],
+      "time": "2026-05-11 14:12:00 UTC",
+      "subject": "web-app-01",
+      "action": "对外通信",
+      "object": "cdn-auth-check.net / 198.51.100.88",
+      "qualifiers": {
+        "event_id": "evt-304",
+        "kind": "alert",
+        "stages": [
+          "command-and-control"
+        ],
+        "classification": "malicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-305",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-05-11 14:14:10 UTC 资产 `web-app-01` 对外通信 `cdn-auth-check.net / 198.51.100.88`。",
+      "evidence_refs": [
+        "obs-001"
+      ],
+      "time": "2026-05-11 14:14:10 UTC",
+      "subject": "web-app-01",
+      "action": "对外通信",
+      "object": "cdn-auth-check.net / 198.51.100.88",
+      "qualifiers": {
+        "event_id": "evt-305",
+        "kind": "flow",
+        "stages": [
+          "command-and-control"
+        ],
+        "classification": "suspicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-306",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-05-11 14:16:30 UTC 资产 `web-app-01` 出现关联事件 `A web-shell file named shell.aspx appeared under /var/www/html/.cache after the exploit traffic.`。",
+      "evidence_refs": [
+        "obs-001"
+      ],
+      "time": "2026-05-11 14:16:30 UTC",
+      "subject": "web-app-01",
+      "action": "出现关联事件",
+      "object": "A web-shell file named shell.aspx appeared under /var/www/html/.cache after the exploit traffic.",
+      "qualifiers": {
+        "event_id": "evt-306",
+        "kind": "file",
+        "stages": [
+          "initial-access"
+        ],
+        "classification": "suspicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-307",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-05-11 14:18:10 UTC 资产 `web-app-01` 出现执行迹象 `相关主机执行活动`。",
+      "evidence_refs": [
+        "obs-001"
+      ],
+      "time": "2026-05-11 14:18:10 UTC",
+      "subject": "web-app-01",
+      "action": "出现执行迹象",
+      "object": "相关主机执行活动",
+      "qualifiers": {
+        "event_id": "evt-307",
+        "kind": "process",
+        "stages": [
+          "execution"
+        ],
+        "classification": "suspicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-308",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-05-11 14:21:00 UTC 资产 `web-app-01` 出现执行迹象 `Credential-store access from the web worker account followed the PowerShell launcher.`。",
+      "evidence_refs": [
+        "obs-001"
+      ],
+      "time": "2026-05-11 14:21:00 UTC",
+      "subject": "web-app-01",
+      "action": "出现执行迹象",
+      "object": "Credential-store access from the web worker account followed the PowerShell launcher.",
+      "qualifiers": {
+        "event_id": "evt-308",
+        "kind": "alert",
+        "stages": [
+          "execution"
+        ],
+        "classification": "suspicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-309",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-05-11 14:24:20 UTC 资产 `web-app-01` 访问内网目标 `10.60.2.34`。",
+      "evidence_refs": [
+        "obs-001"
+      ],
+      "time": "2026-05-11 14:24:20 UTC",
+      "subject": "web-app-01",
+      "action": "访问内网目标",
+      "object": "10.60.2.34",
+      "qualifiers": {
+        "event_id": "evt-309",
+        "kind": "alert",
+        "stages": [
+          "execution",
+          "lateral-movement"
+        ],
+        "classification": "suspicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-310",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-05-11 14:27:00 UTC 资产 `app-db-01` 解析域名 `cdn-auth-check.net`。",
+      "evidence_refs": [
+        "obs-002",
+        "obs-003"
+      ],
+      "time": "2026-05-11 14:27:00 UTC",
+      "subject": "app-db-01",
+      "action": "解析域名",
+      "object": "cdn-auth-check.net",
+      "qualifiers": {
+        "event_id": "evt-310",
+        "kind": "dns",
+        "stages": [
+          "command-and-control",
+          "lateral-movement"
+        ],
+        "classification": "suspicious"
+      }
+    },
+    {
+      "fact_id": "fact-event-evt-311",
+      "fact_type": "event",
+      "status": "confirmed",
+      "summary_line": "2026-05-11 14:31:30 UTC 资产 `app-db-01` 对外通信 `cdn-auth-check.net / 198.51.100.88`。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "time": "2026-05-11 14:31:30 UTC",
+      "subject": "app-db-01",
+      "action": "对外通信",
+      "object": "cdn-auth-check.net / 198.51.100.88",
+      "qualifiers": {
+        "event_id": "evt-311",
+        "kind": "flow",
+        "stages": [
+          "command-and-control"
+        ],
+        "classification": "suspicious"
+      }
+    },
+    {
+      "fact_id": "fact-scope-obj-01",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `web-app-01` 当前作为调查锚点保留在主调查链中。",
+      "evidence_refs": [
+        "obs-001"
+      ],
+      "entity": "web-app-01",
+      "role": "seed_asset",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-02",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `app-db-01` 当前作为已确认受影响资产纳入已确认影响范围。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003"
+      ],
+      "entity": "app-db-01",
+      "role": "affected_asset",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-03",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `198.51.100.88` 当前作为已确认关联基础设施纳入主证据链。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002"
+      ],
+      "entity": "198.51.100.88",
+      "role": "core_external_indicator",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-04",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `cdn-auth-check.net` 当前作为已确认关联基础设施纳入主证据链。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003"
+      ],
+      "entity": "cdn-auth-check.net",
+      "role": "core_external_indicator",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-07",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `10.60.1.14` 当前作为内网关联对象纳入主证据链。",
+      "evidence_refs": [
+        "obs-001"
+      ],
+      "entity": "10.60.1.14",
+      "role": "related_internal_address",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-08",
+      "fact_type": "scope",
+      "status": "confirmed",
+      "summary_line": "对象 `10.60.2.34` 当前作为内网关联对象纳入主证据链。",
+      "evidence_refs": [
+        "obs-001",
+        "obs-002",
+        "obs-003"
+      ],
+      "entity": "10.60.2.34",
+      "role": "related_internal_address",
+      "scope_status": "confirmed_scope"
+    },
+    {
+      "fact_id": "fact-scope-obj-06",
+      "fact_type": "scope",
+      "status": "background",
+      "summary_line": "对象 `Confirmed web initial access to beacon chain` 当前只作为背景提示保留为背景指标。",
+      "evidence_refs": [],
+      "entity": "Confirmed web initial access to beacon chain",
+      "role": "family_hint",
+      "scope_status": "background_only"
+    },
+    {
+      "fact_id": "fact-scope-obj-05",
+      "fact_type": "scope",
+      "status": "background",
+      "summary_line": "对象 `t13d1517h2_91adbe210bc1_7cae1281e991` 当前只作为种子指标保留为背景指标。",
+      "evidence_refs": [
+        "obs-001"
+      ],
+      "entity": "t13d1517h2_91adbe210bc1_7cae1281e991",
+      "role": "seed_fingerprint",
+      "scope_status": "background_only"
+    },
+    {
+      "fact_id": "fact-scope-obj-09",
+      "fact_type": "scope",
+      "status": "candidate",
+      "summary_line": "对象 `t13d1517h2_91adbe210bc1_7cae1281e991` 当前作为候选扩展对象保留为待确认范围。",
+      "evidence_refs": [
+        "obs-001"
+      ],
+      "entity": "t13d1517h2_91adbe210bc1_7cae1281e991",
+      "role": "expansion_candidate",
+      "scope_status": "candidate_scope"
+    },
+    {
+      "fact_id": "fact-gap-expand_cluster_scope",
+      "fact_type": "gap",
+      "status": "candidate",
+      "summary_line": "当前仍需对“仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。”补充独立确认。",
+      "evidence_refs": [],
+      "question": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "blocking_effect": "该 gap 当前只限制边界说明，不再阻塞核心结论交付。"
+    },
+    {
+      "fact_id": "fact-gap-ground_external_context",
+      "fact_type": "gap",
+      "status": "candidate",
+      "summary_line": "当前仍需对“补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。”补充独立确认。",
+      "evidence_refs": [],
+      "question": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+      "blocking_effect": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。"
+    },
+    {
+      "fact_id": "fact-gap-check_counterevidence",
+      "fact_type": "gap",
+      "status": "candidate",
+      "summary_line": "当前仍需对“仍需显式检查维护窗口、补丁、备份或共享基线等反证。”补充独立确认。",
+      "evidence_refs": [],
+      "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "blocking_effect": "该 gap 当前只限制边界说明，不再阻塞核心结论交付。"
+    },
+    {
+      "fact_id": "fact-action-01",
+      "fact_type": "action_basis",
+      "status": "confirmed",
+      "summary_line": "优先隔离或重点监控已确认受影响资产：web-app-01、app-db-01",
+      "evidence_refs": [],
+      "recommended_action": "优先隔离或重点监控已确认受影响资产：web-app-01、app-db-01",
+      "priority": "immediate"
+    },
+    {
+      "fact_id": "fact-action-02",
+      "fact_type": "action_basis",
+      "status": "confirmed",
+      "summary_line": "在边界和代理设备上排查并封禁外部基础设施：198.51.100.88、cdn-auth-check.net",
+      "evidence_refs": [],
+      "recommended_action": "在边界和代理设备上排查并封禁外部基础设施：198.51.100.88、cdn-auth-check.net",
+      "priority": "immediate"
+    },
+    {
+      "fact_id": "fact-action-03",
+      "fact_type": "action_basis",
+      "status": "confirmed",
+      "summary_line": "优先补查：仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现",
+      "evidence_refs": [],
+      "recommended_action": "优先补查：仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现",
+      "priority": "follow_up"
+    }
+  ],
+  "verdict_packet": {
+    "severity": "高",
+    "confidence": "高",
+    "conclusion_statement": "web-app-01、app-db-01 围绕 198.51.100.88、cdn-auth-check.net 已形成可以稳定交付的异常链。",
+    "supporting_fact_ids": [
+      "fact-event-evt-301",
+      "fact-event-evt-303",
+      "fact-event-evt-304",
+      "fact-scope-obj-02",
+      "fact-scope-obj-03",
+      "fact-scope-obj-04"
+    ]
+  },
+  "scope_packet": {
+    "confirmed_entities": [
+      "web-app-01",
+      "app-db-01"
+    ],
+    "candidate_entities": [],
+    "supporting_fact_ids": [
+      "fact-scope-obj-02",
+      "fact-scope-obj-03",
+      "fact-scope-obj-04",
+      "fact-scope-obj-09"
+    ]
+  },
+  "constraint_packet": {
+    "blocking_gaps": [
+      "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+      "仍需显式检查维护窗口、补丁、备份或共享基线等反证。"
+    ],
+    "counterevidence": [],
+    "boundary_statement": "该 gap 当前只限制边界说明，不再阻塞核心结论交付。",
+    "supporting_fact_ids": [
+      "fact-gap-expand_cluster_scope",
+      "fact-gap-ground_external_context",
+      "fact-gap-check_counterevidence"
+    ]
+  },
+  "action_packet": {
+    "immediate_actions": [
+      "优先隔离或重点监控已确认受影响资产：web-app-01、app-db-01",
+      "在边界和代理设备上排查并封禁外部基础设施：198.51.100.88、cdn-auth-check.net"
+    ],
+    "next_steps": [
+      "优先补查：仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现"
+    ],
+    "supporting_fact_ids": [
+      "fact-scope-obj-02",
+      "fact-scope-obj-03",
+      "fact-scope-obj-04",
+      "fact-gap-expand_cluster_scope",
+      "fact-gap-ground_external_context",
+      "fact-action-01",
+      "fact-action-02",
+      "fact-action-03"
+    ]
+  }
+}

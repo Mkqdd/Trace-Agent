@@ -1,0 +1,2448 @@
+{
+  "schema_version": "investigation-graph-v1",
+  "seed": {
+    "event_time": "2026-07-14 01:10:00",
+    "simulated": false,
+    "src": {
+      "ip": "10.70.3.12",
+      "port": null
+    },
+    "dst": {
+      "ip": "203.0.113.77",
+      "port": null
+    },
+    "protocol": "TLS",
+    "trigger_fingerprint": {
+      "type": "JA4",
+      "value": "t13d1516h2_2ba4190accc0_13fe129f5abc",
+      "matched": true
+    },
+    "enrichment": {
+      "info": "Suspected multi-host beacon spread",
+      "reference": "fixture",
+      "update_time": "2026-07-14 01:10:00"
+    },
+    "raw_alert": {
+      "timestamp": "2026-07-14 01:10:00",
+      "src_ip": "10.70.3.12",
+      "dst_ip": "203.0.113.77",
+      "protocol": "TLS",
+      "trigger_fingerprint": {
+        "type": "JA4",
+        "value": "t13d1516h2_2ba4190accc0_13fe129f5abc"
+      },
+      "info": "Suspected multi-host beacon spread",
+      "reference": "fixture",
+      "update_time": "2026-07-14 01:10:00"
+    }
+  },
+  "runtime_summary": {
+    "seed_event_id": "event:237c0158b753",
+    "step_index": 2,
+    "delivery_status": "",
+    "ready_for_delivery": true,
+    "candidate_event_ids": [],
+    "background_event_ids": [],
+    "support_event_ids": [
+      "evt-801",
+      "evt-802",
+      "evt-803",
+      "evt-804",
+      "evt-805",
+      "evt-808"
+    ],
+    "open_gap_ids": [
+      "expand_cluster_scope",
+      "ground_external_context",
+      "check_counterevidence",
+      "structure_evidence"
+    ],
+    "blocking_gap_ids": [],
+    "reportable_gap_ids": [
+      "expand_cluster_scope",
+      "ground_external_context",
+      "check_counterevidence",
+      "structure_evidence"
+    ],
+    "action_ids": [
+      "action:asset_scope",
+      "action:check_counterevidence",
+      "action:context_building",
+      "action:expand_asset_scope",
+      "action:external_intel",
+      "action:extract_claim_candidates_from_page",
+      "action:extract_entities_from_page",
+      "action:family_validation",
+      "action:host_confirmation",
+      "action:local_intel_lookup",
+      "action:malware_profile_lookup",
+      "action:pivot_related_indicators",
+      "action:search_related_events",
+      "action:technical_source_search",
+      "action:timeline"
+    ],
+    "event_count": 6,
+    "candidate_count": 0,
+    "background_count": 0
+  },
+  "nodes": [
+    {
+      "node_id": "action:asset_scope",
+      "node_type": "action",
+      "label": "asset_scope",
+      "status": "candidate",
+      "boundary": false,
+      "source_ids": [
+        "identify_assets"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "identify_assets"
+      ],
+      "action_ids": [
+        "action:asset_scope"
+      ],
+      "roles": [
+        "candidate_action"
+      ],
+      "properties": {
+        "tool_name": "asset_scope",
+        "target_gap_ids": [
+          "identify_assets"
+        ],
+        "target_hypotheses": [
+          "insufficient_evidence_limits"
+        ],
+        "reason": "仍需确认事件涉及的关键资产。; 该 gap 已不再出现在当前 canonical gap 集合中。",
+        "candidate_kind": "planned"
+      }
+    },
+    {
+      "node_id": "action:check_counterevidence",
+      "node_type": "action",
+      "label": "check_counterevidence",
+      "status": "candidate",
+      "boundary": false,
+      "source_ids": [
+        "check_counterevidence"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "check_counterevidence"
+      ],
+      "action_ids": [
+        "action:check_counterevidence"
+      ],
+      "roles": [
+        "candidate_action"
+      ],
+      "properties": {
+        "tool_name": "check_counterevidence",
+        "target_gap_ids": [
+          "check_counterevidence"
+        ],
+        "target_hypotheses": [
+          "benign_or_shared_infra_alternative"
+        ],
+        "reason": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。; 该 gap 当前只限制边界说明，不再阻塞核心结论交付。",
+        "candidate_kind": "planned"
+      }
+    },
+    {
+      "node_id": "action:context_building",
+      "node_type": "action",
+      "label": "context_building",
+      "status": "candidate",
+      "boundary": false,
+      "source_ids": [
+        "build_context",
+        "identify_assets"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "build_context",
+        "identify_assets"
+      ],
+      "action_ids": [
+        "action:context_building"
+      ],
+      "roles": [
+        "candidate_action"
+      ],
+      "properties": {
+        "tool_name": "context_building",
+        "target_gap_ids": [
+          "build_context",
+          "identify_assets"
+        ],
+        "target_hypotheses": [
+          "insufficient_evidence_limits"
+        ],
+        "reason": "仍需围绕 seed alert 补足最小上下文。; 该 gap 已不再出现在当前 canonical gap 集合中。; 仍需确认事件涉及的关键资产。",
+        "candidate_kind": "planned"
+      }
+    },
+    {
+      "node_id": "action:expand_asset_scope",
+      "node_type": "action",
+      "label": "expand_asset_scope",
+      "status": "candidate",
+      "boundary": false,
+      "source_ids": [
+        "expand_cluster_scope"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "expand_cluster_scope"
+      ],
+      "action_ids": [
+        "action:expand_asset_scope"
+      ],
+      "roles": [
+        "candidate_action"
+      ],
+      "properties": {
+        "tool_name": "expand_asset_scope",
+        "target_gap_ids": [
+          "expand_cluster_scope"
+        ],
+        "target_hypotheses": [
+          "candidate_spread",
+          "insufficient_evidence_limits"
+        ],
+        "reason": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。; 该 gap 当前只限制边界说明，不再阻塞核心结论交付。",
+        "candidate_kind": "planned"
+      }
+    },
+    {
+      "node_id": "action:external_intel",
+      "node_type": "action",
+      "label": "external_intel",
+      "status": "candidate",
+      "boundary": false,
+      "source_ids": [
+        "validate_family_hint"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "validate_family_hint"
+      ],
+      "action_ids": [
+        "action:external_intel"
+      ],
+      "roles": [
+        "candidate_action"
+      ],
+      "properties": {
+        "tool_name": "external_intel",
+        "target_gap_ids": [
+          "validate_family_hint"
+        ],
+        "target_hypotheses": [
+          "candidate_spread"
+        ],
+        "reason": "seed 自带的家族提示 Suspected multi-host beacon spread 是否有更多外部证据支撑？; 该 gap 已不再出现在当前 canonical gap 集合中。",
+        "candidate_kind": "planned"
+      }
+    },
+    {
+      "node_id": "action:extract_claim_candidates_from_page",
+      "node_type": "action",
+      "label": "extract_claim_candidates_from_page",
+      "status": "candidate",
+      "boundary": false,
+      "source_ids": [
+        "structure_evidence"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "structure_evidence"
+      ],
+      "action_ids": [
+        "action:extract_claim_candidates_from_page"
+      ],
+      "roles": [
+        "candidate_action"
+      ],
+      "properties": {
+        "tool_name": "extract_claim_candidates_from_page",
+        "target_gap_ids": [
+          "structure_evidence"
+        ],
+        "target_hypotheses": [
+          "insufficient_evidence_limits"
+        ],
+        "reason": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。; 该 gap 当前只限制边界说明，不再阻塞核心结论交付。",
+        "candidate_kind": "planned"
+      }
+    },
+    {
+      "node_id": "action:extract_entities_from_page",
+      "node_type": "action",
+      "label": "extract_entities_from_page",
+      "status": "candidate",
+      "boundary": false,
+      "source_ids": [
+        "structure_evidence"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "structure_evidence"
+      ],
+      "action_ids": [
+        "action:extract_entities_from_page"
+      ],
+      "roles": [
+        "candidate_action"
+      ],
+      "properties": {
+        "tool_name": "extract_entities_from_page",
+        "target_gap_ids": [
+          "structure_evidence"
+        ],
+        "target_hypotheses": [
+          "insufficient_evidence_limits"
+        ],
+        "reason": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。; 该 gap 当前只限制边界说明，不再阻塞核心结论交付。",
+        "candidate_kind": "planned"
+      }
+    },
+    {
+      "node_id": "action:family_validation",
+      "node_type": "action",
+      "label": "family_validation",
+      "status": "candidate",
+      "boundary": false,
+      "source_ids": [
+        "validate_family_hint"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "validate_family_hint"
+      ],
+      "action_ids": [
+        "action:family_validation"
+      ],
+      "roles": [
+        "candidate_action"
+      ],
+      "properties": {
+        "tool_name": "family_validation",
+        "target_gap_ids": [
+          "validate_family_hint"
+        ],
+        "target_hypotheses": [
+          "candidate_spread"
+        ],
+        "reason": "seed 自带的家族提示 Suspected multi-host beacon spread 是否有更多外部证据支撑？; 该 gap 已不再出现在当前 canonical gap 集合中。",
+        "candidate_kind": "planned"
+      }
+    },
+    {
+      "node_id": "action:host_confirmation",
+      "node_type": "action",
+      "label": "host_confirmation",
+      "status": "candidate",
+      "boundary": false,
+      "source_ids": [
+        "execution_gap"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "execution_gap"
+      ],
+      "action_ids": [
+        "action:host_confirmation"
+      ],
+      "roles": [
+        "candidate_action"
+      ],
+      "properties": {
+        "tool_name": "host_confirmation",
+        "target_gap_ids": [
+          "execution_gap"
+        ],
+        "target_hypotheses": [
+          "insufficient_evidence_limits"
+        ],
+        "reason": "是否存在主机侧执行、持久化或横向移动证据？; 该 gap 已不再出现在当前 canonical gap 集合中。",
+        "candidate_kind": "planned"
+      }
+    },
+    {
+      "node_id": "action:local_intel_lookup",
+      "node_type": "action",
+      "label": "local_intel_lookup",
+      "status": "candidate",
+      "boundary": false,
+      "source_ids": [
+        "ground_external_context"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "ground_external_context"
+      ],
+      "action_ids": [
+        "action:local_intel_lookup"
+      ],
+      "roles": [
+        "candidate_action"
+      ],
+      "properties": {
+        "tool_name": "local_intel_lookup",
+        "target_gap_ids": [
+          "ground_external_context"
+        ],
+        "target_hypotheses": [
+          "benign_or_shared_infra_alternative"
+        ],
+        "reason": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+        "candidate_kind": "planned"
+      }
+    },
+    {
+      "node_id": "action:malware_profile_lookup",
+      "node_type": "action",
+      "label": "malware_profile_lookup",
+      "status": "candidate",
+      "boundary": false,
+      "source_ids": [
+        "ground_external_context"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "ground_external_context"
+      ],
+      "action_ids": [
+        "action:malware_profile_lookup"
+      ],
+      "roles": [
+        "candidate_action"
+      ],
+      "properties": {
+        "tool_name": "malware_profile_lookup",
+        "target_gap_ids": [
+          "ground_external_context"
+        ],
+        "target_hypotheses": [
+          "benign_or_shared_infra_alternative"
+        ],
+        "reason": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+        "candidate_kind": "planned"
+      }
+    },
+    {
+      "node_id": "action:pivot_related_indicators",
+      "node_type": "action",
+      "label": "pivot_related_indicators",
+      "status": "candidate",
+      "boundary": false,
+      "source_ids": [
+        "ground_external_context"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "ground_external_context"
+      ],
+      "action_ids": [
+        "action:pivot_related_indicators"
+      ],
+      "roles": [
+        "candidate_action"
+      ],
+      "properties": {
+        "tool_name": "pivot_related_indicators",
+        "target_gap_ids": [
+          "ground_external_context"
+        ],
+        "target_hypotheses": [
+          "benign_or_shared_infra_alternative"
+        ],
+        "reason": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+        "candidate_kind": "planned"
+      }
+    },
+    {
+      "node_id": "action:search_related_events",
+      "node_type": "action",
+      "label": "search_related_events",
+      "status": "candidate",
+      "boundary": false,
+      "source_ids": [
+        "expand_cluster_scope"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "expand_cluster_scope"
+      ],
+      "action_ids": [
+        "action:search_related_events"
+      ],
+      "roles": [
+        "candidate_action"
+      ],
+      "properties": {
+        "tool_name": "search_related_events",
+        "target_gap_ids": [
+          "expand_cluster_scope"
+        ],
+        "target_hypotheses": [
+          "candidate_spread",
+          "insufficient_evidence_limits"
+        ],
+        "reason": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。; 该 gap 当前只限制边界说明，不再阻塞核心结论交付。",
+        "candidate_kind": "planned"
+      }
+    },
+    {
+      "node_id": "action:technical_source_search",
+      "node_type": "action",
+      "label": "technical_source_search",
+      "status": "candidate",
+      "boundary": false,
+      "source_ids": [
+        "ground_external_context"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "ground_external_context"
+      ],
+      "action_ids": [
+        "action:technical_source_search"
+      ],
+      "roles": [
+        "candidate_action"
+      ],
+      "properties": {
+        "tool_name": "technical_source_search",
+        "target_gap_ids": [
+          "ground_external_context"
+        ],
+        "target_hypotheses": [
+          "benign_or_shared_infra_alternative"
+        ],
+        "reason": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+        "candidate_kind": "planned"
+      }
+    },
+    {
+      "node_id": "action:timeline",
+      "node_type": "action",
+      "label": "timeline",
+      "status": "candidate",
+      "boundary": false,
+      "source_ids": [
+        "build_context"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "build_context"
+      ],
+      "action_ids": [
+        "action:timeline"
+      ],
+      "roles": [
+        "candidate_action"
+      ],
+      "properties": {
+        "tool_name": "timeline",
+        "target_gap_ids": [
+          "build_context"
+        ],
+        "target_hypotheses": [
+          "insufficient_evidence_limits"
+        ],
+        "reason": "仍需围绕 seed alert 补足最小上下文。; 该 gap 已不再出现在当前 canonical gap 集合中。",
+        "candidate_kind": "planned"
+      }
+    },
+    {
+      "node_id": "asset:ws-eng-02",
+      "node_type": "asset",
+      "label": "ws-eng-02",
+      "status": "confirmed",
+      "boundary": false,
+      "source_ids": [
+        "evt-801",
+        "evt-802",
+        "evt-803",
+        "evt-804",
+        "evt-805",
+        "obs-001"
+      ],
+      "event_ids": [
+        "evt-801",
+        "evt-802",
+        "evt-803",
+        "evt-804",
+        "evt-805"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "related_asset",
+        "seed_asset",
+        "supporting",
+        "seed"
+      ],
+      "properties": {
+        "roles": [
+          "related_asset",
+          "seed_asset",
+          "supporting",
+          "seed"
+        ]
+      }
+    },
+    {
+      "node_id": "asset:ws-eng-05",
+      "node_type": "asset",
+      "label": "ws-eng-05",
+      "status": "context",
+      "boundary": false,
+      "source_ids": [
+        "evt-808",
+        "obs-001"
+      ],
+      "event_ids": [
+        "evt-808"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "related_asset",
+        "supporting"
+      ],
+      "properties": {
+        "roles": [
+          "related_asset",
+          "supporting"
+        ]
+      }
+    },
+    {
+      "node_id": "event:evt-801",
+      "node_type": "event",
+      "label": "The seed workstation resolved a rare domain shortly before the suspicious TLS session.",
+      "status": "suspicious",
+      "boundary": false,
+      "source_ids": [
+        "evt-801"
+      ],
+      "event_ids": [
+        "evt-801"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "supporting"
+      ],
+      "properties": {
+        "ts": "2026-07-14T01:04:00Z",
+        "asset_id": "ws-eng-02",
+        "domain": "sync-cdn-notify.net",
+        "dst_ip": "",
+        "src_ip": "10.70.3.12",
+        "fingerprint": "",
+        "grounding_status": ""
+      }
+    },
+    {
+      "node_id": "event:evt-802",
+      "node_type": "event",
+      "label": "Seed JA4 alert matched a suspicious TLS beacon to rare external infrastructure.",
+      "status": "malicious",
+      "boundary": false,
+      "source_ids": [
+        "evt-802"
+      ],
+      "event_ids": [
+        "evt-802"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "seed"
+      ],
+      "properties": {
+        "ts": "2026-07-14T01:10:00Z",
+        "asset_id": "ws-eng-02",
+        "domain": "sync-cdn-notify.net",
+        "dst_ip": "203.0.113.77",
+        "src_ip": "10.70.3.12",
+        "fingerprint": "",
+        "grounding_status": ""
+      }
+    },
+    {
+      "node_id": "event:evt-803",
+      "node_type": "event",
+      "label": "The seed workstation reconnected to the same C2 infrastructure after the alert.",
+      "status": "suspicious",
+      "boundary": false,
+      "source_ids": [
+        "evt-803"
+      ],
+      "event_ids": [
+        "evt-803"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "supporting"
+      ],
+      "properties": {
+        "ts": "2026-07-14T01:14:20Z",
+        "asset_id": "ws-eng-02",
+        "domain": "sync-cdn-notify.net",
+        "dst_ip": "203.0.113.77",
+        "src_ip": "10.70.3.12",
+        "fingerprint": "",
+        "grounding_status": ""
+      }
+    },
+    {
+      "node_id": "event:evt-804",
+      "node_type": "event",
+      "label": "Suspicious rundll32.exe launched a loader DLL from a user-writable path shortly after the beacon sequence.",
+      "status": "suspicious",
+      "boundary": false,
+      "source_ids": [
+        "evt-804"
+      ],
+      "event_ids": [
+        "evt-804"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "supporting"
+      ],
+      "properties": {
+        "ts": "2026-07-14T01:18:00Z",
+        "asset_id": "ws-eng-02",
+        "domain": "",
+        "dst_ip": "",
+        "src_ip": "10.70.3.12",
+        "fingerprint": "",
+        "grounding_status": ""
+      }
+    },
+    {
+      "node_id": "event:evt-805",
+      "node_type": "event",
+      "label": "PsExec remote service creation from ws-eng-02 to ws-eng-05 followed the seed beacon traffic.",
+      "status": "suspicious",
+      "boundary": false,
+      "source_ids": [
+        "evt-805"
+      ],
+      "event_ids": [
+        "evt-805"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "supporting"
+      ],
+      "properties": {
+        "ts": "2026-07-14T01:21:10Z",
+        "asset_id": "ws-eng-02",
+        "domain": "",
+        "dst_ip": "10.70.3.45",
+        "src_ip": "10.70.3.12",
+        "fingerprint": "",
+        "grounding_status": ""
+      }
+    },
+    {
+      "node_id": "event:evt-808",
+      "node_type": "event",
+      "label": "A second workstation contacted the original beacon infrastructure minutes after the remote-service event.",
+      "status": "suspicious",
+      "boundary": false,
+      "source_ids": [
+        "evt-808"
+      ],
+      "event_ids": [
+        "evt-808"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "supporting"
+      ],
+      "properties": {
+        "ts": "2026-07-14T01:28:40Z",
+        "asset_id": "ws-eng-05",
+        "domain": "sync-cdn-notify.net",
+        "dst_ip": "203.0.113.77",
+        "src_ip": "10.70.3.45",
+        "fingerprint": "",
+        "grounding_status": ""
+      }
+    },
+    {
+      "node_id": "gap:build_context",
+      "node_type": "gap",
+      "label": "仍需围绕 seed alert 补足最小上下文。",
+      "status": "closed",
+      "boundary": false,
+      "source_ids": [
+        "build_context"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "build_context"
+      ],
+      "action_ids": [],
+      "roles": [
+        "context"
+      ],
+      "properties": {
+        "question": "仍需围绕 seed alert 补足最小上下文。",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+        "priority": "high",
+        "delivery_blocking": true,
+        "actionable_now": false,
+        "blocks_delivery_now": true,
+        "target_hypotheses": [
+          "insufficient_evidence_limits"
+        ],
+        "target_actions": [
+          "context_building",
+          "timeline"
+        ]
+      }
+    },
+    {
+      "node_id": "gap:check_counterevidence",
+      "node_type": "gap",
+      "label": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+      "status": "unresolved_but_deliverable",
+      "boundary": true,
+      "source_ids": [
+        "check_counterevidence"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "check_counterevidence"
+      ],
+      "action_ids": [],
+      "roles": [
+        "counterevidence"
+      ],
+      "properties": {
+        "question": "仍需显式检查维护窗口、补丁、备份或共享基线等反证。",
+        "status_reason": "该 gap 当前只限制边界说明，不再阻塞核心结论交付。",
+        "priority": "medium",
+        "delivery_blocking": true,
+        "actionable_now": true,
+        "blocks_delivery_now": false,
+        "target_hypotheses": [
+          "benign_or_shared_infra_alternative"
+        ],
+        "target_actions": [
+          "check_counterevidence"
+        ]
+      }
+    },
+    {
+      "node_id": "gap:execution_gap",
+      "node_type": "gap",
+      "label": "是否存在主机侧执行、持久化或横向移动证据？",
+      "status": "closed",
+      "boundary": false,
+      "source_ids": [
+        "execution_gap"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "execution_gap"
+      ],
+      "action_ids": [],
+      "roles": [
+        "host_confirmation"
+      ],
+      "properties": {
+        "question": "是否存在主机侧执行、持久化或横向移动证据？",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+        "priority": "medium",
+        "delivery_blocking": false,
+        "actionable_now": false,
+        "blocks_delivery_now": false,
+        "target_hypotheses": [
+          "insufficient_evidence_limits"
+        ],
+        "target_actions": [
+          "host_confirmation"
+        ]
+      }
+    },
+    {
+      "node_id": "gap:expand_cluster_scope",
+      "node_type": "gap",
+      "label": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+      "status": "unresolved_but_deliverable",
+      "boundary": true,
+      "source_ids": [
+        "expand_cluster_scope"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "expand_cluster_scope"
+      ],
+      "action_ids": [],
+      "roles": [
+        "cluster_scope"
+      ],
+      "properties": {
+        "question": "仍需围绕当前 pivot 做一次显式扩线，确认是否存在同指标的更大范围复现。",
+        "status_reason": "该 gap 当前只限制边界说明，不再阻塞核心结论交付。",
+        "priority": "high",
+        "delivery_blocking": true,
+        "actionable_now": true,
+        "blocks_delivery_now": false,
+        "target_hypotheses": [
+          "candidate_spread",
+          "insufficient_evidence_limits"
+        ],
+        "target_actions": [
+          "search_related_events",
+          "expand_asset_scope"
+        ]
+      }
+    },
+    {
+      "node_id": "gap:ground_external_context",
+      "node_type": "gap",
+      "label": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+      "status": "open",
+      "boundary": true,
+      "source_ids": [
+        "ground_external_context"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "ground_external_context"
+      ],
+      "action_ids": [],
+      "roles": [
+        "external_context"
+      ],
+      "properties": {
+        "question": "补充 seed 家族、指纹或外部基础设施的公开技术背景，明确它只能作为背景还是能支撑基础设施解释。",
+        "status_reason": "",
+        "priority": "low",
+        "delivery_blocking": false,
+        "actionable_now": true,
+        "blocks_delivery_now": false,
+        "target_hypotheses": [
+          "benign_or_shared_infra_alternative"
+        ],
+        "target_actions": [
+          "local_intel_lookup",
+          "technical_source_search",
+          "malware_profile_lookup",
+          "pivot_related_indicators"
+        ]
+      }
+    },
+    {
+      "node_id": "gap:identify_assets",
+      "node_type": "gap",
+      "label": "仍需确认事件涉及的关键资产。",
+      "status": "closed",
+      "boundary": false,
+      "source_ids": [
+        "identify_assets"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "identify_assets"
+      ],
+      "action_ids": [],
+      "roles": [
+        "asset_identity"
+      ],
+      "properties": {
+        "question": "仍需确认事件涉及的关键资产。",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+        "priority": "high",
+        "delivery_blocking": true,
+        "actionable_now": false,
+        "blocks_delivery_now": true,
+        "target_hypotheses": [
+          "insufficient_evidence_limits"
+        ],
+        "target_actions": [
+          "context_building",
+          "asset_scope"
+        ]
+      }
+    },
+    {
+      "node_id": "gap:structure_evidence",
+      "node_type": "gap",
+      "label": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+      "status": "unresolved_but_deliverable",
+      "boundary": true,
+      "source_ids": [
+        "structure_evidence"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "structure_evidence"
+      ],
+      "action_ids": [],
+      "roles": [
+        "report_structuring"
+      ],
+      "properties": {
+        "question": "仍需把当前事件事实沉淀为 claim 或可引用实体，避免报告只剩原始事件聚合。",
+        "status_reason": "该 gap 当前只限制边界说明，不再阻塞核心结论交付。",
+        "priority": "medium",
+        "delivery_blocking": true,
+        "actionable_now": true,
+        "blocks_delivery_now": false,
+        "target_hypotheses": [
+          "insufficient_evidence_limits"
+        ],
+        "target_actions": [
+          "extract_claim_candidates_from_page",
+          "extract_entities_from_page"
+        ]
+      }
+    },
+    {
+      "node_id": "gap:validate_family_hint",
+      "node_type": "gap",
+      "label": "seed 自带的家族提示 Suspected multi-host beacon spread 是否有更多外部证据支撑？",
+      "status": "closed",
+      "boundary": false,
+      "source_ids": [
+        "validate_family_hint"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [
+        "validate_family_hint"
+      ],
+      "action_ids": [],
+      "roles": [
+        "family_validation"
+      ],
+      "properties": {
+        "question": "seed 自带的家族提示 Suspected multi-host beacon spread 是否有更多外部证据支撑？",
+        "status_reason": "该 gap 已不再出现在当前 canonical gap 集合中。",
+        "priority": "low",
+        "delivery_blocking": false,
+        "actionable_now": false,
+        "blocks_delivery_now": false,
+        "target_hypotheses": [
+          "candidate_spread"
+        ],
+        "target_actions": [
+          "family_validation",
+          "external_intel"
+        ]
+      }
+    },
+    {
+      "node_id": "hypothesis:benign_or_shared_infra_alternative",
+      "node_type": "hypothesis",
+      "label": "Shared infrastructure, maintenance, or benign background may explain part of the signal.",
+      "status": "open",
+      "boundary": false,
+      "source_ids": [],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "benign_or_shared_infra_alternative"
+      ],
+      "properties": {
+        "hypothesis_id": "benign_or_shared_infra_alternative",
+        "claim": "Shared infrastructure, maintenance, or benign background may explain part of the signal.",
+        "priority": 2,
+        "delivery_status": "",
+        "ready_for_delivery": true
+      }
+    },
+    {
+      "node_id": "hypothesis:candidate_spread",
+      "node_type": "hypothesis",
+      "label": "Candidate spread may extend the incident scope and still needs validation.",
+      "status": "open",
+      "boundary": false,
+      "source_ids": [],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "candidate_spread"
+      ],
+      "properties": {
+        "hypothesis_id": "candidate_spread",
+        "claim": "Candidate spread may extend the incident scope and still needs validation.",
+        "priority": 1,
+        "delivery_status": "",
+        "ready_for_delivery": true
+      }
+    },
+    {
+      "node_id": "hypothesis:confirmed_main_chain",
+      "node_type": "hypothesis",
+      "label": "The confirmed main chain is sufficient for the current incident verdict.",
+      "status": "open",
+      "boundary": false,
+      "source_ids": [],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "confirmed_main_chain"
+      ],
+      "properties": {
+        "hypothesis_id": "confirmed_main_chain",
+        "claim": "The confirmed main chain is sufficient for the current incident verdict.",
+        "priority": 0,
+        "delivery_status": "",
+        "ready_for_delivery": true
+      }
+    },
+    {
+      "node_id": "hypothesis:false_positive_or_noise",
+      "node_type": "hypothesis",
+      "label": "The seed could still be false positive or background noise if support stays weak.",
+      "status": "open",
+      "boundary": false,
+      "source_ids": [],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "false_positive_or_noise"
+      ],
+      "properties": {
+        "hypothesis_id": "false_positive_or_noise",
+        "claim": "The seed could still be false positive or background noise if support stays weak.",
+        "priority": 4,
+        "delivery_status": "",
+        "ready_for_delivery": true
+      }
+    },
+    {
+      "node_id": "hypothesis:insufficient_evidence_limits",
+      "node_type": "hypothesis",
+      "label": "Missing evidence still limits stronger claims about scope, attribution, or closure.",
+      "status": "open",
+      "boundary": false,
+      "source_ids": [],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "insufficient_evidence_limits"
+      ],
+      "properties": {
+        "hypothesis_id": "insufficient_evidence_limits",
+        "claim": "Missing evidence still limits stronger claims about scope, attribution, or closure.",
+        "priority": 3,
+        "delivery_status": "",
+        "ready_for_delivery": true
+      }
+    },
+    {
+      "node_id": "indicator:10.70.3.12",
+      "node_type": "indicator",
+      "label": "10.70.3.12",
+      "status": "context",
+      "boundary": false,
+      "source_ids": [
+        "evt-801",
+        "evt-802",
+        "evt-803",
+        "evt-804",
+        "evt-805",
+        "obs-001"
+      ],
+      "event_ids": [
+        "evt-801",
+        "evt-802",
+        "evt-803",
+        "evt-804",
+        "evt-805"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "event"
+      ],
+      "properties": {
+        "indicator_type": "ip",
+        "source_kinds": [
+          "event"
+        ]
+      }
+    },
+    {
+      "node_id": "indicator:10.70.3.45",
+      "node_type": "indicator",
+      "label": "10.70.3.45",
+      "status": "boundary",
+      "boundary": true,
+      "source_ids": [
+        "evt-805",
+        "evt-808",
+        "obs-001"
+      ],
+      "event_ids": [
+        "evt-805",
+        "evt-808"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "event",
+        "entity"
+      ],
+      "properties": {
+        "indicator_type": "ip",
+        "source_kinds": [
+          "event",
+          "entity"
+        ]
+      }
+    },
+    {
+      "node_id": "indicator:203.0.113.77",
+      "node_type": "indicator",
+      "label": "203.0.113.77",
+      "status": "boundary",
+      "boundary": true,
+      "source_ids": [
+        "evt-802",
+        "evt-803",
+        "evt-808",
+        "obs-001"
+      ],
+      "event_ids": [
+        "evt-802",
+        "evt-803",
+        "evt-808"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "event",
+        "entity",
+        "scope"
+      ],
+      "properties": {
+        "indicator_type": "ip",
+        "source_kinds": [
+          "event",
+          "entity",
+          "scope"
+        ]
+      }
+    },
+    {
+      "node_id": "indicator:sync-cdn-notify.net",
+      "node_type": "indicator",
+      "label": "sync-cdn-notify.net",
+      "status": "boundary",
+      "boundary": true,
+      "source_ids": [
+        "evt-801",
+        "evt-802",
+        "evt-803",
+        "evt-808",
+        "obs-001"
+      ],
+      "event_ids": [
+        "evt-801",
+        "evt-802",
+        "evt-803",
+        "evt-808"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "event",
+        "entity",
+        "scope"
+      ],
+      "properties": {
+        "indicator_type": "domain",
+        "source_kinds": [
+          "event",
+          "entity",
+          "scope"
+        ]
+      }
+    },
+    {
+      "node_id": "indicator:t13d1516h2_2ba4190accc0_13fe129f5abc",
+      "node_type": "indicator",
+      "label": "t13d1516h2_2ba4190accc0_13fe129f5abc",
+      "status": "context",
+      "boundary": false,
+      "source_ids": [],
+      "event_ids": [],
+      "observation_ids": [],
+      "gap_ids": [],
+      "action_ids": [],
+      "roles": [
+        "seed"
+      ],
+      "properties": {
+        "indicator_type": "fingerprint",
+        "source_kinds": [
+          "seed"
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "edge:02812eae0117",
+      "source": "action:context_building",
+      "target": "hypothesis:insufficient_evidence_limits",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "build_context",
+        "identify_assets"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "context_building"
+      }
+    },
+    {
+      "edge_id": "edge:0c20dc9d1db7",
+      "source": "event:evt-801",
+      "target": "hypothesis:false_positive_or_noise",
+      "relation": "refutes",
+      "boundary": false,
+      "source_ids": [
+        "evt-801"
+      ],
+      "event_ids": [
+        "evt-801"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:0ea478878b44",
+      "source": "action:external_intel",
+      "target": "hypothesis:candidate_spread",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "validate_family_hint"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "external_intel"
+      }
+    },
+    {
+      "edge_id": "edge:0f017c0e9e2d",
+      "source": "event:evt-802",
+      "target": "asset:ws-eng-02",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-802"
+      ],
+      "event_ids": [
+        "evt-802"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:139d822a074a",
+      "source": "event:evt-803",
+      "target": "indicator:sync-cdn-notify.net",
+      "relation": "supports",
+      "boundary": true,
+      "source_ids": [
+        "evt-803"
+      ],
+      "event_ids": [
+        "evt-803"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:1929cdfdba63",
+      "source": "event:evt-808",
+      "target": "indicator:10.70.3.45",
+      "relation": "supports",
+      "boundary": true,
+      "source_ids": [
+        "evt-808"
+      ],
+      "event_ids": [
+        "evt-808"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:1ac6c1d4045a",
+      "source": "action:family_validation",
+      "target": "hypothesis:candidate_spread",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "validate_family_hint"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "family_validation"
+      }
+    },
+    {
+      "edge_id": "edge:1d6040e5a847",
+      "source": "gap:expand_cluster_scope",
+      "target": "hypothesis:candidate_spread",
+      "relation": "limits",
+      "boundary": true,
+      "source_ids": [
+        "expand_cluster_scope"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "gap_id": "expand_cluster_scope"
+      }
+    },
+    {
+      "edge_id": "edge:1fc27e7306b2",
+      "source": "event:evt-801",
+      "target": "hypothesis:confirmed_main_chain",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-801"
+      ],
+      "event_ids": [
+        "evt-801"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:20cdea5394a5",
+      "source": "event:evt-802",
+      "target": "hypothesis:false_positive_or_noise",
+      "relation": "refutes",
+      "boundary": false,
+      "source_ids": [
+        "evt-802"
+      ],
+      "event_ids": [
+        "evt-802"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:254c97665410",
+      "source": "event:evt-802",
+      "target": "hypothesis:confirmed_main_chain",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-802"
+      ],
+      "event_ids": [
+        "evt-802"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:2a0c48e4d779",
+      "source": "event:evt-803",
+      "target": "hypothesis:false_positive_or_noise",
+      "relation": "refutes",
+      "boundary": false,
+      "source_ids": [
+        "evt-803"
+      ],
+      "event_ids": [
+        "evt-803"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:35a27b29322a",
+      "source": "event:evt-802",
+      "target": "indicator:10.70.3.12",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-802"
+      ],
+      "event_ids": [
+        "evt-802"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:3f5480da04c2",
+      "source": "event:evt-804",
+      "target": "hypothesis:confirmed_main_chain",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-804"
+      ],
+      "event_ids": [
+        "evt-804"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:44852a2239bf",
+      "source": "action:local_intel_lookup",
+      "target": "hypothesis:benign_or_shared_infra_alternative",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "ground_external_context"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "local_intel_lookup"
+      }
+    },
+    {
+      "edge_id": "edge:4d09875420e9",
+      "source": "gap:check_counterevidence",
+      "target": "hypothesis:benign_or_shared_infra_alternative",
+      "relation": "limits",
+      "boundary": true,
+      "source_ids": [
+        "check_counterevidence"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "gap_id": "check_counterevidence"
+      }
+    },
+    {
+      "edge_id": "edge:4dfe26a705e6",
+      "source": "gap:structure_evidence",
+      "target": "hypothesis:insufficient_evidence_limits",
+      "relation": "limits",
+      "boundary": true,
+      "source_ids": [
+        "structure_evidence"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "gap_id": "structure_evidence"
+      }
+    },
+    {
+      "edge_id": "edge:55ecac7306ed",
+      "source": "event:evt-805",
+      "target": "hypothesis:confirmed_main_chain",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-805"
+      ],
+      "event_ids": [
+        "evt-805"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:562e169bfdbf",
+      "source": "event:evt-804",
+      "target": "indicator:10.70.3.12",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-804"
+      ],
+      "event_ids": [
+        "evt-804"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:5993b37e1055",
+      "source": "action:check_counterevidence",
+      "target": "hypothesis:benign_or_shared_infra_alternative",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "check_counterevidence"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "check_counterevidence"
+      }
+    },
+    {
+      "edge_id": "edge:5ad0a5f93d32",
+      "source": "event:evt-808",
+      "target": "indicator:203.0.113.77",
+      "relation": "supports",
+      "boundary": true,
+      "source_ids": [
+        "evt-808"
+      ],
+      "event_ids": [
+        "evt-808"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:66f64ab80723",
+      "source": "action:search_related_events",
+      "target": "hypothesis:insufficient_evidence_limits",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "expand_cluster_scope"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "search_related_events"
+      }
+    },
+    {
+      "edge_id": "edge:671c4094f07c",
+      "source": "action:expand_asset_scope",
+      "target": "hypothesis:insufficient_evidence_limits",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "expand_cluster_scope"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "expand_asset_scope"
+      }
+    },
+    {
+      "edge_id": "edge:6a58952fbb7f",
+      "source": "event:evt-805",
+      "target": "indicator:10.70.3.45",
+      "relation": "supports",
+      "boundary": true,
+      "source_ids": [
+        "evt-805"
+      ],
+      "event_ids": [
+        "evt-805"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:6c2d69a9b182",
+      "source": "event:evt-801",
+      "target": "indicator:sync-cdn-notify.net",
+      "relation": "supports",
+      "boundary": true,
+      "source_ids": [
+        "evt-801"
+      ],
+      "event_ids": [
+        "evt-801"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:6c9889a30067",
+      "source": "action:expand_asset_scope",
+      "target": "hypothesis:candidate_spread",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "expand_cluster_scope"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "expand_asset_scope"
+      }
+    },
+    {
+      "edge_id": "edge:748a66e99a43",
+      "source": "action:technical_source_search",
+      "target": "hypothesis:benign_or_shared_infra_alternative",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "ground_external_context"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "technical_source_search"
+      }
+    },
+    {
+      "edge_id": "edge:761b26979f56",
+      "source": "action:asset_scope",
+      "target": "hypothesis:insufficient_evidence_limits",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "identify_assets"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "asset_scope"
+      }
+    },
+    {
+      "edge_id": "edge:7be90a2aa0dd",
+      "source": "action:malware_profile_lookup",
+      "target": "hypothesis:benign_or_shared_infra_alternative",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "ground_external_context"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "malware_profile_lookup"
+      }
+    },
+    {
+      "edge_id": "edge:7cf76288124f",
+      "source": "event:evt-803",
+      "target": "indicator:203.0.113.77",
+      "relation": "supports",
+      "boundary": true,
+      "source_ids": [
+        "evt-803"
+      ],
+      "event_ids": [
+        "evt-803"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:869d46588533",
+      "source": "event:evt-805",
+      "target": "hypothesis:false_positive_or_noise",
+      "relation": "refutes",
+      "boundary": false,
+      "source_ids": [
+        "evt-805"
+      ],
+      "event_ids": [
+        "evt-805"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:8775d3dfd857",
+      "source": "event:evt-808",
+      "target": "asset:ws-eng-05",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-808"
+      ],
+      "event_ids": [
+        "evt-808"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:87f86ce50a9f",
+      "source": "gap:validate_family_hint",
+      "target": "hypothesis:candidate_spread",
+      "relation": "limits",
+      "boundary": true,
+      "source_ids": [
+        "validate_family_hint"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "gap_id": "validate_family_hint"
+      }
+    },
+    {
+      "edge_id": "edge:8a2000b17541",
+      "source": "action:timeline",
+      "target": "hypothesis:insufficient_evidence_limits",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "build_context"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "timeline"
+      }
+    },
+    {
+      "edge_id": "edge:8a35c31b2b9f",
+      "source": "action:host_confirmation",
+      "target": "hypothesis:insufficient_evidence_limits",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "execution_gap"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "host_confirmation"
+      }
+    },
+    {
+      "edge_id": "edge:8a97e6cdfbd0",
+      "source": "action:extract_claim_candidates_from_page",
+      "target": "hypothesis:insufficient_evidence_limits",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "structure_evidence"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "extract_claim_candidates_from_page"
+      }
+    },
+    {
+      "edge_id": "edge:8b816b086f05",
+      "source": "event:evt-803",
+      "target": "indicator:10.70.3.12",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-803"
+      ],
+      "event_ids": [
+        "evt-803"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:8db3d3b73058",
+      "source": "gap:expand_cluster_scope",
+      "target": "hypothesis:insufficient_evidence_limits",
+      "relation": "limits",
+      "boundary": true,
+      "source_ids": [
+        "expand_cluster_scope"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "gap_id": "expand_cluster_scope"
+      }
+    },
+    {
+      "edge_id": "edge:91512345a225",
+      "source": "event:evt-808",
+      "target": "hypothesis:confirmed_main_chain",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-808"
+      ],
+      "event_ids": [
+        "evt-808"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:94a9775040ba",
+      "source": "event:evt-804",
+      "target": "hypothesis:false_positive_or_noise",
+      "relation": "refutes",
+      "boundary": false,
+      "source_ids": [
+        "evt-804"
+      ],
+      "event_ids": [
+        "evt-804"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:98a9695ae59f",
+      "source": "event:evt-803",
+      "target": "asset:ws-eng-02",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-803"
+      ],
+      "event_ids": [
+        "evt-803"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:9edb4c7dd0c3",
+      "source": "event:evt-801",
+      "target": "asset:ws-eng-02",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-801"
+      ],
+      "event_ids": [
+        "evt-801"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:a7380eb62a86",
+      "source": "gap:execution_gap",
+      "target": "hypothesis:insufficient_evidence_limits",
+      "relation": "limits",
+      "boundary": true,
+      "source_ids": [
+        "execution_gap"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "gap_id": "execution_gap"
+      }
+    },
+    {
+      "edge_id": "edge:aaf91708f961",
+      "source": "action:extract_entities_from_page",
+      "target": "hypothesis:insufficient_evidence_limits",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "structure_evidence"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "extract_entities_from_page"
+      }
+    },
+    {
+      "edge_id": "edge:bb7d5b4f1bec",
+      "source": "event:evt-802",
+      "target": "indicator:sync-cdn-notify.net",
+      "relation": "supports",
+      "boundary": true,
+      "source_ids": [
+        "evt-802"
+      ],
+      "event_ids": [
+        "evt-802"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:bc9e7ff0e1c3",
+      "source": "event:evt-804",
+      "target": "asset:ws-eng-02",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-804"
+      ],
+      "event_ids": [
+        "evt-804"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:bfe4ac4b08b0",
+      "source": "event:evt-805",
+      "target": "asset:ws-eng-02",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-805"
+      ],
+      "event_ids": [
+        "evt-805"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:c355af601a82",
+      "source": "gap:build_context",
+      "target": "hypothesis:insufficient_evidence_limits",
+      "relation": "limits",
+      "boundary": true,
+      "source_ids": [
+        "build_context"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "gap_id": "build_context"
+      }
+    },
+    {
+      "edge_id": "edge:c575b2699a71",
+      "source": "gap:ground_external_context",
+      "target": "hypothesis:benign_or_shared_infra_alternative",
+      "relation": "limits",
+      "boundary": true,
+      "source_ids": [
+        "ground_external_context"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "gap_id": "ground_external_context"
+      }
+    },
+    {
+      "edge_id": "edge:c89d15b814a9",
+      "source": "action:pivot_related_indicators",
+      "target": "hypothesis:benign_or_shared_infra_alternative",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "ground_external_context"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "pivot_related_indicators"
+      }
+    },
+    {
+      "edge_id": "edge:cc1475aa601c",
+      "source": "event:evt-801",
+      "target": "indicator:10.70.3.12",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-801"
+      ],
+      "event_ids": [
+        "evt-801"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:cca6aaf9aa01",
+      "source": "event:evt-808",
+      "target": "indicator:sync-cdn-notify.net",
+      "relation": "supports",
+      "boundary": true,
+      "source_ids": [
+        "evt-808"
+      ],
+      "event_ids": [
+        "evt-808"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:e76e2d91ac72",
+      "source": "event:evt-808",
+      "target": "hypothesis:false_positive_or_noise",
+      "relation": "refutes",
+      "boundary": false,
+      "source_ids": [
+        "evt-808"
+      ],
+      "event_ids": [
+        "evt-808"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:e7f519ab47e1",
+      "source": "gap:identify_assets",
+      "target": "hypothesis:insufficient_evidence_limits",
+      "relation": "limits",
+      "boundary": true,
+      "source_ids": [
+        "identify_assets"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "gap_id": "identify_assets"
+      }
+    },
+    {
+      "edge_id": "edge:ec9edeb0428c",
+      "source": "event:evt-802",
+      "target": "indicator:203.0.113.77",
+      "relation": "supports",
+      "boundary": true,
+      "source_ids": [
+        "evt-802"
+      ],
+      "event_ids": [
+        "evt-802"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:f6682ec42e26",
+      "source": "event:evt-803",
+      "target": "hypothesis:confirmed_main_chain",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-803"
+      ],
+      "event_ids": [
+        "evt-803"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    },
+    {
+      "edge_id": "edge:fbab39080ab7",
+      "source": "action:search_related_events",
+      "target": "hypothesis:candidate_spread",
+      "relation": "suggests_next",
+      "boundary": false,
+      "source_ids": [
+        "expand_cluster_scope"
+      ],
+      "event_ids": [],
+      "observation_ids": [],
+      "properties": {
+        "tool_name": "search_related_events"
+      }
+    },
+    {
+      "edge_id": "edge:fd310020a5aa",
+      "source": "event:evt-805",
+      "target": "indicator:10.70.3.12",
+      "relation": "supports",
+      "boundary": false,
+      "source_ids": [
+        "evt-805"
+      ],
+      "event_ids": [
+        "evt-805"
+      ],
+      "observation_ids": [
+        "obs-001"
+      ],
+      "properties": {}
+    }
+  ],
+  "graph_stats": {
+    "node_count": 41,
+    "edge_count": 58,
+    "event_node_count": 6,
+    "asset_node_count": 2,
+    "indicator_node_count": 5,
+    "hypothesis_node_count": 5,
+    "gap_node_count": 8,
+    "action_node_count": 15,
+    "event_count": 6,
+    "candidate_event_count": 0,
+    "background_event_count": 0
+  },
+  "hypothesis_board": {
+    "schema_version": "investigation-hypothesis-board-v2",
+    "graph_schema_version": "investigation-graph-v1",
+    "last_updated_round": 2,
+    "hypotheses": [
+      {
+        "hypothesis_id": "confirmed_main_chain",
+        "claim": "The confirmed main chain is sufficient for the current incident verdict.",
+        "status": "closed",
+        "priority": 0,
+        "support_event_ids": [
+          "evt-801",
+          "evt-802",
+          "evt-804",
+          "evt-805",
+          "evt-808",
+          "evt-803"
+        ],
+        "support_observation_ids": [
+          "obs-001"
+        ],
+        "refute_event_ids": [],
+        "refute_observation_ids": [],
+        "gap_ids": [],
+        "candidate_action_ids": [],
+        "last_updated_round": 2,
+        "why_next": "Keep the main chain tightly bounded and avoid promoting candidate evidence to confirmed without grounding."
+      },
+      {
+        "hypothesis_id": "candidate_spread",
+        "claim": "Candidate spread may extend the incident scope and still needs validation.",
+        "status": "open",
+        "priority": 1,
+        "support_event_ids": [],
+        "support_observation_ids": [],
+        "refute_event_ids": [],
+        "refute_observation_ids": [],
+        "gap_ids": [
+          "expand_cluster_scope",
+          "validate_family_hint"
+        ],
+        "candidate_action_ids": [
+          "action:external_intel",
+          "action:family_validation",
+          "action:expand_asset_scope",
+          "action:search_related_events"
+        ],
+        "last_updated_round": 2,
+        "why_next": "Validate whether candidate spread is real before merging it into the confirmed scope."
+      },
+      {
+        "hypothesis_id": "benign_or_shared_infra_alternative",
+        "claim": "Shared infrastructure, maintenance, or benign background may explain part of the signal.",
+        "status": "open",
+        "priority": 2,
+        "support_event_ids": [],
+        "support_observation_ids": [],
+        "refute_event_ids": [],
+        "refute_observation_ids": [],
+        "gap_ids": [
+          "check_counterevidence",
+          "ground_external_context"
+        ],
+        "candidate_action_ids": [
+          "action:local_intel_lookup",
+          "action:check_counterevidence",
+          "action:technical_source_search",
+          "action:malware_profile_lookup",
+          "action:pivot_related_indicators"
+        ],
+        "last_updated_round": 2,
+        "why_next": "Continue checking shared infrastructure and background explanations before stronger attribution."
+      },
+      {
+        "hypothesis_id": "insufficient_evidence_limits",
+        "claim": "Missing evidence still limits stronger claims about scope, attribution, or closure.",
+        "status": "open",
+        "priority": 3,
+        "support_event_ids": [],
+        "support_observation_ids": [],
+        "refute_event_ids": [],
+        "refute_observation_ids": [],
+        "gap_ids": [
+          "structure_evidence",
+          "expand_cluster_scope",
+          "execution_gap",
+          "build_context",
+          "identify_assets"
+        ],
+        "candidate_action_ids": [
+          "action:context_building",
+          "action:search_related_events",
+          "action:expand_asset_scope",
+          "action:asset_scope",
+          "action:timeline",
+          "action:host_confirmation",
+          "action:extract_claim_candidates_from_page",
+          "action:extract_entities_from_page"
+        ],
+        "last_updated_round": 2,
+        "why_next": "Close the remaining gaps before claiming a stronger conclusion."
+      },
+      {
+        "hypothesis_id": "false_positive_or_noise",
+        "claim": "The seed could still be false positive or background noise if support stays weak.",
+        "status": "weakened",
+        "priority": 4,
+        "support_event_ids": [],
+        "support_observation_ids": [],
+        "refute_event_ids": [
+          "evt-801",
+          "evt-802",
+          "evt-803",
+          "evt-805",
+          "evt-804",
+          "evt-808"
+        ],
+        "refute_observation_ids": [
+          "obs-001"
+        ],
+        "gap_ids": [],
+        "candidate_action_ids": [],
+        "last_updated_round": 2,
+        "why_next": "Only revisit this hypothesis if the seed remains weak after the main chain is checked."
+      }
+    ]
+  }
+}

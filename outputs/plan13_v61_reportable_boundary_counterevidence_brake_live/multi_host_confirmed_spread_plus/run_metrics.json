@@ -1,0 +1,51 @@
+{
+  "stop_reason": "agent_finish",
+  "stop_reason_in_enum": true,
+  "secondary_stop_reasons": [],
+  "ready_for_delivery_at_stop": false,
+  "actionable_path_at_stop": false,
+  "blocking_gap_count_at_stop": 0,
+  "value_of_information_at_stop": {
+    "level": "high",
+    "best_action": "expand_asset_scope",
+    "best_action_score": 7,
+    "finish_score": 1,
+    "active_hypothesis_ids": [
+      "candidate_spread",
+      "benign_or_shared_infra_alternative",
+      "insufficient_evidence_limits"
+    ],
+    "reason": "Best action expand_asset_scope scores 7 against active hypotheses candidate_spread, benign_or_shared_infra_alternative, insufficient_evidence_limits."
+  },
+  "hypothesis_status_counts": {
+    "closed": 1,
+    "open": 3,
+    "weakened": 1
+  },
+  "delta_label_counts": {
+    "new_confirmed_event": 1,
+    "scope_changed": 1,
+    "actionability_improved": 1,
+    "unknown": 1
+  },
+  "candidate_event_count": 0,
+  "background_event_count": 0,
+  "tool_history_length": 1,
+  "agent_round_count": 2,
+  "reviewer_round_count": 2,
+  "reviewer_replacement_count": 0,
+  "execution_source_counts": {
+    "investigator_preflight_approved": 1,
+    "finish_reviewer": 1
+  },
+  "invalid_proposal_count": 0,
+  "duplicate_deterministic_call_count": 0,
+  "preflight_block_count": 0,
+  "reviewer_block_count": 0,
+  "prompt_payload_bytes": {
+    "agent_total": 53050,
+    "reviewer_total": 97768,
+    "agent_context_v1_preview_total": 51628,
+    "total": 150818
+  }
+}

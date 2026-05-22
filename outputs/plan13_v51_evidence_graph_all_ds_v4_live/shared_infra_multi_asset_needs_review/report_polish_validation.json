@@ -1,0 +1,32 @@
+{
+  "schema_version": "report-polish-validation-v1",
+  "applied": true,
+  "status": "hard_fail",
+  "summary": "发现 2 条 hard-fail 和 0 条 soft-warn。",
+  "issue_counts": {
+    "hard_fail": 2,
+    "soft_warn": 0
+  },
+  "issues": [
+    {
+      "severity": "hard_fail",
+      "code": "unknown_time",
+      "section": "6. 处置建议与后续核查",
+      "sentence": "通过 EDR 或 Sysmon 日志源，提取并分析 `2026-06-20 10:00:00 UTC` 至 `11:30:00 UTC` 间的所有进程创建、网络连接和 DNS 查询事件，目标是定位发起与 `198.51.100.131` 和 `auth-queue-sync.net` 通信的进程及其完整执行链。",
+      "message": "正文引用了事实卡中不存在的时间 `2026-06-20 10:00:00 UTC`。",
+      "evidence": [
+        "2026-06-20 10:00:00 UTC"
+      ]
+    },
+    {
+      "severity": "hard_fail",
+      "code": "unknown_time",
+      "section": "6. 处置建议与后续核查",
+      "sentence": "通过 EDR 日志和网络流量日志，复核它们在 `2026-06-20 10:30:00 UTC` 至 `11:30:00 UTC` 窗口内的进程和网络行为，确认与 `198.51.100.131` 的交互是源自可信应用的业务正常行为，还是存在复用共享IP的可疑活动迹象。",
+      "message": "正文引用了事实卡中不存在的时间 `2026-06-20 10:30:00 UTC`。",
+      "evidence": [
+        "2026-06-20 10:30:00 UTC"
+      ]
+    }
+  ]
+}

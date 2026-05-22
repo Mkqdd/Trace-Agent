@@ -1,0 +1,24 @@
+{
+  "schema_version": "report-polish-validation-v1",
+  "applied": true,
+  "status": "soft_warn",
+  "summary": "发现 0 条 hard-fail 和 1 条 soft-warn。",
+  "issue_counts": {
+    "hard_fail": 0,
+    "soft_warn": 1
+  },
+  "issues": [
+    {
+      "severity": "soft_warn",
+      "code": "unsupported_event_tuple",
+      "section": "1. 事件结论与当前判断",
+      "sentence": "本次调查围绕一台名为 ws-legal-03 的内部工作站在 2026-06-20 10:12:00 UTC 触发的一条 TLS 层 JA4 指纹告警展开，告警提示其为“Suspicious shared-infra beacon requiring review”。",
+      "message": "正文可能把多个真实事实组合成了事实卡中不存在的 时间-主体-对象 事件组合，请人工复核是否属于合理归纳。",
+      "evidence": [
+        "2026-06-20 10:12:00 UTC",
+        "ws-legal-03",
+        "Suspicious shared-infra beacon requiring review"
+      ]
+    }
+  ]
+}

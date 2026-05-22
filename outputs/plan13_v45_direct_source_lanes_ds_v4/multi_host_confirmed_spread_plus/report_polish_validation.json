@@ -1,0 +1,24 @@
+{
+  "schema_version": "report-polish-validation-v1",
+  "applied": true,
+  "status": "soft_warn",
+  "summary": "发现 0 条 hard-fail 和 1 条 soft-warn。",
+  "issue_counts": {
+    "hard_fail": 0,
+    "soft_warn": 1
+  },
+  "issues": [
+    {
+      "severity": "soft_warn",
+      "code": "unsupported_event_tuple",
+      "section": "1. 事件结论与当前判断",
+      "sentence": "seed alert 在 2026-07-14 01:10:00 UTC 命中 `ws-eng-02` 的 TLS 通信，所触发的 JA4 指纹 `t13d1516h2_2ba4190accc0_13fe129f5abc` 匹配到可疑多主机信标扩散模式。",
+      "message": "正文可能把多个真实事实组合成了事实卡中不存在的 时间-主体-对象 事件组合，请人工复核是否属于合理归纳。",
+      "evidence": [
+        "2026-07-14 01:10:00 UTC",
+        "ws-eng-02",
+        "t13d1516h2_2ba4190accc0_13fe129f5abc"
+      ]
+    }
+  ]
+}
